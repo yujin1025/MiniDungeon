@@ -14,4 +14,8 @@ class MINIDUNGEON_API AAurora : public APlayableCharacter
 {
 	GENERATED_BODY()
 	
+protected:
+	virtual void OnUseQSkill() override;
+	virtual void OnUseESkill() override;
+	virtual void OnUseShiftSkill() override;
 };

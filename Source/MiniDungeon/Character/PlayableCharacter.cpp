@@ -44,6 +44,10 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnMove);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnLook);
 
+		EnhancedInputComponent->BindAction(InputActionMap[EAttackType::QSkillAttack], ETriggerEvent::Triggered, this, &APlayableCharacter::OnQSkill);
+		EnhancedInputComponent->BindAction(InputActionMap[EAttackType::ESkillAttack], ETriggerEvent::Triggered, this, &APlayableCharacter::OnESkill);
+		EnhancedInputComponent->BindAction(InputActionMap[EAttackType::ShiftAttack], ETriggerEvent::Started, this, &APlayableCharacter::OnShift);
+		//EnhancedInputComponent->BindAction(InputActionMap[EAttackType::ShiftAttack], ETriggerEvent::Completed, this, &APlayableCharacter::OnShiftEnd);
 	}
 }
 
@@ -58,3 +62,20 @@ void APlayableCharacter::OnLook(const FInputActionValue& Value)
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 	Look(LookAxisVector);
 }
+
+void APlayableCharacter::OnQSkill(const FInputActionValue& Value)
+{
+	UseSkill(EAttackType::QSkillAttack);
+}
+
+void APlayableCharacter::OnESkill(const FInputActionValue& Value)
+{
+	UseSkill(EAttackType::ESkillAttack);
+}
+
+void APlayableCharacter::OnShift(const FInputActionValue& Value)
+{
+	UseSkill(EAttackType::ShiftAttack);
+}
+
+

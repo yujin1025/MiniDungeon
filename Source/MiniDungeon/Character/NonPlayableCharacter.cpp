@@ -3,3 +3,8 @@
 
 #include "NonPlayableCharacter.h"
 
+ANonPlayableCharacter::ANonPlayableCharacter()
+{
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	AutoPossessPlayer = EAutoReceiveInput::Disabled;
+}

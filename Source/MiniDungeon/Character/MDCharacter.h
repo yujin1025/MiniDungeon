@@ -6,6 +6,16 @@
 #include "GameFramework/Character.h"
 #include "MDCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum class EAttackType : uint8
+{
+	QSkillAttack,
+	ESkillAttack,
+	ShiftAttack,
+};
+
+
+
 UCLASS()
 class MINIDUNGEON_API AMDCharacter : public ACharacter
 {
@@ -22,4 +32,14 @@ protected:
 public:
 	void Move(const FVector2D Value);
 	void Look(const FVector2D Value);
+
+
+// Attack Section
+public:
+	virtual void UseSkill(EAttackType AttackType);
+
+public:
+	virtual void OnUseQSkill() {}
+	virtual void OnUseESkill() {}
+	virtual void OnUseShiftSkill() {}
 };

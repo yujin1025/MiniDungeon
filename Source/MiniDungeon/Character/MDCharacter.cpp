@@ -52,5 +52,21 @@ void AMDCharacter::Look(const FVector2D Value)
 	}
 }
 
+void AMDCharacter::UseSkill(EAttackType AttackType)
+{
+	switch (AttackType)
+	{
+	case EAttackType::QSkillAttack:
+		OnUseQSkill();
+		break;
+	case EAttackType::ESkillAttack:
+		OnUseESkill();
+		break;
+	case EAttackType::ShiftAttack:
+		OnUseShiftSkill();
+		break;
+	}
+}
+
 
 

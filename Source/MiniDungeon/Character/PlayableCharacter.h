@@ -19,11 +19,7 @@ class MINIDUNGEON_API APlayableCharacter : public AMDCharacter
 {
 	GENERATED_BODY()
 
-	// input
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	//TMap<EAttackType, UInputAction*> InputActionMap;
-
-
+	
 public:
 	APlayableCharacter();
 	
@@ -38,6 +34,10 @@ private:
 
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	// input
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TMap<EAttackType, UInputAction*> InputActionMap;
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -55,8 +55,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+
 private:
 	void OnMove(const FInputActionValue& Value);
 	void OnLook(const FInputActionValue& Value);
-	
+
+	void OnQSkill(const FInputActionValue& Value);
+	void OnESkill(const FInputActionValue& Value);
+	void OnShift(const FInputActionValue& Value);
+	//이게 필요한건지 고민중
+	//void OnShiftEnd(const FInputActionValue& Value);
 };

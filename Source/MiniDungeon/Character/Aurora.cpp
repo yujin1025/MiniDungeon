@@ -3,3 +3,14 @@
 
 #include "Aurora.h"
 
+void AAurora::OnUseQSkill()
+{
+}
+
+void AAurora::OnUseESkill()
+{
+}
+
+void AAurora::OnUseShiftSkill()
+{
+}

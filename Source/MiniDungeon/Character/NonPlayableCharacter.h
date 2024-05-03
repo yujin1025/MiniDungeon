@@ -14,4 +14,6 @@ class MINIDUNGEON_API ANonPlayableCharacter : public AMDCharacter
 {
 	GENERATED_BODY()
 	
+public:
+	ANonPlayableCharacter();
 };
