@@ -7,7 +7,6 @@
 AMDCharacter::AMDCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 void AMDCharacter::Tick(float DeltaTime)

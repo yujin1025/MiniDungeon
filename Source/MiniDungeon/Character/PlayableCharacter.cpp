@@ -21,6 +21,10 @@ APlayableCharacter::APlayableCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); 
 	FollowCamera->bUsePawnControlRotation = false; 
+
+	InputActionMap.Add(EAttackType::QSkillAttack, nullptr);
+	InputActionMap.Add(EAttackType::ESkillAttack, nullptr);
+	InputActionMap.Add(EAttackType::ShiftAttack, nullptr);
 }
 
 void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
