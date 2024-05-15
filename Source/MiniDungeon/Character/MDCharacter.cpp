@@ -3,11 +3,41 @@
 
 #include "MDCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "../Component/AttackComponent.h"
 
 AMDCharacter::AMDCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	ActionComponentMap.Empty();
+	for (int i = 0; i < (int)EAttackType::Max; i++)
+	{
+		auto AttackType = (EAttackType)i;
+
+		FString AttackTypeStr = GetEnumNameAsString(AttackType);
+		FString ComponentName = TEXT("AttackComponent [") + AttackTypeStr + "]";
+		auto Component = CreateDefaultSubobject<UAttackComponent>((FName)*ComponentName);
+		ActionComponentMap.Add(AttackType, Component);
+	}
 }
+
+FString AMDCharacter::GetEnumNameAsString(EAttackType EnumValue)
+{
+	switch (EnumValue)
+	{
+	case EAttackType::QSkillAttack:
+		return "QSkillAttack";
+
+	case EAttackType::ESkillAttack:
+		return "ESkillAttack";
+
+	case EAttackType::ShiftAttack:
+		return "ShiftAttack";
+	}
+
+	return "";
+}
+
 
 void AMDCharacter::Tick(float DeltaTime)
 {
@@ -51,8 +81,16 @@ void AMDCharacter::Look(const FVector2D Value)
 	}
 }
 
-void AMDCharacter::UseSkill(EAttackType AttackType)
+bool AMDCharacter::UseSkill(EAttackType AttackType)
 {
+	//if (ProgressingAttackType != EAttackType::Max)
+	//	return false;
+
+	if (ActionComponentMap.Contains(AttackType) == false)
+		return false;
+
+	ActionComponentMap[AttackType]->PlayAttackMontage();
+
 	switch (AttackType)
 	{
 	case EAttackType::QSkillAttack:
@@ -64,6 +102,18 @@ void AMDCharacter::UseSkill(EAttackType AttackType)
 	case EAttackType::ShiftAttack:
 		OnUseShiftSkill();
 		break;
+	}
+
+	//ProgressingAttackType = AttackType;
+	return true;
+}
+
+void AMDCharacter::OnFinishedSkillMotion(EAttackType AttackType)
+{
+	ProgressingAttackType = EAttackType::Max;
+	if (AttackType != EAttackType::Max)
+	{
+		OnUseSkillDelegate.Broadcast(AttackType);
 	}
 }
 

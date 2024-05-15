@@ -4,36 +4,29 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-//#include "MDCharacter.h"
-#include "MDComponent.generated.h"
+#include "HealthComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class MINIDUNGEON_API UMDComponent : public UActorComponent
+class MINIDUNGEON_API UHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
-	UMDComponent();
+	UHealthComponent();
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	/*
-	MDCharacter* GetCyphersCharacter()
-	{
-		auto owner = this->GetOwner();
-		if (owner == nullptr)
-			return nullptr;
+private:
+	float MaxHealth;
+	float CurrentHealth;
 
-		return Cast<MDCharacter>(owner);
-	}*/
-
-public:	
-	// Called every frame
+public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void ChangeHealth(float Amount);
 
+	UFUNCTION(BlueprintPure, Category = "Health")
+	float GetCurrentHealth() const { return CurrentHealth; }
 		
 };

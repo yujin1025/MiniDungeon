@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "MDCharacter.generated.h"
 
+class UAttackComponent;
+
 UENUM(BlueprintType)
 enum class EAttackType : uint8
 {
@@ -15,7 +17,7 @@ enum class EAttackType : uint8
 	Max,
 };
 
-
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnUseSkill, EAttackType)
 
 UCLASS()
 class MINIDUNGEON_API AMDCharacter : public ACharacter
@@ -27,7 +29,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Action, meta = (AllowPrivateAccess = "true"))
+	TMap<EAttackType, UAttackComponent*> ActionComponentMap;
+
 protected:
+	FString GetEnumNameAsString(EAttackType EnumValue);
+
 	virtual void BeginPlay() override;
 
 public:
@@ -37,7 +45,11 @@ public:
 
 // Attack Section
 public:
-	virtual void UseSkill(EAttackType AttackType);
+	bool UseSkill(EAttackType AttackType);
+	void OnFinishedSkillMotion(EAttackType AttackType);
+
+	FOnUseSkill OnUseSkillDelegate;
+	EAttackType ProgressingAttackType = EAttackType::Max;
 
 public:
 	virtual void OnUseQSkill() {}

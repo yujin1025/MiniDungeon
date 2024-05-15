@@ -8,6 +8,7 @@
 
 class UInputMappingContext;
 class UInputAction;
+class UAnimMontage;
 
 struct FInputActionValue;
 
@@ -65,4 +66,5 @@ private:
 	void OnShift(const FInputActionValue& Value);
 	//이게 필요한건지 고민중
 	//void OnShiftEnd(const FInputActionValue& Value);
+
 };
