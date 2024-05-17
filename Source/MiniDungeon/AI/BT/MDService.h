@@ -6,6 +6,7 @@
 #include "BehaviorTree/BTService.h"
 #include "MDService.generated.h"
 
+class AMDCharacter;
 /**
  * 
  */
@@ -14,4 +15,10 @@ class MINIDUNGEON_API UMDService : public UBTService
 {
 	GENERATED_BODY()
 	
+protected:
+	AMDCharacter* GetCharacter(UBehaviorTreeComponent& OwnerComp);
+	UBlackboardComponent* GetBlackboardComponent(UBehaviorTreeComponent& OwnerComp);
+
+public:
+	static AMDCharacter* GetCharacter(const FOverlapResult& OverlapResult);
 };

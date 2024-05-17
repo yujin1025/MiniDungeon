@@ -8,5 +8,5 @@ ANonPlayableCharacter::ANonPlayableCharacter()
 {
 	AIControllerClass = AMDAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-	AutoPossessPlayer = EAutoReceiveInput::Disabled; //빙의하지 않음
+	//AutoPossessPlayer = EAutoReceiveInput::Disabled; //빙의하지 않음
 }

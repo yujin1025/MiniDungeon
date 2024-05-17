@@ -16,4 +16,18 @@ class MINIDUNGEON_API AMDAIController : public AAIController
 	
 public:
 	AMDAIController();
+
+	static const FName HomePosKey;
+	static const FName PatrolPosKey;
+	static const FName TargetObjectKey;
+
+	virtual void OnPossess(APawn* InPawn) override;
+	virtual void OnUnPossess() override;
+
+private:
+	UPROPERTY(EditAnywhere)
+	class UBehaviorTree* BTAsset;
+
+	UPROPERTY(EditAnywhere)
+	class UBlackboardData* BBAsset;
 };

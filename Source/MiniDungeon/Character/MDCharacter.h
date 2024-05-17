@@ -55,4 +55,7 @@ public:
 	virtual void OnUseQSkill() {}
 	virtual void OnUseESkill() {}
 	virtual void OnUseShiftSkill() {}
+
+public:
+	bool IsPlayer();
 };

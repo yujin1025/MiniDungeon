@@ -6,6 +6,9 @@
 #include "BehaviorTree/BTDecorator.h"
 #include "MDDecorator.generated.h"
 
+class AMDCharacter;
+class UBehaviorTreeComponent;
+class UBlackboardComponent;
 /**
  * 
  */
@@ -14,4 +17,7 @@ class MINIDUNGEON_API UMDDecorator : public UBTDecorator
 {
 	GENERATED_BODY()
 	
+protected:
+	AMDCharacter* GetCharacter(UBehaviorTreeComponent& OwnerComp) const;
+	UBlackboardComponent* GetBlackboardComponent(UBehaviorTreeComponent& OwnerComp) const;
 };

@@ -8,7 +8,7 @@ public class MiniDungeon : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GamePlayTasks", "NavigationSystem" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GamePlayTasks", "NavigationSystem", "AIModule", "GamePlayTasks" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

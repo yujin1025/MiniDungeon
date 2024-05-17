@@ -6,6 +6,11 @@
 #include "BehaviorTree/BTTaskNode.h"
 #include "MDTaskNode.generated.h"
 
+class UNavigationSystemV1;
+class AMDAIController;
+class UBlackboardComponent;
+class UBehaviorTreeComponent;
+class AAIController;
 /**
  * 
  */
@@ -13,5 +18,10 @@ UCLASS()
 class MINIDUNGEON_API UMDTaskNode : public UBTTaskNode
 {
 	GENERATED_BODY()
+
+protected:
+	UNavigationSystemV1* GetNavigationSystem(UBehaviorTreeComponent& OwnerComp);
+	AMDAIController* GetAIController(UBehaviorTreeComponent& OwnerComp);
+	UBlackboardComponent* GetBlackboardComponent(UBehaviorTreeComponent& OwnerComp);
 	
 };

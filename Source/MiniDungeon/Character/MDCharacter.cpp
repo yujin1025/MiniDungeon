@@ -117,5 +117,10 @@ void AMDCharacter::OnFinishedSkillMotion(EAttackType AttackType)
 	}
 }
 
+bool AMDCharacter::IsPlayer()
+{
+	return Controller->IsPlayerController();
+}
+
 
 
