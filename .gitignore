@@ -73,5 +73,7 @@ DerivedDataCache/*
 # Heavy Resources
 Content/ParagonAurora/*
 Content/ParagonKhaimera/*
+Content/ParagonDrongo/*
+Content/ParagonGrux/*
 Content/StarterContent/*
 Content/__ExternalActors__/*

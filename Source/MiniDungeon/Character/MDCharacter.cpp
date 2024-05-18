@@ -4,10 +4,15 @@
 #include "MDCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Component/AttackComponent.h"
+#include "../Component/HealthComponent.h"
+#include "../Component/HitDeadComponent.h"
 
 AMDCharacter::AMDCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	HitDeadComponent = CreateDefaultSubobject<UHitDeadComponent>(TEXT("HitDeadComponent"));
 
 	ActionComponentMap.Empty();
 	for (int i = 0; i < (int)EAttackType::Max; i++)

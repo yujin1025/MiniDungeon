@@ -7,6 +7,8 @@
 #include "MDCharacter.generated.h"
 
 class UAttackComponent;
+class UHitDeadComponent;
+class UHealthComponent;
 
 UENUM(BlueprintType)
 enum class EAttackType : uint8
@@ -28,6 +30,11 @@ public:
 	AMDCharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Motion, meta = (AllowPrivateAccess = "true"))
+	UHitDeadComponent* HitDeadComponent;
+
+	UHealthComponent* HealthComponent;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Action, meta = (AllowPrivateAccess = "true"))
