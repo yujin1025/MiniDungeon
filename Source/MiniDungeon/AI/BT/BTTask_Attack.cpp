@@ -2,20 +2,38 @@
 
 
 #include "BTTask_Attack.h"
+#include "../../Character/MDCharacter.h"
 
 UBTTask_Attack::UBTTask_Attack()
 {
 	bNotifyTick = true;
+	bIsProcessing = false;
 }
 
 EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
+
+	auto* Character = GetCharacter(OwnerComp);
+	if (Character == nullptr)
+		return EBTNodeResult::Failed;
+
+	Character->UseSkill(AttackType);
+	Character->OnUseSkillDelegate.AddLambda([this](EAttackType AttackType) -> void
+	{
+		bIsProcessing = true;
+	});
+
 	return EBTNodeResult::InProgress;
 }
 
 void UBTTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
-	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	if (bIsProcessing)
+	{
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	}
+
+	bIsProcessing = false;
 }

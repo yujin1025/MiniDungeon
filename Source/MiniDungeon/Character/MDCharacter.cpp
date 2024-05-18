@@ -122,5 +122,28 @@ bool AMDCharacter::IsPlayer()
 	return Controller->IsPlayerController();
 }
 
+FVector AMDCharacter::GetLookVector(AMDCharacter*& Target) const
+{
+	return Target->GetActorLocation() - GetActorLocation();
+}
+
+void AMDCharacter::RotateToTarget(AMDCharacter*& Target, float RotationSpeed)
+{
+	if (Target == nullptr)
+		return;
+
+	FVector LookVector = GetLookVector(Target);
+	LookVector.Z = 0.f;
+
+	FRotator TargetRotation = FRotationMatrix::MakeFromX(LookVector).Rotator();
+	SetRotation(TargetRotation, RotationSpeed);
+}
+
+void AMDCharacter::SetRotation(FRotator Rotation, float RotationSpeed)
+{
+	FRotator TargetRotation = FMath::RInterpTo(GetActorRotation(), Rotation, GetWorld()->GetDeltaSeconds(), RotationSpeed);
+	SetActorRotation(TargetRotation);
+}
+
 
 

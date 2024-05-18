@@ -5,8 +5,18 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "NavigationSystem.h"
 #include "../MDAIController.h"
+#include "../../Character/MDCharacter.h"
 #include "AIController.h"
 
+
+AMDCharacter* UMDTaskNode::GetCharacter(UBehaviorTreeComponent& OwnerComp)
+{
+	auto Pawn = OwnerComp.GetAIOwner()->GetPawn();
+	if (Pawn == nullptr)
+		return nullptr;
+
+	return Cast<AMDCharacter>(Pawn);
+}
 
 UNavigationSystemV1* UMDTaskNode::GetNavigationSystem(UBehaviorTreeComponent& OwnerComp)
 {

@@ -58,4 +58,8 @@ public:
 
 public:
 	bool IsPlayer();
+	FVector GetLookVector(AMDCharacter*& Target) const;
+
+	void RotateToTarget(AMDCharacter*& Target, float RotationSpeed);
+	void SetRotation(FRotator Rotation, float RotationSpeed);
 };

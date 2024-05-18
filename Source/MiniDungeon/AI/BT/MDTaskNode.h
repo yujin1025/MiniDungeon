@@ -11,6 +11,7 @@ class AMDAIController;
 class UBlackboardComponent;
 class UBehaviorTreeComponent;
 class AAIController;
+class AMDCharacter;
 /**
  * 
  */
@@ -20,6 +21,7 @@ class MINIDUNGEON_API UMDTaskNode : public UBTTaskNode
 	GENERATED_BODY()
 
 protected:
+	AMDCharacter* GetCharacter(UBehaviorTreeComponent& OwnerComp);
 	UNavigationSystemV1* GetNavigationSystem(UBehaviorTreeComponent& OwnerComp);
 	AMDAIController* GetAIController(UBehaviorTreeComponent& OwnerComp);
 	UBlackboardComponent* GetBlackboardComponent(UBehaviorTreeComponent& OwnerComp);
