@@ -6,6 +6,7 @@
 #include "../Component/AttackComponent.h"
 #include "../Component/HealthComponent.h"
 #include "../Component/HitDeadComponent.h"
+#include "../Game/MDGameMode.h"
 
 AMDCharacter::AMDCharacter()
 {
@@ -23,6 +24,22 @@ AMDCharacter::AMDCharacter()
 		FString ComponentName = TEXT("AttackComponent [") + AttackTypeStr + "]";
 		auto Component = CreateDefaultSubobject<UAttackComponent>((FName)*ComponentName);
 		ActionComponentMap.Add(AttackType, Component);
+	}
+
+	switch (CharacterType)
+	{
+	case ECharacterType::Aurora:
+		CharacterId = 0;
+		break;
+	case ECharacterType::Drongo:
+		CharacterId = 1;
+		break;
+	case ECharacterType::Khaimera:
+		CharacterId = 2;
+		break;
+	case ECharacterType::Grux:
+		CharacterId = 3;
+		break;
 	}
 }
 
@@ -119,6 +136,22 @@ void AMDCharacter::OnFinishedSkillMotion(EAttackType AttackType)
 	if (AttackType != EAttackType::Max)
 	{
 		OnUseSkillDelegate.Broadcast(AttackType);
+	}
+}
+
+void AMDCharacter::OnHit()
+{
+	if (HitDeadComponent)
+	{
+		HitDeadComponent->PlayHitMontage();
+	}
+}
+
+void AMDCharacter::OnDie()
+{
+	if (HitDeadComponent)
+	{
+		HitDeadComponent->PlayDeadMontage();
 	}
 }
 

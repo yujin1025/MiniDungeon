@@ -63,10 +63,24 @@ public:
 	virtual void OnUseESkill() {}
 	virtual void OnUseShiftSkill() {}
 
+	virtual void OnHit();
+	virtual void OnDie();
+
 public:
 	bool IsPlayer();
 	FVector GetLookVector(AMDCharacter*& Target) const;
 
 	void RotateToTarget(AMDCharacter*& Target, float RotationSpeed);
 	void SetRotation(FRotator Rotation, float RotationSpeed);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Id, meta = (AllowPrivateAccess = "true"))
+	int CharacterId;
+
+	UFUNCTION(BlueprintCallable, Category = "Character")
+	ECharacterType GetCharacterType() const { return CharacterType; }
+
+protected:
+	// Character type
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")
+	ECharacterType CharacterType;
 };

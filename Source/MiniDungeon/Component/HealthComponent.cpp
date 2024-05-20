@@ -3,6 +3,9 @@
 
 #include "HealthComponent.h"
 #include "../Character/MDCharacter.h"
+#include "../Game/MDGameMode.h"
+#include "../Game/MDGameState.h"
+#include "../Game/MDPlayerState.h"
 
 UHealthComponent::UHealthComponent()
 {
@@ -17,10 +20,10 @@ void UHealthComponent::BeginPlay()
 	AMDCharacter* Character = Cast<AMDCharacter>(GetOwner());
 	if (Character == nullptr)
 		return;
-	/*
+	
 	ECharacterType CharacterType = Character->GetCharacterType();
 
-	auto* GameMode = Cast<AMDCharacter>(GetWorld()->GetAuthGameMode());
+	auto* GameMode = Cast<AMDGameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode == nullptr)
 		return;
 
@@ -29,7 +32,7 @@ void UHealthComponent::BeginPlay()
 		return;
 
 	MaxHealth = Data->MaxHp;
-	CurrentHealth = MaxHealth;*/
+	CurrentHealth = MaxHealth;
 }
 
 
@@ -40,8 +43,8 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UHealthComponent::ChangeHealth(float Amount)
 {
-	/*
-	auto* GameMode = Cast<AMDCharacter>(GetWorld()->GetAuthGameMode());
+	
+	auto* GameMode = Cast<AMDGameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode == nullptr)
 		return;
 
@@ -69,12 +72,12 @@ void UHealthComponent::ChangeHealth(float Amount)
 	{
 		if (CurrentHealth <= 0)
 		{
-			//Character->OnDie();
+			Character->OnDie();
 		}
 		else
 		{
-			//Character->OnHit();
+			Character->OnHit();
 		}
-	}*/
+	}
 }
 
