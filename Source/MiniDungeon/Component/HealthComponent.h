@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
+class AMDCharacter;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MINIDUNGEON_API UHealthComponent : public UActorComponent
@@ -24,7 +25,7 @@ private:
 
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	void ChangeHealth(float Amount);
+	void ChangeHealth(AMDCharacter* Attacker, float Amount);
 
 	UFUNCTION(BlueprintPure, Category = "Health")
 	float GetCurrentHealth() const { return CurrentHealth; }

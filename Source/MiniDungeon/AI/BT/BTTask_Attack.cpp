@@ -21,6 +21,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	Character->UseSkill(AttackType);
 	Character->OnUseSkillDelegate.AddLambda([this](EAttackType AttackType) -> void
 	{
+		//UE_LOG(LogTemp, Warning, TEXT("OnUseSkillDelegate called"));
 		bIsProcessing = true;
 	});
 

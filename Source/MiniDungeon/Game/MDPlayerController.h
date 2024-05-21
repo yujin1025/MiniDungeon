@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "MDPlayerController.generated.h"
 
+class AMDPlayerState;
 /**
  * 
  */
@@ -14,4 +15,6 @@ class MINIDUNGEON_API AMDPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
+public:
+	AMDPlayerState* GetState();
 };

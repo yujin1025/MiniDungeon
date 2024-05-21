@@ -2,6 +2,9 @@
 
 
 #include "MDGameMode.h"
+#include "MDPlayerController.h"
+#include "MDGameState.h"
+
 
 AMDGameMode::AMDGameMode()
 {
@@ -11,6 +14,26 @@ AMDGameMode::AMDGameMode()
 void AMDGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AMDGameMode::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	MyGameState = Cast<AMDGameState>(GameState);
+}
+
+void AMDGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+
+	OnPostLogin(Cast<AMDPlayerController>(NewPlayer));
+}
+
+
+void AMDGameMode::OnPostLogin(AMDPlayerController* NewPlayer)
+{
+	MyPlayerState = NewPlayer->GetState();
 }
 
 FCharacterStatData* AMDGameMode::GetCharacterStat(ECharacterType type)

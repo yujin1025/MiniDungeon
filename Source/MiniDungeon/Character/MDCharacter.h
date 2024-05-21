@@ -20,6 +20,7 @@ enum class EAttackType : uint8
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnUseSkill, EAttackType)
+//DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
 
 UCLASS()
 class MINIDUNGEON_API AMDCharacter : public ACharacter
@@ -57,6 +58,7 @@ public:
 
 	FOnUseSkill OnUseSkillDelegate;
 	EAttackType ProgressingAttackType = EAttackType::Max;
+	//FOnAttackEndDelegate OnAttackEnd;
 
 public:
 	virtual void OnUseQSkill() {}

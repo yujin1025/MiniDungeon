@@ -9,6 +9,8 @@
 
 class AMDGameState;
 class AMDPlayerState;
+class AMDPlayerController;
+class APlayerController;
 /**
  * 
  */
@@ -48,6 +50,13 @@ public:
 	AMDGameMode();
 
 	virtual void BeginPlay() override;
+
+protected:
+	virtual void PostInitializeComponents() override;
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+
+private:
+	void OnPostLogin(AMDPlayerController* NewPlayer);
 
 
 public:

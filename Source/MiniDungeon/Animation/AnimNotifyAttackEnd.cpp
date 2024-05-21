@@ -14,6 +14,6 @@ void UAnimNotifyAttackEnd::Notify(USkeletalMeshComponent* MeshComp)
 	if (character != nullptr)
 	{
 		character->OnFinishedSkillMotion(AttackType);
-		UE_LOG(LogTemp, Warning, TEXT("OnFinishedSkillMotion."));
+		//UE_LOG(LogTemp, Warning, TEXT("OnFinishedSkillMotion."));
 	}
 }

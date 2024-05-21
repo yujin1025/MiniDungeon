@@ -126,7 +126,8 @@ bool AMDCharacter::UseSkill(EAttackType AttackType)
 		break;
 	}
 
-	//ProgressingAttackType = AttackType;
+	//OnAttackEnd.Broadcast();
+	ProgressingAttackType = AttackType;
 	return true;
 }
 
@@ -145,6 +146,8 @@ void AMDCharacter::OnHit()
 	{
 		HitDeadComponent->PlayHitMontage();
 	}
+
+	OnFinishedSkillMotion(ProgressingAttackType);
 }
 
 void AMDCharacter::OnDie()
