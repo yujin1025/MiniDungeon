@@ -18,11 +18,12 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	if (Character == nullptr)
 		return EBTNodeResult::Failed;
 
+
 	Character->UseSkill(AttackType);
+	bIsProcessing = true;
 	Character->OnUseSkillDelegate.AddLambda([this](EAttackType AttackType) -> void
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("OnUseSkillDelegate called"));
-		bIsProcessing = true;
+		bIsProcessing = false;
 	});
 
 	return EBTNodeResult::InProgress;
@@ -31,10 +32,8 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 void UBTTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
-	if (bIsProcessing)
+	if (!bIsProcessing)
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
-
-	bIsProcessing = false;
 }

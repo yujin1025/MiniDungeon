@@ -16,7 +16,7 @@ class MINIDUNGEON_API UAnimNotifyAttackEnd : public UAnimNotify
 	GENERATED_BODY()
 	
 protected:
-	virtual void Notify(USkeletalMeshComponent* MeshComp);
+	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
 
 private:
 	UPROPERTY(EditAnywhere)
