@@ -24,6 +24,9 @@ AMDCharacter::AMDCharacter()
 		FString ComponentName = TEXT("AttackComponent [") + AttackTypeStr + "]";
 		auto Component = CreateDefaultSubobject<UAttackComponent>((FName)*ComponentName);
 		ActionComponentMap.Add(AttackType, Component);
+
+		ActionCoolTimeMap.Add(AttackType, 5.0f);
+		CurrentActionCoolTimeMap.Add(AttackType, 0.0f);
 	}
 
 	switch (CharacterType)
@@ -65,6 +68,7 @@ void AMDCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	CurrentDeltaTime += DeltaTime;
 }
 
 void AMDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -81,6 +85,9 @@ void AMDCharacter::BeginPlay()
 
 void AMDCharacter::Move(const FVector2D Value)
 {
+	if (IsDead)
+		return;
+
 	if (Controller != nullptr)
 	{
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -96,6 +103,9 @@ void AMDCharacter::Move(const FVector2D Value)
 
 void AMDCharacter::Look(const FVector2D Value)
 {
+	if (IsDead)
+		return;
+
 	if (Controller != nullptr)
 	{
 		AddControllerYawInput(Value.X);
@@ -105,13 +115,23 @@ void AMDCharacter::Look(const FVector2D Value)
 
 bool AMDCharacter::UseSkill(EAttackType AttackType)
 {
-	//if (ProgressingAttackType != EAttackType::Max)
-	//	return false;
+	if (IsDead)
+		return false;
+
+	if (IsSatisfiedAttack(AttackType) == false)
+		return false;
+
+	if (ProgressingAttackType != EAttackType::Max)
+		return false;
 
 	if (ActionComponentMap.Contains(AttackType) == false)
 		return false;
 
+	if (ActionCoolTimeMap.Contains(AttackType) == false)
+		return false;
+
 	ActionComponentMap[AttackType]->PlayAttackMontage();
+	CurrentActionCoolTimeMap[AttackType] = CurrentDeltaTime + ActionCoolTimeMap[AttackType];
 
 	switch (AttackType)
 	{
@@ -140,8 +160,28 @@ void AMDCharacter::OnFinishedSkillMotion(EAttackType AttackType)
 	}
 }
 
+bool AMDCharacter::IsSatisfiedAttack(EAttackType AttackType)
+{
+	return !CheckCoolTime(AttackType) && !IsDead;
+}
+
+bool AMDCharacter::CheckCoolTime(EAttackType AttackType)
+{
+	if (ActionCoolTimeMap.Contains(AttackType) == false)
+		return true;
+
+	if (CurrentActionCoolTimeMap.Contains(AttackType) == false)
+		return true;
+
+	float CurrentCoolTime = CurrentActionCoolTimeMap[AttackType];
+	return CurrentCoolTime > CurrentDeltaTime;
+}
+
 void AMDCharacter::OnHit()
 {
+	if (IsDead)
+		return;
+
 	if (HitDeadComponent)
 	{
 		HitDeadComponent->PlayHitMontage();
@@ -152,6 +192,11 @@ void AMDCharacter::OnHit()
 
 void AMDCharacter::OnDie()
 {
+	if (IsDead)
+		return;
+
+	IsDead = true;
+
 	if (HitDeadComponent)
 	{
 		HitDeadComponent->PlayDeadMontage();

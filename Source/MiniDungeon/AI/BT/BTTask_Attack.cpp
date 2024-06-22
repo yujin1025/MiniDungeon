@@ -18,6 +18,8 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	if (Character == nullptr)
 		return EBTNodeResult::Failed;
 
+	if (Character->IsSatisfiedAttack(AttackType) == false)
+		return EBTNodeResult::Failed;
 
 	Character->UseSkill(AttackType);
 	bIsProcessing = true;

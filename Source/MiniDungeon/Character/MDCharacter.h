@@ -37,11 +37,9 @@ public:
 
 	UHealthComponent* HealthComponent;
 
-private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Action, meta = (AllowPrivateAccess = "true"))
-	TMap<EAttackType, UAttackComponent*> ActionComponentMap;
-
 protected:
+	bool CheckCoolTime(EAttackType AttackType);
+
 	FString GetEnumNameAsString(EAttackType EnumValue);
 
 	virtual void BeginPlay() override;
@@ -60,13 +58,27 @@ public:
 	EAttackType ProgressingAttackType = EAttackType::Max;
 	//FOnAttackEndDelegate OnAttackEnd;
 
+private:
+	float CurrentDeltaTime = 0.0f;
+
 public:
+	virtual bool IsSatisfiedAttack(EAttackType AttackType);
+
 	virtual void OnUseQSkill() {}
 	virtual void OnUseESkill() {}
 	virtual void OnUseShiftSkill() {}
 
 	virtual void OnHit();
 	virtual void OnDie();
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Action, meta = (AllowPrivateAccess = "true"))
+	TMap<EAttackType, UAttackComponent*> ActionComponentMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Action, meta = (AllowPrivateAccess = "true"))
+	TMap<EAttackType, float> ActionCoolTimeMap;
+
+	TMap<EAttackType, float> CurrentActionCoolTimeMap;
 
 public:
 	bool IsPlayer();
@@ -81,6 +93,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	ECharacterType GetCharacterType() const { return CharacterType; }
+
+	bool IsDead = false;
 
 protected:
 	// Character type
