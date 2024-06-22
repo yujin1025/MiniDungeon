@@ -7,6 +7,7 @@
 #include "MDPlayerController.generated.h"
 
 class AMDPlayerState;
+class AMDCharacter;
 /**
  * 
  */
@@ -14,7 +15,16 @@ UCLASS()
 class MINIDUNGEON_API AMDPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
+	virtual void PostInitializeComponents() override;
+	virtual void OnPossess(APawn* aPawn) override;
+
+private:
+	void OnPossessCharacter(AMDCharacter* aCharacter);
+	AMDCharacter* OwnerCharacter;
 	
 public:
 	AMDPlayerState* GetState();
+	AMDCharacter* GetCharacter();
 };

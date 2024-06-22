@@ -72,6 +72,7 @@ public:
 	bool IsPlayer();
 	FVector GetLookVector(AMDCharacter*& Target) const;
 
+	virtual FVector GetTargetPosition(ECollisionChannel Channel, float RayCastDistance, OUT bool& IsFoundTarget);
 	void RotateToTarget(AMDCharacter*& Target, float RotationSpeed);
 	void SetRotation(FRotator Rotation, float RotationSpeed);
 
@@ -85,4 +86,5 @@ protected:
 	// Character type
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")
 	ECharacterType CharacterType;
+
 };

@@ -4,7 +4,8 @@
 #include "MDGameMode.h"
 #include "MDPlayerController.h"
 #include "MDGameState.h"
-
+#include "../Widget/MDWidget.h"
+#include "Blueprint/UserWidget.h"
 
 AMDGameMode::AMDGameMode()
 {
@@ -14,6 +15,12 @@ AMDGameMode::AMDGameMode()
 void AMDGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ingameWindowWidget = CreateWidget<UMDWidget>(GetWorld(), ingameWindowWidgetClass);
+	if (ingameWindowWidget != nullptr)
+	{
+		ingameWindowWidget->AddToViewport();
+	}
 }
 
 void AMDGameMode::PostInitializeComponents()

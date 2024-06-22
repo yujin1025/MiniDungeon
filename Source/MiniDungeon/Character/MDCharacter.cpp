@@ -168,6 +168,29 @@ FVector AMDCharacter::GetLookVector(AMDCharacter*& Target) const
 	return Target->GetActorLocation() - GetActorLocation();
 }
 
+FVector AMDCharacter::GetTargetPosition(ECollisionChannel Channel, float RayCastDistance, OUT bool& IsFoundTarget)
+{
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	Controller->GetPlayerViewPoint(CameraLocation, CameraRotation);
+
+	FVector Start = CameraLocation;
+	FVector End = Start + (CameraRotation.Vector() * RayCastDistance);
+
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, Channel, CollisionParams))
+	{
+		IsFoundTarget = true;
+		return HitResult.Location;
+	}
+
+	IsFoundTarget = false;
+	return FVector::ZeroVector;
+}
+
 void AMDCharacter::RotateToTarget(AMDCharacter*& Target, float RotationSpeed)
 {
 	if (Target == nullptr)

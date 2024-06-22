@@ -70,6 +70,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = Data)
 	class UDataTable* CharacterStatTable;
 
+	//UI
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<class UMDWidget> ingameWindowWidgetClass;
+
+	UPROPERTY()
+	UMDWidget* ingameWindowWidget;
+
 public:
 	FCharacterStatData* GetCharacterStat(ECharacterType type);
 

@@ -3,8 +3,30 @@
 
 #include "MDPlayerController.h"
 #include "MDPlayerState.h"
+#include "../Character/MDCharacter.h"
+
+void AMDPlayerController::PostInitializeComponents()
+{
+    Super::PostInitializeComponents();
+}
+
+void AMDPlayerController::OnPossess(APawn* aPawn)
+{
+    Super::OnPossess(aPawn);
+    OnPossessCharacter(Cast<AMDCharacter>(aPawn));
+}
+
+void AMDPlayerController::OnPossessCharacter(AMDCharacter* aCharacter)
+{
+    this->OwnerCharacter = aCharacter;
+}
 
 AMDPlayerState* AMDPlayerController::GetState()
 {
     return Cast<AMDPlayerState>(PlayerState);
+}
+
+AMDCharacter* AMDPlayerController::GetCharacter()
+{
+    return OwnerCharacter;
 }
