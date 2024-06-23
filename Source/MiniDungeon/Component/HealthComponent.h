@@ -8,6 +8,8 @@
 
 class AMDCharacter;
 
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnDamaged, AMDCharacter*, float)
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MINIDUNGEON_API UHealthComponent : public UActorComponent
 {
@@ -22,6 +24,9 @@ protected:
 private:
 	float MaxHealth;
 	float CurrentHealth;
+
+public:
+	FOnDamaged OnDamaged;
 
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

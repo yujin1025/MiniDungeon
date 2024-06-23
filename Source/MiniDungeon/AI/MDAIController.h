@@ -20,9 +20,17 @@ public:
 	static const FName HomePosKey;
 	static const FName PatrolPosKey;
 	static const FName TargetObjectKey;
+	static const FName DamagedCountKey;
+	static const FName DamagedTypeKey;
 
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
+
+	UFUNCTION()
+	void SetCharacterPerception(AMDCharacter* InChar);
+
+	UFUNCTION()
+	void OnDamaged(AMDCharacter* Attacker, float Amount);
 
 private:
 	UPROPERTY(EditAnywhere)

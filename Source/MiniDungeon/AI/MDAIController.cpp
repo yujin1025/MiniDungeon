@@ -5,10 +5,14 @@
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "../Character/MDCharacter.h"
+#include "../Component/HealthComponent.h"
 
 const FName AMDAIController::HomePosKey(TEXT("HomePos"));
 const FName AMDAIController::PatrolPosKey(TEXT("PatrolPos"));
 const FName AMDAIController::TargetObjectKey(TEXT("TargetObject"));
+const FName AMDAIController::DamagedCountKey(TEXT("DamagedCount"));
+const FName AMDAIController::DamagedTypeKey(TEXT("DamagedType"));
 
 AMDAIController::AMDAIController()
 {
@@ -41,9 +45,30 @@ void AMDAIController::OnPossess(APawn* InPawn)
 			UE_LOG(LogTemp, Log, TEXT("AIController couldn't run"));
 		}
 	}
+
+	auto* InChar = Cast<AMDCharacter>(InPawn);
+	if (InChar == nullptr)
+		return;
+
+	SetCharacterPerception(InChar);
 }
 
 void AMDAIController::OnUnPossess()
 {
 	Super::OnUnPossess();
+}
+
+void AMDAIController::SetCharacterPerception(AMDCharacter* InChar)
+{
+	InChar->HealthComponent->OnDamaged.AddUObject(this, &AMDAIController::OnDamaged);
+}
+
+void AMDAIController::OnDamaged(AMDCharacter* Attacker, float Amount)
+{
+	UBlackboardComponent* blackboardComponent = Blackboard;
+	if (blackboardComponent == nullptr)
+		return;
+
+	int DamagedCount = blackboardComponent->GetValueAsInt(DamagedCountKey);
+	blackboardComponent->SetValueAsInt(DamagedCountKey, DamagedCount + 1);
 }
