@@ -56,7 +56,7 @@ protected:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
 private:
-	void OnPostLogin(AMDPlayerController* NewPlayer);
+	virtual void OnPostLogin(AController* NewPlayer) override;
 
 
 public:

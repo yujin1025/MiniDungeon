@@ -1,3 +1,4 @@
+#include "ClientPacketHandler.h"
 //#include "ClientPacketHandler.h"
 //#include "BufferReader.h"
 //#include "S1.h"
@@ -114,3 +115,43 @@
 //
 //	return true;
 //}
+
+bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
+{
+	return false;
+}
+
+bool Handle_STC_LOGIN(PacketSessionRef& session, Protocol::STC_LOGIN& pkt)
+{
+	return false;
+}
+
+bool Handle_STC_ENTER_GAME(PacketSessionRef& session, Protocol::STC_ENTER_GAME& pkt)
+{
+	return false;
+}
+
+bool Handle_STC_LEAVE_GAME(PacketSessionRef& session, Protocol::STC_LEAVE_GAME& pkt)
+{
+	return false;
+}
+
+bool Handle_STC_SPAWN(PacketSessionRef& session, Protocol::STC_SPAWN& pkt)
+{
+	return false;
+}
+
+bool Handle_STC_DESPAWN(PacketSessionRef& session, Protocol::STC_DESPAWN& pkt)
+{
+	return false;
+}
+
+bool Handle_STC_MOVE(PacketSessionRef& session, Protocol::STC_MOVE& pkt)
+{
+	return false;
+}
+
+bool Handle_STC_CHAT(PacketSessionRef& session, Protocol::STC_CHAT& pkt)
+{
+	return false;
+}

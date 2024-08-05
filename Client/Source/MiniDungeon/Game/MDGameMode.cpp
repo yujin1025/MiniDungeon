@@ -38,9 +38,13 @@ void AMDGameMode::PostLogin(APlayerController* NewPlayer)
 }
 
 
-void AMDGameMode::OnPostLogin(AMDPlayerController* NewPlayer)
+void AMDGameMode::OnPostLogin(AController* NewPlayer)
 {
-	MyPlayerState = NewPlayer->GetState();
+	auto newPlayer = Cast<AMDPlayerController>(NewPlayer);
+	if (IsValid(newPlayer))
+	{
+		MyPlayerState = newPlayer->GetState();
+	}
 }
 
 FCharacterStatData* AMDGameMode::GetCharacterStat(ECharacterType type)

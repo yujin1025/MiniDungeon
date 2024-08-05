@@ -1,5 +1,5 @@
 #pragma once
-#include "Protocol.pb.h"
+#include "Network/Protocol.pb.h"
 
 #if UE_BUILD_DEBUG + UE_BUILD_DEVELOPMENT + UE_BUILD_TEST + UE_BUILD_SHIPPING >= 1
 #include "MiniDungeon.h"
@@ -9,7 +9,7 @@ using PacketHandlerFunc = std::function<bool(PacketSessionRef&, BYTE*, int32)>;
 extern PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
 // Utils Func
-class US1NetworkManager* GetWorldNetwork(const PacketSessionRef& Session);
+//class US1NetworkManager* GetWorldNetwork(const PacketSessionRef& Session);
 
 enum : uint16
 {

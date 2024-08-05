@@ -13,5 +13,7 @@ UCLASS()
 class MINIDUNGEON_API UMDGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-	
+public:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class APlayableCharacter> OtherPlayerClass;
 };
