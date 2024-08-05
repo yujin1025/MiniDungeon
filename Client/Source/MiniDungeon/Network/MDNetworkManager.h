@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ClientPacketHandler.h"
-//#include "PacketSession.h"
+#include "PacketSession.h"
 #include "MiniDungeon.h"
 #include "Protocol.pb.h"
 #include "Subsystems/GameInstanceSubsystem.h"
@@ -29,20 +29,27 @@ public:
 
 	void HandleRecvPackets();
 
-	void SendPacket(SendBufferRef SendBuffer);
+	void SendPacket(SendBufferRef sendBuffer);
 
 	template<typename T>
-	void SendPacket(T& Packet) const;
+	void SendPacket(T& packet) const;
 
 public:
+	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, bool isMine);
+	void HandleSpawn(const Protocol::STC_ENTER_GAME& enterGamePkt);
+	void HandleSpawn(const Protocol::STC_SPAWN& spawnPkt);
 
+	void HandleDespawn(uint64 objectId);
+	void HandleDespawn(const Protocol::STC_DESPAWN& despawnPkt);
+
+	void HandleMove(const Protocol::STC_MOVE& movePkt);
 
 public:
 	class FSocket* Socket;
 	FString IpAddress = TEXT("127.0.0.1");
 	int16 Port = 7777;
 
-	//TSharedPtr<class PacketSession> GameServerSession;
+	TSharedPtr<class PacketSession> GameServerSession;
 
 public:
 	UPROPERTY()
@@ -53,13 +60,13 @@ public:
 };
 
 template<typename T>
-void UMDNetworkManager::SendPacket(T& Packet) const
+void UMDNetworkManager::SendPacket(T& packet) const
 {
-	if(Socket == nullptr /*|| GameServerSession == nullptr*/)
+	if(Socket == nullptr || GameServerSession == nullptr)
 	{
 		return;
 	}
 
-	const SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Packet);
-	//GameServerSession->SendPacket(SendBuffer);
+	const SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(packet);
+	GameServerSession->SendPacket(sendBuffer);
 }

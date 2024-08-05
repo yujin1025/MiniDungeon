@@ -12,6 +12,7 @@ message CTS_LOGIN
 message STC_LOGIN
 {
 	bool success = 1;
+	repeated ObjectInfo players = 2;
 }
 
 message CTS_ENTER_GAME
@@ -22,6 +23,7 @@ message CTS_ENTER_GAME
 message STC_ENTER_GAME
 {
 	bool success = 1;
+	ObjectInfo player = 2;
 }
 
 message CTS_LEAVE_GAME
@@ -36,6 +38,7 @@ message STC_LEAVE_GAME
 
 message STC_SPAWN
 {
+	repeated ObjectInfo players = 1;
 }
 
 message STC_DESPAWN
@@ -45,18 +48,21 @@ message STC_DESPAWN
 
 message CTS_MOVE
 {
+	PosInfo info = 1;
 }
 
 message STC_MOVE
 {
+	PosInfo info = 1;
 }
 
 message CTS_CHAT
 {
-	string message = 1;
+	string msg = 1;
 }
 
 message STC_CHAT
 {
-	string message = 1;
+	uint64 playerId = 1;
+	string msg = 2;
 }
