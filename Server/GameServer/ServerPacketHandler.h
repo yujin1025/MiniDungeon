@@ -9,7 +9,7 @@ using PacketHandlerFunc = std::function<bool(PacketSessionRef&, BYTE*, int32)>;
 extern PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
 // Utils Func
-class US1NetworkManager* GetWorldNetwork(const PacketSessionRef& Session);
+class UMDNetworkManager* GetWorldNetwork(const PacketSessionRef& Session);
 
 enum : uint16
 {
