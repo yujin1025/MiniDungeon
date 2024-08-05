@@ -2,29 +2,38 @@
 #include "Protocol.pb.h"
 
 #if UE_BUILD_DEBUG + UE_BUILD_DEVELOPMENT + UE_BUILD_TEST + UE_BUILD_SHIPPING >= 1
-#include "S1.h"
+#include "MiniDungeon.h"
 #endif
 
 using PacketHandlerFunc = std::function<bool(PacketSessionRef&, BYTE*, int32)>;
 extern PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
+// Utils Func
+class US1NetworkManager* GetWorldNetwork(const PacketSessionRef& Session);
+
 enum : uint16
 {
-	PKT_C_LOGIN = 1000,
-	PKT_S_LOGIN = 1001,
-	PKT_C_ENTER_GAME = 1002,
-	PKT_S_ENTER_GAME = 1003,
-	PKT_C_CHAT = 1004,
-	PKT_S_CHAT = 1005,
-	PKT_C_HELLOWORLD = 1006,
+	PKT_CTS_LOGIN = 1000,
+	PKT_STC_LOGIN = 1001,
+	PKT_CTS_ENTER_GAME = 1002,
+	PKT_STC_ENTER_GAME = 1003,
+	PKT_CTS_LEAVE_GAME = 1004,
+	PKT_STC_LEAVE_GAME = 1005,
+	PKT_STC_SPAWN = 1006,
+	PKT_STC_DESPAWN = 1007,
+	PKT_CTS_MOVE = 1008,
+	PKT_STC_MOVE = 1009,
+	PKT_CTS_CHAT = 1010,
+	PKT_STC_CHAT = 1011,
 };
 
 // Custom Handlers
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
-bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt);
-bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt);
-bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt);
-bool Handle_C_HELLOWORLD(PacketSessionRef& session, Protocol::C_HELLOWORLD& pkt);
+bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt);
+bool Handle_CTS_ENTER_GAME(PacketSessionRef& session, Protocol::CTS_ENTER_GAME& pkt);
+bool Handle_CTS_LEAVE_GAME(PacketSessionRef& session, Protocol::CTS_LEAVE_GAME& pkt);
+bool Handle_CTS_MOVE(PacketSessionRef& session, Protocol::CTS_MOVE& pkt);
+bool Handle_CTS_CHAT(PacketSessionRef& session, Protocol::CTS_CHAT& pkt);
 
 class TestPacketHandler
 {
@@ -33,10 +42,11 @@ public:
 	{
 		for (int32 i = 0; i < UINT16_MAX; i++)
 			GPacketHandler[i] = Handle_INVALID;
-		GPacketHandler[PKT_C_LOGIN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_LOGIN>(Handle_C_LOGIN, session, buffer, len); };
-		GPacketHandler[PKT_C_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ENTER_GAME>(Handle_C_ENTER_GAME, session, buffer, len); };
-		GPacketHandler[PKT_C_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_CHAT>(Handle_C_CHAT, session, buffer, len); };
-		GPacketHandler[PKT_C_HELLOWORLD] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_HELLOWORLD>(Handle_C_HELLOWORLD, session, buffer, len); };
+		GPacketHandler[PKT_CTS_LOGIN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_LOGIN>(Handle_CTS_LOGIN, session, buffer, len); };
+		GPacketHandler[PKT_CTS_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_ENTER_GAME>(Handle_CTS_ENTER_GAME, session, buffer, len); };
+		GPacketHandler[PKT_CTS_LEAVE_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_LEAVE_GAME>(Handle_CTS_LEAVE_GAME, session, buffer, len); };
+		GPacketHandler[PKT_CTS_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_MOVE>(Handle_CTS_MOVE, session, buffer, len); };
+		GPacketHandler[PKT_CTS_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_CHAT>(Handle_CTS_CHAT, session, buffer, len); };
 	}
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -44,9 +54,13 @@ public:
 		PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 		return GPacketHandler[header->id](session, buffer, len);
 	}
-	static SendBufferRef MakeSendBuffer(Protocol::S_LOGIN& pkt) { return MakeSendBuffer(pkt, PKT_S_LOGIN); }
-	static SendBufferRef MakeSendBuffer(Protocol::S_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_S_ENTER_GAME); }
-	static SendBufferRef MakeSendBuffer(Protocol::S_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_S_CHAT); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_LOGIN& pkt) { return MakeSendBuffer(pkt, PKT_STC_LOGIN); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_STC_ENTER_GAME); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_LEAVE_GAME& pkt) { return MakeSendBuffer(pkt, PKT_STC_LEAVE_GAME); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_SPAWN& pkt) { return MakeSendBuffer(pkt, PKT_STC_SPAWN); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_DESPAWN& pkt) { return MakeSendBuffer(pkt, PKT_STC_DESPAWN); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_STC_MOVE); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_STC_CHAT); }
 
 private:
 	template<typename PacketType, typename ProcessFunc>
@@ -59,6 +73,7 @@ private:
 		return func(session, pkt);
 	}
 
+public:
 	template<typename T>
 	static SendBufferRef MakeSendBuffer(T& pkt, uint16 pktId)
 	{

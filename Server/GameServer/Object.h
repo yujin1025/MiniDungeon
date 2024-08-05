@@ -10,8 +10,8 @@ public:
 	bool IsPlayer() { return _isPlayer; }
 
 public:
-	Protocol::ObjectInfo* objectInfo;
-	Protocol::PosInfo* posInfo;
+	//Protocol::ObjectInfo* objectInfo;
+	//Protocol::PosInfo* posInfo;
 
 public:
 	atomic<weak_ptr<Room>> room;

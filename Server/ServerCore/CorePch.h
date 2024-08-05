@@ -14,6 +14,9 @@
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
+#include <atomic>
+#include <mutex>
+#include <memory>
 
 #include <windows.h>
 #include <iostream>

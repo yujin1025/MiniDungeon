@@ -12,7 +12,5 @@ public:
 
 public:
 	weak_ptr<GameSession> session;
-
-
 };
 
