@@ -3,12 +3,12 @@
 
 Object::Object()
 {
-	/*objectInfo = new Protocol::ObjectInfo();
+	objectInfo = new Protocol::ObjectInfo();
 	posInfo = new Protocol::PosInfo();
-	objectInfo->set_allocated_pos_info(posInfo);*/
+	objectInfo->set_allocated_pos_info(posInfo);
 }
 
 Object::~Object()
 {
-	//delete objectInfo;
+	delete objectInfo;
 }

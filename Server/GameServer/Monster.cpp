@@ -3,10 +3,10 @@
 
 Monster::Monster()
 {
-	//objectInfo = new Protocol::ObjectInfo();
+	objectInfo = new Protocol::ObjectInfo();
 }
 
 Monster::~Monster()
 {
-	//delete objectInfo;
+	delete objectInfo;
 }

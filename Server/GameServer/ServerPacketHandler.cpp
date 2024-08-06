@@ -25,12 +25,12 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 
 	for (int32 i = 0; i < 3; i++)
 	{
-		/*Protocol::ObjectInfo* player = loginPkt.add_players();
+		Protocol::ObjectInfo* player = loginPkt.add_players();
 		Protocol::PosInfo* posInfo = player->mutable_pos_info();
 		posInfo->set_x(Utils::GetRandom(0.f, 100.f));
 		posInfo->set_y(Utils::GetRandom(0.f, 100.f));
 		posInfo->set_z(Utils::GetRandom(0.f, 100.f));
-		posInfo->set_yaw(Utils::GetRandom(0.f, 45.f));*/
+		posInfo->set_yaw(Utils::GetRandom(0.f, 45.f));
 	}
 
 	loginPkt.set_success(true);
