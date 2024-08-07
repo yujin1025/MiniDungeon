@@ -3,6 +3,7 @@
 
 #include "Lobby/LobbyGameMode.h"
 #include "Lobby/LobbyPlayerController.h"
+#include <MDNetworkManager.h>
 
 ALobbyGameMode::ALobbyGameMode()
 {
@@ -14,4 +15,12 @@ ALobbyGameMode::ALobbyGameMode()
 void ALobbyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ALobbyGameMode::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	networkManager->HandleRecvPackets();
 }

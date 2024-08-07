@@ -104,9 +104,10 @@ namespace Protocol {
 // ===================================================================
 
 class CTS_LOGIN final :
-    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:Protocol.CTS_LOGIN) */ {
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.CTS_LOGIN) */ {
  public:
   inline CTS_LOGIN() : CTS_LOGIN(nullptr) {}
+  ~CTS_LOGIN() override;
   explicit PROTOBUF_CONSTEXPR CTS_LOGIN(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
   CTS_LOGIN(const CTS_LOGIN& from);
@@ -179,15 +180,29 @@ class CTS_LOGIN final :
   CTS_LOGIN* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CTS_LOGIN>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
-  inline void CopyFrom(const CTS_LOGIN& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CTS_LOGIN& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CTS_LOGIN& from) {
+    CTS_LOGIN::MergeImpl(*this, from);
   }
-  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
-  void MergeFrom(const CTS_LOGIN& from) {
-    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
-  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
   public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CTS_LOGIN* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
@@ -208,6 +223,38 @@ class CTS_LOGIN final :
 
   // accessors -------------------------------------------------------
 
+  enum : int {
+    kIdFieldNumber = 1,
+    kPwFieldNumber = 2,
+  };
+  // string id = 1;
+  void clear_id();
+  const std::string& id() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_id(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_id();
+  PROTOBUF_NODISCARD std::string* release_id();
+  void set_allocated_id(std::string* id);
+  private:
+  const std::string& _internal_id() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_id(const std::string& value);
+  std::string* _internal_mutable_id();
+  public:
+
+  // string pw = 2;
+  void clear_pw();
+  const std::string& pw() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_pw(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_pw();
+  PROTOBUF_NODISCARD std::string* release_pw();
+  void set_allocated_pw(std::string* pw);
+  private:
+  const std::string& _internal_pw() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_pw(const std::string& value);
+  std::string* _internal_mutable_pw();
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.CTS_LOGIN)
  private:
   class _Internal;
@@ -216,7 +263,11 @@ class CTS_LOGIN final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr id_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr pw_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
+  union { Impl_ _impl_; };
   friend struct ::TableStruct_Protocol_2eproto;
 };
 // -------------------------------------------------------------------
@@ -1899,6 +1950,106 @@ class STC_CHAT final :
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
 // CTS_LOGIN
+
+// string id = 1;
+inline void CTS_LOGIN::clear_id() {
+  _impl_.id_.ClearToEmpty();
+}
+inline const std::string& CTS_LOGIN::id() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_LOGIN.id)
+  return _internal_id();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CTS_LOGIN::set_id(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.id_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.CTS_LOGIN.id)
+}
+inline std::string* CTS_LOGIN::mutable_id() {
+  std::string* _s = _internal_mutable_id();
+  // @@protoc_insertion_point(field_mutable:Protocol.CTS_LOGIN.id)
+  return _s;
+}
+inline const std::string& CTS_LOGIN::_internal_id() const {
+  return _impl_.id_.Get();
+}
+inline void CTS_LOGIN::_internal_set_id(const std::string& value) {
+  
+  _impl_.id_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CTS_LOGIN::_internal_mutable_id() {
+  
+  return _impl_.id_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CTS_LOGIN::release_id() {
+  // @@protoc_insertion_point(field_release:Protocol.CTS_LOGIN.id)
+  return _impl_.id_.Release();
+}
+inline void CTS_LOGIN::set_allocated_id(std::string* id) {
+  if (id != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.id_.SetAllocated(id, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.id_.IsDefault()) {
+    _impl_.id_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.CTS_LOGIN.id)
+}
+
+// string pw = 2;
+inline void CTS_LOGIN::clear_pw() {
+  _impl_.pw_.ClearToEmpty();
+}
+inline const std::string& CTS_LOGIN::pw() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_LOGIN.pw)
+  return _internal_pw();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CTS_LOGIN::set_pw(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.pw_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.CTS_LOGIN.pw)
+}
+inline std::string* CTS_LOGIN::mutable_pw() {
+  std::string* _s = _internal_mutable_pw();
+  // @@protoc_insertion_point(field_mutable:Protocol.CTS_LOGIN.pw)
+  return _s;
+}
+inline const std::string& CTS_LOGIN::_internal_pw() const {
+  return _impl_.pw_.Get();
+}
+inline void CTS_LOGIN::_internal_set_pw(const std::string& value) {
+  
+  _impl_.pw_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CTS_LOGIN::_internal_mutable_pw() {
+  
+  return _impl_.pw_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CTS_LOGIN::release_pw() {
+  // @@protoc_insertion_point(field_release:Protocol.CTS_LOGIN.pw)
+  return _impl_.pw_.Release();
+}
+inline void CTS_LOGIN::set_allocated_pw(std::string* pw) {
+  if (pw != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.pw_.SetAllocated(pw, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.pw_.IsDefault()) {
+    _impl_.pw_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.CTS_LOGIN.pw)
+}
 
 // -------------------------------------------------------------------
 

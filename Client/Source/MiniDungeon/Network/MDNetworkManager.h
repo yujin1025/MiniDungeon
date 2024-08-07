@@ -19,6 +19,8 @@ class MINIDUNGEON_API UMDNetworkManager : public UGameInstanceSubsystem
 	GENERATED_BODY()
 	
 public:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
 	UFUNCTION(BlueprintCallable)
 	void ConnectToServer();
 

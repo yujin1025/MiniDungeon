@@ -15,4 +15,17 @@ class MINIDUNGEON_API ULobbyWidget : public UUserWidget
 	GENERATED_BODY()
 protected:
 	virtual void NativeConstruct() override;
+
+protected:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UButton> LOGINButton;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UEditableTextBox> IDInput;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UEditableTextBox> PWInput;
+
+	UFUNCTION()
+	void OnLOGINButtonClicked();
 };

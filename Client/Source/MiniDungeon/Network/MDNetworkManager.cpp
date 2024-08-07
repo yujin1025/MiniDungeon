@@ -13,6 +13,13 @@
 #include "Kismet/GameplayStatics.h"
 
 
+void UMDNetworkManager::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+
+	ConnectToServer();
+}
+
 void UMDNetworkManager::ConnectToServer()
 {
 	Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"), false);
@@ -37,11 +44,11 @@ void UMDNetworkManager::ConnectToServer()
 		GameServerSession->Run();
 
 		// TEMP : Lobby에서 캐릭터 선택창 등
-		{
-			Protocol::CTS_LOGIN pkt;
-			SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
-			SendPacket(sendBuffer);
-		}
+		//{
+		//	Protocol::CTS_LOGIN pkt;
+		//	SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
+		//	SendPacket(sendBuffer);
+		//}
 	}
 	else
 	{
@@ -132,7 +139,7 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, bool
 
 void UMDNetworkManager::HandleSpawn(const Protocol::STC_ENTER_GAME& enterGamePkt)
 {
-	//HandleSpawn(enterGamePkt)
+	//HandleSpawn(enterGamePkt);
 }
 
 void UMDNetworkManager::HandleSpawn(const Protocol::STC_SPAWN& spawnPkt)

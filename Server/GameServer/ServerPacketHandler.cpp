@@ -21,19 +21,21 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 {
 	// TODO : DB에서 Account 정보 긁어온다
 	// TODO : DB에서 유저 정보 긁어온다
-	Protocol::STC_LOGIN loginPkt;
 
-	for (int32 i = 0; i < 3; i++)
+	Protocol::STC_LOGIN loginPkt;
+	if(pkt.id() == "Admin" && pkt.pw() == "Admin")
 	{
 		Protocol::ObjectInfo* player = loginPkt.add_players();
 		Protocol::PosInfo* posInfo = player->mutable_pos_info();
-		posInfo->set_x(Utils::GetRandom(0.f, 100.f));
-		posInfo->set_y(Utils::GetRandom(0.f, 100.f));
-		posInfo->set_z(Utils::GetRandom(0.f, 100.f));
-		posInfo->set_yaw(Utils::GetRandom(0.f, 45.f));
+
+		loginPkt.set_success(true);
+	}
+	else
+	{
+		loginPkt.set_success(false);
 	}
 
-	loginPkt.set_success(true);
+	
 
 	SEND_PACKET(loginPkt);
 
