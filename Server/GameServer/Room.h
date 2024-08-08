@@ -1,6 +1,7 @@
 #pragma once
 #include "JobQueue.h"
 
+
 class Room : public JobQueue
 {
 public:
@@ -29,6 +30,7 @@ private:
 
 private:
 	unordered_map<uint64, ObjectRef> _objects;
+	weak_ptr<class Lobby> _lobby;
 };
 
 extern RoomRef GRoom;

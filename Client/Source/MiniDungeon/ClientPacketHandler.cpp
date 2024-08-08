@@ -47,25 +47,35 @@ bool Handle_STC_LOGIN(PacketSessionRef& session, Protocol::STC_LOGIN& pkt)
 	}
 
 	// 로그인 성공
-	for (auto& Player : pkt.players())
+	const UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
+	if (gameNetwork != nullptr)
 	{
+		UMDNetworkManager* nonConstGameNetwork = const_cast<UMDNetworkManager*>(gameNetwork);
+		nonConstGameNetwork->PlayerID = UTF8_TO_TCHAR(pkt.id().c_str());
+	}
+	// 로비 입장
+	Protocol::CTS_ENTER_LOBBY enterLobbyPkt;
+	if (gameNetwork != nullptr)
+	{
+		gameNetwork->SendPacket(enterLobbyPkt);
 	}
 
-	for (int32 i = 0; i < pkt.players_size(); i++)
-	{
-		const Protocol::ObjectInfo& player = pkt.players(i);
-	}
 
 	// 로비에서 캐릭터 선택해서 인덱스 전송.
 	Protocol::CTS_ENTER_GAME enterGamePkt;
 	enterGamePkt.set_playerindex(0);
 
-	if (const UMDNetworkManager* gameNetwork = GetWorldNetwork(session))
+	if (gameNetwork)
 	{
 		gameNetwork->SendPacket(enterGamePkt);
 	}
 
 	return true;
+}
+bool Handle_STC_ENTER_LOBBY(PacketSessionRef& session, Protocol::STC_ENTER_LOBBY& pkt)
+{
+	return false;
 }
 //
 bool Handle_STC_ENTER_GAME(PacketSessionRef& session, Protocol::STC_ENTER_GAME& pkt)

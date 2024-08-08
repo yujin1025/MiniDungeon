@@ -59,6 +59,8 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<class APlayableCharacter> MyPlayer;
+	UPROPERTY()
+	FString PlayerID;
 };
 
 template<typename T>

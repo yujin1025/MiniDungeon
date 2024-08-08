@@ -7,6 +7,7 @@
 #include "ObjectUtils.h"
 #include "Player.h"
 #include "GameSession.h"
+#include "Lobby.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -25,9 +26,9 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 	Protocol::STC_LOGIN loginPkt;
 	if(pkt.id() == "Admin" && pkt.pw() == "Admin")
 	{
-		Protocol::ObjectInfo* player = loginPkt.add_players();
-		Protocol::PosInfo* posInfo = player->mutable_pos_info();
-
+		//Protocol::ObjectInfo* player = loginPkt.add_players();
+		//Protocol::PosInfo* posInfo = player->mutable_pos_info();
+		loginPkt.set_id(pkt.id());
 		loginPkt.set_success(true);
 	}
 	else
@@ -38,6 +39,17 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 	
 
 	SEND_PACKET(loginPkt);
+
+	return true;
+}
+
+bool Handle_CTS_ENTER_LOBBY(PacketSessionRef& session, Protocol::CTS_ENTER_LOBBY& pkt)
+{
+	PlayerRef player = static_pointer_cast<GameSession>(session)->player;
+	if (player == nullptr)
+		return false;
+
+	GLobby->DoAsync(&Lobby::HandleEnterPlayer, player);
 
 	return true;
 }
