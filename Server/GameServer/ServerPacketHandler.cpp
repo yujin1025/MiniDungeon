@@ -3,6 +3,7 @@
 #include "BufferReader.h"
 #include "BufferWriter.h"
 #include "Protocol.pb.h"
+#include "Struct.pb.h"
 #include "Room.h"
 #include "ObjectUtils.h"
 #include "Player.h"
@@ -26,9 +27,22 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 	Protocol::STC_LOGIN loginPkt;
 	if(pkt.id() == "Admin" && pkt.pw() == "Admin")
 	{
-		//Protocol::ObjectInfo* player = loginPkt.add_players();
-		//Protocol::PosInfo* posInfo = player->mutable_pos_info();
-		loginPkt.set_id(pkt.id());
+		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
+
+		playerInfo->set_player_id(0);
+		playerInfo->set_allocated_player_name(new string("Admin"));
+
+		Protocol::ObjectInfo* objectInfo = new Protocol::ObjectInfo();
+		objectInfo->set_object_id(0);
+		objectInfo->set_object_type(Protocol::ObjectType::OBJECT_TYPE_CREATURE);
+
+		Protocol::PosInfo* posInfo = new Protocol::PosInfo();
+		objectInfo->set_allocated_pos_info(posInfo);
+
+		playerInfo->set_allocated_object_info(objectInfo);
+
+		loginPkt.set_allocated_player(playerInfo);
+		//loginPkt.set_id(pkt.id());
 		loginPkt.set_success(true);
 	}
 	else
@@ -52,6 +66,11 @@ bool Handle_CTS_ENTER_LOBBY(PacketSessionRef& session, Protocol::CTS_ENTER_LOBBY
 	GLobby->DoAsync(&Lobby::HandleEnterPlayer, player);
 
 	return true;
+}
+
+bool Handle_CTS_JOIN_OR_CREATE_ROOM(PacketSessionRef& session, Protocol::CTS_JOIN_OR_CREATE_ROOM& pkt)
+{
+	return false;
 }
 
 bool Handle_CTS_ENTER_GAME(PacketSessionRef& session, Protocol::CTS_ENTER_GAME& pkt)

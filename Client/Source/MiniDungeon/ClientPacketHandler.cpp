@@ -3,6 +3,7 @@
 #include "MDNetworkManager.h"
 #include "Game/MDGameInstance.h"
 #include "MiniDungeon.h"
+#include "Struct.pb.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -52,28 +53,38 @@ bool Handle_STC_LOGIN(PacketSessionRef& session, Protocol::STC_LOGIN& pkt)
 	if (gameNetwork != nullptr)
 	{
 		UMDNetworkManager* nonConstGameNetwork = const_cast<UMDNetworkManager*>(gameNetwork);
-		nonConstGameNetwork->PlayerID = UTF8_TO_TCHAR(pkt.id().c_str());
+
 	}
 	// 로비 입장
 	Protocol::CTS_ENTER_LOBBY enterLobbyPkt;
+
 	if (gameNetwork != nullptr)
 	{
+		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
+		playerInfo->CopyFrom(pkt.player());
+
+		enterLobbyPkt.set_allocated_player(playerInfo);
 		gameNetwork->SendPacket(enterLobbyPkt);
 	}
 
 
 	// 로비에서 캐릭터 선택해서 인덱스 전송.
-	Protocol::CTS_ENTER_GAME enterGamePkt;
+	/*Protocol::CTS_ENTER_GAME enterGamePkt;
 	enterGamePkt.set_playerindex(0);
 
 	if (gameNetwork)
 	{
 		gameNetwork->SendPacket(enterGamePkt);
-	}
+	}*/
 
 	return true;
 }
 bool Handle_STC_ENTER_LOBBY(PacketSessionRef& session, Protocol::STC_ENTER_LOBBY& pkt)
+{
+	return false;
+}
+
+bool Handle_STC_JOIN_OR_CREATE_ROOM(PacketSessionRef& session, Protocol::STC_JOIN_OR_CREATE_ROOM& pkt)
 {
 	return false;
 }

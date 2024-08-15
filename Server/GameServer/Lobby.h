@@ -1,5 +1,5 @@
 #pragma once
-class Lobby : public enable_shared_from_this<Lobby>
+class Lobby : public JobQueue
 {
 public:
 	Lobby();
@@ -7,12 +7,14 @@ public:
 
 public:
 	unordered_map<uint64, RoomRef>& GetRooms() { return _rooms; }
+	unordered_map<uint64, PlayerRef>& GetPlayers() { return _players; }
 
 	bool EnterLobby(PlayerRef player);
+
+	bool HandleEnterPlayer(PlayerRef player);
 private:
-	unordered_map<string, PlayerRef> _players;
+	unordered_map<uint64, PlayerRef> _players;
 	unordered_map<uint64, RoomRef> _rooms;
-	JobQueueRef _jobQueue = nullptr;
 };
 
 extern LobbyRef GLobby;

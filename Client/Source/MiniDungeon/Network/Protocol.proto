@@ -6,13 +6,38 @@ import "Struct.proto";
 
 message CTS_LOGIN
 {
-
+	string id = 1;
+	string pw = 2;
 }
 
 message STC_LOGIN
 {
 	bool success = 1;
-	repeated ObjectInfo players = 2;
+	string id = 2;
+}
+
+message CTS_ENTER_LOBBY
+{
+	string player_id = 1;
+}
+
+message STC_ENTER_LOBBY
+{
+	bool success = 1;
+	string player_id = 2;
+}
+
+message CTS_JOIN_OR_CREATE_ROOM
+{
+	uint64 roomIndex = 1;
+	string player_id = 2;
+}
+
+message STC_JOIN_OR_CREATE_ROOM
+{
+	bool success = 1;
+	uint64 roomIndex = 2;
+	string player_id = 3;
 }
 
 message CTS_ENTER_GAME
