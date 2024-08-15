@@ -1,0 +1,62 @@
+syntax = "proto3";
+package Protocol;
+
+import "Enum.proto";
+import "Struct.proto";
+
+message CTS_LOGIN
+{
+
+}
+
+message STC_LOGIN
+{
+	bool success = 1;
+}
+
+message CTS_ENTER_GAME
+{
+	uint64 playerIndex = 1;
+}
+
+message STC_ENTER_GAME
+{
+	bool success = 1;
+}
+
+message CTS_LEAVE_GAME
+{
+
+}
+
+message STC_LEAVE_GAME
+{
+
+}
+
+message STC_SPAWN
+{
+}
+
+message STC_DESPAWN
+{
+	repeated uint64 object_ids = 1;
+}
+
+message CTS_MOVE
+{
+}
+
+message STC_MOVE
+{
+}
+
+message CTS_CHAT
+{
+	string message = 1;
+}
+
+message STC_CHAT
+{
+	string message = 1;
+}
