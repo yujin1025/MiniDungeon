@@ -82,4 +82,6 @@ Content/__ExternalActors__/*
 #Protobuf
 !Source/
 !Source/ProtobufCore/
-!Source/ProtobufCore/Lib/*
+!Source/ProtobufCore/Lib/
+!Source/ProtobufCore/Lib/Win64
+!Source/ProtobufCore/Lib/Win64/libprotobuf.lib
