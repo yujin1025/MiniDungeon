@@ -50,11 +50,6 @@ bool Handle_STC_LOGIN(PacketSessionRef& session, Protocol::STC_LOGIN& pkt)
 	// 로그인 성공
 	const UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
 
-	if (gameNetwork != nullptr)
-	{
-		UMDNetworkManager* nonConstGameNetwork = const_cast<UMDNetworkManager*>(gameNetwork);
-
-	}
 	// 로비 입장
 	Protocol::CTS_ENTER_LOBBY enterLobbyPkt;
 
@@ -81,6 +76,28 @@ bool Handle_STC_LOGIN(PacketSessionRef& session, Protocol::STC_LOGIN& pkt)
 }
 bool Handle_STC_ENTER_LOBBY(PacketSessionRef& session, Protocol::STC_ENTER_LOBBY& pkt)
 {
+	const UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
+	// Lobby 입장 실패라고 하면 Lobby 입장 패킷 다시 보냄
+	if (pkt.success() == false)
+	{
+		//if (gameNetwork != nullptr)
+		//{
+		//	Protocol::CTS_ENTER_LOBBY enterLobbyPkt;
+
+		//	if (gameNetwork != nullptr)
+		//	{
+		//		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
+		//		playerInfo->CopyFrom(pkt.player());
+
+		//		enterLobbyPkt.set_allocated_player(playerInfo);
+		//		gameNetwork->SendPacket(enterLobbyPkt);
+		//	}
+		//}
+		return false;
+	}
+		
+		
 	return false;
 }
 

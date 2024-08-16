@@ -27,8 +27,6 @@ bool Lobby::EnterLobby(PlayerRef player)
 	_players.insert(make_pair(player->GetPlayerInfo()->player_id(), player));
 	
 	player->lobby.store(static_pointer_cast<Lobby>(shared_from_this()));
-
-	
 	{
 		enterLobbyPkt.set_success(true);
 		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
