@@ -407,3 +407,10 @@ FodyWeavers.xsd
 !Common/Protobuf/bin/Enum.proto
 !Common/Protobuf/bin/Protocol.proto
 !Common/Protobuf/bin/Struct.proto
+
+# sln file
+*.vcxproj
+
+# Tool
+Tool/PacketGenerator/PacketGenerator.py
+Tool/PacketGenerator/TestPacketHandler.h
