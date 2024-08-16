@@ -16,12 +16,22 @@ class MINIDUNGEON_API ALobbyPlayerController : public APlayerController
 public:
 	ALobbyPlayerController();
 
+	UFUNCTION()
+	void OpenLobbyWidget();
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY()
-	TSubclassOf<class UUserWidget> LobbyWidgetClass;
+	TSubclassOf<class UUserWidget> LoginWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<class UUserWidget> LoginWidget;
+
+private:
+	UPROPERTY()
+	TSubclassOf<UUserWidget> LobbyWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<class UUserWidget> LobbyWidget;

@@ -9,10 +9,28 @@ ALobbyPlayerController::ALobbyPlayerController()
 	bShowMouseCursor = true;
 	//bEnableClickEvents = true;
 	//bEnableMouseOverEvents = true;
-	ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Assets/UI/WBP_Lobby.WBP_Lobby_C'"));
-	if(WidgetClass.Succeeded())
+	ConstructorHelpers::FClassFinder<UUserWidget> loginWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Assets/UI/WBP_LoginWidget.WBP_LoginWidget_C'"));
+	if(loginWidgetClass.Succeeded())
 	{
-		LobbyWidgetClass = WidgetClass.Class;
+		LoginWidgetClass = loginWidgetClass.Class;
+	}
+
+	ConstructorHelpers::FClassFinder<UUserWidget> lobbyWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Assets/UI/WBP_LobbyWidget.WBP_LobbyWidget_C'"));
+	if (lobbyWidgetClass.Succeeded())
+	{
+		LobbyWidgetClass = lobbyWidgetClass.Class;
+	}
+}
+
+void ALobbyPlayerController::OpenLobbyWidget()
+{
+	if (IsValid(LobbyWidgetClass))
+	{
+		LobbyWidget = CreateWidget<UUserWidget>(this, LobbyWidgetClass);
+		if (IsValid(LobbyWidget))
+		{
+			LobbyWidget->AddToViewport();
+		}
 	}
 }
 
@@ -21,12 +39,12 @@ void ALobbyPlayerController::BeginPlay()
 	Super::BeginPlay();
 	SetInputMode(FInputModeUIOnly());
 
-	if(IsValid(LobbyWidgetClass))
+	if(IsValid(LoginWidgetClass))
 	{
-		LobbyWidget = CreateWidget<UUserWidget>(this, LobbyWidgetClass);
-		if(IsValid(LobbyWidget))
+		LoginWidget = CreateWidget<UUserWidget>(this, LoginWidgetClass);
+		if(IsValid(LoginWidget))
 		{
-			LobbyWidget->AddToViewport();
+			LoginWidget->AddToViewport();
 		}
 	}
 }

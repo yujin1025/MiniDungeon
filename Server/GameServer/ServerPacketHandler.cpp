@@ -59,7 +59,8 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 
 bool Handle_CTS_ENTER_LOBBY(PacketSessionRef& session, Protocol::CTS_ENTER_LOBBY& pkt)
 {
-	PlayerRef player = static_pointer_cast<GameSession>(session)->player;
+	PlayerRef player = ObjectUtils::CreatePlayer(static_pointer_cast<GameSession>(session));
+
 	if (player == nullptr)
 		return false;
 

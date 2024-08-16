@@ -62,7 +62,6 @@ bool Handle_STC_LOGIN(PacketSessionRef& session, Protocol::STC_LOGIN& pkt)
 		gameNetwork->SendPacket(enterLobbyPkt);
 	}
 
-
 	// 로비에서 캐릭터 선택해서 인덱스 전송.
 	/*Protocol::CTS_ENTER_GAME enterGamePkt;
 	enterGamePkt.set_playerindex(0);
@@ -76,29 +75,20 @@ bool Handle_STC_LOGIN(PacketSessionRef& session, Protocol::STC_LOGIN& pkt)
 }
 bool Handle_STC_ENTER_LOBBY(PacketSessionRef& session, Protocol::STC_ENTER_LOBBY& pkt)
 {
-	const UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
 
-	// Lobby 입장 실패라고 하면 Lobby 입장 패킷 다시 보냄
+	// Lobby에 이미 플레이어가 입장해 있음.
 	if (pkt.success() == false)
 	{
-		//if (gameNetwork != nullptr)
-		//{
-		//	Protocol::CTS_ENTER_LOBBY enterLobbyPkt;
-
-		//	if (gameNetwork != nullptr)
-		//	{
-		//		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
-		//		playerInfo->CopyFrom(pkt.player());
-
-		//		enterLobbyPkt.set_allocated_player(playerInfo);
-		//		gameNetwork->SendPacket(enterLobbyPkt);
-		//	}
-		//}
-		return false;
+		return true;
+	}
+	
+	if (IsValid(gameNetwork))
+	{
+		gameNetwork->HandleLogin(pkt);
 	}
 		
-		
-	return false;
+	return true;
 }
 
 bool Handle_STC_JOIN_OR_CREATE_ROOM(PacketSessionRef& session, Protocol::STC_JOIN_OR_CREATE_ROOM& pkt)

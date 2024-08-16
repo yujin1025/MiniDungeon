@@ -4,6 +4,7 @@
 Player::Player()
 {
 	_isPlayer = true;
+	playerInfo = new Protocol::PlayerInfo();
 }
 
 Player::~Player()

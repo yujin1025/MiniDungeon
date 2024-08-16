@@ -11,6 +11,7 @@
 #include "Game/MDGameInstance.h"
 #include "Character/PlayableCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Lobby/LobbyPlayerController.h"
 
 
 void UMDNetworkManager::Initialize(FSubsystemCollectionBase& Collection)
@@ -92,6 +93,27 @@ void UMDNetworkManager::SendPacket(SendBufferRef sendBuffer)
 	}
 
 	GameServerSession->SendPacket(sendBuffer);
+}
+
+void UMDNetworkManager::HandleLogin(const Protocol::STC_ENTER_LOBBY& enterLobbyPkt)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	auto* world = GetWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	auto* pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+
+	if (IsValid(pc))
+	{
+		pc->OpenLobbyWidget();
+	}
 }
 
 void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, bool isMine)

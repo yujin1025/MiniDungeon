@@ -37,6 +37,8 @@ public:
 	void SendPacket(T& packet) const;
 
 public:
+	void HandleLogin(const Protocol::STC_ENTER_LOBBY& enterLobbyPkt);
+
 	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, bool isMine);
 	void HandleSpawn(const Protocol::STC_ENTER_GAME& enterGamePkt);
 	void HandleSpawn(const Protocol::STC_SPAWN& spawnPkt);
