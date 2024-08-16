@@ -73,6 +73,11 @@ bool Handle_CTS_JOIN_OR_CREATE_ROOM(PacketSessionRef& session, Protocol::CTS_JOI
 	return false;
 }
 
+bool Handle_CTS_ENTER_ROOM(PacketSessionRef& session, Protocol::CTS_ENTER_ROOM& pkt)
+{
+	return false;
+}
+
 bool Handle_CTS_ENTER_GAME(PacketSessionRef& session, Protocol::CTS_ENTER_GAME& pkt)
 {
 	// 플레이어 생성

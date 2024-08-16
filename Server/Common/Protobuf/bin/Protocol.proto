@@ -40,6 +40,16 @@ message STC_JOIN_OR_CREATE_ROOM
 	PlayerInfo player = 3;
 }
 
+message CTS_ENTER_ROOM
+{
+	bool success = 1;
+}
+
+message STC_ENTER_ROOM
+{
+	bool success = 1;
+}
+
 message CTS_ENTER_GAME
 {
 	uint64 playerIndex = 1;
