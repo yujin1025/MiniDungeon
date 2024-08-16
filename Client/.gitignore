@@ -78,3 +78,8 @@ Content/ParagonDrongo/*
 Content/ParagonGrux/*
 Content/StarterContent/*
 Content/__ExternalActors__/*
+
+#Protobuf
+!Source/
+!Source/ProtobufCore/
+!Source/ProtobufCore/Lib/*

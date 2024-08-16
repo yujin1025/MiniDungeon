@@ -105,6 +105,10 @@ bool Handle_STC_JOIN_OR_CREATE_ROOM(PacketSessionRef& session, Protocol::STC_JOI
 {
 	return false;
 }
+bool Handle_STC_ENTER_ROOM(PacketSessionRef& session, Protocol::STC_ENTER_ROOM& pkt)
+{
+	return false;
+}
 //
 bool Handle_STC_ENTER_GAME(PacketSessionRef& session, Protocol::STC_ENTER_GAME& pkt)
 {
