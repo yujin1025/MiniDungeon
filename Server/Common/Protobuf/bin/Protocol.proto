@@ -1,0 +1,93 @@
+syntax = "proto3";
+package Protocol;
+
+import "Enum.proto";
+import "Struct.proto";
+
+message CTS_LOGIN
+{
+	string id = 1;
+	string pw = 2;
+}
+
+message STC_LOGIN
+{
+	bool success = 1;
+	PlayerInfo player = 3;
+}
+
+message CTS_ENTER_LOBBY
+{
+	PlayerInfo player = 1;
+}
+
+message STC_ENTER_LOBBY
+{
+	bool success = 1;
+	PlayerInfo player = 2;
+}
+
+message CTS_JOIN_OR_CREATE_ROOM
+{
+	uint64 roomIndex = 1;
+	PlayerInfo player = 2;
+}
+
+message STC_JOIN_OR_CREATE_ROOM
+{
+	bool success = 1;
+	uint64 roomIndex = 2;
+	PlayerInfo player = 3;
+}
+
+message CTS_ENTER_GAME
+{
+	uint64 playerIndex = 1;
+}
+
+message STC_ENTER_GAME
+{
+	bool success = 1;
+	ObjectInfo player = 2;
+}
+
+message CTS_LEAVE_GAME
+{
+
+}
+
+message STC_LEAVE_GAME
+{
+
+}
+
+message STC_SPAWN
+{
+	repeated ObjectInfo players = 1;
+}
+
+message STC_DESPAWN
+{
+	repeated uint64 object_ids = 1;
+}
+
+message CTS_MOVE
+{
+	PosInfo info = 1;
+}
+
+message STC_MOVE
+{
+	PosInfo info = 1;
+}
+
+message CTS_CHAT
+{
+	string msg = 1;
+}
+
+message STC_CHAT
+{
+	uint64 playerId = 1;
+	string msg = 2;
+}

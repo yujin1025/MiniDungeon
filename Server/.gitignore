@@ -401,6 +401,9 @@ FodyWeavers.xsd
 *.sln.iml
 
 # include protobuf file
+!Common/
+!Common/Protobuf/
+!Common/Protobuf/bin
 !Common/Protobuf/bin/Enum.proto
 !Common/Protobuf/bin/Protocol.proto
 !Common/Protobuf/bin/Struct.proto
