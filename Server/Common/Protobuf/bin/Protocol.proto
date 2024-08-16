@@ -61,6 +61,16 @@ message STC_ENTER_GAME
 	ObjectInfo player = 2;
 }
 
+message CTS_LEAVE_ROOM
+{
+	bool success = 1;
+}
+
+message STC_LEAVE_ROOM
+{
+	bool success = 1;
+}
+
 message CTS_LEAVE_GAME
 {
 

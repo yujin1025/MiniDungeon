@@ -119,6 +119,10 @@ bool Handle_STC_ENTER_GAME(PacketSessionRef& session, Protocol::STC_ENTER_GAME& 
 
 	return true;
 }
+bool Handle_STC_LEAVE_ROOM(PacketSessionRef& session, Protocol::STC_LEAVE_ROOM& pkt)
+{
+	return false;
+}
 //
 bool Handle_STC_LEAVE_GAME(PacketSessionRef& session, Protocol::STC_LEAVE_GAME& pkt)
 {

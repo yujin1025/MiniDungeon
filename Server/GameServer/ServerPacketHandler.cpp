@@ -90,6 +90,11 @@ bool Handle_CTS_ENTER_GAME(PacketSessionRef& session, Protocol::CTS_ENTER_GAME& 
 	return true;
 }
 
+bool Handle_CTS_LEAVE_ROOM(PacketSessionRef& session, Protocol::CTS_LEAVE_ROOM& pkt)
+{
+	return false;
+}
+
 bool Handle_CTS_LEAVE_GAME(PacketSessionRef& session, Protocol::CTS_LEAVE_GAME& pkt)
 {
 	auto gameSession = static_pointer_cast<GameSession>(session);
