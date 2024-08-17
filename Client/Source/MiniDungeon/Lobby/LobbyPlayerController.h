@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Protocol.pb.h"
 #include "LobbyPlayerController.generated.h"
 
 /**
@@ -15,6 +16,7 @@ class MINIDUNGEON_API ALobbyPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	ALobbyPlayerController();
+	~ALobbyPlayerController();
 
 	UFUNCTION()
 	void OpenLobbyWidget();
@@ -35,4 +37,11 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class UUserWidget> LobbyWidget;
+
+private:
+	Protocol::PlayerInfo* PlayerInfo;
+
+public:
+	Protocol::PlayerInfo* GetPlayerInfo() { return PlayerInfo; }
+	void SetPlayerInfo(const Protocol::PlayerInfo& info);
 };

@@ -91,11 +91,12 @@ bool Handle_STC_ENTER_LOBBY(PacketSessionRef& session, Protocol::STC_ENTER_LOBBY
 	return true;
 }
 
-bool Handle_STC_JOIN_OR_CREATE_ROOM(PacketSessionRef& session, Protocol::STC_JOIN_OR_CREATE_ROOM& pkt)
+bool Handle_STC_ENTER_ROOM(PacketSessionRef& session, Protocol::STC_ENTER_ROOM& pkt)
 {
 	return false;
 }
-bool Handle_STC_ENTER_ROOM(PacketSessionRef& session, Protocol::STC_ENTER_ROOM& pkt)
+
+bool Handle_STC_JOIN_ROOM(PacketSessionRef& session, Protocol::STC_JOIN_ROOM& pkt)
 {
 	return false;
 }

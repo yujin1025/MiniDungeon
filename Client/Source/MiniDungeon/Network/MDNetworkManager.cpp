@@ -112,6 +112,7 @@ void UMDNetworkManager::HandleLogin(const Protocol::STC_ENTER_LOBBY& enterLobbyP
 
 	if (IsValid(pc))
 	{
+		pc->SetPlayerInfo(enterLobbyPkt.player());
 		pc->OpenLobbyWidget();
 	}
 }

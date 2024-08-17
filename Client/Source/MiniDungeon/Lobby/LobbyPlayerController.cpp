@@ -22,6 +22,12 @@ ALobbyPlayerController::ALobbyPlayerController()
 	}
 }
 
+ALobbyPlayerController::~ALobbyPlayerController()
+{
+	delete PlayerInfo;
+	PlayerInfo = nullptr;
+}
+
 void ALobbyPlayerController::OpenLobbyWidget()
 {
 	if (IsValid(LobbyWidgetClass))
@@ -29,6 +35,7 @@ void ALobbyPlayerController::OpenLobbyWidget()
 		LobbyWidget = CreateWidget<UUserWidget>(this, LobbyWidgetClass);
 		if (IsValid(LobbyWidget))
 		{
+			Cast<ULobbyWidget>(LobbyWidget)->Owner = this;
 			LobbyWidget->AddToViewport();
 		}
 	}
@@ -47,4 +54,14 @@ void ALobbyPlayerController::BeginPlay()
 			LoginWidget->AddToViewport();
 		}
 	}
+}
+
+void ALobbyPlayerController::SetPlayerInfo(const Protocol::PlayerInfo& info)
+{
+	if (PlayerInfo->player_id() != 0)
+	{
+		assert(PlayerInfo->object_id() == Info.object_id());
+	}
+
+	PlayerInfo->CopyFrom(info);
 }

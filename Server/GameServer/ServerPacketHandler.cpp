@@ -69,7 +69,14 @@ bool Handle_CTS_ENTER_LOBBY(PacketSessionRef& session, Protocol::CTS_ENTER_LOBBY
 	return true;
 }
 
-bool Handle_CTS_JOIN_OR_CREATE_ROOM(PacketSessionRef& session, Protocol::CTS_JOIN_OR_CREATE_ROOM& pkt)
+bool Handle_CTS_CREATE_ROOM(PacketSessionRef& session, Protocol::CTS_CREATE_ROOM& pkt)
+{
+	GLobby->DoAsync(&Lobby::HandleCreateRoom, pkt.player());
+
+	return false;
+}
+
+bool Handle_CTS_JOIN_ROOM(PacketSessionRef& session, Protocol::CTS_JOIN_ROOM& pkt)
 {
 	return false;
 }

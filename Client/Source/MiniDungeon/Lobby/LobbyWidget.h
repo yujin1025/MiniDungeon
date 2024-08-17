@@ -17,4 +17,31 @@ protected:
 	virtual void NativeConstruct() override;
 
 protected:
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UListView> RoomListView;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UEditableTextBox> RoomNameInput;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UEditableTextBox> PasswordInput;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UButton> CreateButton;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UButton> JoinButton;
+
+public:
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	TObjectPtr<class ALobbyPlayerController> Owner;
+public:
+	UFUNCTION()
+	void RefreshListView();
+
+	UFUNCTION()
+	void OnClickedCreateButton();
+
+	UFUNCTION()
+	void OnClickedJoinButton();
 };
