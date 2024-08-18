@@ -92,8 +92,8 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORIT
 PROTOBUF_CONSTEXPR STC_CREATE_ROOM::STC_CREATE_ROOM(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.host_)*/nullptr
+  , /*decltype(_impl_.roomindex_)*/uint64_t{0u}
   , /*decltype(_impl_.success_)*/false
-  , /*decltype(_impl_.roomindex_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct STC_CREATE_ROOMDefaultTypeInternal {
   PROTOBUF_CONSTEXPR STC_CREATE_ROOMDefaultTypeInternal()
@@ -107,7 +107,7 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORIT
 PROTOBUF_CONSTEXPR CTS_JOIN_ROOM::CTS_JOIN_ROOM(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.player_)*/nullptr
-  , /*decltype(_impl_.roomindex_)*/0
+  , /*decltype(_impl_.roomindex_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct CTS_JOIN_ROOMDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CTS_JOIN_ROOMDefaultTypeInternal()
@@ -121,8 +121,8 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORIT
 PROTOBUF_CONSTEXPR STC_JOIN_ROOM::STC_JOIN_ROOM(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.player_)*/nullptr
+  , /*decltype(_impl_.roomindex_)*/uint64_t{0u}
   , /*decltype(_impl_.success_)*/false
-  , /*decltype(_impl_.roomindex_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct STC_JOIN_ROOMDefaultTypeInternal {
   PROTOBUF_CONSTEXPR STC_JOIN_ROOMDefaultTypeInternal()
@@ -543,12 +543,12 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "cess\030\001 \001(\010\022$\n\006player\030\002 \001(\0132\024.Protocol.Pl"
   "ayerInfo\"7\n\017CTS_CREATE_ROOM\022$\n\006player\030\002 "
   "\001(\0132\024.Protocol.PlayerInfo\"Y\n\017STC_CREATE_"
-  "ROOM\022\017\n\007success\030\001 \001(\010\022\021\n\troomIndex\030\002 \001(\005"
+  "ROOM\022\017\n\007success\030\001 \001(\010\022\021\n\troomIndex\030\002 \001(\004"
   "\022\"\n\004host\030\003 \001(\0132\024.Protocol.PlayerInfo\"H\n\r"
-  "CTS_JOIN_ROOM\022\021\n\troomIndex\030\001 \001(\005\022$\n\006play"
+  "CTS_JOIN_ROOM\022\021\n\troomIndex\030\001 \001(\004\022$\n\006play"
   "er\030\002 \001(\0132\024.Protocol.PlayerInfo\"Y\n\rSTC_JO"
   "IN_ROOM\022\017\n\007success\030\001 \001(\010\022\021\n\troomIndex\030\002 "
-  "\001(\005\022$\n\006player\030\003 \001(\0132\024.Protocol.PlayerInf"
+  "\001(\004\022$\n\006player\030\003 \001(\0132\024.Protocol.PlayerInf"
   "o\"!\n\016CTS_ENTER_ROOM\022\017\n\007success\030\001 \001(\010\"!\n\016"
   "STC_ENTER_ROOM\022\017\n\007success\030\001 \001(\010\"%\n\016CTS_E"
   "NTER_GAME\022\023\n\013playerIndex\030\001 \001(\004\"G\n\016STC_EN"
@@ -1724,17 +1724,17 @@ STC_CREATE_ROOM::STC_CREATE_ROOM(const STC_CREATE_ROOM& from)
   STC_CREATE_ROOM* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.host_){nullptr}
-    , decltype(_impl_.success_){}
     , decltype(_impl_.roomindex_){}
+    , decltype(_impl_.success_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   if (from._internal_has_host()) {
     _this->_impl_.host_ = new ::Protocol::PlayerInfo(*from._impl_.host_);
   }
-  ::memcpy(&_impl_.success_, &from._impl_.success_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.roomindex_) -
-    reinterpret_cast<char*>(&_impl_.success_)) + sizeof(_impl_.roomindex_));
+  ::memcpy(&_impl_.roomindex_, &from._impl_.roomindex_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.success_) -
+    reinterpret_cast<char*>(&_impl_.roomindex_)) + sizeof(_impl_.success_));
   // @@protoc_insertion_point(copy_constructor:Protocol.STC_CREATE_ROOM)
 }
 
@@ -1744,8 +1744,8 @@ inline void STC_CREATE_ROOM::SharedCtor(
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.host_){nullptr}
+    , decltype(_impl_.roomindex_){uint64_t{0u}}
     , decltype(_impl_.success_){false}
-    , decltype(_impl_.roomindex_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -1778,9 +1778,9 @@ void STC_CREATE_ROOM::Clear() {
     delete _impl_.host_;
   }
   _impl_.host_ = nullptr;
-  ::memset(&_impl_.success_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.roomindex_) -
-      reinterpret_cast<char*>(&_impl_.success_)) + sizeof(_impl_.roomindex_));
+  ::memset(&_impl_.roomindex_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.success_) -
+      reinterpret_cast<char*>(&_impl_.roomindex_)) + sizeof(_impl_.success_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1798,10 +1798,10 @@ const char* STC_CREATE_ROOM::_InternalParse(const char* ptr, ::_pbi::ParseContex
         } else
           goto handle_unusual;
         continue;
-      // int32 roomIndex = 2;
+      // uint64 roomIndex = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
-          _impl_.roomindex_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _impl_.roomindex_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -1849,10 +1849,10 @@ uint8_t* STC_CREATE_ROOM::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(1, this->_internal_success(), target);
   }
 
-  // int32 roomIndex = 2;
+  // uint64 roomIndex = 2;
   if (this->_internal_roomindex() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_roomindex(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_roomindex(), target);
   }
 
   // .Protocol.PlayerInfo host = 3;
@@ -1885,14 +1885,14 @@ size_t STC_CREATE_ROOM::ByteSizeLong() const {
         *_impl_.host_);
   }
 
+  // uint64 roomIndex = 2;
+  if (this->_internal_roomindex() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_roomindex());
+  }
+
   // bool success = 1;
   if (this->_internal_success() != 0) {
     total_size += 1 + 1;
-  }
-
-  // int32 roomIndex = 2;
-  if (this->_internal_roomindex() != 0) {
-    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_roomindex());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -1917,11 +1917,11 @@ void STC_CREATE_ROOM::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const 
     _this->_internal_mutable_host()->::Protocol::PlayerInfo::MergeFrom(
         from._internal_host());
   }
-  if (from._internal_success() != 0) {
-    _this->_internal_set_success(from._internal_success());
-  }
   if (from._internal_roomindex() != 0) {
     _this->_internal_set_roomindex(from._internal_roomindex());
+  }
+  if (from._internal_success() != 0) {
+    _this->_internal_set_success(from._internal_success());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -1941,8 +1941,8 @@ void STC_CREATE_ROOM::InternalSwap(STC_CREATE_ROOM* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(STC_CREATE_ROOM, _impl_.roomindex_)
-      + sizeof(STC_CREATE_ROOM::_impl_.roomindex_)
+      PROTOBUF_FIELD_OFFSET(STC_CREATE_ROOM, _impl_.success_)
+      + sizeof(STC_CREATE_ROOM::_impl_.success_)
       - PROTOBUF_FIELD_OFFSET(STC_CREATE_ROOM, _impl_.host_)>(
           reinterpret_cast<char*>(&_impl_.host_),
           reinterpret_cast<char*>(&other->_impl_.host_));
@@ -1999,7 +1999,7 @@ inline void CTS_JOIN_ROOM::SharedCtor(
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.player_){nullptr}
-    , decltype(_impl_.roomindex_){0}
+    , decltype(_impl_.roomindex_){uint64_t{0u}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -2032,7 +2032,7 @@ void CTS_JOIN_ROOM::Clear() {
     delete _impl_.player_;
   }
   _impl_.player_ = nullptr;
-  _impl_.roomindex_ = 0;
+  _impl_.roomindex_ = uint64_t{0u};
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2042,10 +2042,10 @@ const char* CTS_JOIN_ROOM::_InternalParse(const char* ptr, ::_pbi::ParseContext*
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // int32 roomIndex = 1;
+      // uint64 roomIndex = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _impl_.roomindex_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _impl_.roomindex_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -2087,10 +2087,10 @@ uint8_t* CTS_JOIN_ROOM::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 roomIndex = 1;
+  // uint64 roomIndex = 1;
   if (this->_internal_roomindex() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_roomindex(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_roomindex(), target);
   }
 
   // .Protocol.PlayerInfo player = 2;
@@ -2123,9 +2123,9 @@ size_t CTS_JOIN_ROOM::ByteSizeLong() const {
         *_impl_.player_);
   }
 
-  // int32 roomIndex = 1;
+  // uint64 roomIndex = 1;
   if (this->_internal_roomindex() != 0) {
-    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_roomindex());
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_roomindex());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -2212,17 +2212,17 @@ STC_JOIN_ROOM::STC_JOIN_ROOM(const STC_JOIN_ROOM& from)
   STC_JOIN_ROOM* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.player_){nullptr}
-    , decltype(_impl_.success_){}
     , decltype(_impl_.roomindex_){}
+    , decltype(_impl_.success_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   if (from._internal_has_player()) {
     _this->_impl_.player_ = new ::Protocol::PlayerInfo(*from._impl_.player_);
   }
-  ::memcpy(&_impl_.success_, &from._impl_.success_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.roomindex_) -
-    reinterpret_cast<char*>(&_impl_.success_)) + sizeof(_impl_.roomindex_));
+  ::memcpy(&_impl_.roomindex_, &from._impl_.roomindex_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.success_) -
+    reinterpret_cast<char*>(&_impl_.roomindex_)) + sizeof(_impl_.success_));
   // @@protoc_insertion_point(copy_constructor:Protocol.STC_JOIN_ROOM)
 }
 
@@ -2232,8 +2232,8 @@ inline void STC_JOIN_ROOM::SharedCtor(
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.player_){nullptr}
+    , decltype(_impl_.roomindex_){uint64_t{0u}}
     , decltype(_impl_.success_){false}
-    , decltype(_impl_.roomindex_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -2266,9 +2266,9 @@ void STC_JOIN_ROOM::Clear() {
     delete _impl_.player_;
   }
   _impl_.player_ = nullptr;
-  ::memset(&_impl_.success_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.roomindex_) -
-      reinterpret_cast<char*>(&_impl_.success_)) + sizeof(_impl_.roomindex_));
+  ::memset(&_impl_.roomindex_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.success_) -
+      reinterpret_cast<char*>(&_impl_.roomindex_)) + sizeof(_impl_.success_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2286,10 +2286,10 @@ const char* STC_JOIN_ROOM::_InternalParse(const char* ptr, ::_pbi::ParseContext*
         } else
           goto handle_unusual;
         continue;
-      // int32 roomIndex = 2;
+      // uint64 roomIndex = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
-          _impl_.roomindex_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _impl_.roomindex_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -2337,10 +2337,10 @@ uint8_t* STC_JOIN_ROOM::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(1, this->_internal_success(), target);
   }
 
-  // int32 roomIndex = 2;
+  // uint64 roomIndex = 2;
   if (this->_internal_roomindex() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_roomindex(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_roomindex(), target);
   }
 
   // .Protocol.PlayerInfo player = 3;
@@ -2373,14 +2373,14 @@ size_t STC_JOIN_ROOM::ByteSizeLong() const {
         *_impl_.player_);
   }
 
+  // uint64 roomIndex = 2;
+  if (this->_internal_roomindex() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_roomindex());
+  }
+
   // bool success = 1;
   if (this->_internal_success() != 0) {
     total_size += 1 + 1;
-  }
-
-  // int32 roomIndex = 2;
-  if (this->_internal_roomindex() != 0) {
-    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_roomindex());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -2405,11 +2405,11 @@ void STC_JOIN_ROOM::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::
     _this->_internal_mutable_player()->::Protocol::PlayerInfo::MergeFrom(
         from._internal_player());
   }
-  if (from._internal_success() != 0) {
-    _this->_internal_set_success(from._internal_success());
-  }
   if (from._internal_roomindex() != 0) {
     _this->_internal_set_roomindex(from._internal_roomindex());
+  }
+  if (from._internal_success() != 0) {
+    _this->_internal_set_success(from._internal_success());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -2429,8 +2429,8 @@ void STC_JOIN_ROOM::InternalSwap(STC_JOIN_ROOM* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(STC_JOIN_ROOM, _impl_.roomindex_)
-      + sizeof(STC_JOIN_ROOM::_impl_.roomindex_)
+      PROTOBUF_FIELD_OFFSET(STC_JOIN_ROOM, _impl_.success_)
+      + sizeof(STC_JOIN_ROOM::_impl_.success_)
       - PROTOBUF_FIELD_OFFSET(STC_JOIN_ROOM, _impl_.player_)>(
           reinterpret_cast<char*>(&_impl_.player_),
           reinterpret_cast<char*>(&other->_impl_.player_));

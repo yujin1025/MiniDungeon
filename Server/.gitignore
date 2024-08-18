@@ -410,6 +410,7 @@ FodyWeavers.xsd
 
 # sln file
 *.vcxproj
+*.sln
 
 # Tool
 Tool/PacketGenerator/PacketGenerator.py

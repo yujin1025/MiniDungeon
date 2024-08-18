@@ -1084,8 +1084,8 @@ class STC_CREATE_ROOM final :
 
   enum : int {
     kHostFieldNumber = 3,
-    kSuccessFieldNumber = 1,
     kRoomIndexFieldNumber = 2,
+    kSuccessFieldNumber = 1,
   };
   // .Protocol.PlayerInfo host = 3;
   bool has_host() const;
@@ -1105,6 +1105,15 @@ class STC_CREATE_ROOM final :
       ::Protocol::PlayerInfo* host);
   ::Protocol::PlayerInfo* unsafe_arena_release_host();
 
+  // uint64 roomIndex = 2;
+  void clear_roomindex();
+  uint64_t roomindex() const;
+  void set_roomindex(uint64_t value);
+  private:
+  uint64_t _internal_roomindex() const;
+  void _internal_set_roomindex(uint64_t value);
+  public:
+
   // bool success = 1;
   void clear_success();
   bool success() const;
@@ -1112,15 +1121,6 @@ class STC_CREATE_ROOM final :
   private:
   bool _internal_success() const;
   void _internal_set_success(bool value);
-  public:
-
-  // int32 roomIndex = 2;
-  void clear_roomindex();
-  int32_t roomindex() const;
-  void set_roomindex(int32_t value);
-  private:
-  int32_t _internal_roomindex() const;
-  void _internal_set_roomindex(int32_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.STC_CREATE_ROOM)
@@ -1132,8 +1132,8 @@ class STC_CREATE_ROOM final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::Protocol::PlayerInfo* host_;
+    uint64_t roomindex_;
     bool success_;
-    int32_t roomindex_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1283,13 +1283,13 @@ class CTS_JOIN_ROOM final :
       ::Protocol::PlayerInfo* player);
   ::Protocol::PlayerInfo* unsafe_arena_release_player();
 
-  // int32 roomIndex = 1;
+  // uint64 roomIndex = 1;
   void clear_roomindex();
-  int32_t roomindex() const;
-  void set_roomindex(int32_t value);
+  uint64_t roomindex() const;
+  void set_roomindex(uint64_t value);
   private:
-  int32_t _internal_roomindex() const;
-  void _internal_set_roomindex(int32_t value);
+  uint64_t _internal_roomindex() const;
+  void _internal_set_roomindex(uint64_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.CTS_JOIN_ROOM)
@@ -1301,7 +1301,7 @@ class CTS_JOIN_ROOM final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::Protocol::PlayerInfo* player_;
-    int32_t roomindex_;
+    uint64_t roomindex_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1431,8 +1431,8 @@ class STC_JOIN_ROOM final :
 
   enum : int {
     kPlayerFieldNumber = 3,
-    kSuccessFieldNumber = 1,
     kRoomIndexFieldNumber = 2,
+    kSuccessFieldNumber = 1,
   };
   // .Protocol.PlayerInfo player = 3;
   bool has_player() const;
@@ -1452,6 +1452,15 @@ class STC_JOIN_ROOM final :
       ::Protocol::PlayerInfo* player);
   ::Protocol::PlayerInfo* unsafe_arena_release_player();
 
+  // uint64 roomIndex = 2;
+  void clear_roomindex();
+  uint64_t roomindex() const;
+  void set_roomindex(uint64_t value);
+  private:
+  uint64_t _internal_roomindex() const;
+  void _internal_set_roomindex(uint64_t value);
+  public:
+
   // bool success = 1;
   void clear_success();
   bool success() const;
@@ -1459,15 +1468,6 @@ class STC_JOIN_ROOM final :
   private:
   bool _internal_success() const;
   void _internal_set_success(bool value);
-  public:
-
-  // int32 roomIndex = 2;
-  void clear_roomindex();
-  int32_t roomindex() const;
-  void set_roomindex(int32_t value);
-  private:
-  int32_t _internal_roomindex() const;
-  void _internal_set_roomindex(int32_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.STC_JOIN_ROOM)
@@ -1479,8 +1479,8 @@ class STC_JOIN_ROOM final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::Protocol::PlayerInfo* player_;
+    uint64_t roomindex_;
     bool success_;
-    int32_t roomindex_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -4111,22 +4111,22 @@ inline void STC_CREATE_ROOM::set_success(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.STC_CREATE_ROOM.success)
 }
 
-// int32 roomIndex = 2;
+// uint64 roomIndex = 2;
 inline void STC_CREATE_ROOM::clear_roomindex() {
-  _impl_.roomindex_ = 0;
+  _impl_.roomindex_ = uint64_t{0u};
 }
-inline int32_t STC_CREATE_ROOM::_internal_roomindex() const {
+inline uint64_t STC_CREATE_ROOM::_internal_roomindex() const {
   return _impl_.roomindex_;
 }
-inline int32_t STC_CREATE_ROOM::roomindex() const {
+inline uint64_t STC_CREATE_ROOM::roomindex() const {
   // @@protoc_insertion_point(field_get:Protocol.STC_CREATE_ROOM.roomIndex)
   return _internal_roomindex();
 }
-inline void STC_CREATE_ROOM::_internal_set_roomindex(int32_t value) {
+inline void STC_CREATE_ROOM::_internal_set_roomindex(uint64_t value) {
   
   _impl_.roomindex_ = value;
 }
-inline void STC_CREATE_ROOM::set_roomindex(int32_t value) {
+inline void STC_CREATE_ROOM::set_roomindex(uint64_t value) {
   _internal_set_roomindex(value);
   // @@protoc_insertion_point(field_set:Protocol.STC_CREATE_ROOM.roomIndex)
 }
@@ -4220,22 +4220,22 @@ inline void STC_CREATE_ROOM::set_allocated_host(::Protocol::PlayerInfo* host) {
 
 // CTS_JOIN_ROOM
 
-// int32 roomIndex = 1;
+// uint64 roomIndex = 1;
 inline void CTS_JOIN_ROOM::clear_roomindex() {
-  _impl_.roomindex_ = 0;
+  _impl_.roomindex_ = uint64_t{0u};
 }
-inline int32_t CTS_JOIN_ROOM::_internal_roomindex() const {
+inline uint64_t CTS_JOIN_ROOM::_internal_roomindex() const {
   return _impl_.roomindex_;
 }
-inline int32_t CTS_JOIN_ROOM::roomindex() const {
+inline uint64_t CTS_JOIN_ROOM::roomindex() const {
   // @@protoc_insertion_point(field_get:Protocol.CTS_JOIN_ROOM.roomIndex)
   return _internal_roomindex();
 }
-inline void CTS_JOIN_ROOM::_internal_set_roomindex(int32_t value) {
+inline void CTS_JOIN_ROOM::_internal_set_roomindex(uint64_t value) {
   
   _impl_.roomindex_ = value;
 }
-inline void CTS_JOIN_ROOM::set_roomindex(int32_t value) {
+inline void CTS_JOIN_ROOM::set_roomindex(uint64_t value) {
   _internal_set_roomindex(value);
   // @@protoc_insertion_point(field_set:Protocol.CTS_JOIN_ROOM.roomIndex)
 }
@@ -4349,22 +4349,22 @@ inline void STC_JOIN_ROOM::set_success(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.STC_JOIN_ROOM.success)
 }
 
-// int32 roomIndex = 2;
+// uint64 roomIndex = 2;
 inline void STC_JOIN_ROOM::clear_roomindex() {
-  _impl_.roomindex_ = 0;
+  _impl_.roomindex_ = uint64_t{0u};
 }
-inline int32_t STC_JOIN_ROOM::_internal_roomindex() const {
+inline uint64_t STC_JOIN_ROOM::_internal_roomindex() const {
   return _impl_.roomindex_;
 }
-inline int32_t STC_JOIN_ROOM::roomindex() const {
+inline uint64_t STC_JOIN_ROOM::roomindex() const {
   // @@protoc_insertion_point(field_get:Protocol.STC_JOIN_ROOM.roomIndex)
   return _internal_roomindex();
 }
-inline void STC_JOIN_ROOM::_internal_set_roomindex(int32_t value) {
+inline void STC_JOIN_ROOM::_internal_set_roomindex(uint64_t value) {
   
   _impl_.roomindex_ = value;
 }
-inline void STC_JOIN_ROOM::set_roomindex(int32_t value) {
+inline void STC_JOIN_ROOM::set_roomindex(uint64_t value) {
   _internal_set_roomindex(value);
   // @@protoc_insertion_point(field_set:Protocol.STC_JOIN_ROOM.roomIndex)
 }

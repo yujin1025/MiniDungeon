@@ -64,7 +64,7 @@ bool Lobby::CreateRoom(PlayerRef player)
 	RoomRef room = make_shared<Room>();
 
 
-	_rooms.insert(make_pair(s_idGenerator, room));
+	//_rooms.insert(make_pair(s_idGenerator, room));
 
 	return false;
 }
