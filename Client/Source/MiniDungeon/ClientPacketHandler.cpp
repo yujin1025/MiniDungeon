@@ -1,4 +1,4 @@
-#include "ClientPacketHandler.h"
+ï»¿#include "ClientPacketHandler.h"
 #include "BufferReader.h"
 #include "MDNetworkManager.h"
 #include "Game/MDGameInstance.h"
@@ -8,14 +8,14 @@
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
 /*
- * ÇöÀç ¿ùµåÀÇ InstanceSubSystemÀÎ NetworkManager¸¦ °¡Á®¿À´Â ÇÔ¼ö ÀÔ´Ï´Ù.
- * PIEÀÇ °æ¿ì GWorld·Î Á¢±ÙÇÒ °æ¿ì Ã¹ ¹øÂ°¸¸ Á¢±ÙÇÏ´Â ¹®Á¦°¡ Á¸ÀçÇØ¼­ ÇØ°á¹öÀüÀÔ´Ï´Ù.
+ * í˜„ì¬ ì›”ë“œì˜ InstanceSubSystemì¸ NetworkManagerë¥¼ ê°€ì ¸ì˜¤ëŠ” í•¨ìˆ˜ ì…ë‹ˆë‹¤.
+ * PIEì˜ ê²½ìš° GWorldë¡œ ì ‘ê·¼í•  ê²½ìš° ì²« ë²ˆì§¸ë§Œ ì ‘ê·¼í•˜ëŠ” ë¬¸ì œê°€ ì¡´ì¬í•´ì„œ í•´ê²°ë²„ì „ì…ë‹ˆë‹¤.
  */
 
 UMDNetworkManager* GetWorldNetwork(const PacketSessionRef& Session)
 {
-	// ¿£Áø¿¡ Á¸ÀçÇÏ´Â ¸ğµç ¿ùµå¸¦ ¼øÈ¸ÇØ¼­ ÇØ´ç¿ùµå¿¡ SubGameInstanceÀÇ SessionÀ» ÅëÇØ ºñ±³ÇÕ´Ï´Ù.
-	// SubGameInstanceÀÇ °æ¿ì PIE¿©µµ µ¶¸³ÀûÀ¸·Î »ı¼ºµÇ±â ¶§¹®¿¡ Sessionµµ ´ç¿¬È÷ ºĞ¸® µË´Ï´Ù.
+	// ì—”ì§„ì— ì¡´ì¬í•˜ëŠ” ëª¨ë“  ì›”ë“œë¥¼ ìˆœíšŒí•´ì„œ í•´ë‹¹ì›”ë“œì— SubGameInstanceì˜ Sessionì„ í†µí•´ ë¹„êµí•©ë‹ˆë‹¤.
+	// SubGameInstanceì˜ ê²½ìš° PIEì—¬ë„ ë…ë¦½ì ìœ¼ë¡œ ìƒì„±ë˜ê¸° ë•Œë¬¸ì— Sessionë„ ë‹¹ì—°íˆ ë¶„ë¦¬ ë©ë‹ˆë‹¤.
 	for(auto World : GEngine->GetWorldContexts())
 	{
 		if(const UGameInstance* gameInstance = World.World()->GetGameInstance())
@@ -43,14 +43,14 @@ bool Handle_STC_LOGIN(PacketSessionRef& session, Protocol::STC_LOGIN& pkt)
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Recv STC_LOGIN Packet")));
 	if(pkt.success() == false)
 	{
-		// ·Î±×ÀÎ ½ÇÆĞ
+		// ë¡œê·¸ì¸ ì‹¤íŒ¨
 		return false;
 	}
 
-	// ·Î±×ÀÎ ¼º°ø
+	// ë¡œê·¸ì¸ ì„±ê³µ
 	const UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
 
-	// ·Îºñ ÀÔÀå
+	// ë¡œë¹„ ì…ì¥
 	Protocol::CTS_ENTER_LOBBY enterLobbyPkt;
 
 	if (gameNetwork != nullptr)
@@ -62,7 +62,7 @@ bool Handle_STC_LOGIN(PacketSessionRef& session, Protocol::STC_LOGIN& pkt)
 		gameNetwork->SendPacket(enterLobbyPkt);
 	}
 
-	// ·Îºñ¿¡¼­ Ä³¸¯ÅÍ ¼±ÅÃÇØ¼­ ÀÎµ¦½º Àü¼Û.
+	// ë¡œë¹„ì—ì„œ ìºë¦­í„° ì„ íƒí•´ì„œ ì¸ë±ìŠ¤ ì „ì†¡.
 	/*Protocol::CTS_ENTER_GAME enterGamePkt;
 	enterGamePkt.set_playerindex(0);
 
@@ -77,7 +77,7 @@ bool Handle_STC_ENTER_LOBBY(PacketSessionRef& session, Protocol::STC_ENTER_LOBBY
 {
 	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
 
-	// Lobby¿¡ ÀÌ¹Ì ÇÃ·¹ÀÌ¾î°¡ ÀÔÀåÇØ ÀÖÀ½.
+	// Lobbyì— ì´ë¯¸ í”Œë ˆì´ì–´ê°€ ì…ì¥í•´ ìˆìŒ.
 	if (pkt.success() == false)
 	{
 		return true;
@@ -91,9 +91,15 @@ bool Handle_STC_ENTER_LOBBY(PacketSessionRef& session, Protocol::STC_ENTER_LOBBY
 	return true;
 }
 
-bool Handle_STC_ENTER_ROOM(PacketSessionRef& session, Protocol::STC_ENTER_ROOM& pkt)
+bool Handle_STC_CREATE_ROOM(PacketSessionRef& session, Protocol::STC_CREATE_ROOM& pkt)
 {
-	return false;
+	if(pkt.success() == false)
+	{
+		// ë°© ìƒì„± ì‹¤íŒ¨
+		return false;
+	}
+
+	// TODO : ë°© ìƒì„± ì„±ê³µ ë° ì •ë³´ë¥¼ ë°›ì•„ì„œ UIì— í‘œì‹œ
 }
 
 bool Handle_STC_JOIN_ROOM(PacketSessionRef& session, Protocol::STC_JOIN_ROOM& pkt)
@@ -119,7 +125,7 @@ bool Handle_STC_LEAVE_GAME(PacketSessionRef& session, Protocol::STC_LEAVE_GAME& 
 {
 	if (UMDNetworkManager* gameNetwork = GetWorldNetwork(session))
 	{
-		// TODO : °ÔÀÓ Á¾·á? ·Îºñ·Î?
+		// TODO : ê²Œì„ ì¢…ë£Œ? ë¡œë¹„ë¡œ?
 	}
 
 	return true;

@@ -8,6 +8,7 @@ message CTS_LOGIN
 {
 	string id = 1;
 	string pw = 2;
+	uint64 player_id = 3;
 }
 
 message STC_LOGIN
@@ -29,7 +30,7 @@ message STC_ENTER_LOBBY
 
 message CTS_CREATE_ROOM
 {
-	PlayerInfo player = 2;
+	PlayerInfo player = 1;
 }
 
 message STC_CREATE_ROOM
@@ -52,12 +53,12 @@ message STC_JOIN_ROOM
 	PlayerInfo player = 3;
 }
 
-message CTS_ENTER_ROOM
+message CTS_LEAVE_ROOM
 {
 	bool success = 1;
 }
 
-message STC_ENTER_ROOM
+message STC_LEAVE_ROOM
 {
 	bool success = 1;
 }
@@ -71,16 +72,6 @@ message STC_ENTER_GAME
 {
 	bool success = 1;
 	ObjectInfo player = 2;
-}
-
-message CTS_LEAVE_ROOM
-{
-	bool success = 1;
-}
-
-message STC_LEAVE_ROOM
-{
-	bool success = 1;
 }
 
 message CTS_LEAVE_GAME

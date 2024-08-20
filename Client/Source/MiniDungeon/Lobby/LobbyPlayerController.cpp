@@ -58,10 +58,5 @@ void ALobbyPlayerController::BeginPlay()
 
 void ALobbyPlayerController::SetPlayerInfo(const Protocol::PlayerInfo& info)
 {
-	if (PlayerInfo->player_id() != 0)
-	{
-		assert(PlayerInfo->object_id() == Info.object_id());
-	}
-
 	PlayerInfo->CopyFrom(info);
 }

@@ -28,8 +28,7 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 	if(pkt.id() == "Admin" && pkt.pw() == "Admin")
 	{
 		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
-
-		playerInfo->set_player_id(0);
+		playerInfo->set_player_id(pkt.player_id());
 		playerInfo->set_allocated_player_name(new string("Admin"));
 
 		Protocol::ObjectInfo* objectInfo = new Protocol::ObjectInfo();
@@ -61,6 +60,8 @@ bool Handle_CTS_ENTER_LOBBY(PacketSessionRef& session, Protocol::CTS_ENTER_LOBBY
 {
 	PlayerRef player = ObjectUtils::CreatePlayer(static_pointer_cast<GameSession>(session));
 
+	player->SetPlayerInfo(pkt.player());
+
 	if (player == nullptr)
 		return false;
 
@@ -77,11 +78,6 @@ bool Handle_CTS_CREATE_ROOM(PacketSessionRef& session, Protocol::CTS_CREATE_ROOM
 }
 
 bool Handle_CTS_JOIN_ROOM(PacketSessionRef& session, Protocol::CTS_JOIN_ROOM& pkt)
-{
-	return false;
-}
-
-bool Handle_CTS_ENTER_ROOM(PacketSessionRef& session, Protocol::CTS_ENTER_ROOM& pkt)
 {
 	return false;
 }

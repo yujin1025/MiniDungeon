@@ -26,6 +26,8 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class UEditableTextBox> PWInput;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UEditableTextBox> PlayerIDInput;
 
 	UFUNCTION()
 	void OnLOGINButtonClicked();

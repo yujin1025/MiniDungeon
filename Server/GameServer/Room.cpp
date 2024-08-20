@@ -14,20 +14,28 @@ Room::Room()
 
 Room::~Room()
 {
-
+	_players.clear();
 }
 
-bool Room::EnterRoom(ObjectRef object, bool randPos /*= true*/)
+bool Room::EnterRoom(ObjectRef object, bool isHost /*= true*/)
 {
 	bool success = AddObject(object);
 
 	// 랜덤 위치
-	if (randPos)
+	if (isHost)
 	{
+		if (auto player = dynamic_pointer_cast<Player>(object))
+		{
+			_players.insert(make_pair(player->GetPlayerInfo()->player_id(), player));
+		}
 		/*object->posInfo->set_x(Utils::GetRandom(0.f, 500.f));
 		object->posInfo->set_y(Utils::GetRandom(0.f, 500.f));
 		object->posInfo->set_z(100.f);
 		object->posInfo->set_yaw(Utils::GetRandom(0.f, 100.f));*/
+	}
+	else
+	{
+
 	}
 
 	// 입장 사실을 신입 플레이어에게 알린다

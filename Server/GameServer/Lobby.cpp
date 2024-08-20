@@ -29,6 +29,7 @@ bool Lobby::EnterLobby(PlayerRef player)
 	_players.insert(make_pair(player->GetPlayerInfo()->player_id(), player));
 	
 	player->lobby.store(static_pointer_cast<Lobby>(shared_from_this()));
+
 	{
 		enterLobbyPkt.set_success(true);
 		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
@@ -86,7 +87,7 @@ bool Lobby::CreateRoom(const Protocol::PlayerInfo& info)
 	playerInfo->CopyFrom(info);
 	createRoomPkt.set_allocated_host(playerInfo);
 
-	const int64 newId = s_idGenerator.fetch_add(1);
+	const uint64 newId = s_idGenerator.fetch_add(1);
 	createRoomPkt.set_roomindex(newId);
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(createRoomPkt);
@@ -96,6 +97,8 @@ bool Lobby::CreateRoom(const Protocol::PlayerInfo& info)
 	}
 
 	RoomRef room = make_shared<Room>();
+	room->SetRoomIndex(newId);
+
 	_rooms.insert(make_pair(newId, room));
 
 	return true;
