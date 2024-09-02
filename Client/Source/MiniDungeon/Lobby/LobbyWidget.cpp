@@ -27,6 +27,7 @@ void ULobbyWidget::NativeConstruct()
 
 void ULobbyWidget::RefreshListView()
 {
+	
 }
 
 void ULobbyWidget::OnClickedCreateButton()

@@ -117,6 +117,27 @@ void UMDNetworkManager::HandleLogin(const Protocol::STC_ENTER_LOBBY& enterLobbyP
 	}
 }
 
+void UMDNetworkManager::HandleCreateRoom(const Protocol::STC_CREATE_ROOM& createRoomPkt)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	auto* world = GetWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	auto* pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+
+	if (IsValid(pc))
+	{
+
+	}
+}
+
 void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, bool isMine)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)

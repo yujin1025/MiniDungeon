@@ -93,11 +93,20 @@ bool Handle_STC_ENTER_LOBBY(PacketSessionRef& session, Protocol::STC_ENTER_LOBBY
 
 bool Handle_STC_CREATE_ROOM(PacketSessionRef& session, Protocol::STC_CREATE_ROOM& pkt)
 {
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
 	if(pkt.success() == false)
 	{
 		// 방 생성 실패
 		return false;
 	}
+
+	if (IsValid(gameNetwork))
+	{
+		gameNetwork->HandleCreateRoom(pkt);
+	}
+
+	return true;
 
 	// TODO : 방 생성 성공 및 정보를 받아서 UI에 표시
 }
