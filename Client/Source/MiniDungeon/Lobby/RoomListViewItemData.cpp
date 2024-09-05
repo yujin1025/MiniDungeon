@@ -3,3 +3,7 @@
 
 #include "Lobby/RoomListViewItemData.h"
 
+void URoomListViewItemData::SetPlayerInfo(const Protocol::PlayerInfo& info)
+{
+	PlayerInfo->CopyFrom(info);
+}

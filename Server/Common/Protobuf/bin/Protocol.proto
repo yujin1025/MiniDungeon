@@ -31,6 +31,8 @@ message STC_ENTER_LOBBY
 message CTS_CREATE_ROOM
 {
 	PlayerInfo player = 1;
+	string roomName = 2;
+	string password = 3;
 }
 
 message STC_CREATE_ROOM
@@ -38,6 +40,8 @@ message STC_CREATE_ROOM
 	bool success = 1;
 	uint64 roomIndex = 2;
 	PlayerInfo host = 3;
+	string roomName = 4;
+	string password = 5;
 }
 
 message CTS_JOIN_ROOM

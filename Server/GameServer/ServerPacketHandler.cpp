@@ -72,7 +72,7 @@ bool Handle_CTS_ENTER_LOBBY(PacketSessionRef& session, Protocol::CTS_ENTER_LOBBY
 
 bool Handle_CTS_CREATE_ROOM(PacketSessionRef& session, Protocol::CTS_CREATE_ROOM& pkt)
 {
-	GLobby->DoAsync(&Lobby::HandleCreateRoom, pkt.player());
+	GLobby->DoAsync(&Lobby::HandleCreateRoom, pkt.player(), pkt.roomname(), pkt.password());
 
 	return false;
 }

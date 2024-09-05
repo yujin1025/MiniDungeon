@@ -70,7 +70,7 @@ bool Lobby::CreateRoom(PlayerRef player)
 	return false;
 }
 
-bool Lobby::CreateRoom(const Protocol::PlayerInfo& info)
+bool Lobby::CreateRoom(const Protocol::PlayerInfo info, string roomName, string password)
 {
 	Protocol::STC_CREATE_ROOM createRoomPkt;
 
@@ -90,8 +90,11 @@ bool Lobby::CreateRoom(const Protocol::PlayerInfo& info)
 	const uint64 newId = s_idGenerator.fetch_add(1);
 	createRoomPkt.set_roomindex(newId);
 
+	createRoomPkt.set_roomname(roomName);
+	createRoomPkt.set_password(password);
+
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(createRoomPkt);
-	if (auto session = _players[info.player_id()]->session.lock())
+	if (auto session = _players[playerInfo->player_id()]->session.lock())
 	{
 		session->Send(sendBuffer);
 	}
@@ -109,10 +112,10 @@ bool Lobby::CreateRoom(const Protocol::PlayerInfo& info)
 //	return CreateRoom(player);
 //}
 
-bool Lobby::HandleCreateRoom(const Protocol::PlayerInfo& playerInfo)
+bool Lobby::HandleCreateRoom(const Protocol::PlayerInfo info, string roomName, string password)
 {
 
-	return CreateRoom(playerInfo);
+	return CreateRoom(info, roomName, password);
 }
 
 

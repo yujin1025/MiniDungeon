@@ -15,11 +15,11 @@ public:
 
 	bool CreateRoom(PlayerRef player);
 
-	bool CreateRoom(const Protocol::PlayerInfo& playerInfo);
+	bool CreateRoom(const Protocol::PlayerInfo info, string roomName, string password);
 
 	//bool HandleCreateRoom(PlayerRef player);
 
-	bool HandleCreateRoom(const Protocol::PlayerInfo& playerInfo);
+	bool HandleCreateRoom(const Protocol::PlayerInfo info, string roomName, string password);
 private:
 	unordered_map<uint64, PlayerRef> _players;
 	unordered_map<uint64, RoomRef> _rooms;

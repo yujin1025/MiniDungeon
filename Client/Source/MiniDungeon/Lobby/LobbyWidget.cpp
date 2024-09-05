@@ -8,6 +8,8 @@
 #include <MDNetworkManager.h>
 #include "Protocol.pb.h"
 #include "LobbyPlayerController.h"
+#include "RoomListViewItemData.h"
+#include "Components/ListView.h"
 
 void ULobbyWidget::NativeConstruct()
 {
@@ -25,9 +27,35 @@ void ULobbyWidget::NativeConstruct()
 
 }
 
+void ULobbyWidget::CreateRoom(const uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info)
+{
+	URoomListViewItemData* roomData = NewObject<URoomListViewItemData>();
+	roomData->RoomIndex = roomIndex;
+	roomData->RoomName = roomName;
+	roomData->RoomPassword = password;
+	roomData->SetPlayerInfo(info);
+	RoomList.Add(roomData);
+
+	RoomListView->AddItem(roomData);
+
+	//RefreshListView();
+}
+
+void ULobbyWidget::RemoveRoom(const uint64 roomIndex)
+{
+}
+
+void ULobbyWidget::UpdateRoom(const uint64 roomIndex, const uint64 playerNum)
+{
+}
+
+void ULobbyWidget::ClearRoomList()
+{
+}
+
 void ULobbyWidget::RefreshListView()
 {
-	
+
 }
 
 void ULobbyWidget::OnClickedCreateButton()
@@ -37,6 +65,9 @@ void ULobbyWidget::OnClickedCreateButton()
 	Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
 	playerInfo->CopyFrom(*Owner->GetPlayerInfo());
 	createRoomPkt.set_allocated_player(playerInfo);
+	
+	createRoomPkt.set_roomname(TCHAR_TO_UTF8(*(RoomNameInput->GetText().ToString())));
+	createRoomPkt.set_password(TCHAR_TO_UTF8(*(PasswordInput->GetText().ToString())));
 	
 	SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(createRoomPkt);
 	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();

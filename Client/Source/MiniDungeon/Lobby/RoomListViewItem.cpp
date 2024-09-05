@@ -8,16 +8,25 @@
 void URoomListViewItem::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	RoomNameTextBox = Cast<UTextBlock>(GetWidgetFromName(TEXT("RoomNameTextBox")));
+	PlayerNumTextBox = Cast<UTextBlock>(GetWidgetFromName(TEXT("PlayerNumTextBox")));
+
+	if (IsValid(RoomNameTextBox))
+	{
+		RoomNameTextBox->SetText(FText::FromString(TEXT("")));
+	}
+	
 }
 
 void URoomListViewItem::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
 	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
 
-	auto roomListItem = Cast<URoomListViewItemData>(ListItemObject);
-	RoomNameTextBox->SetText(roomListItem->RoomName);
+	RoomData = Cast<URoomListViewItemData>(ListItemObject);
+	RoomNameTextBox->SetText(FText::FromString(RoomData->RoomName));
 
-	FString formattedString = FString::Printf(TEXT("%d / 4"), roomListItem->PlayerNum);
+	FString formattedString = FString::Printf(TEXT("%d / 4"), RoomData->PlayerNum);
 	FText playernum = FText::FromString(formattedString);
 
 	PlayerNumTextBox->SetText(playernum);

@@ -158,7 +158,7 @@ void Room::UpdateTick()
 {
 	cout << "Update Room" << endl;
 
-	DoTimer(100, &Room::UpdateTick);
+	//DoTimer(100, &Room::UpdateTick);
 }
 
 RoomRef Room::GetRoomRef()

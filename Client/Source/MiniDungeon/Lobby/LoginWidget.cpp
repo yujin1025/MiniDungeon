@@ -29,7 +29,7 @@ void ULoginWidget::OnLOGINButtonClicked()
 			Protocol::CTS_LOGIN pkt;
 			pkt.set_id(TCHAR_TO_UTF8(*ID));
 			pkt.set_pw(TCHAR_TO_UTF8(*PW));
-			pkt.set_id(PlayerID);
+			pkt.set_player_id(PlayerID);
 
 			SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
 			auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();

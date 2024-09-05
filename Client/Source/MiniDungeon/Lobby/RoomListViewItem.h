@@ -25,4 +25,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class UTextBlock> PlayerNumTextBox;
+protected:
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	TObjectPtr<class URoomListViewItemData> RoomData;
 };

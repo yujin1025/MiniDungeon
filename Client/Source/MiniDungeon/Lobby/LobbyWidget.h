@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Protocol.pb.h"
 #include "LobbyWidget.generated.h"
 
 /**
@@ -32,6 +33,21 @@ protected:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class UButton> JoinButton;
 
+protected:
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	TSet<TObjectPtr<class URoomListViewItemData>> RoomList;
+
+public:
+	void CreateRoom(const uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info);
+
+	UFUNCTION()
+	void RemoveRoom(const uint64 roomIndex);
+
+	UFUNCTION()
+	void UpdateRoom(const uint64 roomIndex, const uint64 playerNum);
+
+	UFUNCTION()
+	void ClearRoomList();
 public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	TObjectPtr<class ALobbyPlayerController> Owner;

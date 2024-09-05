@@ -20,6 +20,8 @@ ALobbyPlayerController::ALobbyPlayerController()
 	{
 		LobbyWidgetClass = lobbyWidgetClass.Class;
 	}
+
+	PlayerInfo = new Protocol::PlayerInfo();
 }
 
 ALobbyPlayerController::~ALobbyPlayerController()
@@ -53,6 +55,14 @@ void ALobbyPlayerController::BeginPlay()
 		{
 			LoginWidget->AddToViewport();
 		}
+	}
+}
+
+void ALobbyPlayerController::CreateRoom(const uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info)
+{
+	if (IsValid(LobbyWidget))
+	{
+		Cast<ULobbyWidget>(LobbyWidget)->CreateRoom(roomIndex, roomName, password, info);
 	}
 }
 

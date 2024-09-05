@@ -37,11 +37,13 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class UUserWidget> LobbyWidget;
-
 private:
 	Protocol::PlayerInfo* PlayerInfo;
 
 public:
 	Protocol::PlayerInfo* GetPlayerInfo() { return PlayerInfo; }
 	void SetPlayerInfo(const Protocol::PlayerInfo& info);
+
+public:
+	void CreateRoom(const uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info);
 };

@@ -929,8 +929,38 @@ class CTS_CREATE_ROOM final :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kRoomNameFieldNumber = 2,
+    kPasswordFieldNumber = 3,
     kPlayerFieldNumber = 1,
   };
+  // string roomName = 2;
+  void clear_roomname();
+  const std::string& roomname() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_roomname(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_roomname();
+  PROTOBUF_NODISCARD std::string* release_roomname();
+  void set_allocated_roomname(std::string* roomname);
+  private:
+  const std::string& _internal_roomname() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_roomname(const std::string& value);
+  std::string* _internal_mutable_roomname();
+  public:
+
+  // string password = 3;
+  void clear_password();
+  const std::string& password() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_password(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_password();
+  PROTOBUF_NODISCARD std::string* release_password();
+  void set_allocated_password(std::string* password);
+  private:
+  const std::string& _internal_password() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_password(const std::string& value);
+  std::string* _internal_mutable_password();
+  public:
+
   // .Protocol.PlayerInfo player = 1;
   bool has_player() const;
   private:
@@ -957,6 +987,8 @@ class CTS_CREATE_ROOM final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr roomname_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr password_;
     ::Protocol::PlayerInfo* player_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -1086,10 +1118,40 @@ class STC_CREATE_ROOM final :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kRoomNameFieldNumber = 4,
+    kPasswordFieldNumber = 5,
     kHostFieldNumber = 3,
     kRoomIndexFieldNumber = 2,
     kSuccessFieldNumber = 1,
   };
+  // string roomName = 4;
+  void clear_roomname();
+  const std::string& roomname() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_roomname(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_roomname();
+  PROTOBUF_NODISCARD std::string* release_roomname();
+  void set_allocated_roomname(std::string* roomname);
+  private:
+  const std::string& _internal_roomname() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_roomname(const std::string& value);
+  std::string* _internal_mutable_roomname();
+  public:
+
+  // string password = 5;
+  void clear_password();
+  const std::string& password() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_password(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_password();
+  PROTOBUF_NODISCARD std::string* release_password();
+  void set_allocated_password(std::string* password);
+  private:
+  const std::string& _internal_password() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_password(const std::string& value);
+  std::string* _internal_mutable_password();
+  public:
+
   // .Protocol.PlayerInfo host = 3;
   bool has_host() const;
   private:
@@ -1134,6 +1196,8 @@ class STC_CREATE_ROOM final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr roomname_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr password_;
     ::Protocol::PlayerInfo* host_;
     uint64_t roomindex_;
     bool success_;
@@ -3814,6 +3878,106 @@ inline void CTS_CREATE_ROOM::set_allocated_player(::Protocol::PlayerInfo* player
   // @@protoc_insertion_point(field_set_allocated:Protocol.CTS_CREATE_ROOM.player)
 }
 
+// string roomName = 2;
+inline void CTS_CREATE_ROOM::clear_roomname() {
+  _impl_.roomname_.ClearToEmpty();
+}
+inline const std::string& CTS_CREATE_ROOM::roomname() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_CREATE_ROOM.roomName)
+  return _internal_roomname();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CTS_CREATE_ROOM::set_roomname(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.roomname_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.CTS_CREATE_ROOM.roomName)
+}
+inline std::string* CTS_CREATE_ROOM::mutable_roomname() {
+  std::string* _s = _internal_mutable_roomname();
+  // @@protoc_insertion_point(field_mutable:Protocol.CTS_CREATE_ROOM.roomName)
+  return _s;
+}
+inline const std::string& CTS_CREATE_ROOM::_internal_roomname() const {
+  return _impl_.roomname_.Get();
+}
+inline void CTS_CREATE_ROOM::_internal_set_roomname(const std::string& value) {
+  
+  _impl_.roomname_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CTS_CREATE_ROOM::_internal_mutable_roomname() {
+  
+  return _impl_.roomname_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CTS_CREATE_ROOM::release_roomname() {
+  // @@protoc_insertion_point(field_release:Protocol.CTS_CREATE_ROOM.roomName)
+  return _impl_.roomname_.Release();
+}
+inline void CTS_CREATE_ROOM::set_allocated_roomname(std::string* roomname) {
+  if (roomname != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.roomname_.SetAllocated(roomname, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.roomname_.IsDefault()) {
+    _impl_.roomname_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.CTS_CREATE_ROOM.roomName)
+}
+
+// string password = 3;
+inline void CTS_CREATE_ROOM::clear_password() {
+  _impl_.password_.ClearToEmpty();
+}
+inline const std::string& CTS_CREATE_ROOM::password() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_CREATE_ROOM.password)
+  return _internal_password();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CTS_CREATE_ROOM::set_password(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.password_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.CTS_CREATE_ROOM.password)
+}
+inline std::string* CTS_CREATE_ROOM::mutable_password() {
+  std::string* _s = _internal_mutable_password();
+  // @@protoc_insertion_point(field_mutable:Protocol.CTS_CREATE_ROOM.password)
+  return _s;
+}
+inline const std::string& CTS_CREATE_ROOM::_internal_password() const {
+  return _impl_.password_.Get();
+}
+inline void CTS_CREATE_ROOM::_internal_set_password(const std::string& value) {
+  
+  _impl_.password_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CTS_CREATE_ROOM::_internal_mutable_password() {
+  
+  return _impl_.password_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CTS_CREATE_ROOM::release_password() {
+  // @@protoc_insertion_point(field_release:Protocol.CTS_CREATE_ROOM.password)
+  return _impl_.password_.Release();
+}
+inline void CTS_CREATE_ROOM::set_allocated_password(std::string* password) {
+  if (password != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.password_.SetAllocated(password, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.password_.IsDefault()) {
+    _impl_.password_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.CTS_CREATE_ROOM.password)
+}
+
 // -------------------------------------------------------------------
 
 // STC_CREATE_ROOM
@@ -3941,6 +4105,106 @@ inline void STC_CREATE_ROOM::set_allocated_host(::Protocol::PlayerInfo* host) {
   }
   _impl_.host_ = host;
   // @@protoc_insertion_point(field_set_allocated:Protocol.STC_CREATE_ROOM.host)
+}
+
+// string roomName = 4;
+inline void STC_CREATE_ROOM::clear_roomname() {
+  _impl_.roomname_.ClearToEmpty();
+}
+inline const std::string& STC_CREATE_ROOM::roomname() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_CREATE_ROOM.roomName)
+  return _internal_roomname();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void STC_CREATE_ROOM::set_roomname(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.roomname_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.STC_CREATE_ROOM.roomName)
+}
+inline std::string* STC_CREATE_ROOM::mutable_roomname() {
+  std::string* _s = _internal_mutable_roomname();
+  // @@protoc_insertion_point(field_mutable:Protocol.STC_CREATE_ROOM.roomName)
+  return _s;
+}
+inline const std::string& STC_CREATE_ROOM::_internal_roomname() const {
+  return _impl_.roomname_.Get();
+}
+inline void STC_CREATE_ROOM::_internal_set_roomname(const std::string& value) {
+  
+  _impl_.roomname_.Set(value, GetArenaForAllocation());
+}
+inline std::string* STC_CREATE_ROOM::_internal_mutable_roomname() {
+  
+  return _impl_.roomname_.Mutable(GetArenaForAllocation());
+}
+inline std::string* STC_CREATE_ROOM::release_roomname() {
+  // @@protoc_insertion_point(field_release:Protocol.STC_CREATE_ROOM.roomName)
+  return _impl_.roomname_.Release();
+}
+inline void STC_CREATE_ROOM::set_allocated_roomname(std::string* roomname) {
+  if (roomname != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.roomname_.SetAllocated(roomname, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.roomname_.IsDefault()) {
+    _impl_.roomname_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.STC_CREATE_ROOM.roomName)
+}
+
+// string password = 5;
+inline void STC_CREATE_ROOM::clear_password() {
+  _impl_.password_.ClearToEmpty();
+}
+inline const std::string& STC_CREATE_ROOM::password() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_CREATE_ROOM.password)
+  return _internal_password();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void STC_CREATE_ROOM::set_password(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.password_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.STC_CREATE_ROOM.password)
+}
+inline std::string* STC_CREATE_ROOM::mutable_password() {
+  std::string* _s = _internal_mutable_password();
+  // @@protoc_insertion_point(field_mutable:Protocol.STC_CREATE_ROOM.password)
+  return _s;
+}
+inline const std::string& STC_CREATE_ROOM::_internal_password() const {
+  return _impl_.password_.Get();
+}
+inline void STC_CREATE_ROOM::_internal_set_password(const std::string& value) {
+  
+  _impl_.password_.Set(value, GetArenaForAllocation());
+}
+inline std::string* STC_CREATE_ROOM::_internal_mutable_password() {
+  
+  return _impl_.password_.Mutable(GetArenaForAllocation());
+}
+inline std::string* STC_CREATE_ROOM::release_password() {
+  // @@protoc_insertion_point(field_release:Protocol.STC_CREATE_ROOM.password)
+  return _impl_.password_.Release();
+}
+inline void STC_CREATE_ROOM::set_allocated_password(std::string* password) {
+  if (password != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.password_.SetAllocated(password, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.password_.IsDefault()) {
+    _impl_.password_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.STC_CREATE_ROOM.password)
 }
 
 // -------------------------------------------------------------------
