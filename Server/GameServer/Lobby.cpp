@@ -93,10 +93,16 @@ bool Lobby::CreateRoom(const Protocol::PlayerInfo info, string roomName, string 
 	createRoomPkt.set_roomname(roomName);
 	createRoomPkt.set_password(password);
 
+	// 방 생성 사실을 생성한 클라이언트에게 전달
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(createRoomPkt);
 	if (auto session = _players[playerInfo->player_id()]->session.lock())
 	{
 		session->Send(sendBuffer);
+	}
+
+	// 방 생성 사실을 다른 클라이언트들에게도 전달
+	{
+		Broadcast(sendBuffer, playerInfo->player_id());
 	}
 
 	RoomRef room = make_shared<Room>();
@@ -114,8 +120,19 @@ bool Lobby::CreateRoom(const Protocol::PlayerInfo info, string roomName, string 
 
 bool Lobby::HandleCreateRoom(const Protocol::PlayerInfo info, string roomName, string password)
 {
-
 	return CreateRoom(info, roomName, password);
+}
+
+void Lobby::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
+{
+	for (auto& player : _players)
+	{
+		if (player.first == exceptId)
+			continue;
+
+		if (auto session = player.second->session.lock())
+			session->Send(sendBuffer);
+	}
 }
 
 

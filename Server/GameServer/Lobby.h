@@ -20,6 +20,10 @@ public:
 	//bool HandleCreateRoom(PlayerRef player);
 
 	bool HandleCreateRoom(const Protocol::PlayerInfo info, string roomName, string password);
+
+private:
+	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
+
 private:
 	unordered_map<uint64, PlayerRef> _players;
 	unordered_map<uint64, RoomRef> _rooms;
