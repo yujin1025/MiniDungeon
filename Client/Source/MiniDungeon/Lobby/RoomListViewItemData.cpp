@@ -3,7 +3,14 @@
 
 #include "Lobby/RoomListViewItemData.h"
 
-void URoomListViewItemData::SetPlayerInfo(const Protocol::PlayerInfo& info)
+void URoomListViewItemData::SetHost(const Protocol::PlayerInfo& info)
 {
-	PlayerInfo->CopyFrom(info);
+	Host->CopyFrom(info);
+}
+
+void URoomListViewItemData::AddPlayer(const Protocol::PlayerInfo& info)
+{
+	Protocol::PlayerInfo* player = new Protocol::PlayerInfo();
+	player->CopyFrom(info);
+	Players.AddUnique(player);
 }

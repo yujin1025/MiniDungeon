@@ -3,19 +3,20 @@
 
 #include "Lobby/LobbyPlayerController.h"
 #include "Lobby/LobbyWidget.h"
+#include "Lobby/LoginWidget.h"
 
 ALobbyPlayerController::ALobbyPlayerController()
 {
 	bShowMouseCursor = true;
 	//bEnableClickEvents = true;
 	//bEnableMouseOverEvents = true;
-	ConstructorHelpers::FClassFinder<UUserWidget> loginWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Assets/UI/WBP_LoginWidget.WBP_LoginWidget_C'"));
+	ConstructorHelpers::FClassFinder<UUserWidget> loginWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Assets/UI/Lobby/WBP_LoginWidget.WBP_LoginWidget_C'"));
 	if(loginWidgetClass.Succeeded())
 	{
 		LoginWidgetClass = loginWidgetClass.Class;
 	}
 
-	ConstructorHelpers::FClassFinder<UUserWidget> lobbyWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Assets/UI/WBP_LobbyWidget.WBP_LobbyWidget_C'"));
+	ConstructorHelpers::FClassFinder<UUserWidget> lobbyWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Assets/UI/Lobby/WBP_LobbyWidget.WBP_LobbyWidget_C'"));
 	if (lobbyWidgetClass.Succeeded())
 	{
 		LobbyWidgetClass = lobbyWidgetClass.Class;
@@ -34,7 +35,7 @@ void ALobbyPlayerController::OpenLobbyWidget()
 {
 	if (IsValid(LobbyWidgetClass))
 	{
-		LobbyWidget = CreateWidget<UUserWidget>(this, LobbyWidgetClass);
+		LobbyWidget = CreateWidget<ULobbyWidget>(this, LobbyWidgetClass);
 		if (IsValid(LobbyWidget))
 		{
 			Cast<ULobbyWidget>(LobbyWidget)->Owner = this;
@@ -50,7 +51,7 @@ void ALobbyPlayerController::BeginPlay()
 
 	if(IsValid(LoginWidgetClass))
 	{
-		LoginWidget = CreateWidget<UUserWidget>(this, LoginWidgetClass);
+		LoginWidget = CreateWidget<ULoginWidget>(this, LoginWidgetClass);
 		if(IsValid(LoginWidget))
 		{
 			LoginWidget->AddToViewport();
@@ -62,7 +63,7 @@ void ALobbyPlayerController::CreateRoom(const uint64 roomIndex, const FString& r
 {
 	if (IsValid(LobbyWidget))
 	{
-		Cast<ULobbyWidget>(LobbyWidget)->CreateRoom(roomIndex, roomName, password, info);
+		LobbyWidget->CreateRoom(roomIndex, roomName, password, info);
 	}
 }
 

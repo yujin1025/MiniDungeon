@@ -29,14 +29,14 @@ private:
 	TSubclassOf<class UUserWidget> LoginWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<class UUserWidget> LoginWidget;
+	TObjectPtr<class ULoginWidget> LoginWidget;
 
 private:
 	UPROPERTY()
 	TSubclassOf<UUserWidget> LobbyWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<class UUserWidget> LobbyWidget;
+	TObjectPtr<class ULobbyWidget> LobbyWidget;
 private:
 	Protocol::PlayerInfo* PlayerInfo;
 

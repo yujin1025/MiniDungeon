@@ -17,38 +17,23 @@ Room::~Room()
 	_players.clear();
 }
 
-bool Room::EnterRoom(ObjectRef object, bool isHost /*= true*/)
+bool Room::EnterRoom(ObjectRef object)
 {
 	bool success = AddObject(object);
 
 	// 랜덤 위치
-	if (isHost)
-	{
-		if (auto player = dynamic_pointer_cast<Player>(object))
-		{
-			_players.insert(make_pair(player->GetPlayerInfo()->player_id(), player));
-		}
-		/*object->posInfo->set_x(Utils::GetRandom(0.f, 500.f));
-		object->posInfo->set_y(Utils::GetRandom(0.f, 500.f));
-		object->posInfo->set_z(100.f);
-		object->posInfo->set_yaw(Utils::GetRandom(0.f, 100.f));*/
-	}
-	else
-	{
-
-	}
 
 	// 입장 사실을 신입 플레이어에게 알린다
 	if (auto player = dynamic_pointer_cast<Player>(object))
 	{
-		Protocol::STC_ENTER_GAME enterGamePkt;
-		enterGamePkt.set_success(success);
+		//Protocol::STC_ENTER_GAME enterGamePkt;
+		//enterGamePkt.set_success(success);
 
 		Protocol::ObjectInfo* playerInfo = new Protocol::ObjectInfo();
 		//playerInfo->CopyFrom(*object->objectInfo);
-		enterGamePkt.set_allocated_player(playerInfo);
+		//enterGamePkt.set_allocated_player(playerInfo);
 
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
+		///SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
 		//if (auto session = player->session.lock())
 		//	session->Send(sendBuffer);
 	}
@@ -122,6 +107,24 @@ bool Room::LeaveRoom(ObjectRef object)
 	return true;
 }
 
+bool Room::EnterRoom(PlayerRef player, bool isHost)
+{
+	bool success = AddPlayer(player);
+	player->room.store(GetRoomRef());
+
+	if (!isHost)
+	{
+
+	}
+
+	return success;
+}
+
+bool Room::LeaveRoom(PlayerRef player)
+{
+	return false;
+}
+
 bool Room::HandleEnterPlayer(PlayerRef player)
 {
 	return EnterRoom(player, true);
@@ -193,6 +196,23 @@ bool Room::RemoveObject(uint64 objectId)
 	_objects.erase(objectId);
 
 	return true;
+}
+
+bool Room::AddPlayer(PlayerRef player)
+{
+	if (_players.find(player->GetPlayerInfo()->player_id()) != _players.end())
+	{
+		return false;
+	}
+
+	_players.insert(make_pair(player->GetPlayerInfo()->player_id(), player));
+
+	return true;
+}
+
+bool Room::RemovePlayer(uint64 playerId)
+{
+	return false;
 }
 
 void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)

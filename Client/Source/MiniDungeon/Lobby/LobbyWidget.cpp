@@ -10,6 +10,17 @@
 #include "LobbyPlayerController.h"
 #include "RoomListViewItemData.h"
 #include "Components/ListView.h"
+#include "RoomWidget.h"
+
+ULobbyWidget::ULobbyWidget(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	static ConstructorHelpers::FClassFinder<UUserWidget> roomWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Assets/UI/Lobby/WBP_RoomWidget.WBP_RoomWidget_C'"));
+	if (roomWidgetClass.Succeeded())
+	{
+		RoomWidgetClass = roomWidgetClass.Class;
+	}
+}
 
 void ULobbyWidget::NativeConstruct()
 {
@@ -30,13 +41,26 @@ void ULobbyWidget::NativeConstruct()
 void ULobbyWidget::CreateRoom(const uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info)
 {
 	URoomListViewItemData* roomData = NewObject<URoomListViewItemData>();
+
 	roomData->RoomIndex = roomIndex;
 	roomData->RoomName = roomName;
 	roomData->RoomPassword = password;
-	roomData->SetPlayerInfo(info);
+	roomData->SetHost(info);
+	roomData->AddPlayer(info);
+
 	RoomList.Add(roomData);
 
 	RoomListView->AddItem(roomData);
+
+	if (IsValid(RoomWidgetClass))
+	{
+		RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
+		if (IsValid(RoomWidget))
+		{
+			RoomWidget->SetRoomData(roomData);	
+			RoomWidget->AddToViewport();
+		}
+	}
 
 	//RefreshListView();
 }

@@ -9,8 +9,11 @@ public:
 	virtual ~Room();
 
 public:
-	bool EnterRoom(ObjectRef object, bool isHost = true);
+	bool EnterRoom(ObjectRef object);
 	bool LeaveRoom(ObjectRef object);
+
+	bool EnterRoom(PlayerRef player, bool isHost = true);
+	bool LeaveRoom(PlayerRef player);
 
 	bool HandleEnterPlayer(PlayerRef player);
 	bool HandleLeavePlayer(PlayerRef player);
@@ -27,6 +30,8 @@ private:
 	bool AddObject(ObjectRef object);
 	bool RemoveObject(uint64 objectId);
 
+	bool AddPlayer(PlayerRef player);
+	bool RemovePlayer(uint64 playerId);
 private:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 

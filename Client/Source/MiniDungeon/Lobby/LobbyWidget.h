@@ -14,6 +14,9 @@ UCLASS()
 class MINIDUNGEON_API ULobbyWidget : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+	ULobbyWidget(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void NativeConstruct() override;
 
@@ -36,6 +39,13 @@ protected:
 protected:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	TSet<TObjectPtr<class URoomListViewItemData>> RoomList;
+
+private:
+	UPROPERTY()
+	TSubclassOf<UUserWidget> RoomWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<class URoomWidget> RoomWidget;
 
 public:
 	void CreateRoom(const uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info);

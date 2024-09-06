@@ -35,17 +35,16 @@ const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "CT_TYPE_ENV\020\003*r\n\014CreatureType\022\026\n\022CREATUR"
   "E_TYPE_NONE\020\000\022\030\n\024CREATURE_TYPE_PLAYER\020\001\022"
   "\031\n\025CREATURE_TYPE_MONSTER\020\002\022\025\n\021CREATURE_T"
-  "YPE_NPC\020\003*h\n\nPlayerType\022\024\n\020PLAYER_TYPE_N"
-  "ONE\020\000\022\026\n\022PLAYER_TYPE_KNIGHT\020\001\022\024\n\020PLAYER_"
-  "TYPE_MAGE\020\002\022\026\n\022PLAYER_TYPE_ARCHER\020\003*t\n\tM"
-  "oveState\022\023\n\017MOVE_STATE_NONE\020\000\022\023\n\017MOVE_ST"
-  "ATE_IDLE\020\001\022\022\n\016MOVE_STATE_RUN\020\002\022\023\n\017MOVE_S"
-  "TATE_JUMP\020\003\022\024\n\020MOVE_STATE_SKILL\020\004b\006proto"
-  "3"
+  "YPE_NPC\020\003*R\n\nPlayerType\022\024\n\020PLAYER_TYPE_N"
+  "ONE\020\000\022\026\n\022PLAYER_TYPE_AURORA\020\001\022\026\n\022PLAYER_"
+  "TYPE_DRONGO\020\002*t\n\tMoveState\022\023\n\017MOVE_STATE"
+  "_NONE\020\000\022\023\n\017MOVE_STATE_IDLE\020\001\022\022\n\016MOVE_STA"
+  "TE_RUN\020\002\022\023\n\017MOVE_STATE_JUMP\020\003\022\024\n\020MOVE_ST"
+  "ATE_SKILL\020\004b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 481, descriptor_table_protodef_Enum_2eproto,
+    false, false, 459, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -100,7 +99,6 @@ bool PlayerType_IsValid(int value) {
     case 0:
     case 1:
     case 2:
-    case 3:
       return true;
     default:
       return false;

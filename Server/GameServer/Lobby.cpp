@@ -81,15 +81,23 @@ bool Lobby::CreateRoom(const Protocol::PlayerInfo info, string roomName, string 
 		return false;
 	}
 
-	createRoomPkt.set_success(true);
+	// 规 积己
+	RoomRef room = make_shared<Room>();
+
+	const uint64 newId = s_idGenerator.fetch_add(1);
+	room->SetRoomIndex(newId);
 
 	Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
 	playerInfo->CopyFrom(info);
+
+	room->EnterRoom(_players[playerInfo->player_id()], true);
+
+	_rooms.insert(make_pair(newId, room));
+
+	// 规 积己 己傍 矫 菩哦 技泼
+	createRoomPkt.set_success(true);
 	createRoomPkt.set_allocated_host(playerInfo);
-
-	const uint64 newId = s_idGenerator.fetch_add(1);
 	createRoomPkt.set_roomindex(newId);
-
 	createRoomPkt.set_roomname(roomName);
 	createRoomPkt.set_password(password);
 
@@ -105,11 +113,7 @@ bool Lobby::CreateRoom(const Protocol::PlayerInfo info, string roomName, string 
 		Broadcast(sendBuffer, playerInfo->player_id());
 	}
 
-	RoomRef room = make_shared<Room>();
-	room->SetRoomIndex(newId);
-
-	_rooms.insert(make_pair(newId, room));
-
+	_players.erase(playerInfo->player_id());
 	return true;
 }
 

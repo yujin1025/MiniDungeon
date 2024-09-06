@@ -30,7 +30,7 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
 		playerInfo->set_player_id(pkt.player_id());
 		playerInfo->set_allocated_player_name(new string("Admin"));
-
+		playerInfo->set_player_type(Protocol::PlayerType::PLAYER_TYPE_AURORA);
 		Protocol::ObjectInfo* objectInfo = new Protocol::ObjectInfo();
 		objectInfo->set_object_id(0);
 		objectInfo->set_object_type(Protocol::ObjectType::OBJECT_TYPE_CREATURE);
