@@ -167,6 +167,11 @@ bool Lobby::HandleJoinRoom(const Protocol::CTS_JOIN_ROOM& pkt)
 	return JoinRoom(playerId, roomId);
 }
 
+bool Lobby::HandleJoinRoom(uint64 playerId, uint64 roomId)
+{
+	return JoinRoom(playerId, roomId);
+}
+
 void Lobby::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 {
 	for (auto& player : _players)

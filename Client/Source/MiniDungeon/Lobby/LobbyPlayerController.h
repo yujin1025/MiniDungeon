@@ -48,4 +48,6 @@ public:
 	void CreateRoom(const Protocol::RoomInfo& info, bool isHost);
 
 	void OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& enterLobbypkt);
+
+	void JoinRoom(const Protocol::RoomInfo& info);
 };

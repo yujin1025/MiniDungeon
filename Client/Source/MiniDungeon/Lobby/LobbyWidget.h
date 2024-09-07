@@ -43,6 +43,8 @@ protected:
 public:
 	class URoomListViewItemData* AddRoomData(const Protocol::RoomInfo& info);
 
+	class URoomListViewItemData* UpdateRoomData(const Protocol::RoomInfo& info);
+
 private:
 	UPROPERTY()
 	TSubclassOf<UUserWidget> RoomWidgetClass;
@@ -52,6 +54,8 @@ private:
 
 public:	
 	void CreateRoom(const Protocol::RoomInfo& info, bool isHost);
+
+	void JoinRoom(const Protocol::RoomInfo& info);
 
 	UFUNCTION()
 	void RemoveRoom(const uint64 roomIndex);

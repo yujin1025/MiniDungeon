@@ -114,7 +114,6 @@ bool Room::LeaveRoom(ObjectRef object)
 bool Room::EnterRoom(PlayerRef player, bool isHost)
 {
 	bool success = AddPlayer(player);
-	player->room.store(GetRoomRef());
 
 	if (!isHost)
 	{
@@ -209,7 +208,7 @@ bool Room::AddObject(ObjectRef object)
 
 bool Room::RemoveObject(uint64 objectId)
 {
-	// 없다면 문제가 있다.
+	// Room에 없다면 문제가 있다.
 	if (_objects.find(objectId) == _objects.end())
 		return false;
 
@@ -225,12 +224,13 @@ bool Room::RemoveObject(uint64 objectId)
 
 bool Room::AddPlayer(PlayerRef player)
 {
+	// Room에 있다면 문제가 있다.
 	if (_players.find(player->GetPlayerInfo()->player_id()) != _players.end())
 	{
 		return false;
 	}
-
 	_players.insert(make_pair(player->GetPlayerInfo()->player_id(), player));
+	player->room.store(GetRoomRef());
 
 	info->set_current_player_count(_players.size());
 	info->add_players()->CopyFrom(*player->GetPlayerInfo());
@@ -262,6 +262,9 @@ void Room::BroadcastToPlayer(SendBufferRef sendBuffer, uint64 exceptId)
 {
 	for (auto& player : _players)
 	{
+		if (player.second->GetPlayerInfo()->player_id() == exceptId)
+			continue;
+
 		if (GameSessionRef session = player.second->GetSession())
 			session->Send(sendBuffer);
 	}

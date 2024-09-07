@@ -54,6 +54,20 @@ class URoomListViewItemData* ULobbyWidget::AddRoomData(const Protocol::RoomInfo&
 	return roomData;
 }
 
+URoomListViewItemData* ULobbyWidget::UpdateRoomData(const Protocol::RoomInfo& info)
+{
+	FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
+
+	if(RoomList.Find(roomName) == nullptr)
+	{
+		return nullptr;
+	}
+
+	RoomList[roomName]->SetInfo(info);
+
+	return RoomList[roomName];
+}
+
 void ULobbyWidget::CreateRoom(const Protocol::RoomInfo& info, bool isHost)
 {
 	auto roomData = AddRoomData(info);
@@ -68,6 +82,22 @@ void ULobbyWidget::CreateRoom(const Protocol::RoomInfo& info, bool isHost)
 				RoomWidget->SetRoomData(roomData);
 				RoomWidget->AddToViewport();
 			}
+		}
+	}
+}
+
+void ULobbyWidget::JoinRoom(const Protocol::RoomInfo& info)
+{
+	auto roomData = UpdateRoomData(info);
+
+	if (IsValid(RoomWidgetClass))
+	{
+		RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
+		if (IsValid(RoomWidget))
+		{
+			const FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
+			RoomWidget->SetRoomData(roomData);
+			RoomWidget->AddToViewport();
 		}
 	}
 }
@@ -100,16 +130,16 @@ void ULobbyWidget::OnClickedCreateButton()
 
 	Protocol::RoomInfo* roomInfo = new Protocol::RoomInfo();
 
-	const FString roomName = UTF8_TO_TCHAR(*(RoomNameInput->GetText().ToString()));
-	const FString password = UTF8_TO_TCHAR(*(PasswordInput->GetText().ToString()));
+	const FString& roomName = RoomNameInput->GetText().ToString();
+	const FString& password = PasswordInput->GetText().ToString();
 
-	roomInfo->set_room_name(roomName);
-	roomInfo->set_password(password);
+	roomInfo->set_room_name(TCHAR_TO_UTF8(*roomName));
+	roomInfo->set_password(TCHAR_TO_UTF8(*password));
 	roomInfo->set_current_player_count(1);
 
-	Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
-	playerInfo->CopyFrom(*Owner->GetPlayerInfo());
-	roomInfo->set_allocated_host(playerInfo);
+	Protocol::PlayerInfo* host = new Protocol::PlayerInfo();
+	host->CopyFrom(*Owner->GetPlayerInfo());
+	roomInfo->set_allocated_host(host);
 
 	createRoomPkt.set_allocated_room_info(roomInfo);
 	
@@ -122,8 +152,8 @@ void ULobbyWidget::OnClickedJoinButton()
 {
 	Protocol::CTS_JOIN_ROOM joinRoomPkt;
 
-	const FString roomName = UTF8_TO_TCHAR(*(RoomNameInput->GetText().ToString()));
-	const FString password = UTF8_TO_TCHAR(*(PasswordInput->GetText().ToString()));
+	const FString& roomName = RoomNameInput->GetText().ToString();
+	const FString& password = PasswordInput->GetText().ToString();
 
 	const auto roomData = RoomList.Find(roomName);
 
@@ -134,7 +164,7 @@ void ULobbyWidget::OnClickedJoinButton()
 	}
 
 	joinRoomPkt.set_roomindex((*roomData)->RoomIndex);
-	joinRoomPkt.set_password(password);
+	joinRoomPkt.set_password(TCHAR_TO_UTF8(*password));
 
 	Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
 	playerInfo->CopyFrom(*Owner->GetPlayerInfo());

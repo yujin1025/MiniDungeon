@@ -113,8 +113,22 @@ bool Handle_STC_CREATE_ROOM(PacketSessionRef& session, Protocol::STC_CREATE_ROOM
 
 bool Handle_STC_JOIN_ROOM(PacketSessionRef& session, Protocol::STC_JOIN_ROOM& pkt)
 {
-	return false;
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
+	if(pkt.success() == false)
+	{
+		// 방 입장 실패
+		return false;
+	}
+
+	if (IsValid(gameNetwork))
+	{
+		gameNetwork->HandleJoinRoom(pkt);
+	}
+
+	return true;
 }
+
 //
 bool Handle_STC_ENTER_GAME(PacketSessionRef& session, Protocol::STC_ENTER_GAME& pkt)
 {

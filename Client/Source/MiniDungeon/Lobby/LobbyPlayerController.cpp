@@ -51,6 +51,14 @@ void ALobbyPlayerController::OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& en
 	}
 }
 
+void ALobbyPlayerController::JoinRoom(const Protocol::RoomInfo& info)
+{
+	if (IsValid(LobbyWidget))
+	{
+		LobbyWidget->JoinRoom(info);
+	}
+}
+
 void ALobbyPlayerController::BeginPlay()
 {
 	Super::BeginPlay();

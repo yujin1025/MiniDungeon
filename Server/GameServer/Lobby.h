@@ -21,6 +21,8 @@ public:
 
 	bool HandleJoinRoom(const Protocol::CTS_JOIN_ROOM& pkt);
 
+	bool HandleJoinRoom(uint64 playerId, uint64 roomId);
+
 private:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 

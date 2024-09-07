@@ -44,7 +44,10 @@ void URoomListViewItemData::SetInfo(const Protocol::RoomInfo& info)
 	RoomName = UTF8_TO_TCHAR(Info->room_name().c_str());
 	RoomPassword = UTF8_TO_TCHAR(Info->password().c_str());
 	PlayerNum = Info->current_player_count();
-
-	AddPlayer(Info->host());
 	SetHost(Info->host());
+
+	for (auto& player : Info->players())
+	{
+		AddPlayer(player);
+	}
 }

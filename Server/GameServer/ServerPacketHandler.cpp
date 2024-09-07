@@ -78,8 +78,10 @@ bool Handle_CTS_CREATE_ROOM(PacketSessionRef& session, Protocol::CTS_CREATE_ROOM
 
 bool Handle_CTS_JOIN_ROOM(PacketSessionRef& session, Protocol::CTS_JOIN_ROOM& pkt)
 {
-
-
+	//GLobby->DoAsync(&Lobby::HandleJoinRoom, pkt);
+	uint64 playerId = pkt.player().player_id();
+	uint64 roomId = pkt.roomindex();
+	GLobby->HandleJoinRoom(playerId, roomId);
 	return true;
 }
 
