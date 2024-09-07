@@ -42,6 +42,7 @@ void ALobbyPlayerController::OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& en
 		{
 			Cast<ULobbyWidget>(LobbyWidget)->Owner = this;
 			LobbyWidget->AddToViewport();
+
 			for(auto& room : enterLobbypkt.rooms())
 			{
 				LobbyWidget->AddRoomData(room);

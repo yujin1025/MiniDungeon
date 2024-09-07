@@ -9,7 +9,6 @@ RoomRef GRoom = make_shared<Room>();
 
 Room::Room()
 {
-
 	info = new Protocol::RoomInfo();
 }
 
@@ -17,7 +16,9 @@ Room::~Room()
 {
 	_players.clear();
 	_objects.clear();
+
 	info->Clear();
+	info = nullptr;
 }
 
 bool Room::EnterRoom(ObjectRef object)
@@ -117,7 +118,22 @@ bool Room::EnterRoom(PlayerRef player, bool isHost)
 
 	if (!isHost)
 	{
+		// 방에 입장한 사실을 방에 있는 다른 플레이어들에게 알린다
+		{
+			Protocol::STC_JOIN_ROOM joinRoomPkt;
+			joinRoomPkt.set_success(success);
 
+			Protocol::RoomInfo* roomInfo = new Protocol::RoomInfo();
+			roomInfo->CopyFrom(*info);
+			joinRoomPkt.set_allocated_room_info(roomInfo);
+
+			Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
+			playerInfo->CopyFrom(*player->GetPlayerInfo());
+			joinRoomPkt.set_allocated_player(playerInfo);
+
+			SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(joinRoomPkt);
+			BroadcastToPlayer(sendBuffer, player->GetPlayerInfo()->player_id());
+		}
 	}
 
 	return success;
@@ -239,5 +255,14 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 
 		//if (GameSessionRef session = player->session.lock())
 		//	session->Send(sendBuffer);
+	}
+}
+
+void Room::BroadcastToPlayer(SendBufferRef sendBuffer, uint64 exceptId)
+{
+	for (auto& player : _players)
+	{
+		if (GameSessionRef session = player.second->GetSession())
+			session->Send(sendBuffer);
 	}
 }

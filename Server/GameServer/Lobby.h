@@ -17,6 +17,10 @@ public:
 
 	bool HandleCreateRoom(const Protocol::RoomInfo& roomInfo);
 
+	bool JoinRoom(uint64 playerId, uint64 roomId);
+
+	bool HandleJoinRoom(const Protocol::CTS_JOIN_ROOM& pkt);
+
 private:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 

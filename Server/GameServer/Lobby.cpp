@@ -110,6 +110,63 @@ bool Lobby::HandleCreateRoom(const Protocol::RoomInfo& roomInfo)
 	return CreateRoom(roomInfo);
 }
 
+bool Lobby::JoinRoom(uint64 playerId, uint64 roomId)
+{
+	Protocol::STC_JOIN_ROOM joinRoomPkt;
+
+	// 플레이어가 로비에 없으면 문제있음
+	if(_players.find(playerId) == _players.end())
+	{
+		joinRoomPkt.set_success(false);
+		return false;
+	}
+
+	// 방이 없으면 문제있음
+	if(_rooms.find(roomId) == _rooms.end())
+	{
+		joinRoomPkt.set_success(false);
+		return false;
+	}
+
+	// 방에 입장
+	if (_rooms[roomId]->EnterRoom(_players[playerId], false))
+	{
+		// 방 입장 성공 시 패킷 세팅
+		joinRoomPkt.set_success(true);
+
+		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
+		playerInfo->CopyFrom(*_players[playerId]->GetPlayerInfo());
+		joinRoomPkt.set_allocated_player(playerInfo);
+
+		Protocol::RoomInfo* roomInfo = new Protocol::RoomInfo();
+		roomInfo->CopyFrom(*_rooms[roomId]->GetRoomInfo());
+		joinRoomPkt.set_allocated_room_info(roomInfo);
+	}
+	else
+	{
+		// 방 입장 실패 시 패킷 세팅
+		joinRoomPkt.set_success(false);
+	}
+
+	// 방 입장 사실을 클라이언트에게 전달
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(joinRoomPkt);
+	if (auto session = _players[playerId]->session.lock())
+	{
+		session->Send(sendBuffer);
+	}
+
+	_players.erase(playerId);
+	return true;
+}
+
+bool Lobby::HandleJoinRoom(const Protocol::CTS_JOIN_ROOM& pkt)
+{
+	uint64 playerId = pkt.player().player_id();
+	uint64 roomId = pkt.roomindex();
+
+	return JoinRoom(playerId, roomId);
+}
+
 void Lobby::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 {
 	for (auto& player : _players)

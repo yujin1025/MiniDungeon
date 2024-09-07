@@ -41,8 +41,8 @@ void URoomListViewItemData::SetInfo(const Protocol::RoomInfo& info)
 	Info->CopyFrom(info);
 
 	RoomIndex = Info->room_id();
-	RoomName = FString(UTF8_TO_TCHAR(Info->room_name().c_str()));
-	RoomPassword = FString(UTF8_TO_TCHAR(Info->password().c_str()));
+	RoomName = UTF8_TO_TCHAR(Info->room_name().c_str());
+	RoomPassword = UTF8_TO_TCHAR(Info->password().c_str());
 	PlayerNum = Info->current_player_count();
 
 	AddPlayer(Info->host());

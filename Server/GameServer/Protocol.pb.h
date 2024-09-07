@@ -1274,10 +1274,25 @@ class CTS_JOIN_ROOM final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPlayerFieldNumber = 2,
+    kPasswordFieldNumber = 2,
+    kPlayerFieldNumber = 3,
     kRoomIndexFieldNumber = 1,
   };
-  // .Protocol.PlayerInfo player = 2;
+  // string password = 2;
+  void clear_password();
+  const std::string& password() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_password(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_password();
+  PROTOBUF_NODISCARD std::string* release_password();
+  void set_allocated_password(std::string* password);
+  private:
+  const std::string& _internal_password() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_password(const std::string& value);
+  std::string* _internal_mutable_password();
+  public:
+
+  // .Protocol.PlayerInfo player = 3;
   bool has_player() const;
   private:
   bool _internal_has_player() const;
@@ -1312,6 +1327,7 @@ class CTS_JOIN_ROOM final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr password_;
     ::Protocol::PlayerInfo* player_;
     uint64_t roomindex_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -1442,10 +1458,28 @@ class STC_JOIN_ROOM final :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kRoomInfoFieldNumber = 2,
     kPlayerFieldNumber = 3,
-    kRoomIndexFieldNumber = 2,
     kSuccessFieldNumber = 1,
   };
+  // .Protocol.RoomInfo room_info = 2;
+  bool has_room_info() const;
+  private:
+  bool _internal_has_room_info() const;
+  public:
+  void clear_room_info();
+  const ::Protocol::RoomInfo& room_info() const;
+  PROTOBUF_NODISCARD ::Protocol::RoomInfo* release_room_info();
+  ::Protocol::RoomInfo* mutable_room_info();
+  void set_allocated_room_info(::Protocol::RoomInfo* room_info);
+  private:
+  const ::Protocol::RoomInfo& _internal_room_info() const;
+  ::Protocol::RoomInfo* _internal_mutable_room_info();
+  public:
+  void unsafe_arena_set_allocated_room_info(
+      ::Protocol::RoomInfo* room_info);
+  ::Protocol::RoomInfo* unsafe_arena_release_room_info();
+
   // .Protocol.PlayerInfo player = 3;
   bool has_player() const;
   private:
@@ -1464,15 +1498,6 @@ class STC_JOIN_ROOM final :
       ::Protocol::PlayerInfo* player);
   ::Protocol::PlayerInfo* unsafe_arena_release_player();
 
-  // uint64 roomIndex = 2;
-  void clear_roomindex();
-  uint64_t roomindex() const;
-  void set_roomindex(uint64_t value);
-  private:
-  uint64_t _internal_roomindex() const;
-  void _internal_set_roomindex(uint64_t value);
-  public:
-
   // bool success = 1;
   void clear_success();
   bool success() const;
@@ -1490,8 +1515,8 @@ class STC_JOIN_ROOM final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    ::Protocol::RoomInfo* room_info_;
     ::Protocol::PlayerInfo* player_;
-    uint64_t roomindex_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -3993,7 +4018,57 @@ inline void CTS_JOIN_ROOM::set_roomindex(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.CTS_JOIN_ROOM.roomIndex)
 }
 
-// .Protocol.PlayerInfo player = 2;
+// string password = 2;
+inline void CTS_JOIN_ROOM::clear_password() {
+  _impl_.password_.ClearToEmpty();
+}
+inline const std::string& CTS_JOIN_ROOM::password() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_JOIN_ROOM.password)
+  return _internal_password();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CTS_JOIN_ROOM::set_password(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.password_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.CTS_JOIN_ROOM.password)
+}
+inline std::string* CTS_JOIN_ROOM::mutable_password() {
+  std::string* _s = _internal_mutable_password();
+  // @@protoc_insertion_point(field_mutable:Protocol.CTS_JOIN_ROOM.password)
+  return _s;
+}
+inline const std::string& CTS_JOIN_ROOM::_internal_password() const {
+  return _impl_.password_.Get();
+}
+inline void CTS_JOIN_ROOM::_internal_set_password(const std::string& value) {
+  
+  _impl_.password_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CTS_JOIN_ROOM::_internal_mutable_password() {
+  
+  return _impl_.password_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CTS_JOIN_ROOM::release_password() {
+  // @@protoc_insertion_point(field_release:Protocol.CTS_JOIN_ROOM.password)
+  return _impl_.password_.Release();
+}
+inline void CTS_JOIN_ROOM::set_allocated_password(std::string* password) {
+  if (password != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.password_.SetAllocated(password, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.password_.IsDefault()) {
+    _impl_.password_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.CTS_JOIN_ROOM.password)
+}
+
+// .Protocol.PlayerInfo player = 3;
 inline bool CTS_JOIN_ROOM::_internal_has_player() const {
   return this != internal_default_instance() && _impl_.player_ != nullptr;
 }
@@ -4102,24 +4177,89 @@ inline void STC_JOIN_ROOM::set_success(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.STC_JOIN_ROOM.success)
 }
 
-// uint64 roomIndex = 2;
-inline void STC_JOIN_ROOM::clear_roomindex() {
-  _impl_.roomindex_ = uint64_t{0u};
+// .Protocol.RoomInfo room_info = 2;
+inline bool STC_JOIN_ROOM::_internal_has_room_info() const {
+  return this != internal_default_instance() && _impl_.room_info_ != nullptr;
 }
-inline uint64_t STC_JOIN_ROOM::_internal_roomindex() const {
-  return _impl_.roomindex_;
+inline bool STC_JOIN_ROOM::has_room_info() const {
+  return _internal_has_room_info();
 }
-inline uint64_t STC_JOIN_ROOM::roomindex() const {
-  // @@protoc_insertion_point(field_get:Protocol.STC_JOIN_ROOM.roomIndex)
-  return _internal_roomindex();
+inline const ::Protocol::RoomInfo& STC_JOIN_ROOM::_internal_room_info() const {
+  const ::Protocol::RoomInfo* p = _impl_.room_info_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::RoomInfo&>(
+      ::Protocol::_RoomInfo_default_instance_);
 }
-inline void STC_JOIN_ROOM::_internal_set_roomindex(uint64_t value) {
+inline const ::Protocol::RoomInfo& STC_JOIN_ROOM::room_info() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_JOIN_ROOM.room_info)
+  return _internal_room_info();
+}
+inline void STC_JOIN_ROOM::unsafe_arena_set_allocated_room_info(
+    ::Protocol::RoomInfo* room_info) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.room_info_);
+  }
+  _impl_.room_info_ = room_info;
+  if (room_info) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.STC_JOIN_ROOM.room_info)
+}
+inline ::Protocol::RoomInfo* STC_JOIN_ROOM::release_room_info() {
   
-  _impl_.roomindex_ = value;
+  ::Protocol::RoomInfo* temp = _impl_.room_info_;
+  _impl_.room_info_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
 }
-inline void STC_JOIN_ROOM::set_roomindex(uint64_t value) {
-  _internal_set_roomindex(value);
-  // @@protoc_insertion_point(field_set:Protocol.STC_JOIN_ROOM.roomIndex)
+inline ::Protocol::RoomInfo* STC_JOIN_ROOM::unsafe_arena_release_room_info() {
+  // @@protoc_insertion_point(field_release:Protocol.STC_JOIN_ROOM.room_info)
+  
+  ::Protocol::RoomInfo* temp = _impl_.room_info_;
+  _impl_.room_info_ = nullptr;
+  return temp;
+}
+inline ::Protocol::RoomInfo* STC_JOIN_ROOM::_internal_mutable_room_info() {
+  
+  if (_impl_.room_info_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::RoomInfo>(GetArenaForAllocation());
+    _impl_.room_info_ = p;
+  }
+  return _impl_.room_info_;
+}
+inline ::Protocol::RoomInfo* STC_JOIN_ROOM::mutable_room_info() {
+  ::Protocol::RoomInfo* _msg = _internal_mutable_room_info();
+  // @@protoc_insertion_point(field_mutable:Protocol.STC_JOIN_ROOM.room_info)
+  return _msg;
+}
+inline void STC_JOIN_ROOM::set_allocated_room_info(::Protocol::RoomInfo* room_info) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.room_info_);
+  }
+  if (room_info) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(room_info));
+    if (message_arena != submessage_arena) {
+      room_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, room_info, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.room_info_ = room_info;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.STC_JOIN_ROOM.room_info)
 }
 
 // .Protocol.PlayerInfo player = 3;

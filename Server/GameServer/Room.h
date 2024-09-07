@@ -35,6 +35,8 @@ private:
 private:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 
+	void BroadcastToPlayer(SendBufferRef sendBuffer, uint64 exceptId = 0);
+
 private:
 	unordered_map<uint64, PlayerRef> _players;
 	unordered_map<uint64, ObjectRef> _objects;

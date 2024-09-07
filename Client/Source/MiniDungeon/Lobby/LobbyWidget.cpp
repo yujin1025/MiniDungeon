@@ -39,13 +39,15 @@ void ULobbyWidget::NativeConstruct()
 	RefreshListView();
 }
 
-TObjectPtr<class URoomListViewItemData> ULobbyWidget::AddRoomData(const Protocol::RoomInfo& info)
+class URoomListViewItemData* ULobbyWidget::AddRoomData(const Protocol::RoomInfo& info)
 {
 	URoomListViewItemData* roomData = NewObject<URoomListViewItemData>();
 
 	roomData->SetInfo(info);
 
-	RoomList.Add(roomData);
+	FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
+
+	RoomList.Add(roomName, roomData);
 
 	RoomListView->AddItem(roomData);
 
@@ -88,7 +90,7 @@ void ULobbyWidget::RefreshListView()
 {
 	for(auto &roomData : RoomList)
 	{
-		RoomListView->AddItem(roomData);
+		RoomListView->AddItem(roomData.Value);
 	}
 }
 
@@ -97,8 +99,12 @@ void ULobbyWidget::OnClickedCreateButton()
 	Protocol::CTS_CREATE_ROOM createRoomPkt;
 
 	Protocol::RoomInfo* roomInfo = new Protocol::RoomInfo();
-	roomInfo->set_room_name(TCHAR_TO_UTF8(*(RoomNameInput->GetText().ToString())));
-	roomInfo->set_password(TCHAR_TO_UTF8(*(PasswordInput->GetText().ToString())));
+
+	const FString roomName = UTF8_TO_TCHAR(*(RoomNameInput->GetText().ToString()));
+	const FString password = UTF8_TO_TCHAR(*(PasswordInput->GetText().ToString()));
+
+	roomInfo->set_room_name(roomName);
+	roomInfo->set_password(password);
 	roomInfo->set_current_player_count(1);
 
 	Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
@@ -114,4 +120,28 @@ void ULobbyWidget::OnClickedCreateButton()
 
 void ULobbyWidget::OnClickedJoinButton()
 {
+	Protocol::CTS_JOIN_ROOM joinRoomPkt;
+
+	const FString roomName = UTF8_TO_TCHAR(*(RoomNameInput->GetText().ToString()));
+	const FString password = UTF8_TO_TCHAR(*(PasswordInput->GetText().ToString()));
+
+	const auto roomData = RoomList.Find(roomName);
+
+	if (roomData == nullptr)
+	{
+		// TODO : 방이 없음.
+		return;
+	}
+
+	joinRoomPkt.set_roomindex((*roomData)->RoomIndex);
+	joinRoomPkt.set_password(password);
+
+	Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
+	playerInfo->CopyFrom(*Owner->GetPlayerInfo());
+	joinRoomPkt.set_allocated_player(playerInfo);
+
+	SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(joinRoomPkt);
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	networkManager->SendPacket(sendBuffer);
 }
+

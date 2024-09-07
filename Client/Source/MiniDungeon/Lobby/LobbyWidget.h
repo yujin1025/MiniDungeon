@@ -38,10 +38,10 @@ protected:
 
 protected:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	TSet<TObjectPtr<class URoomListViewItemData>> RoomList;
+	TMap<FString, TObjectPtr<class URoomListViewItemData>> RoomList;
 
 public:
-	TObjectPtr<class URoomListViewItemData> AddRoomData(const Protocol::RoomInfo& info);
+	class URoomListViewItemData* AddRoomData(const Protocol::RoomInfo& info);
 
 private:
 	UPROPERTY()

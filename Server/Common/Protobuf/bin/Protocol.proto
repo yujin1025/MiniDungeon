@@ -43,13 +43,14 @@ message STC_CREATE_ROOM
 message CTS_JOIN_ROOM
 {
 	uint64 roomIndex = 1;
-	PlayerInfo player = 2;
+	string password = 2;
+	PlayerInfo player = 3;
 }
 
 message STC_JOIN_ROOM
 {
 	bool success = 1;
-	uint64 roomIndex = 2;
+	RoomInfo room_info = 2;
 	PlayerInfo player = 3;
 }
 
