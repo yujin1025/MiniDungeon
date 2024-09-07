@@ -38,17 +38,14 @@ void URoomWidget::NativeConstruct()
 		{
 			FString PlayerNum_Name = FString::Printf(TEXT("Player%d_Name"), i);
 			PlayerNames.Add(Cast<UTextBlock>(GetWidgetFromName(FName(PlayerNum_Name))));
+		}
 
-			if (RoomData->GetPlayers().Num() < i)
-			{
-				PlayerNames[i - 1]->SetText(FText::FromString(TEXT("Empty")));
-				continue;
-			}
-			else
-			{
-				FText playerName = FText::FromString(RoomData->GetPlayers()[i - 1]->player_name().c_str());
-				PlayerNames[i - 1]->SetText(playerName);
-			}
+		int index = 0;
+		for (auto& player : RoomData->GetPlayers())
+		{
+			FText playerName = FText::FromString(UTF8_TO_TCHAR(player.Value->player_name().c_str()) + FString::FromInt(player.Value->player_id()));
+			PlayerNames[index]->SetText(playerName);
+			index++;
 		}
 	}
 

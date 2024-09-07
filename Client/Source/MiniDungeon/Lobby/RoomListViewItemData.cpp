@@ -14,9 +14,9 @@ URoomListViewItemData::~URoomListViewItemData()
 	delete Host;
 	Host = nullptr;
 
-	for (auto player : Players)
+	for (auto& player : Players)
 	{
-		delete player;
+		delete player.Value;
 	}
 	Players.Empty();
 
@@ -31,9 +31,14 @@ void URoomListViewItemData::SetHost(const Protocol::PlayerInfo& info)
 
 void URoomListViewItemData::AddPlayer(const Protocol::PlayerInfo& info)
 {
+	if (Players.Contains(info.player_id()))
+	{
+		return;
+	}
+
 	Protocol::PlayerInfo* player = new Protocol::PlayerInfo();
 	player->CopyFrom(info);
-	Players.Add(player);
+	Players.Add(player->player_id(), player);
 }
 
 void URoomListViewItemData::SetInfo(const Protocol::RoomInfo& info)

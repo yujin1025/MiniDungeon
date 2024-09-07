@@ -49,7 +49,12 @@ class URoomListViewItemData* ULobbyWidget::AddRoomData(const Protocol::RoomInfo&
 
 	RoomList.Add(roomName, roomData);
 
-	RoomListView->AddItem(roomData);
+	RoomListView->ClearListItems();
+
+	for(auto &room : RoomList)
+	{
+		RoomListView->AddItem(room.Value);
+	}
 
 	return roomData;
 }

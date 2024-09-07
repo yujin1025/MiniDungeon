@@ -34,7 +34,7 @@ public:
 private:
 	Protocol::PlayerInfo* Host;
 
-	TArray<Protocol::PlayerInfo*> Players;
+	TMap<uint64, Protocol::PlayerInfo*> Players;
 
 	Protocol::RoomInfo* Info;
 
@@ -42,7 +42,7 @@ public:
 	const Protocol::PlayerInfo* GetHost() { return Host; }
 	void SetHost(const Protocol::PlayerInfo& info);
 
-	const TArray<Protocol::PlayerInfo*>& GetPlayers() { return Players; }
+	const TMap<uint64, Protocol::PlayerInfo*>& GetPlayers() { return Players; }
 	void AddPlayer(const Protocol::PlayerInfo& info);
 
 	const Protocol::RoomInfo* GetInfo() { return Info; }
