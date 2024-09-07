@@ -64,7 +64,7 @@ void ULobbyWidget::CreateRoom(const uint64 roomIndex, const FString& roomName, c
 	//RefreshListView();
 }
 
-void ULobbyWidget::CreateRoom(const Protocol::RoomInfo& info)
+void ULobbyWidget::CreateRoom(const Protocol::RoomInfo& info, bool isHost)
 {
 	URoomListViewItemData* roomData = NewObject<URoomListViewItemData>();
 
@@ -74,13 +74,16 @@ void ULobbyWidget::CreateRoom(const Protocol::RoomInfo& info)
 
 	RoomListView->AddItem(roomData);
 
-	if (IsValid(RoomWidgetClass))
+	if(isHost)
 	{
-		RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
-		if (IsValid(RoomWidget))
+		if (IsValid(RoomWidgetClass))
 		{
-			RoomWidget->SetRoomData(roomData);
-			RoomWidget->AddToViewport();
+			RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
+			if (IsValid(RoomWidget))
+			{
+				RoomWidget->SetRoomData(roomData);
+				RoomWidget->AddToViewport();
+			}
 		}
 	}
 }

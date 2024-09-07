@@ -50,7 +50,7 @@ private:
 public:
 	void CreateRoom(const uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info);
 	
-	void CreateRoom(const Protocol::RoomInfo& info);
+	void CreateRoom(const Protocol::RoomInfo& info, bool isHost);
 
 	UFUNCTION()
 	void RemoveRoom(const uint64 roomIndex);

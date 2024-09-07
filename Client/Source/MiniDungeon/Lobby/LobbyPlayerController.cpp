@@ -67,11 +67,11 @@ void ALobbyPlayerController::CreateRoom(uint64 roomIndex, const FString& roomNam
 	}
 }
 
-void ALobbyPlayerController::CreateRoom(const Protocol::RoomInfo& info)
+void ALobbyPlayerController::CreateRoom(const Protocol::RoomInfo& info, bool isHost)
 {
 	if (IsValid(LobbyWidget))
 	{
-		LobbyWidget->CreateRoom(info);
+		LobbyWidget->CreateRoom(info, isHost);
 	}
 }
 
