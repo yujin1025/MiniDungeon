@@ -24,7 +24,19 @@ message ObjectInfo
 message PlayerInfo
 {
 	uint64 player_id = 1;
-	string player_name = 2;
-	ObjectInfo object_info = 3;
+	PlayerType player_type = 2;
+	string player_name = 3;
+	ObjectInfo object_info = 4;
+	// ...
+}
+
+message RoomInfo
+{
+	uint64 room_id = 1;
+	PlayerInfo host = 2;
+	string room_name = 3;
+	string password = 4;
+	uint32 current_player_count = 5;
+	repeated PlayerInfo players = 6;
 	// ...
 }

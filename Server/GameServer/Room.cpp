@@ -10,11 +10,14 @@ RoomRef GRoom = make_shared<Room>();
 Room::Room()
 {
 
+	info = new Protocol::RoomInfo();
 }
 
 Room::~Room()
 {
 	_players.clear();
+	_objects.clear();
+	info->Clear();
 }
 
 bool Room::EnterRoom(ObjectRef object)
@@ -157,6 +160,12 @@ void Room::HandleMove(Protocol::CTS_MOVE pkt)
 	}
 }
 
+void Room::SetRoomIndex(uint64 roomIndex)
+{
+	_roomIndex = roomIndex;
+	info->set_room_id(roomIndex);	
+}
+
 void Room::UpdateTick()
 {
 	cout << "Update Room" << endl;
@@ -206,6 +215,9 @@ bool Room::AddPlayer(PlayerRef player)
 	}
 
 	_players.insert(make_pair(player->GetPlayerInfo()->player_id(), player));
+
+	info->set_current_player_count(_players.size());
+	info->add_players()->CopyFrom(*player->GetPlayerInfo());
 
 	return true;
 }

@@ -35,7 +35,6 @@ void ULobbyWidget::NativeConstruct()
 	{
 		JoinButton->OnClicked.AddDynamic(this, &ULobbyWidget::OnClickedJoinButton);
 	}
-
 }
 
 void ULobbyWidget::CreateRoom(const uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info)
@@ -65,6 +64,27 @@ void ULobbyWidget::CreateRoom(const uint64 roomIndex, const FString& roomName, c
 	//RefreshListView();
 }
 
+void ULobbyWidget::CreateRoom(const Protocol::RoomInfo& info)
+{
+	URoomListViewItemData* roomData = NewObject<URoomListViewItemData>();
+
+	roomData->SetInfo(info);
+
+	RoomList.Add(roomData);
+
+	RoomListView->AddItem(roomData);
+
+	if (IsValid(RoomWidgetClass))
+	{
+		RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
+		if (IsValid(RoomWidget))
+		{
+			RoomWidget->SetRoomData(roomData);
+			RoomWidget->AddToViewport();
+		}
+	}
+}
+
 void ULobbyWidget::RemoveRoom(const uint64 roomIndex)
 {
 }
@@ -86,12 +106,16 @@ void ULobbyWidget::OnClickedCreateButton()
 {
 	Protocol::CTS_CREATE_ROOM createRoomPkt;
 
+	Protocol::RoomInfo* roomInfo = new Protocol::RoomInfo();
+	roomInfo->set_room_name(TCHAR_TO_UTF8(*(RoomNameInput->GetText().ToString())));
+	roomInfo->set_password(TCHAR_TO_UTF8(*(PasswordInput->GetText().ToString())));
+	roomInfo->set_current_player_count(1);
+
 	Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
 	playerInfo->CopyFrom(*Owner->GetPlayerInfo());
-	createRoomPkt.set_allocated_player(playerInfo);
-	
-	createRoomPkt.set_roomname(TCHAR_TO_UTF8(*(RoomNameInput->GetText().ToString())));
-	createRoomPkt.set_password(TCHAR_TO_UTF8(*(PasswordInput->GetText().ToString())));
+	roomInfo->set_allocated_host(playerInfo);
+
+	createRoomPkt.set_allocated_room_info(roomInfo);
 	
 	SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(createRoomPkt);
 	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();

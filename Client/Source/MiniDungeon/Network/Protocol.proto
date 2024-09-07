@@ -14,7 +14,7 @@ message CTS_LOGIN
 message STC_LOGIN
 {
 	bool success = 1;
-	PlayerInfo player = 3;
+	PlayerInfo player = 2;
 }
 
 message CTS_ENTER_LOBBY
@@ -26,18 +26,18 @@ message STC_ENTER_LOBBY
 {
 	bool success = 1;
 	PlayerInfo player = 2;
+	repeated RoomInfo rooms = 3;
 }
 
 message CTS_CREATE_ROOM
 {
-	PlayerInfo player = 1;
+	RoomInfo room_info = 1;
 }
 
 message STC_CREATE_ROOM
 {
 	bool success = 1;
-	uint64 roomIndex = 2;
-	PlayerInfo host = 3;
+	RoomInfo room_info = 2;
 }
 
 message CTS_JOIN_ROOM

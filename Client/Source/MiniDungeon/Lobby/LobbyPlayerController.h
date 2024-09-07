@@ -45,5 +45,6 @@ public:
 	void SetPlayerInfo(const Protocol::PlayerInfo& info);
 
 public:
-	void CreateRoom(const uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info);
+	void CreateRoom(uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info);
+	void CreateRoom(const Protocol::RoomInfo& info);
 };

@@ -13,9 +13,9 @@ public:
 public:
 	GameSessionRef GetSession() { return session.lock(); }
 
-	Protocol::PlayerInfo* GetPlayerInfo() { return playerInfo; }
+	const Protocol::PlayerInfo* GetPlayerInfo() { return playerInfo; }
 	void SetPlayerInfo(const Protocol::PlayerInfo& playerInfo) { this->playerInfo->CopyFrom(playerInfo); }
-
+	void SetPlayerID(int64 playerID) { playerInfo->set_player_id(playerID); }
 protected:
 	Protocol::PlayerInfo* playerInfo;
 

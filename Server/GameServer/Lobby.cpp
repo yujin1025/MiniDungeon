@@ -36,6 +36,12 @@ bool Lobby::EnterLobby(PlayerRef player)
 		playerInfo->CopyFrom(*player->GetPlayerInfo());
 
 		enterLobbyPkt.set_allocated_player(playerInfo);
+
+		for (auto& roomInfo : _rooms)
+		{
+			Protocol::RoomInfo* info = enterLobbyPkt.add_rooms();
+			info->CopyFrom(*(roomInfo.second->GetRoomInfo()));
+		}
 	}
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterLobbyPkt);
@@ -96,10 +102,10 @@ bool Lobby::CreateRoom(const Protocol::PlayerInfo info, string roomName, string 
 
 	// 방 생성 성공 시 패킷 세팅
 	createRoomPkt.set_success(true);
-	createRoomPkt.set_allocated_host(playerInfo);
+	/*createRoomPkt.set_allocated_host(playerInfo);
 	createRoomPkt.set_roomindex(newId);
 	createRoomPkt.set_roomname(roomName);
-	createRoomPkt.set_password(password);
+	createRoomPkt.set_password(password);*/
 
 	// 방 생성 사실을 생성한 클라이언트에게 전달
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(createRoomPkt);
@@ -117,6 +123,55 @@ bool Lobby::CreateRoom(const Protocol::PlayerInfo info, string roomName, string 
 	return true;
 }
 
+bool Lobby::CreateRoom(const Protocol::RoomInfo& roomInfo)
+{
+	Protocol::STC_CREATE_ROOM createRoomPkt;
+
+	// 로비에 없으면 문제있음
+	if (_players.find(roomInfo.host().player_id()) == _players.end())
+	{
+		createRoomPkt.set_success(false);
+		return false;
+	}
+
+	// 방 생성
+	RoomRef room = make_shared<Room>();
+	room->SetRoomInfo(roomInfo);
+
+	const uint64 newId = s_idGenerator.fetch_add(1);
+	room->SetRoomIndex(newId);
+
+	uint64 host_id = room->GetRoomInfo()->host().player_id();
+
+	room->EnterRoom(_players[host_id], true);
+
+	_rooms.insert(make_pair(newId, room));
+
+	// 방 생성 성공 시 패킷 세팅
+	createRoomPkt.set_success(true);
+
+	Protocol::RoomInfo* info = new Protocol::RoomInfo();
+
+	info->CopyFrom(*room->GetRoomInfo());
+
+	createRoomPkt.set_allocated_room_info(info);
+
+	// 방 생성 사실을 생성한 클라이언트에게 전달
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(createRoomPkt);
+	if (auto session = _players[host_id]->session.lock())
+	{
+		session->Send(sendBuffer);
+	}
+
+	// 방 생성 사실을 다른 클라이언트들에게도 전달
+	{
+		Broadcast(sendBuffer, host_id);
+	}
+
+	_players.erase(host_id);
+	return true;
+}
+
 //bool Lobby::HandleCreateRoom(PlayerRef player)
 //{
 //	return CreateRoom(player);
@@ -125,6 +180,11 @@ bool Lobby::CreateRoom(const Protocol::PlayerInfo info, string roomName, string 
 bool Lobby::HandleCreateRoom(const Protocol::PlayerInfo info, string roomName, string password)
 {
 	return CreateRoom(info, roomName, password);
+}
+
+bool Lobby::HandleCreateRoom(const Protocol::RoomInfo& roomInfo)
+{
+	return CreateRoom(roomInfo);
 }
 
 void Lobby::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)

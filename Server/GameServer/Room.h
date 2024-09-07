@@ -20,7 +20,7 @@ public:
 	void HandleMove(Protocol::CTS_MOVE pkt);
 
 	uint64 GetRoomIndex() const { return _roomIndex; }
-	void SetRoomIndex(uint64 roomIndex) { _roomIndex = roomIndex; }
+	void SetRoomIndex(uint64 roomIndex);
 public:
 	void UpdateTick();
 
@@ -40,6 +40,14 @@ private:
 	unordered_map<uint64, ObjectRef> _objects;
 	weak_ptr<class Lobby> _lobby;
 	uint64 _roomIndex;
+
+protected:
+	Protocol::RoomInfo* info;
+
+public:
+	const Protocol::RoomInfo* GetRoomInfo() { return info; }
+
+	void SetRoomInfo(const Protocol::RoomInfo& info) { this->info->CopyFrom(info); }
 };
 
 extern RoomRef GRoom;

@@ -15,6 +15,14 @@ public:
 		Push(make_shared<Job>(std::move(callback)));
 	}
 
+	template<typename T, typename Ret, typename LRef, typename... Args>
+	void DoAsync(Ret(T::* memFunc)(LRef&, Args...), LRef& lref, Args&&... args) {
+		std::shared_ptr<T> owner = std::static_pointer_cast<T>(shared_from_this());
+
+		// Job 생성 시, LRef는 lref로, 나머지 Args는 std::forward로 전달
+		Push(std::make_shared<Job>(owner, memFunc, lref, std::forward<Args>(args)...));
+	}
+
 	template<typename T, typename Ret, typename... Args>
 	void DoAsync(Ret(T::*memFunc)(Args...), Args... args)
 	{
@@ -27,13 +35,6 @@ public:
 	{
 		shared_ptr<T> owner = static_pointer_cast<T>(shared_from_this());
 		Push(make_shared<Job>(owner, memFunc, std::forward<Args>(args)...));
-	}
-
-	template<typename T, typename Ret, typename... Args1, typename... Args2>
-	void DoAsync(Ret(T::* memFunc)(Args1..., Args2...), Args1&&... args1, Args2... args2)
-	{
-		shared_ptr<T> owner = static_pointer_cast<T>(shared_from_this());
-		Push(make_shared<Job>(owner, memFunc, std::forward<Args1>(args1)...), std::forward<Args2>(args2)...);
 	}
 
 	void DoTimer(uint64 tickAfter, CallbackType&& callback)

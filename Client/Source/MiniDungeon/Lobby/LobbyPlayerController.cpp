@@ -59,11 +59,19 @@ void ALobbyPlayerController::BeginPlay()
 	}
 }
 
-void ALobbyPlayerController::CreateRoom(const uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info)
+void ALobbyPlayerController::CreateRoom(uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info)
 {
 	if (IsValid(LobbyWidget))
 	{
 		LobbyWidget->CreateRoom(roomIndex, roomName, password, info);
+	}
+}
+
+void ALobbyPlayerController::CreateRoom(const Protocol::RoomInfo& info)
+{
+	if (IsValid(LobbyWidget))
+	{
+		LobbyWidget->CreateRoom(info);
 	}
 }
 

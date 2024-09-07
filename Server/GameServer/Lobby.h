@@ -17,9 +17,13 @@ public:
 
 	bool CreateRoom(const Protocol::PlayerInfo info, string roomName, string password);
 
+	bool CreateRoom(const Protocol::RoomInfo& roomInfo);
+
 	//bool HandleCreateRoom(PlayerRef player);
 
 	bool HandleCreateRoom(const Protocol::PlayerInfo info, string roomName, string password);
+
+	bool HandleCreateRoom(const Protocol::RoomInfo& roomInfo);
 
 private:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);

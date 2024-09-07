@@ -134,10 +134,11 @@ void UMDNetworkManager::HandleCreateRoom(const Protocol::STC_CREATE_ROOM& create
 
 	if (IsValid(pc))
 	{
-		FString roomName = createRoomPkt.roomname().c_str();
-		FString password = createRoomPkt.password().c_str();
+		pc->CreateRoom(createRoomPkt.room_info());
+		//FString roomName = createRoomPkt.roomname().c_str();
+		//FString password = createRoomPkt.password().c_str();
 
-		pc->CreateRoom(createRoomPkt.roomindex(), roomName, password, createRoomPkt.host());
+		//pc->CreateRoom(createRoomPkt.roomindex(), roomName, password, createRoomPkt.host());
 	}
 }
 

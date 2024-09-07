@@ -15,7 +15,9 @@ class MINIDUNGEON_API URoomListViewItemData : public UObject
 {
 	GENERATED_BODY()
 public:
-	URoomListViewItemData() : RoomIndex(0), PlayerNum(0), Host(nullptr) { Host = new Protocol::PlayerInfo(); }
+	URoomListViewItemData();
+
+	~URoomListViewItemData();
 
 	UPROPERTY(EditAnywhere)
 	uint64 RoomIndex;
@@ -34,10 +36,15 @@ private:
 
 	TArray<Protocol::PlayerInfo*> Players;
 
+	Protocol::RoomInfo* Info;
+
 public:
-	Protocol::PlayerInfo* GetHost() { return Host; }
+	const Protocol::PlayerInfo* GetHost() { return Host; }
 	void SetHost(const Protocol::PlayerInfo& info);
 
 	const TArray<Protocol::PlayerInfo*>& GetPlayers() { return Players; }
 	void AddPlayer(const Protocol::PlayerInfo& info);
+
+	const Protocol::RoomInfo* GetInfo() { return Info; }
+	void SetInfo(const Protocol::RoomInfo& info);
 };
