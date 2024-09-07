@@ -35,36 +35,11 @@ void ULobbyWidget::NativeConstruct()
 	{
 		JoinButton->OnClicked.AddDynamic(this, &ULobbyWidget::OnClickedJoinButton);
 	}
+
+	RefreshListView();
 }
 
-void ULobbyWidget::CreateRoom(const uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info)
-{
-	URoomListViewItemData* roomData = NewObject<URoomListViewItemData>();
-
-	roomData->RoomIndex = roomIndex;
-	roomData->RoomName = roomName;
-	roomData->RoomPassword = password;
-	roomData->SetHost(info);
-	roomData->AddPlayer(info);
-
-	RoomList.Add(roomData);
-
-	RoomListView->AddItem(roomData);
-
-	if (IsValid(RoomWidgetClass))
-	{
-		RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
-		if (IsValid(RoomWidget))
-		{
-			RoomWidget->SetRoomData(roomData);	
-			RoomWidget->AddToViewport();
-		}
-	}
-
-	//RefreshListView();
-}
-
-void ULobbyWidget::CreateRoom(const Protocol::RoomInfo& info, bool isHost)
+TObjectPtr<class URoomListViewItemData> ULobbyWidget::AddRoomData(const Protocol::RoomInfo& info)
 {
 	URoomListViewItemData* roomData = NewObject<URoomListViewItemData>();
 
@@ -73,6 +48,13 @@ void ULobbyWidget::CreateRoom(const Protocol::RoomInfo& info, bool isHost)
 	RoomList.Add(roomData);
 
 	RoomListView->AddItem(roomData);
+
+	return roomData;
+}
+
+void ULobbyWidget::CreateRoom(const Protocol::RoomInfo& info, bool isHost)
+{
+	auto roomData = AddRoomData(info);
 
 	if(isHost)
 	{
@@ -98,11 +80,16 @@ void ULobbyWidget::UpdateRoom(const uint64 roomIndex, const uint64 playerNum)
 
 void ULobbyWidget::ClearRoomList()
 {
+	RoomList.Empty();
+	RoomListView->ClearListItems();
 }
 
 void ULobbyWidget::RefreshListView()
 {
-
+	for(auto &roomData : RoomList)
+	{
+		RoomListView->AddItem(roomData);
+	}
 }
 
 void ULobbyWidget::OnClickedCreateButton()

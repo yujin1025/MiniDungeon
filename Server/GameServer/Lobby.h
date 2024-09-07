@@ -13,15 +13,7 @@ public:
 
 	bool HandleEnterPlayer(PlayerRef player);
 
-	bool CreateRoom(PlayerRef player);
-
-	bool CreateRoom(const Protocol::PlayerInfo info, string roomName, string password);
-
 	bool CreateRoom(const Protocol::RoomInfo& roomInfo);
-
-	//bool HandleCreateRoom(PlayerRef player);
-
-	bool HandleCreateRoom(const Protocol::PlayerInfo info, string roomName, string password);
 
 	bool HandleCreateRoom(const Protocol::RoomInfo& roomInfo);
 

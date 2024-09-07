@@ -12,6 +12,7 @@
 #include "Character/PlayableCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Lobby/LobbyPlayerController.h"
+#include <Lobby/RoomListViewItemData.h>
 
 
 void UMDNetworkManager::Initialize(FSubsystemCollectionBase& Collection)
@@ -112,8 +113,7 @@ void UMDNetworkManager::HandleLogin(const Protocol::STC_ENTER_LOBBY& enterLobbyP
 
 	if (IsValid(pc))
 	{
-		pc->SetPlayerInfo(enterLobbyPkt.player());
-		pc->OpenLobbyWidget();
+		pc->OpenLobbyWidget(enterLobbyPkt);
 	}
 }
 

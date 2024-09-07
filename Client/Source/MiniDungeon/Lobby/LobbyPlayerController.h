@@ -17,10 +17,6 @@ class MINIDUNGEON_API ALobbyPlayerController : public APlayerController
 public:
 	ALobbyPlayerController();
 	~ALobbyPlayerController();
-
-	UFUNCTION()
-	void OpenLobbyWidget();
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -44,7 +40,12 @@ public:
 	Protocol::PlayerInfo* GetPlayerInfo() { return PlayerInfo; }
 	void SetPlayerInfo(const Protocol::PlayerInfo& info);
 
+private:
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	TSet<TObjectPtr<class URoomListViewItemData>> RoomList;
+
 public:
-	void CreateRoom(uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info);
 	void CreateRoom(const Protocol::RoomInfo& info, bool isHost);
+
+	void OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& enterLobbypkt);
 };

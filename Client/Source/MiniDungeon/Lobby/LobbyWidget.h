@@ -40,6 +40,9 @@ protected:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	TSet<TObjectPtr<class URoomListViewItemData>> RoomList;
 
+public:
+	TObjectPtr<class URoomListViewItemData> AddRoomData(const Protocol::RoomInfo& info);
+
 private:
 	UPROPERTY()
 	TSubclassOf<UUserWidget> RoomWidgetClass;
@@ -47,9 +50,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<class URoomWidget> RoomWidget;
 
-public:
-	void CreateRoom(const uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info);
-	
+public:	
 	void CreateRoom(const Protocol::RoomInfo& info, bool isHost);
 
 	UFUNCTION()

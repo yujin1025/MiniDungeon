@@ -31,8 +31,10 @@ ALobbyPlayerController::~ALobbyPlayerController()
 	PlayerInfo = nullptr;
 }
 
-void ALobbyPlayerController::OpenLobbyWidget()
+void ALobbyPlayerController::OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& enterLobbypkt)
 {
+	SetPlayerInfo(enterLobbypkt.player());
+
 	if (IsValid(LobbyWidgetClass))
 	{
 		LobbyWidget = CreateWidget<ULobbyWidget>(this, LobbyWidgetClass);
@@ -40,6 +42,10 @@ void ALobbyPlayerController::OpenLobbyWidget()
 		{
 			Cast<ULobbyWidget>(LobbyWidget)->Owner = this;
 			LobbyWidget->AddToViewport();
+			for(auto& room : enterLobbypkt.rooms())
+			{
+				LobbyWidget->AddRoomData(room);
+			}
 		}
 	}
 }
@@ -56,14 +62,6 @@ void ALobbyPlayerController::BeginPlay()
 		{
 			LoginWidget->AddToViewport();
 		}
-	}
-}
-
-void ALobbyPlayerController::CreateRoom(uint64 roomIndex, const FString& roomName, const FString& password, const Protocol::PlayerInfo& info)
-{
-	if (IsValid(LobbyWidget))
-	{
-		LobbyWidget->CreateRoom(roomIndex, roomName, password, info);
 	}
 }
 

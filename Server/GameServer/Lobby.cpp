@@ -56,73 +56,6 @@ bool Lobby::HandleEnterPlayer(PlayerRef player)
 	return EnterLobby(player);
 }
 
-bool Lobby::CreateRoom(PlayerRef player)
-{
-	Protocol::STC_CREATE_ROOM createRoomPkt;
-
-	// 로비에 없으면 문제있음
-	if (_players.find(player->GetPlayerInfo()->player_id()) == _players.end())
-	{
-		createRoomPkt.set_success(false);
-		return false;
-	}
-
-	const int64 newId = s_idGenerator.fetch_add(1);
-	RoomRef room = make_shared<Room>();
-
-
-	//_rooms.insert(make_pair(s_idGenerator, room));
-
-	return false;
-}
-
-bool Lobby::CreateRoom(const Protocol::PlayerInfo info, string roomName, string password)
-{
-	Protocol::STC_CREATE_ROOM createRoomPkt;
-
-	// 로비에 없으면 문제있음
-	if (_players.find(info.player_id()) == _players.end())
-	{
-		createRoomPkt.set_success(false);
-		return false;
-	}
-
-	// 방 생성
-	RoomRef room = make_shared<Room>();
-
-	const uint64 newId = s_idGenerator.fetch_add(1);
-	room->SetRoomIndex(newId);
-
-	Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
-	playerInfo->CopyFrom(info);
-
-	room->EnterRoom(_players[playerInfo->player_id()], true);
-
-	_rooms.insert(make_pair(newId, room));
-
-	// 방 생성 성공 시 패킷 세팅
-	createRoomPkt.set_success(true);
-	/*createRoomPkt.set_allocated_host(playerInfo);
-	createRoomPkt.set_roomindex(newId);
-	createRoomPkt.set_roomname(roomName);
-	createRoomPkt.set_password(password);*/
-
-	// 방 생성 사실을 생성한 클라이언트에게 전달
-	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(createRoomPkt);
-	if (auto session = _players[playerInfo->player_id()]->session.lock())
-	{
-		session->Send(sendBuffer);
-	}
-
-	// 방 생성 사실을 다른 클라이언트들에게도 전달
-	{
-		Broadcast(sendBuffer, playerInfo->player_id());
-	}
-
-	_players.erase(playerInfo->player_id());
-	return true;
-}
-
 bool Lobby::CreateRoom(const Protocol::RoomInfo& roomInfo)
 {
 	Protocol::STC_CREATE_ROOM createRoomPkt;
@@ -170,16 +103,6 @@ bool Lobby::CreateRoom(const Protocol::RoomInfo& roomInfo)
 
 	_players.erase(host_id);
 	return true;
-}
-
-//bool Lobby::HandleCreateRoom(PlayerRef player)
-//{
-//	return CreateRoom(player);
-//}
-
-bool Lobby::HandleCreateRoom(const Protocol::PlayerInfo info, string roomName, string password)
-{
-	return CreateRoom(info, roomName, password);
 }
 
 bool Lobby::HandleCreateRoom(const Protocol::RoomInfo& roomInfo)
