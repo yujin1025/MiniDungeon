@@ -48,6 +48,10 @@ public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "CharacterImage", meta = (AllowPrivateAccess = true))
 	TArray<TObjectPtr<class UImage>> PlayerCharacters;
 
+private:
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "CharacterImage", meta = (AllowPrivateAccess = true))
+	TArray<TObjectPtr<class UMaterialInterface>> CharacterImages;
+
 public:
 	UFUNCTION()
 	void OnClickedStartButton();

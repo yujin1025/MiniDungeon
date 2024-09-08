@@ -10,6 +10,20 @@
 URoomWidget::URoomWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	FString AuroraImagePath = FString::Printf(TEXT("/Script/Engine.Material'/Game/Assets/UI/Lobby/MT_TR2D_Aurora.MT_TR2D_Aurora'"));
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> AuroraImage(*AuroraImagePath);
+	if (AuroraImage.Succeeded())
+	{
+		CharacterImages.AddUnique(AuroraImage.Object);
+	}
+
+	FString DrongoImagePath = FString::Printf(TEXT("/Script/Engine.Material'/Game/Assets/UI/Lobby/MT_TR2D_Drongo.MT_TR2D_Drongo'"));
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> DrongoImage(*DrongoImagePath);
+	if (DrongoImage.Succeeded())
+	{
+		CharacterImages.AddUnique(DrongoImage.Object);
+	}
+
 	//PlayerNames.AddUnique(Player1_Name);
 	//PlayerNames.AddUnique(Player2_Name);
 	//PlayerNames.AddUnique(Player3_Name);
@@ -57,7 +71,24 @@ void URoomWidget::NativeConstruct()
 		{
 			FString PlayerNum_Image = FString::Printf(TEXT("Player%d_Image"), i);
 			PlayerCharacters.Add(Cast<UImage>(GetWidgetFromName(FName(PlayerNum_Image))));
-			PlayerCharacters[i - 1]->OnMouseButtonDownEvent.BindUFunction(this, FName("OnClickedCharacterImage"));
+		}
+
+		int index = 0;
+		for (auto& player : RoomData->GetPlayers())
+		{
+			switch (player.Value->player_type())
+			{
+				case Protocol::PLAYER_TYPE_AURORA:
+					PlayerCharacters[index]->SetBrushFromMaterial(CharacterImages[0]);
+					PlayerCharacters[index]->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+					index++;
+					break;
+				case Protocol::PLAYER_TYPE_DRONGO:
+					PlayerCharacters[index]->SetBrushFromMaterial(CharacterImages[1]);
+					PlayerCharacters[index]->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+					index++;
+					break;
+			}
 		}
 	}
 
