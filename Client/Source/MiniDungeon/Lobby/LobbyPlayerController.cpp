@@ -86,3 +86,8 @@ void ALobbyPlayerController::SetPlayerInfo(const Protocol::PlayerInfo& info)
 {
 	PlayerInfo->CopyFrom(info);
 }
+
+void ALobbyPlayerController::ChangeCharacter(const Protocol::PlayerType& type)
+{
+	PlayerInfo->set_player_type(type);
+}

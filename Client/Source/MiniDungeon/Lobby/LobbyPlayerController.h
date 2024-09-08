@@ -37,8 +37,9 @@ private:
 	Protocol::PlayerInfo* PlayerInfo;
 
 public:
-	Protocol::PlayerInfo* GetPlayerInfo() { return PlayerInfo; }
+	const Protocol::PlayerInfo* GetPlayerInfo() { return PlayerInfo; }
 	void SetPlayerInfo(const Protocol::PlayerInfo& info);
+	void ChangeCharacter(const Protocol::PlayerType& type);
 
 private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
