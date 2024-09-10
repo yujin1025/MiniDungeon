@@ -54,6 +54,21 @@ message STC_JOIN_ROOM
 	PlayerInfo player = 3;
 }
 
+message CTS_CHANGE_CHARACTER
+{
+	uint64 roomIndex = 1;
+	uint64 player_id = 2;
+	PlayerType character = 3;
+}
+
+message STC_CHANGE_CHARACTER
+{
+	bool success = 1;
+	uint64 roomIndex = 2;
+	uint64 player_id = 3;
+	PlayerType character = 4;
+}
+
 message CTS_LEAVE_ROOM
 {
 	uint64 roomIndex = 1;

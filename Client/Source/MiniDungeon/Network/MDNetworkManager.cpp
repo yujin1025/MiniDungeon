@@ -166,6 +166,28 @@ void UMDNetworkManager::HandleJoinRoom(const Protocol::STC_JOIN_ROOM& joinRoomPk
 	}
 }
 
+void UMDNetworkManager::HandleChangeCharacter(const Protocol::STC_CHANGE_CHARACTER& changeCharacterPkt)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	auto* world = GetWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	auto* pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+
+	if (IsValid(pc))
+	{
+		pc->ChangeCharacter(changeCharacterPkt);
+	}
+
+}
+
 void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, bool isMine)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)

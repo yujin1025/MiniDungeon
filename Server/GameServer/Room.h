@@ -14,9 +14,12 @@ public:
 
 	bool EnterRoom(PlayerRef player, bool isHost = true);
 	bool LeaveRoom(PlayerRef player);
+	bool ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType);
 
 	bool HandleEnterPlayer(PlayerRef player);
 	bool HandleLeavePlayer(PlayerRef player);
+
+	bool HandleChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType);
 	void HandleMove(Protocol::CTS_MOVE pkt);
 
 	uint64 GetRoomIndex() const { return _roomIndex; }

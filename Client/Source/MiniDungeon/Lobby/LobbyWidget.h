@@ -52,6 +52,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<class URoomWidget> RoomWidget;
 
+public:
+	TObjectPtr<class URoomWidget> GetRoomWidget() { return RoomWidget; }
+
 public:	
 	void CreateRoom(const Protocol::RoomInfo& info, bool isHost);
 

@@ -49,8 +49,6 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 		loginPkt.set_success(false);
 	}
 
-	
-
 	SEND_PACKET(loginPkt);
 
 	return true;
@@ -78,10 +76,16 @@ bool Handle_CTS_CREATE_ROOM(PacketSessionRef& session, Protocol::CTS_CREATE_ROOM
 
 bool Handle_CTS_JOIN_ROOM(PacketSessionRef& session, Protocol::CTS_JOIN_ROOM& pkt)
 {
-	//GLobby->DoAsync(&Lobby::HandleJoinRoom, pkt);
 	uint64 playerId = pkt.player().player_id();
 	uint64 roomId = pkt.roomindex();
-	GLobby->HandleJoinRoom(playerId, roomId);
+
+	GLobby->DoAsync(&Lobby::HandleJoinRoom, playerId, roomId);
+	return true;
+}
+
+bool Handle_CTS_CHANGE_CHARACTER(PacketSessionRef& session, Protocol::CTS_CHANGE_CHARACTER& pkt)
+{
+	GLobby->GetRooms()[pkt.roomindex()]->DoAsync(&Room::HandleChangeCharacter, pkt.player_id(), pkt.character());
 	return true;
 }
 

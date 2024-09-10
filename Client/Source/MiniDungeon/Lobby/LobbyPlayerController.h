@@ -39,7 +39,7 @@ private:
 public:
 	const Protocol::PlayerInfo* GetPlayerInfo() { return PlayerInfo; }
 	void SetPlayerInfo(const Protocol::PlayerInfo& info);
-	void ChangeCharacter(const Protocol::PlayerType& type);
+	void SetCharacter(const Protocol::PlayerType characterType) { PlayerInfo->set_player_type(characterType); }
 
 private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
@@ -48,7 +48,9 @@ private:
 public:
 	void CreateRoom(const Protocol::RoomInfo& info, bool isHost);
 
-	void OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& enterLobbypkt);
+	void OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& enterLobbyPkt);
 
 	void JoinRoom(const Protocol::RoomInfo& info);
+
+	void ChangeCharacter(const Protocol::STC_CHANGE_CHARACTER changeCharacterPkt);
 };

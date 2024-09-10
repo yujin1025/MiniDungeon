@@ -48,6 +48,9 @@ struct TableStruct_Protocol_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Protocol_2eproto;
 namespace Protocol {
+class CTS_CHANGE_CHARACTER;
+struct CTS_CHANGE_CHARACTERDefaultTypeInternal;
+extern CTS_CHANGE_CHARACTERDefaultTypeInternal _CTS_CHANGE_CHARACTER_default_instance_;
 class CTS_CHAT;
 struct CTS_CHATDefaultTypeInternal;
 extern CTS_CHATDefaultTypeInternal _CTS_CHAT_default_instance_;
@@ -75,6 +78,9 @@ extern CTS_LOGINDefaultTypeInternal _CTS_LOGIN_default_instance_;
 class CTS_MOVE;
 struct CTS_MOVEDefaultTypeInternal;
 extern CTS_MOVEDefaultTypeInternal _CTS_MOVE_default_instance_;
+class STC_CHANGE_CHARACTER;
+struct STC_CHANGE_CHARACTERDefaultTypeInternal;
+extern STC_CHANGE_CHARACTERDefaultTypeInternal _STC_CHANGE_CHARACTER_default_instance_;
 class STC_CHAT;
 struct STC_CHATDefaultTypeInternal;
 extern STC_CHATDefaultTypeInternal _STC_CHAT_default_instance_;
@@ -110,6 +116,7 @@ struct STC_SPAWNDefaultTypeInternal;
 extern STC_SPAWNDefaultTypeInternal _STC_SPAWN_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
+template<> ::Protocol::CTS_CHANGE_CHARACTER* Arena::CreateMaybeMessage<::Protocol::CTS_CHANGE_CHARACTER>(Arena*);
 template<> ::Protocol::CTS_CHAT* Arena::CreateMaybeMessage<::Protocol::CTS_CHAT>(Arena*);
 template<> ::Protocol::CTS_CREATE_ROOM* Arena::CreateMaybeMessage<::Protocol::CTS_CREATE_ROOM>(Arena*);
 template<> ::Protocol::CTS_ENTER_GAME* Arena::CreateMaybeMessage<::Protocol::CTS_ENTER_GAME>(Arena*);
@@ -119,6 +126,7 @@ template<> ::Protocol::CTS_LEAVE_GAME* Arena::CreateMaybeMessage<::Protocol::CTS
 template<> ::Protocol::CTS_LEAVE_ROOM* Arena::CreateMaybeMessage<::Protocol::CTS_LEAVE_ROOM>(Arena*);
 template<> ::Protocol::CTS_LOGIN* Arena::CreateMaybeMessage<::Protocol::CTS_LOGIN>(Arena*);
 template<> ::Protocol::CTS_MOVE* Arena::CreateMaybeMessage<::Protocol::CTS_MOVE>(Arena*);
+template<> ::Protocol::STC_CHANGE_CHARACTER* Arena::CreateMaybeMessage<::Protocol::STC_CHANGE_CHARACTER>(Arena*);
 template<> ::Protocol::STC_CHAT* Arena::CreateMaybeMessage<::Protocol::STC_CHAT>(Arena*);
 template<> ::Protocol::STC_CREATE_ROOM* Arena::CreateMaybeMessage<::Protocol::STC_CREATE_ROOM>(Arena*);
 template<> ::Protocol::STC_DESPAWN* Arena::CreateMaybeMessage<::Protocol::STC_DESPAWN>(Arena*);
@@ -1525,6 +1533,357 @@ class STC_JOIN_ROOM final :
 };
 // -------------------------------------------------------------------
 
+class CTS_CHANGE_CHARACTER final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.CTS_CHANGE_CHARACTER) */ {
+ public:
+  inline CTS_CHANGE_CHARACTER() : CTS_CHANGE_CHARACTER(nullptr) {}
+  ~CTS_CHANGE_CHARACTER() override;
+  explicit PROTOBUF_CONSTEXPR CTS_CHANGE_CHARACTER(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CTS_CHANGE_CHARACTER(const CTS_CHANGE_CHARACTER& from);
+  CTS_CHANGE_CHARACTER(CTS_CHANGE_CHARACTER&& from) noexcept
+    : CTS_CHANGE_CHARACTER() {
+    *this = ::std::move(from);
+  }
+
+  inline CTS_CHANGE_CHARACTER& operator=(const CTS_CHANGE_CHARACTER& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CTS_CHANGE_CHARACTER& operator=(CTS_CHANGE_CHARACTER&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CTS_CHANGE_CHARACTER& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CTS_CHANGE_CHARACTER* internal_default_instance() {
+    return reinterpret_cast<const CTS_CHANGE_CHARACTER*>(
+               &_CTS_CHANGE_CHARACTER_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    8;
+
+  friend void swap(CTS_CHANGE_CHARACTER& a, CTS_CHANGE_CHARACTER& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CTS_CHANGE_CHARACTER* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CTS_CHANGE_CHARACTER* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CTS_CHANGE_CHARACTER* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CTS_CHANGE_CHARACTER>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CTS_CHANGE_CHARACTER& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CTS_CHANGE_CHARACTER& from) {
+    CTS_CHANGE_CHARACTER::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CTS_CHANGE_CHARACTER* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.CTS_CHANGE_CHARACTER";
+  }
+  protected:
+  explicit CTS_CHANGE_CHARACTER(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kRoomIndexFieldNumber = 1,
+    kPlayerIdFieldNumber = 2,
+    kCharacterFieldNumber = 3,
+  };
+  // uint64 roomIndex = 1;
+  void clear_roomindex();
+  uint64_t roomindex() const;
+  void set_roomindex(uint64_t value);
+  private:
+  uint64_t _internal_roomindex() const;
+  void _internal_set_roomindex(uint64_t value);
+  public:
+
+  // uint64 player_id = 2;
+  void clear_player_id();
+  uint64_t player_id() const;
+  void set_player_id(uint64_t value);
+  private:
+  uint64_t _internal_player_id() const;
+  void _internal_set_player_id(uint64_t value);
+  public:
+
+  // .Protocol.PlayerType character = 3;
+  void clear_character();
+  ::Protocol::PlayerType character() const;
+  void set_character(::Protocol::PlayerType value);
+  private:
+  ::Protocol::PlayerType _internal_character() const;
+  void _internal_set_character(::Protocol::PlayerType value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.CTS_CHANGE_CHARACTER)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t roomindex_;
+    uint64_t player_id_;
+    int character_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class STC_CHANGE_CHARACTER final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.STC_CHANGE_CHARACTER) */ {
+ public:
+  inline STC_CHANGE_CHARACTER() : STC_CHANGE_CHARACTER(nullptr) {}
+  ~STC_CHANGE_CHARACTER() override;
+  explicit PROTOBUF_CONSTEXPR STC_CHANGE_CHARACTER(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  STC_CHANGE_CHARACTER(const STC_CHANGE_CHARACTER& from);
+  STC_CHANGE_CHARACTER(STC_CHANGE_CHARACTER&& from) noexcept
+    : STC_CHANGE_CHARACTER() {
+    *this = ::std::move(from);
+  }
+
+  inline STC_CHANGE_CHARACTER& operator=(const STC_CHANGE_CHARACTER& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline STC_CHANGE_CHARACTER& operator=(STC_CHANGE_CHARACTER&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const STC_CHANGE_CHARACTER& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const STC_CHANGE_CHARACTER* internal_default_instance() {
+    return reinterpret_cast<const STC_CHANGE_CHARACTER*>(
+               &_STC_CHANGE_CHARACTER_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    9;
+
+  friend void swap(STC_CHANGE_CHARACTER& a, STC_CHANGE_CHARACTER& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(STC_CHANGE_CHARACTER* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(STC_CHANGE_CHARACTER* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  STC_CHANGE_CHARACTER* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<STC_CHANGE_CHARACTER>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const STC_CHANGE_CHARACTER& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const STC_CHANGE_CHARACTER& from) {
+    STC_CHANGE_CHARACTER::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(STC_CHANGE_CHARACTER* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.STC_CHANGE_CHARACTER";
+  }
+  protected:
+  explicit STC_CHANGE_CHARACTER(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kRoomIndexFieldNumber = 2,
+    kSuccessFieldNumber = 1,
+    kCharacterFieldNumber = 4,
+    kPlayerIdFieldNumber = 3,
+  };
+  // uint64 roomIndex = 2;
+  void clear_roomindex();
+  uint64_t roomindex() const;
+  void set_roomindex(uint64_t value);
+  private:
+  uint64_t _internal_roomindex() const;
+  void _internal_set_roomindex(uint64_t value);
+  public:
+
+  // bool success = 1;
+  void clear_success();
+  bool success() const;
+  void set_success(bool value);
+  private:
+  bool _internal_success() const;
+  void _internal_set_success(bool value);
+  public:
+
+  // .Protocol.PlayerType character = 4;
+  void clear_character();
+  ::Protocol::PlayerType character() const;
+  void set_character(::Protocol::PlayerType value);
+  private:
+  ::Protocol::PlayerType _internal_character() const;
+  void _internal_set_character(::Protocol::PlayerType value);
+  public:
+
+  // uint64 player_id = 3;
+  void clear_player_id();
+  uint64_t player_id() const;
+  void set_player_id(uint64_t value);
+  private:
+  uint64_t _internal_player_id() const;
+  void _internal_set_player_id(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.STC_CHANGE_CHARACTER)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t roomindex_;
+    bool success_;
+    int character_;
+    uint64_t player_id_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
 class CTS_LEAVE_ROOM final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.CTS_LEAVE_ROOM) */ {
  public:
@@ -1573,7 +1932,7 @@ class CTS_LEAVE_ROOM final :
                &_CTS_LEAVE_ROOM_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    10;
 
   friend void swap(CTS_LEAVE_ROOM& a, CTS_LEAVE_ROOM& b) {
     a.Swap(&b);
@@ -1741,7 +2100,7 @@ class STC_LEAVE_ROOM final :
                &_STC_LEAVE_ROOM_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    11;
 
   friend void swap(STC_LEAVE_ROOM& a, STC_LEAVE_ROOM& b) {
     a.Swap(&b);
@@ -1929,7 +2288,7 @@ class CTS_ENTER_GAME final :
                &_CTS_ENTER_GAME_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    12;
 
   friend void swap(CTS_ENTER_GAME& a, CTS_ENTER_GAME& b) {
     a.Swap(&b);
@@ -2077,7 +2436,7 @@ class STC_ENTER_GAME final :
                &_STC_ENTER_GAME_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    13;
 
   friend void swap(STC_ENTER_GAME& a, STC_ENTER_GAME& b) {
     a.Swap(&b);
@@ -2244,7 +2603,7 @@ class CTS_LEAVE_GAME final :
                &_CTS_LEAVE_GAME_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    12;
+    14;
 
   friend void swap(CTS_LEAVE_GAME& a, CTS_LEAVE_GAME& b) {
     a.Swap(&b);
@@ -2362,7 +2721,7 @@ class STC_LEAVE_GAME final :
                &_STC_LEAVE_GAME_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    13;
+    15;
 
   friend void swap(STC_LEAVE_GAME& a, STC_LEAVE_GAME& b) {
     a.Swap(&b);
@@ -2481,7 +2840,7 @@ class STC_SPAWN final :
                &_STC_SPAWN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    14;
+    16;
 
   friend void swap(STC_SPAWN& a, STC_SPAWN& b) {
     a.Swap(&b);
@@ -2638,7 +2997,7 @@ class STC_DESPAWN final :
                &_STC_DESPAWN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    15;
+    17;
 
   friend void swap(STC_DESPAWN& a, STC_DESPAWN& b) {
     a.Swap(&b);
@@ -2800,7 +3159,7 @@ class CTS_MOVE final :
                &_CTS_MOVE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    16;
+    18;
 
   friend void swap(CTS_MOVE& a, CTS_MOVE& b) {
     a.Swap(&b);
@@ -2957,7 +3316,7 @@ class STC_MOVE final :
                &_STC_MOVE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    17;
+    19;
 
   friend void swap(STC_MOVE& a, STC_MOVE& b) {
     a.Swap(&b);
@@ -3114,7 +3473,7 @@ class CTS_CHAT final :
                &_CTS_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    18;
+    20;
 
   friend void swap(CTS_CHAT& a, CTS_CHAT& b) {
     a.Swap(&b);
@@ -3267,7 +3626,7 @@ class STC_CHAT final :
                &_STC_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    19;
+    21;
 
   friend void swap(STC_CHAT& a, STC_CHAT& b) {
     a.Swap(&b);
@@ -4409,6 +4768,154 @@ inline void STC_JOIN_ROOM::set_allocated_player(::Protocol::PlayerInfo* player) 
 
 // -------------------------------------------------------------------
 
+// CTS_CHANGE_CHARACTER
+
+// uint64 roomIndex = 1;
+inline void CTS_CHANGE_CHARACTER::clear_roomindex() {
+  _impl_.roomindex_ = uint64_t{0u};
+}
+inline uint64_t CTS_CHANGE_CHARACTER::_internal_roomindex() const {
+  return _impl_.roomindex_;
+}
+inline uint64_t CTS_CHANGE_CHARACTER::roomindex() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_CHANGE_CHARACTER.roomIndex)
+  return _internal_roomindex();
+}
+inline void CTS_CHANGE_CHARACTER::_internal_set_roomindex(uint64_t value) {
+  
+  _impl_.roomindex_ = value;
+}
+inline void CTS_CHANGE_CHARACTER::set_roomindex(uint64_t value) {
+  _internal_set_roomindex(value);
+  // @@protoc_insertion_point(field_set:Protocol.CTS_CHANGE_CHARACTER.roomIndex)
+}
+
+// uint64 player_id = 2;
+inline void CTS_CHANGE_CHARACTER::clear_player_id() {
+  _impl_.player_id_ = uint64_t{0u};
+}
+inline uint64_t CTS_CHANGE_CHARACTER::_internal_player_id() const {
+  return _impl_.player_id_;
+}
+inline uint64_t CTS_CHANGE_CHARACTER::player_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_CHANGE_CHARACTER.player_id)
+  return _internal_player_id();
+}
+inline void CTS_CHANGE_CHARACTER::_internal_set_player_id(uint64_t value) {
+  
+  _impl_.player_id_ = value;
+}
+inline void CTS_CHANGE_CHARACTER::set_player_id(uint64_t value) {
+  _internal_set_player_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.CTS_CHANGE_CHARACTER.player_id)
+}
+
+// .Protocol.PlayerType character = 3;
+inline void CTS_CHANGE_CHARACTER::clear_character() {
+  _impl_.character_ = 0;
+}
+inline ::Protocol::PlayerType CTS_CHANGE_CHARACTER::_internal_character() const {
+  return static_cast< ::Protocol::PlayerType >(_impl_.character_);
+}
+inline ::Protocol::PlayerType CTS_CHANGE_CHARACTER::character() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_CHANGE_CHARACTER.character)
+  return _internal_character();
+}
+inline void CTS_CHANGE_CHARACTER::_internal_set_character(::Protocol::PlayerType value) {
+  
+  _impl_.character_ = value;
+}
+inline void CTS_CHANGE_CHARACTER::set_character(::Protocol::PlayerType value) {
+  _internal_set_character(value);
+  // @@protoc_insertion_point(field_set:Protocol.CTS_CHANGE_CHARACTER.character)
+}
+
+// -------------------------------------------------------------------
+
+// STC_CHANGE_CHARACTER
+
+// bool success = 1;
+inline void STC_CHANGE_CHARACTER::clear_success() {
+  _impl_.success_ = false;
+}
+inline bool STC_CHANGE_CHARACTER::_internal_success() const {
+  return _impl_.success_;
+}
+inline bool STC_CHANGE_CHARACTER::success() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_CHANGE_CHARACTER.success)
+  return _internal_success();
+}
+inline void STC_CHANGE_CHARACTER::_internal_set_success(bool value) {
+  
+  _impl_.success_ = value;
+}
+inline void STC_CHANGE_CHARACTER::set_success(bool value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:Protocol.STC_CHANGE_CHARACTER.success)
+}
+
+// uint64 roomIndex = 2;
+inline void STC_CHANGE_CHARACTER::clear_roomindex() {
+  _impl_.roomindex_ = uint64_t{0u};
+}
+inline uint64_t STC_CHANGE_CHARACTER::_internal_roomindex() const {
+  return _impl_.roomindex_;
+}
+inline uint64_t STC_CHANGE_CHARACTER::roomindex() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_CHANGE_CHARACTER.roomIndex)
+  return _internal_roomindex();
+}
+inline void STC_CHANGE_CHARACTER::_internal_set_roomindex(uint64_t value) {
+  
+  _impl_.roomindex_ = value;
+}
+inline void STC_CHANGE_CHARACTER::set_roomindex(uint64_t value) {
+  _internal_set_roomindex(value);
+  // @@protoc_insertion_point(field_set:Protocol.STC_CHANGE_CHARACTER.roomIndex)
+}
+
+// uint64 player_id = 3;
+inline void STC_CHANGE_CHARACTER::clear_player_id() {
+  _impl_.player_id_ = uint64_t{0u};
+}
+inline uint64_t STC_CHANGE_CHARACTER::_internal_player_id() const {
+  return _impl_.player_id_;
+}
+inline uint64_t STC_CHANGE_CHARACTER::player_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_CHANGE_CHARACTER.player_id)
+  return _internal_player_id();
+}
+inline void STC_CHANGE_CHARACTER::_internal_set_player_id(uint64_t value) {
+  
+  _impl_.player_id_ = value;
+}
+inline void STC_CHANGE_CHARACTER::set_player_id(uint64_t value) {
+  _internal_set_player_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.STC_CHANGE_CHARACTER.player_id)
+}
+
+// .Protocol.PlayerType character = 4;
+inline void STC_CHANGE_CHARACTER::clear_character() {
+  _impl_.character_ = 0;
+}
+inline ::Protocol::PlayerType STC_CHANGE_CHARACTER::_internal_character() const {
+  return static_cast< ::Protocol::PlayerType >(_impl_.character_);
+}
+inline ::Protocol::PlayerType STC_CHANGE_CHARACTER::character() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_CHANGE_CHARACTER.character)
+  return _internal_character();
+}
+inline void STC_CHANGE_CHARACTER::_internal_set_character(::Protocol::PlayerType value) {
+  
+  _impl_.character_ = value;
+}
+inline void STC_CHANGE_CHARACTER::set_character(::Protocol::PlayerType value) {
+  _internal_set_character(value);
+  // @@protoc_insertion_point(field_set:Protocol.STC_CHANGE_CHARACTER.character)
+}
+
+// -------------------------------------------------------------------
+
 // CTS_LEAVE_ROOM
 
 // uint64 roomIndex = 1;
@@ -5252,6 +5759,10 @@ inline void STC_CHAT::set_allocated_msg(std::string* msg) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

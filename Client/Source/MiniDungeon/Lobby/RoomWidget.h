@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Protocol.pb.h"
 #include "RoomWidget.generated.h"
 
 /**
@@ -71,16 +72,13 @@ public:
 	TMap<uint32, uint64> IndexToPlayerID;
 
 private:
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "CharacterImage", meta = (AllowPrivateAccess = true))
-	TArray<TObjectPtr<class UMaterialInterface>> CharacterImages;
-
-	UFUNCTION()
-	void ChangeCharacterImage(uint32 index);
+	TMap<Protocol::PlayerType, TObjectPtr<class UMaterialInterface>> CharacterImages;
 
 public:
 	UFUNCTION()
 	void OnClickedStartButton();
 
+	void ChangeCharacterImage(uint32 playerIndex, Protocol::PlayerType type, bool isLocal = true);
 private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Data", meta = (AllowPrivateAccess = true))
 	TObjectPtr<class URoomListViewItemData> RoomData;
@@ -89,6 +87,6 @@ private:
 	void OnClickedCharacterImage();
 
 public:
-	TObjectPtr<class URoomListViewItemData> GetRoomData() { return RoomData; }
+	TObjectPtr<class URoomListViewItemData> GetRoomData() const { return RoomData; }
 	void SetRoomData(class URoomListViewItemData* data);
 };

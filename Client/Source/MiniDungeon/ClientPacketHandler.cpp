@@ -80,7 +80,7 @@ bool Handle_STC_ENTER_LOBBY(PacketSessionRef& session, Protocol::STC_ENTER_LOBBY
 	// Lobby에 이미 플레이어가 입장해 있음.
 	if (pkt.success() == false)
 	{
-		return true;
+		return false;
 	}
 	
 	if (IsValid(gameNetwork))
@@ -124,6 +124,24 @@ bool Handle_STC_JOIN_ROOM(PacketSessionRef& session, Protocol::STC_JOIN_ROOM& pk
 	if (IsValid(gameNetwork))
 	{
 		gameNetwork->HandleJoinRoom(pkt);
+	}
+
+	return true;
+}
+
+bool Handle_STC_CHANGE_CHARACTER(PacketSessionRef& session, Protocol::STC_CHANGE_CHARACTER& pkt)
+{
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
+	// Lobby에 이미 플레이어가 입장해 있음.
+	if (pkt.success() == false)
+	{
+		return false;
+	}
+
+	if (IsValid(gameNetwork))
+	{
+		gameNetwork->HandleChangeCharacter(pkt);
 	}
 
 	return true;

@@ -23,6 +23,13 @@ bool Lobby::EnterLobby(PlayerRef player)
 	if(_players.find(player->GetPlayerInfo()->player_id()) != _players.end())
 	{
 		enterLobbyPkt.set_success(false);
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterLobbyPkt);
+		if (auto session = player->GetSession())
+		{
+			session->Send(sendBuffer);
+		}
+
 		return false;
 	}
 
@@ -46,7 +53,9 @@ bool Lobby::EnterLobby(PlayerRef player)
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterLobbyPkt);
 	if (auto session = player->GetSession())
+	{
 		session->Send(sendBuffer);
+	}
 
 	return true;
 }
@@ -63,7 +72,6 @@ bool Lobby::CreateRoom(const Protocol::RoomInfo& roomInfo)
 	// 로비에 없으면 문제있음
 	if (_players.find(roomInfo.host().player_id()) == _players.end())
 	{
-		createRoomPkt.set_success(false);
 		return false;
 	}
 
@@ -117,7 +125,6 @@ bool Lobby::JoinRoom(uint64 playerId, uint64 roomId)
 	// 플레이어가 로비에 없으면 문제있음
 	if(_players.find(playerId) == _players.end())
 	{
-		joinRoomPkt.set_success(false);
 		return false;
 	}
 
@@ -125,6 +132,13 @@ bool Lobby::JoinRoom(uint64 playerId, uint64 roomId)
 	if(_rooms.find(roomId) == _rooms.end())
 	{
 		joinRoomPkt.set_success(false);
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(joinRoomPkt);
+		if (auto session = _players[playerId]->session.lock())
+		{
+			session->Send(sendBuffer);
+		}
+
 		return false;
 	}
 
@@ -157,14 +171,6 @@ bool Lobby::JoinRoom(uint64 playerId, uint64 roomId)
 
 	_players.erase(playerId);
 	return true;
-}
-
-bool Lobby::HandleJoinRoom(const Protocol::CTS_JOIN_ROOM& pkt)
-{
-	uint64 playerId = pkt.player().player_id();
-	uint64 roomId = pkt.roomindex();
-
-	return JoinRoom(playerId, roomId);
 }
 
 bool Lobby::HandleJoinRoom(uint64 playerId, uint64 roomId)

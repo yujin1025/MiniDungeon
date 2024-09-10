@@ -143,6 +143,33 @@ bool Room::LeaveRoom(PlayerRef player)
 	return false;
 }
 
+bool Room::ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType)
+{
+	Protocol::STC_CHANGE_CHARACTER changeCharacterPkt;
+
+	// 플레이어가 방에 없다면 문제가 있다.
+	if (_players.find(playerIndex) == _players.end())
+	{
+		return false;
+	}
+
+	// 캐릭터 변경 사실을 알린다.
+	changeCharacterPkt.set_success(true);
+	changeCharacterPkt.set_player_id(playerIndex);
+	changeCharacterPkt.set_character(characterType);
+	changeCharacterPkt.set_roomindex(_roomIndex);
+
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(changeCharacterPkt);
+	BroadcastToPlayer(sendBuffer, playerIndex);
+
+	return true;
+}
+
+bool Room::HandleChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType)
+{
+	return ChangeCharacter(playerIndex, characterType);
+}
+
 bool Room::HandleEnterPlayer(PlayerRef player)
 {
 	return EnterRoom(player, true);

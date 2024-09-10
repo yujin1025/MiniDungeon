@@ -19,8 +19,6 @@ public:
 
 	bool JoinRoom(uint64 playerId, uint64 roomId);
 
-	bool HandleJoinRoom(const Protocol::CTS_JOIN_ROOM& pkt);
-
 	bool HandleJoinRoom(uint64 playerId, uint64 roomId);
 
 private:

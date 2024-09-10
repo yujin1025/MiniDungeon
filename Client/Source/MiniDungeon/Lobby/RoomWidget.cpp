@@ -8,6 +8,7 @@
 #include "Lobby/RoomListViewItemData.h"
 #include "LobbyPlayerController.h"
 #include <Kismet/GameplayStatics.h>
+#include "MDNetworkManager.h"
 
 URoomWidget::URoomWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -16,14 +17,14 @@ URoomWidget::URoomWidget(const FObjectInitializer& ObjectInitializer)
 	ConstructorHelpers::FObjectFinder<UMaterialInterface> AuroraImage(*AuroraImagePath);
 	if (AuroraImage.Succeeded())
 	{
-		CharacterImages.AddUnique(AuroraImage.Object);
+		CharacterImages.Add(Protocol::PLAYER_TYPE_AURORA, AuroraImage.Object);
 	}
 
 	FString DrongoImagePath = FString::Printf(TEXT("/Script/Engine.Material'/Game/Assets/UI/Lobby/MT_TR2D_Drongo.MT_TR2D_Drongo'"));
 	ConstructorHelpers::FObjectFinder<UMaterialInterface> DrongoImage(*DrongoImagePath);
 	if (DrongoImage.Succeeded())
 	{
-		CharacterImages.AddUnique(DrongoImage.Object);
+		CharacterImages.Add(Protocol::PLAYER_TYPE_DRONGO, DrongoImage.Object);
 	}
 
 	//PlayerNames.AddUnique(Player1_Name);
@@ -93,12 +94,12 @@ void URoomWidget::NativeConstruct()
 			switch (player.Value->player_type())
 			{
 				case Protocol::PLAYER_TYPE_AURORA:
-					PlayerCharacters[index]->SetBrushFromMaterial(CharacterImages[0]);
+					PlayerCharacters[index]->SetBrushFromMaterial(CharacterImages[Protocol::PLAYER_TYPE_AURORA]);
 					PlayerCharacters[index]->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
 					index++;
 					break;
 				case Protocol::PLAYER_TYPE_DRONGO:
-					PlayerCharacters[index]->SetBrushFromMaterial(CharacterImages[1]);
+					PlayerCharacters[index]->SetBrushFromMaterial(CharacterImages[Protocol::PLAYER_TYPE_DRONGO]);
 					PlayerCharacters[index]->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
 					index++;
 					break;
@@ -108,7 +109,6 @@ void URoomWidget::NativeConstruct()
 
 }
 
-
 void URoomWidget::OnClickedStartButton()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Start Button Clicked"));
@@ -117,27 +117,50 @@ void URoomWidget::OnClickedStartButton()
 void URoomWidget::OnClickedCharacterImage()
 {
 	auto pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	const uint32 localPlayerIndex = pc->GetPlayerInfo()->player_id();
 
-	auto index = IndexToPlayerID.FindKey(pc->GetPlayerInfo()->player_id());
-
-	ChangeCharacterImage(*index);
-}
-
-void URoomWidget::ChangeCharacterImage(uint32 index)
-{
-	auto pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
-
-	if (Cast<UMaterialInterface>(PlayerCharacters[index]->Brush.GetResourceObject()) == CharacterImages[0]) 
+	if (pc->GetPlayerInfo()->player_type() == Protocol::PLAYER_TYPE_AURORA)
 	{
-		PlayerCharacters[index]->SetBrushFromMaterial(CharacterImages[1]);
-		pc->ChangeCharacter(Protocol::PLAYER_TYPE_DRONGO);
-		RoomData->GetPlayers()[index]->set_player_type(Protocol::PLAYER_TYPE_DRONGO);
+		ChangeCharacterImage(localPlayerIndex, Protocol::PLAYER_TYPE_DRONGO);
 	}
 	else
 	{
-		PlayerCharacters[index]->SetBrushFromMaterial(CharacterImages[0]);
-		pc->ChangeCharacter(Protocol::PLAYER_TYPE_AURORA);
-		RoomData->GetPlayers()[index]->set_player_type(Protocol::PLAYER_TYPE_AURORA);
+		ChangeCharacterImage(localPlayerIndex, Protocol::PLAYER_TYPE_AURORA);
+	}
+
+	Protocol::CTS_CHANGE_CHARACTER pkt;
+	pkt.set_roomindex(RoomData->RoomIndex);
+	pkt.set_player_id(localPlayerIndex);
+	pkt.set_character(RoomData->GetPlayers()[localPlayerIndex]->player_type());
+
+	SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	networkManager->SendPacket(sendBuffer);
+}
+
+void URoomWidget::ChangeCharacterImage(uint32 playerIndex, Protocol::PlayerType type, bool isLocal)
+{
+	const auto roomCharacterIndex = IndexToPlayerID.FindKey(playerIndex);
+
+	auto pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	switch (type)
+	{
+		case Protocol::PLAYER_TYPE_AURORA:
+			PlayerCharacters[*roomCharacterIndex]->SetBrushFromMaterial(CharacterImages[Protocol::PLAYER_TYPE_AURORA]);
+			if (isLocal)
+			{
+				pc->SetCharacter(Protocol::PLAYER_TYPE_AURORA);
+			}
+			RoomData->GetPlayers()[playerIndex]->set_player_type(Protocol::PLAYER_TYPE_AURORA);
+			break;
+		case Protocol::PLAYER_TYPE_DRONGO:
+			PlayerCharacters[*roomCharacterIndex]->SetBrushFromMaterial(CharacterImages[Protocol::PLAYER_TYPE_DRONGO]);
+			if (isLocal)
+			{
+				pc->SetCharacter(Protocol::PLAYER_TYPE_DRONGO);
+			}
+			RoomData->GetPlayers()[playerIndex]->set_player_type(Protocol::PLAYER_TYPE_DRONGO);
+			break;
 	}
 }
 

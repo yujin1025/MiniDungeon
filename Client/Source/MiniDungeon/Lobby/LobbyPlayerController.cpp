@@ -4,6 +4,7 @@
 #include "Lobby/LobbyPlayerController.h"
 #include "Lobby/LobbyWidget.h"
 #include "Lobby/LoginWidget.h"
+#include "Lobby/RoomWidget.h"
 
 ALobbyPlayerController::ALobbyPlayerController()
 {
@@ -31,9 +32,9 @@ ALobbyPlayerController::~ALobbyPlayerController()
 	PlayerInfo = nullptr;
 }
 
-void ALobbyPlayerController::OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& enterLobbypkt)
+void ALobbyPlayerController::OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& enterLobbyPkt)
 {
-	SetPlayerInfo(enterLobbypkt.player());
+	SetPlayerInfo(enterLobbyPkt.player());
 
 	if (IsValid(LobbyWidgetClass))
 	{
@@ -43,7 +44,7 @@ void ALobbyPlayerController::OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& en
 			Cast<ULobbyWidget>(LobbyWidget)->Owner = this;
 			LobbyWidget->AddToViewport();
 
-			for(auto& room : enterLobbypkt.rooms())
+			for(auto& room : enterLobbyPkt.rooms())
 			{
 				LobbyWidget->AddRoomData(room);
 			}
@@ -87,7 +88,10 @@ void ALobbyPlayerController::SetPlayerInfo(const Protocol::PlayerInfo& info)
 	PlayerInfo->CopyFrom(info);
 }
 
-void ALobbyPlayerController::ChangeCharacter(const Protocol::PlayerType& type)
+void ALobbyPlayerController::ChangeCharacter(const Protocol::STC_CHANGE_CHARACTER changeCharacterPkt)
 {
-	PlayerInfo->set_player_type(type);
+	if(IsValid(LobbyWidget))
+	{
+		LobbyWidget->GetRoomWidget()->ChangeCharacterImage(changeCharacterPkt.player_id(), changeCharacterPkt.character(), false);
+	}
 }
