@@ -5,6 +5,8 @@
 #include "Lobby/LobbyWidget.h"
 #include "Lobby/LoginWidget.h"
 #include "Lobby/RoomWidget.h"
+#include "Lobby/RoomListViewItemData.h"
+#include <Blueprint/WidgetLayoutLibrary.h>
 
 ALobbyPlayerController::ALobbyPlayerController()
 {
@@ -21,6 +23,12 @@ ALobbyPlayerController::ALobbyPlayerController()
 	if (lobbyWidgetClass.Succeeded())
 	{
 		LobbyWidgetClass = lobbyWidgetClass.Class;
+	}
+
+	ConstructorHelpers::FClassFinder<UUserWidget> roomWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Assets/UI/Lobby/WBP_RoomWidget.WBP_RoomWidget_C'"));
+	if (roomWidgetClass.Succeeded())
+	{
+		RoomWidgetClass = roomWidgetClass.Class;
 	}
 
 	PlayerInfo = new Protocol::PlayerInfo();
@@ -47,9 +55,9 @@ void ALobbyPlayerController::BeginPlay()
 	}
 }
 
-void ALobbyPlayerController::OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& enterLobbyPkt)
+void ALobbyPlayerController::OpenLobbyWidget()
 {
-	SetPlayerInfo(enterLobbyPkt.player());
+	UWidgetLayoutLibrary::RemoveAllWidgets(this);
 
 	if (IsValid(LobbyWidgetClass))
 	{
@@ -58,36 +66,123 @@ void ALobbyPlayerController::OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& en
 		{
 			Cast<ULobbyWidget>(LobbyWidget)->Owner = this;
 			LobbyWidget->AddToViewport();
-
-			for (auto& room : enterLobbyPkt.rooms())
-			{
-				LobbyWidget->UpdateRoomData(room);
-			}
+			LobbyWidget->RefreshListView(RoomList);
 		}
 	}
 }
 
+void ALobbyPlayerController::HandleOpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& enterLobbyPkt)
+{
+	SetPlayerInfo(enterLobbyPkt.player());
+
+	for (auto& room : enterLobbyPkt.rooms())
+	{
+		UpdateRoomData(room);
+	}
+
+	OpenLobbyWidget();
+}
+
+URoomListViewItemData* ALobbyPlayerController::AddRoomData(const Protocol::RoomInfo& info)
+{
+	URoomListViewItemData* roomData = NewObject<URoomListViewItemData>();
+
+	roomData->SetInfo(info);
+
+	FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
+
+	if (RoomList.Contains(roomName))
+	{
+		RoomList.Remove(roomName);
+	}
+
+	RoomList.Add(roomName, roomData);
+
+	return roomData;
+}
+
+URoomListViewItemData* ALobbyPlayerController::UpdateRoomData(const Protocol::RoomInfo& info)
+{
+	const FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
+
+	if (!RoomList.Contains(roomName))
+	{
+		AddRoomData(info);
+	}
+	else
+	{
+		RoomList[roomName]->SetInfo(info);
+	}
+
+	return RoomList[roomName];
+}
+
 void ALobbyPlayerController::CreateRoom(const Protocol::RoomInfo& info, bool isHost)
 {
-	if (IsValid(LobbyWidget))
+	auto roomData = UpdateRoomData(info);
+
+	if (isHost)
 	{
-		LobbyWidget->CreateRoom(info, isHost);
+		UWidgetLayoutLibrary::RemoveAllWidgets(this);
+		if (IsValid(RoomWidgetClass))
+		{
+			RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
+			if (IsValid(RoomWidget))
+			{
+				RoomWidget->SetRoomData(roomData);
+				RoomWidget->AddToViewport();
+			}
+		}
+	}
+	else
+	{
+		if (IsValid(LobbyWidget))
+		{
+			LobbyWidget->RefreshListView(RoomList);
+		}
 	}
 }
 
 void ALobbyPlayerController::JoinRoom(const Protocol::RoomInfo& info)
 {
-	if (IsValid(LobbyWidget))
+	auto roomData = UpdateRoomData(info);
+
+	UWidgetLayoutLibrary::RemoveAllWidgets(this);
+	if (IsValid(RoomWidgetClass))
 	{
-		LobbyWidget->JoinRoom(info);
+		RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
+		if (IsValid(RoomWidget))
+		{
+			const FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
+			RoomWidget->SetRoomData(roomData);
+			RoomWidget->AddToViewport();
+		}
 	}
 }
 
 void ALobbyPlayerController::LeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoomPkt)
 {
-	if (IsValid(LobbyWidget))
+	RoomList.Empty();
+	for (const auto& roomData : leaveRoomPkt.rooms())
 	{
-		LobbyWidget->HandleLeaveRoom(leaveRoomPkt);
+		UpdateRoomData(roomData);
+	}
+
+	if (PlayerInfo->player_id()  == leaveRoomPkt.player_id())
+	{
+		UWidgetLayoutLibrary::RemoveAllWidgets(this);
+		OpenLobbyWidget();	
+		return;
+	}
+
+	if (IsValid(RoomWidget))
+	{
+		const FString roomName = UTF8_TO_TCHAR(leaveRoomPkt.room_info().room_name().c_str());
+		if (RoomList.Contains(roomName))
+		{
+			RoomWidget->SetRoomData(RoomList[roomName]);
+			RoomWidget->HandleLeaveRoom();
+		}
 	}
 }
 

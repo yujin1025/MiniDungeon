@@ -33,6 +33,13 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class ULobbyWidget> LobbyWidget;
+
+private:
+	UPROPERTY()
+	TSubclassOf<UUserWidget> RoomWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<class URoomWidget> RoomWidget;
 private:
 	Protocol::PlayerInfo* PlayerInfo;
 
@@ -43,12 +50,21 @@ public:
 
 private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
-	TSet<TObjectPtr<class URoomListViewItemData>> RoomList;
+	TMap<FString, TObjectPtr<class URoomListViewItemData>> RoomList;
+
+public:
+	class URoomListViewItemData* AddRoomData(const Protocol::RoomInfo& info);
+
+	class URoomListViewItemData* UpdateRoomData(const Protocol::RoomInfo& info);
+
+	TMap<FString, TObjectPtr<class URoomListViewItemData>>& GetRoomList() { return RoomList; }
 
 public:
 	void CreateRoom(const Protocol::RoomInfo& info, bool isHost);
 
-	void OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& enterLobbyPkt);
+	void OpenLobbyWidget();
+
+	void HandleOpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& enterLobbyPkt);
 
 	void JoinRoom(const Protocol::RoomInfo& info);
 

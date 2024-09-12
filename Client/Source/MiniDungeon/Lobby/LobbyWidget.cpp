@@ -11,6 +11,7 @@
 #include "RoomListViewItemData.h"
 #include "Components/ListView.h"
 #include "RoomWidget.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
 
 ULobbyWidget::ULobbyWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -35,119 +36,109 @@ void ULobbyWidget::NativeConstruct()
 	{
 		JoinButton->OnClicked.AddDynamic(this, &ULobbyWidget::OnClickedJoinButton);
 	}
-
-	RefreshListView();
 }
 
-class URoomListViewItemData* ULobbyWidget::AddRoomData(const Protocol::RoomInfo& info)
-{
-	URoomListViewItemData* roomData = NewObject<URoomListViewItemData>();
-
-	roomData->SetInfo(info);
-
-	FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
-
-	if (RoomList.Contains(roomName))
-	{
-		RoomList.Remove(roomName);
-	}
-
-	RoomList.Add(roomName, roomData);
-
-	return roomData;
-}
-
-URoomListViewItemData* ULobbyWidget::UpdateRoomData(const Protocol::RoomInfo& info)
-{
-	RoomListView->ClearListItems();
-
-	const FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
-
-	if(!RoomList.Contains(roomName))
-	{
-		AddRoomData(info);
-	}
-	else
-	{
-		RoomList[roomName]->SetInfo(info);
-	}
-
-	for (auto& room : RoomList)
-	{
-		RoomListView->AddItem(room.Value);
-	}
-
-	return RoomList[roomName];
-}
-
-void ULobbyWidget::CreateRoom(const Protocol::RoomInfo& info, bool isHost)
-{
-	auto roomData = UpdateRoomData(info);
-
-	if(isHost)
-	{
-		if (IsValid(RoomWidgetClass))
-		{
-			RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
-			if (IsValid(RoomWidget))
-			{
-				RoomWidget->SetRoomData(roomData);
-				RoomWidget->AddToViewport();
-			}
-		}
-	}
-}
-
-void ULobbyWidget::JoinRoom(const Protocol::RoomInfo& info)
-{
-	auto roomData = UpdateRoomData(info);
-
-	if (IsValid(RoomWidgetClass))
-	{
-		RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
-		if (IsValid(RoomWidget))
-		{
-			const FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
-			RoomWidget->SetRoomData(roomData);
-			RoomWidget->AddToViewport();
-		}
-	}
-}
-
-void ULobbyWidget::HandleLeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoomPkt)
-{
-	if (Owner->GetPlayerInfo()->player_id() == leaveRoomPkt.player_id())
-	{
-		if (IsValid(RoomWidget))
-		{
-			RoomWidget->RemoveFromParent();
-		}
-
-		RoomList.Empty();
-		for (const auto& roomData : leaveRoomPkt.rooms())
-		{
-			UpdateRoomData(roomData);
-		}
-
-		return;
-	}
-
-	RoomList.Empty();
-	for (const auto& roomData : leaveRoomPkt.rooms())
-	{
-		UpdateRoomData(roomData);
-	}
-
-	if (IsValid(RoomWidget))
-	{
-		const FString roomName = UTF8_TO_TCHAR(leaveRoomPkt.room_info().room_name().c_str());
-		if (RoomList.Contains(roomName))
-		{
-			RoomWidget->SetRoomData(RoomList[roomName]);
-			RoomWidget->HandleLeaveRoom();
-		}
-	}
-}
+//class URoomListViewItemData* ULobbyWidget::AddRoomData(const Protocol::RoomInfo& info)
+//{
+//	URoomListViewItemData* roomData = NewObject<URoomListViewItemData>();
+//
+//	roomData->SetInfo(info);
+//
+//	FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
+//
+//	if (RoomList.Contains(roomName))
+//	{
+//		RoomList.Remove(roomName);
+//	}
+//
+//	RoomList.Add(roomName, roomData);
+//
+//	return roomData;
+//}
+//
+//URoomListViewItemData* ULobbyWidget::UpdateRoomData(const Protocol::RoomInfo& info)
+//{
+//	RoomListView->ClearListItems();
+//
+//	const FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
+//
+//	if(!RoomList.Contains(roomName))
+//	{
+//		AddRoomData(info);
+//	}
+//	else
+//	{
+//		RoomList[roomName]->SetInfo(info);
+//	}
+//
+//	for (auto& room : RoomList)
+//	{
+//		RoomListView->AddItem(room.Value);
+//	}
+//
+//	return RoomList[roomName];
+//}
+//
+//void ULobbyWidget::CreateRoom(const Protocol::RoomInfo& info, bool isHost)
+//{
+//	auto roomData = UpdateRoomData(info);
+//
+//	if(isHost)
+//	{
+//		if (IsValid(RoomWidgetClass))
+//		{
+//			RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
+//			if (IsValid(RoomWidget))
+//			{
+//				RoomWidget->SetRoomData(roomData);
+//				RoomWidget->AddToViewport();
+//			}
+//		}
+//	}
+//}
+//
+//void ULobbyWidget::JoinRoom(const Protocol::RoomInfo& info)
+//{
+//	auto roomData = UpdateRoomData(info);
+//
+//	if (IsValid(RoomWidgetClass))
+//	{
+//		RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
+//		if (IsValid(RoomWidget))
+//		{
+//			const FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
+//			RoomWidget->SetRoomData(roomData);
+//			RoomWidget->AddToViewport();
+//		}
+//	}
+//}
+//
+//void ULobbyWidget::HandleLeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoomPkt)
+//{
+//	RoomList.Empty();
+//	for (const auto& roomData : leaveRoomPkt.rooms())
+//	{
+//		UpdateRoomData(roomData);
+//	}
+//
+//	if (Owner->GetPlayerInfo()->player_id() == leaveRoomPkt.player_id())
+//	{
+//		if (IsValid(RoomWidget))
+//		{
+//		}
+//		return;
+//	}
+//
+//	if (IsValid(RoomWidget))
+//	{
+//		const FString roomName = UTF8_TO_TCHAR(leaveRoomPkt.room_info().room_name().c_str());
+//		if (RoomList.Contains(roomName))
+//		{
+//			RoomWidget->SetRoomData(RoomList[roomName]);
+//			RoomWidget->HandleLeaveRoom();
+//		}
+//	}
+//}
 
 void ULobbyWidget::RemoveRoom(const uint64 roomIndex)
 {
@@ -164,13 +155,15 @@ void ULobbyWidget::UpdateRoom(const uint64 roomIndex, const uint64 playerNum)
 
 void ULobbyWidget::ClearRoomList()
 {
-	RoomList.Empty();
+	//RoomList.Empty();
 	RoomListView->ClearListItems();
 }
 
-void ULobbyWidget::RefreshListView()
+void ULobbyWidget::RefreshListView(const TMap<FString, TObjectPtr<class URoomListViewItemData>>& roomList)
 {
-	for(auto &roomData : RoomList)
+	RoomListView->ClearListItems();
+
+	for(auto &roomData : roomList)
 	{
 		RoomListView->AddItem(roomData.Value);
 	}
@@ -210,7 +203,15 @@ void ULobbyWidget::OnClickedJoinButton()
 	const FString& roomName = RoomNameInput->GetText().ToString();
 	const FString& password = PasswordInput->GetText().ToString();
 
-	const auto roomData = RoomList.Find(roomName);
+	auto pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+
+	if (pc == nullptr)
+	{
+		return;
+	}
+
+	const auto roomData = pc->GetRoomList().Find(roomName);
+	//const auto roomData = RoomList.Find(roomName);
 
 	if (roomData == nullptr)
 	{

@@ -36,14 +36,14 @@ protected:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class UButton> JoinButton;
 
-protected:
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	TMap<FString, TObjectPtr<class URoomListViewItemData>> RoomList;
-
-public:
-	class URoomListViewItemData* AddRoomData(const Protocol::RoomInfo& info);
-
-	class URoomListViewItemData* UpdateRoomData(const Protocol::RoomInfo& info);
+//protected:
+//	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+//	TMap<FString, TObjectPtr<class URoomListViewItemData>> RoomList;
+//
+//public:
+//	class URoomListViewItemData* AddRoomData(const Protocol::RoomInfo& info);
+//
+//	class URoomListViewItemData* UpdateRoomData(const Protocol::RoomInfo& info);
 
 private:
 	UPROPERTY()
@@ -56,11 +56,11 @@ public:
 	TObjectPtr<class URoomWidget> GetRoomWidget() { return RoomWidget; }
 
 public:	
-	void CreateRoom(const Protocol::RoomInfo& info, bool isHost);
+	//void CreateRoom(const Protocol::RoomInfo& info, bool isHost);
 
-	void JoinRoom(const Protocol::RoomInfo& info);
+	//void JoinRoom(const Protocol::RoomInfo& info);
 
-	void HandleLeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoomPkt);
+	//void HandleLeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoomPkt);
 
 	UFUNCTION()
 	void RemoveRoom(const uint64 roomIndex);
@@ -74,8 +74,7 @@ public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	TObjectPtr<class ALobbyPlayerController> Owner;
 public:
-	UFUNCTION()
-	void RefreshListView();
+	void RefreshListView(const TMap<FString, TObjectPtr<class URoomListViewItemData>>& roomList);
 
 	UFUNCTION()
 	void OnClickedCreateButton();
