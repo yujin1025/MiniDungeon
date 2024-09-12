@@ -41,6 +41,7 @@ public:
 	void HandleCreateRoom(const Protocol::STC_CREATE_ROOM& createRoomPkt);
 	void HandleJoinRoom(const Protocol::STC_JOIN_ROOM& joinRoomPkt);
 	void HandleChangeCharacter(const Protocol::STC_CHANGE_CHARACTER& changeCharacterPkt);
+	void HandleLeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoomPkt);
 
 	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, bool isMine);
 	void HandleSpawn(const Protocol::STC_ENTER_GAME& enterGamePkt);

@@ -76,10 +76,22 @@ bool Handle_CTS_CREATE_ROOM(PacketSessionRef& session, Protocol::CTS_CREATE_ROOM
 
 bool Handle_CTS_JOIN_ROOM(PacketSessionRef& session, Protocol::CTS_JOIN_ROOM& pkt)
 {
-	uint64 playerId = pkt.player().player_id();
-	uint64 roomId = pkt.roomindex();
+	uint64 playerIndex = pkt.player().player_id();
+	uint64 roomIndex = pkt.roomindex();
 
-	GLobby->DoAsync(&Lobby::HandleJoinRoom, playerId, roomId);
+	GLobby->DoAsync(&Lobby::HandleJoinRoom, playerIndex, roomIndex);
+	return true;
+}
+
+bool Handle_CTS_LEAVE_ROOM(PacketSessionRef& session, Protocol::CTS_LEAVE_ROOM& pkt)
+{
+	// Lobby에 Room이 없다면 문제
+	if (GLobby->GetRooms().find(pkt.roomindex()) == GLobby->GetRooms().end())
+	{
+		return false;
+	}
+
+	GLobby->GetRooms()[pkt.roomindex()]->DoAsync(&Room::HandleLeavePlayer, pkt.player_id());
 	return true;
 }
 
@@ -100,10 +112,7 @@ bool Handle_CTS_ENTER_GAME(PacketSessionRef& session, Protocol::CTS_ENTER_GAME& 
 	return true;
 }
 
-bool Handle_CTS_LEAVE_ROOM(PacketSessionRef& session, Protocol::CTS_LEAVE_ROOM& pkt)
-{
-	return false;
-}
+
 
 bool Handle_CTS_LEAVE_GAME(PacketSessionRef& session, Protocol::CTS_LEAVE_GAME& pkt)
 {

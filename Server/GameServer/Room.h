@@ -10,20 +10,21 @@ public:
 
 public:
 	bool EnterRoom(ObjectRef object);
-	bool LeaveRoom(ObjectRef object);
 
 	bool EnterRoom(PlayerRef player, bool isHost = true);
 	bool LeaveRoom(PlayerRef player);
 	bool ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType);
 
 	bool HandleEnterPlayer(PlayerRef player);
-	bool HandleLeavePlayer(PlayerRef player);
+	bool HandleLeavePlayer(uint64 playerIndex);
 
 	bool HandleChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType);
 	void HandleMove(Protocol::CTS_MOVE pkt);
 
 	uint64 GetRoomIndex() const { return _roomIndex; }
 	void SetRoomIndex(uint64 roomIndex);
+
+	void ReleaseThisRoom();
 public:
 	void UpdateTick();
 
@@ -34,7 +35,7 @@ private:
 	bool RemoveObject(uint64 objectId);
 
 	bool AddPlayer(PlayerRef player);
-	bool RemovePlayer(uint64 playerId);
+	bool RemovePlayer(PlayerRef player);
 private:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 
@@ -44,7 +45,7 @@ private:
 	unordered_map<uint64, PlayerRef> _players;
 	unordered_map<uint64, ObjectRef> _objects;
 	weak_ptr<class Lobby> _lobby;
-	uint64 _roomIndex;
+	uint64 _roomIndex = 0;
 
 protected:
 	Protocol::RoomInfo* info;
@@ -53,6 +54,8 @@ public:
 	const Protocol::RoomInfo* GetRoomInfo() { return info; }
 
 	void SetRoomInfo(const Protocol::RoomInfo& info) { this->info->CopyFrom(info); }
+
+	void SetLobby(LobbyRef lobby) { this->_lobby = lobby; }
 };
 
 extern RoomRef GRoom;

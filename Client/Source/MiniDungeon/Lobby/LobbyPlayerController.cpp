@@ -32,34 +32,6 @@ ALobbyPlayerController::~ALobbyPlayerController()
 	PlayerInfo = nullptr;
 }
 
-void ALobbyPlayerController::OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& enterLobbyPkt)
-{
-	SetPlayerInfo(enterLobbyPkt.player());
-
-	if (IsValid(LobbyWidgetClass))
-	{
-		LobbyWidget = CreateWidget<ULobbyWidget>(this, LobbyWidgetClass);
-		if (IsValid(LobbyWidget))
-		{
-			Cast<ULobbyWidget>(LobbyWidget)->Owner = this;
-			LobbyWidget->AddToViewport();
-
-			for(auto& room : enterLobbyPkt.rooms())
-			{
-				LobbyWidget->AddRoomData(room);
-			}
-		}
-	}
-}
-
-void ALobbyPlayerController::JoinRoom(const Protocol::RoomInfo& info)
-{
-	if (IsValid(LobbyWidget))
-	{
-		LobbyWidget->JoinRoom(info);
-	}
-}
-
 void ALobbyPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -75,6 +47,26 @@ void ALobbyPlayerController::BeginPlay()
 	}
 }
 
+void ALobbyPlayerController::OpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& enterLobbyPkt)
+{
+	SetPlayerInfo(enterLobbyPkt.player());
+
+	if (IsValid(LobbyWidgetClass))
+	{
+		LobbyWidget = CreateWidget<ULobbyWidget>(this, LobbyWidgetClass);
+		if (IsValid(LobbyWidget))
+		{
+			Cast<ULobbyWidget>(LobbyWidget)->Owner = this;
+			LobbyWidget->AddToViewport();
+
+			for (auto& room : enterLobbyPkt.rooms())
+			{
+				LobbyWidget->UpdateRoomData(room);
+			}
+		}
+	}
+}
+
 void ALobbyPlayerController::CreateRoom(const Protocol::RoomInfo& info, bool isHost)
 {
 	if (IsValid(LobbyWidget))
@@ -83,12 +75,28 @@ void ALobbyPlayerController::CreateRoom(const Protocol::RoomInfo& info, bool isH
 	}
 }
 
+void ALobbyPlayerController::JoinRoom(const Protocol::RoomInfo& info)
+{
+	if (IsValid(LobbyWidget))
+	{
+		LobbyWidget->JoinRoom(info);
+	}
+}
+
+void ALobbyPlayerController::LeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoomPkt)
+{
+	if (IsValid(LobbyWidget))
+	{
+		LobbyWidget->HandleLeaveRoom(leaveRoomPkt);
+	}
+}
+
 void ALobbyPlayerController::SetPlayerInfo(const Protocol::PlayerInfo& info)
 {
 	PlayerInfo->CopyFrom(info);
 }
 
-void ALobbyPlayerController::ChangeCharacter(const Protocol::STC_CHANGE_CHARACTER changeCharacterPkt)
+void ALobbyPlayerController::ChangeCharacter(const Protocol::STC_CHANGE_CHARACTER& changeCharacterPkt)
 {
 	if(IsValid(LobbyWidget))
 	{

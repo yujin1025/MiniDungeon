@@ -4,11 +4,13 @@
 #include "GameSession.h"
 #include "Monster.h"
 #include "ObjectUtils.h"
+#include "Lobby.h"
 
 RoomRef GRoom = make_shared<Room>();
 
 Room::Room()
 {
+	_roomIndex = 0;
 	info = new Protocol::RoomInfo();
 }
 
@@ -75,41 +77,41 @@ bool Room::EnterRoom(ObjectRef object)
 	return success;
 }
 
-bool Room::LeaveRoom(ObjectRef object)
-{
-	if (object == nullptr)
-		return false;
-
-	//const uint64 objectId = object->objectInfo->object_id();
-	//bool success = RemoveObject(objectId);
-
-	// 퇴장 사실을 퇴장하는 플레이어에게 알린다
-	if (auto player = dynamic_pointer_cast<Player>(object))
-	{
-		Protocol::STC_LEAVE_GAME leaveGamePkt;
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(leaveGamePkt);
-		/*if (auto session = player->session.lock())
-			session->Send(sendBuffer);*/
-	}
-
-	// 퇴장 사실을 알린다
-	{
-		Protocol::STC_DESPAWN despawnPkt;
-		//despawnPkt.add_object_ids(objectId);
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(despawnPkt);
-		//Broadcast(sendBuffer, objectId);
-
-		//if (auto player = dynamic_pointer_cast<Player>(object))
-		//	if (auto session = player->session.lock())
-		//		session->Send(sendBuffer);
-	}
-
-	//return success;
-
-	return true;
-}
+//bool Room::LeaveRoom(ObjectRef object)
+//{
+//	if (object == nullptr)
+//		return false;
+//
+//	//const uint64 objectId = object->objectInfo->object_id();
+//	//bool success = RemoveObject(objectId);
+//
+//	// 퇴장 사실을 퇴장하는 플레이어에게 알린다
+//	if (auto player = dynamic_pointer_cast<Player>(object))
+//	{
+//		Protocol::STC_LEAVE_GAME leaveGamePkt;
+//
+//		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(leaveGamePkt);
+//		/*if (auto session = player->session.lock())
+//			session->Send(sendBuffer);*/
+//	}
+//
+//	// 퇴장 사실을 알린다
+//	{
+//		Protocol::STC_DESPAWN despawnPkt;
+//		//despawnPkt.add_object_ids(objectId);
+//
+//		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(despawnPkt);
+//		//Broadcast(sendBuffer, objectId);
+//
+//		//if (auto player = dynamic_pointer_cast<Player>(object))
+//		//	if (auto session = player->session.lock())
+//		//		session->Send(sendBuffer);
+//	}
+//
+//	//return success;
+//
+//	return true;
+//}
 
 bool Room::EnterRoom(PlayerRef player, bool isHost)
 {
@@ -140,7 +142,41 @@ bool Room::EnterRoom(PlayerRef player, bool isHost)
 
 bool Room::LeaveRoom(PlayerRef player)
 {
-	return false;
+	bool success = RemovePlayer(player);
+
+	Protocol::STC_LEAVE_ROOM leaveRoomPkt;
+	leaveRoomPkt.set_success(success);
+
+	Protocol::RoomInfo* roomInfo = new Protocol::RoomInfo();
+	roomInfo->CopyFrom(*info);
+	leaveRoomPkt.set_allocated_room_info(roomInfo);
+
+	leaveRoomPkt.set_player_id(player->GetPlayerInfo()->player_id());
+
+	for (const auto& room : _lobby.lock()->GetRooms())
+	{
+		if (room.second->_players.empty())
+		{
+			continue;
+		}
+
+		leaveRoomPkt.add_rooms()->CopyFrom(*(room.second->GetRoomInfo()));
+	}
+
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(leaveRoomPkt);
+
+	// 퇴장 사실을 퇴장하는 플레이어에게 알린다
+	player->GetSession()->Send(sendBuffer);
+
+	// 퇴장 사실을 Room에 있는 모든 플레이어에게 알린다.
+	BroadcastToPlayer(sendBuffer, player->GetPlayerInfo()->player_id());
+
+	if (_players.empty())
+	{
+		ReleaseThisRoom();
+	}
+
+	return success;
 }
 
 bool Room::ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType)
@@ -175,9 +211,14 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 	return EnterRoom(player, true);
 }
 
-bool Room::HandleLeavePlayer(PlayerRef player)
+bool Room::HandleLeavePlayer(uint64 playerindex)
 {
-	return LeaveRoom(player);
+	auto& leavedPlayer = _players[playerindex];
+	
+	if (leavedPlayer != nullptr)
+	{
+		return LeaveRoom(leavedPlayer);
+	}
 }
 
 void Room::HandleMove(Protocol::CTS_MOVE pkt)
@@ -218,6 +259,12 @@ void Room::UpdateTick()
 RoomRef Room::GetRoomRef()
 {
 	return static_pointer_cast<Room>(shared_from_this());
+}
+
+void Room::ReleaseThisRoom()
+{
+	auto self = GetRoomRef();
+	_lobby.lock()->RemoveRoom(self);
 }
 
 bool Room::AddObject(ObjectRef object)
@@ -265,9 +312,40 @@ bool Room::AddPlayer(PlayerRef player)
 	return true;
 }
 
-bool Room::RemovePlayer(uint64 playerId)
+bool Room::RemovePlayer(PlayerRef player)
 {
-	return false;
+	uint64 playerIndex = player->GetPlayerInfo()->player_id();
+	// 플레이어가 Room에 없으면 문제가 있다.
+	if (_players.find(playerIndex) == _players.end())
+	{
+		return false;
+	}
+	
+	_lobby.lock()->AddPlayer(player);
+	info->clear_players();
+
+	if (info->host().player_id() == playerIndex)
+	{
+		info->clear_host();
+		auto originHost = _players.find(playerIndex);
+		
+		if (next(originHost) != _players.end())
+		{ 
+			Protocol::PlayerInfo* newHost = new Protocol::PlayerInfo();
+			newHost->CopyFrom(*(next(originHost)->second->GetPlayerInfo()));
+			info->set_allocated_host(newHost);
+		}
+	}
+
+	_players.erase(playerIndex);
+	info->set_current_player_count(_players.size());
+
+	for (const auto& player : _players)
+	{
+		info->add_players()->CopyFrom(*(player.second->GetPlayerInfo()));
+	}
+
+	return true;
 }
 
 void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)

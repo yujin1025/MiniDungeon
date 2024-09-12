@@ -52,5 +52,7 @@ public:
 
 	void JoinRoom(const Protocol::RoomInfo& info);
 
-	void ChangeCharacter(const Protocol::STC_CHANGE_CHARACTER changeCharacterPkt);
+	void ChangeCharacter(const Protocol::STC_CHANGE_CHARACTER& changeCharacterPkt);
+
+	void LeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoomPkt);
 };

@@ -47,6 +47,11 @@ void URoomWidget::NativeConstruct()
 		StartButton->OnClicked.AddDynamic(this, &URoomWidget::OnClickedStartButton);
 	}
 
+	if (IsValid(QuitButton))
+	{
+		QuitButton->OnClicked.AddDynamic(this, &URoomWidget::OnClickedQuitButton);
+	}
+
 	{
 		if (PlayerNames.Num() != 0)
 			PlayerNames.Empty();
@@ -76,48 +81,85 @@ void URoomWidget::NativeConstruct()
 		}
 	}
 
-	{
-		int index = 0;
-		for (auto& player : RoomData->GetPlayers())
-		{
-			auto pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
-
-			if (player.Value->player_id() == pc->GetPlayerInfo()->player_id())
-			{
-				PlayerButtons[index]->OnClicked.AddDynamic(this, &URoomWidget::OnClickedCharacterImage);
-			}
-
-			IndexToPlayerID.Add(index, player.Value->player_id());
-			FText playerName = FText::FromString(UTF8_TO_TCHAR(player.Value->player_name().c_str()) + FString::FromInt(player.Value->player_id()));
-			PlayerNames[index]->SetText(playerName);
-
-			switch (player.Value->player_type())
-			{
-				case Protocol::PLAYER_TYPE_AURORA:
-					PlayerCharacters[index]->SetBrushFromMaterial(CharacterImages[Protocol::PLAYER_TYPE_AURORA]);
-					PlayerCharacters[index]->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
-					index++;
-					break;
-				case Protocol::PLAYER_TYPE_DRONGO:
-					PlayerCharacters[index]->SetBrushFromMaterial(CharacterImages[Protocol::PLAYER_TYPE_DRONGO]);
-					PlayerCharacters[index]->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
-					index++;
-					break;
-			}
-		}
-	}
-
+	RefreshPlayers();
 }
+
 
 void URoomWidget::OnClickedStartButton()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Start Button Clicked"));
 }
 
+void URoomWidget::OnClickedQuitButton()
+{
+	Protocol::CTS_LEAVE_ROOM pkt;
+	pkt.set_roomindex(RoomData->RoomIndex);
+
+	auto pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	const uint64 localPlayerIndex = pc->GetPlayerInfo()->player_id();
+	pkt.set_player_id(localPlayerIndex);
+
+	SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	networkManager->SendPacket(sendBuffer);
+}
+
+void URoomWidget::HandleLeaveRoom()
+{
+	RefreshPlayers();
+}
+
+void URoomWidget::RefreshPlayers()
+{
+	for (auto& playerButton : PlayerButtons)
+	{
+		if (playerButton->OnClicked.IsBound())
+		{
+			playerButton->OnClicked.Clear();
+		}
+	}
+
+	int index = 0;
+
+	for (auto& player : RoomData->GetPlayers())
+	{
+		auto pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+
+		if (player.Value->player_id() == pc->GetPlayerInfo()->player_id())
+		{
+			PlayerButtons[index]->OnClicked.AddDynamic(this, &URoomWidget::OnClickedCharacterImage);
+		}
+
+		IndexToPlayerID.Add(index, player.Value->player_id());
+		FText playerName = FText::FromString(UTF8_TO_TCHAR(player.Value->player_name().c_str()) + FString::FromInt(player.Value->player_id()));
+		PlayerNames[index]->SetText(playerName);
+
+		switch (player.Value->player_type())
+		{
+		case Protocol::PLAYER_TYPE_AURORA:
+			PlayerCharacters[index]->SetBrushFromMaterial(CharacterImages[Protocol::PLAYER_TYPE_AURORA]);
+			PlayerCharacters[index]->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+			index++;
+			break;
+		case Protocol::PLAYER_TYPE_DRONGO:
+			PlayerCharacters[index]->SetBrushFromMaterial(CharacterImages[Protocol::PLAYER_TYPE_DRONGO]);
+			PlayerCharacters[index]->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+			index++;
+			break;
+		}
+	}
+
+	for (index; index < 4; index++)
+	{
+		PlayerNames[index]->SetText(FText::FromString(TEXT("EMPTY")));
+		PlayerCharacters[index]->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 0.f));
+	}
+}
+
 void URoomWidget::OnClickedCharacterImage()
 {
 	auto pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
-	const uint32 localPlayerIndex = pc->GetPlayerInfo()->player_id();
+	const uint64 localPlayerIndex = pc->GetPlayerInfo()->player_id();
 
 	if (pc->GetPlayerInfo()->player_type() == Protocol::PLAYER_TYPE_AURORA)
 	{

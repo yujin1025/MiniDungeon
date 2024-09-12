@@ -20,6 +20,7 @@ bool Lobby::EnterLobby(PlayerRef player)
 {
 	Protocol::STC_ENTER_LOBBY enterLobbyPkt;
 
+	// 이미 로비에 존재한다면 문제
 	if(_players.find(player->GetPlayerInfo()->player_id()) != _players.end())
 	{
 		enterLobbyPkt.set_success(false);
@@ -33,9 +34,10 @@ bool Lobby::EnterLobby(PlayerRef player)
 		return false;
 	}
 
-	_players.insert(make_pair(player->GetPlayerInfo()->player_id(), player));
-	
-	player->lobby.store(static_pointer_cast<Lobby>(shared_from_this()));
+	if (AddPlayer(player) == false)
+	{
+		return false;
+	}
 
 	{
 		enterLobbyPkt.set_success(true);
@@ -46,8 +48,7 @@ bool Lobby::EnterLobby(PlayerRef player)
 
 		for (auto& roomInfo : _rooms)
 		{
-			Protocol::RoomInfo* info = enterLobbyPkt.add_rooms();
-			info->CopyFrom(*(roomInfo.second->GetRoomInfo()));
+			enterLobbyPkt.add_rooms()->CopyFrom(*(roomInfo.second->GetRoomInfo()));
 		}
 	}
 
@@ -56,6 +57,19 @@ bool Lobby::EnterLobby(PlayerRef player)
 	{
 		session->Send(sendBuffer);
 	}
+
+	return true;
+}
+
+bool Lobby::AddPlayer(PlayerRef player)
+{
+	if (_players.find(player->GetPlayerInfo()->player_id()) != _players.end())
+	{
+		return false;
+	}
+
+	_players.insert(make_pair(player->GetPlayerInfo()->player_id(), player));
+	player->lobby.store(static_pointer_cast<Lobby>(shared_from_this()));
 
 	return true;
 }
@@ -78,15 +92,7 @@ bool Lobby::CreateRoom(const Protocol::RoomInfo& roomInfo)
 	// 방 생성
 	RoomRef room = make_shared<Room>();
 	room->SetRoomInfo(roomInfo);
-
-	const uint64 newId = s_idGenerator.fetch_add(1);
-	room->SetRoomIndex(newId);
-
-	uint64 host_id = room->GetRoomInfo()->host().player_id();
-
-	room->EnterRoom(_players[host_id], true);
-
-	_rooms.insert(make_pair(newId, room));
+	AddRoom(room);
 
 	// 방 생성 성공 시 패킷 세팅
 	createRoomPkt.set_success(true);
@@ -99,6 +105,8 @@ bool Lobby::CreateRoom(const Protocol::RoomInfo& roomInfo)
 
 	// 방 생성 사실을 생성한 클라이언트에게 전달
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(createRoomPkt);
+
+	uint64 host_id = roomInfo.host().player_id();
 	if (auto session = _players[host_id]->session.lock())
 	{
 		session->Send(sendBuffer);
@@ -111,6 +119,40 @@ bool Lobby::CreateRoom(const Protocol::RoomInfo& roomInfo)
 
 	_players.erase(host_id);
 	return true;
+}
+
+bool Lobby::AddRoom(RoomRef room)
+{
+	if (room->GetRoomIndex() != 0)
+	{
+		return false;
+	}
+
+	room->SetLobby(GLobby);
+
+	const uint64 newId = s_idGenerator.fetch_add(1);
+	room->SetRoomIndex(newId);
+
+	uint64 host_id = room->GetRoomInfo()->host().player_id();
+
+	room->EnterRoom(_players[host_id], true);
+
+	_rooms.insert(make_pair(newId, room));
+
+	return true;
+}
+
+bool Lobby::RemoveRoom(RoomRef room)
+{
+	// Room이 없다면 문제가 있다.
+	if (_rooms.find(room->GetRoomIndex()) == _rooms.end())
+	{
+		return false;
+	}
+
+	_rooms.erase(room->GetRoomIndex());
+
+	return false;
 }
 
 bool Lobby::HandleCreateRoom(const Protocol::RoomInfo& roomInfo)
@@ -128,7 +170,7 @@ bool Lobby::JoinRoom(uint64 playerId, uint64 roomId)
 		return false;
 	}
 
-	// 방이 없으면 문제있음
+	// Room이 없으면 문제있음
 	if(_rooms.find(roomId) == _rooms.end())
 	{
 		joinRoomPkt.set_success(false);
@@ -142,7 +184,7 @@ bool Lobby::JoinRoom(uint64 playerId, uint64 roomId)
 		return false;
 	}
 
-	// 방에 입장
+	// Room에 입장
 	if (_rooms[roomId]->EnterRoom(_players[playerId], false))
 	{
 		// 방 입장 성공 시 패킷 세팅

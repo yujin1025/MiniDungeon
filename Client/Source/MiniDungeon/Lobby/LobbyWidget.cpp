@@ -47,35 +47,42 @@ class URoomListViewItemData* ULobbyWidget::AddRoomData(const Protocol::RoomInfo&
 
 	FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
 
-	RoomList.Add(roomName, roomData);
-
-	RoomListView->ClearListItems();
-
-	for(auto &room : RoomList)
+	if (RoomList.Contains(roomName))
 	{
-		RoomListView->AddItem(room.Value);
+		RoomList.Remove(roomName);
 	}
+
+	RoomList.Add(roomName, roomData);
 
 	return roomData;
 }
 
 URoomListViewItemData* ULobbyWidget::UpdateRoomData(const Protocol::RoomInfo& info)
 {
-	FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
+	RoomListView->ClearListItems();
 
-	if(RoomList.Find(roomName) == nullptr)
+	const FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
+
+	if(!RoomList.Contains(roomName))
 	{
-		return nullptr;
+		AddRoomData(info);
+	}
+	else
+	{
+		RoomList[roomName]->SetInfo(info);
 	}
 
-	RoomList[roomName]->SetInfo(info);
+	for (auto& room : RoomList)
+	{
+		RoomListView->AddItem(room.Value);
+	}
 
 	return RoomList[roomName];
 }
 
 void ULobbyWidget::CreateRoom(const Protocol::RoomInfo& info, bool isHost)
 {
-	auto roomData = AddRoomData(info);
+	auto roomData = UpdateRoomData(info);
 
 	if(isHost)
 	{
@@ -107,12 +114,52 @@ void ULobbyWidget::JoinRoom(const Protocol::RoomInfo& info)
 	}
 }
 
+void ULobbyWidget::HandleLeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoomPkt)
+{
+	if (Owner->GetPlayerInfo()->player_id() == leaveRoomPkt.player_id())
+	{
+		if (IsValid(RoomWidget))
+		{
+			RoomWidget->RemoveFromParent();
+		}
+
+		RoomList.Empty();
+		for (const auto& roomData : leaveRoomPkt.rooms())
+		{
+			UpdateRoomData(roomData);
+		}
+
+		return;
+	}
+
+	RoomList.Empty();
+	for (const auto& roomData : leaveRoomPkt.rooms())
+	{
+		UpdateRoomData(roomData);
+	}
+
+	if (IsValid(RoomWidget))
+	{
+		const FString roomName = UTF8_TO_TCHAR(leaveRoomPkt.room_info().room_name().c_str());
+		if (RoomList.Contains(roomName))
+		{
+			RoomWidget->SetRoomData(RoomList[roomName]);
+			RoomWidget->HandleLeaveRoom();
+		}
+	}
+}
+
 void ULobbyWidget::RemoveRoom(const uint64 roomIndex)
 {
 }
 
 void ULobbyWidget::UpdateRoom(const uint64 roomIndex, const uint64 playerNum)
 {
+	
+	if (IsValid(RoomWidget))
+	{
+		
+	}
 }
 
 void ULobbyWidget::ClearRoomList()
@@ -138,6 +185,7 @@ void ULobbyWidget::OnClickedCreateButton()
 	const FString& roomName = RoomNameInput->GetText().ToString();
 	const FString& password = PasswordInput->GetText().ToString();
 
+	roomInfo->set_room_id(0);
 	roomInfo->set_room_name(TCHAR_TO_UTF8(*roomName));
 	roomInfo->set_password(TCHAR_TO_UTF8(*password));
 	roomInfo->set_current_player_count(1);
@@ -145,6 +193,8 @@ void ULobbyWidget::OnClickedCreateButton()
 	Protocol::PlayerInfo* host = new Protocol::PlayerInfo();
 	host->CopyFrom(*Owner->GetPlayerInfo());
 	roomInfo->set_allocated_host(host);
+
+	roomInfo->add_players()->CopyFrom(*Owner->GetPlayerInfo());
 
 	createRoomPkt.set_allocated_room_info(roomInfo);
 	

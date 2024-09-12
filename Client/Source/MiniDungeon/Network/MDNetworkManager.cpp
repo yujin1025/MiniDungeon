@@ -188,6 +188,28 @@ void UMDNetworkManager::HandleChangeCharacter(const Protocol::STC_CHANGE_CHARACT
 
 }
 
+void UMDNetworkManager::HandleLeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoomPkt)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	auto* world = GetWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	auto* pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+
+	if (IsValid(pc))
+	{
+		pc->LeaveRoom(leaveRoomPkt);
+	}
+
+}
+
 void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, bool isMine)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)

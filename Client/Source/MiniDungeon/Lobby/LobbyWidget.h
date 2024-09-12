@@ -60,6 +60,8 @@ public:
 
 	void JoinRoom(const Protocol::RoomInfo& info);
 
+	void HandleLeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoomPkt);
+
 	UFUNCTION()
 	void RemoveRoom(const uint64 roomIndex);
 

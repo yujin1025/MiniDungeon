@@ -7,6 +7,8 @@ URoomListViewItemData::URoomListViewItemData()
 {
 	Host = new Protocol::PlayerInfo();
 	Info = new Protocol::RoomInfo();
+	PlayerNum = 0;
+	RoomIndex = -1;
 }
 
 URoomListViewItemData::~URoomListViewItemData()
@@ -50,6 +52,7 @@ void URoomListViewItemData::SetInfo(const Protocol::RoomInfo& info)
 	RoomPassword = UTF8_TO_TCHAR(Info->password().c_str());
 	PlayerNum = Info->current_player_count();
 	SetHost(Info->host());
+	Players.Empty();
 
 	for (auto& player : Info->players())
 	{

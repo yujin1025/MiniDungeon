@@ -43,24 +43,43 @@ message STC_CREATE_ROOM
 message CTS_JOIN_ROOM
 {
 	uint64 roomIndex = 1;
-	PlayerInfo player = 2;
+	string password = 2;
+	PlayerInfo player = 3;
 }
 
 message STC_JOIN_ROOM
 {
 	bool success = 1;
-	uint64 roomIndex = 2;
+	RoomInfo room_info = 2;
 	PlayerInfo player = 3;
+}
+
+message CTS_CHANGE_CHARACTER
+{
+	uint64 roomIndex = 1;
+	uint64 player_id = 2;
+	PlayerType character = 3;
+}
+
+message STC_CHANGE_CHARACTER
+{
+	bool success = 1;
+	uint64 roomIndex = 2;
+	uint64 player_id = 3;
+	PlayerType character = 4;
 }
 
 message CTS_LEAVE_ROOM
 {
-	bool success = 1;
+	uint64 roomIndex = 1;
+	uint64 player = 2;
 }
 
 message STC_LEAVE_ROOM
 {
 	bool success = 1;
+	RoomInfo room_info = 2;
+	uint64 player = 3;
 }
 
 message CTS_ENTER_GAME

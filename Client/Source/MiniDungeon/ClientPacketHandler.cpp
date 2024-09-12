@@ -77,7 +77,6 @@ bool Handle_STC_ENTER_LOBBY(PacketSessionRef& session, Protocol::STC_ENTER_LOBBY
 {
 	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
 
-	// Lobby에 이미 플레이어가 입장해 있음.
 	if (pkt.success() == false)
 	{
 		return false;
@@ -159,7 +158,20 @@ bool Handle_STC_ENTER_GAME(PacketSessionRef& session, Protocol::STC_ENTER_GAME& 
 }
 bool Handle_STC_LEAVE_ROOM(PacketSessionRef& session, Protocol::STC_LEAVE_ROOM& pkt)
 {
-	return false;
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
+	if (pkt.success() == false)
+	{
+		// 방 입장 실패
+		return false;
+	}
+
+	if (IsValid(gameNetwork))
+	{
+		gameNetwork->HandleLeaveRoom(pkt);
+	}
+	
+	return true;
 }
 //
 bool Handle_STC_LEAVE_GAME(PacketSessionRef& session, Protocol::STC_LEAVE_GAME& pkt)

@@ -30,6 +30,9 @@ protected:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UButton> StartButton;
 
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<UButton> QuitButton;
+
 public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UTextBlock> Player1_Name;
@@ -78,7 +81,13 @@ public:
 	UFUNCTION()
 	void OnClickedStartButton();
 
+	UFUNCTION()
+	void OnClickedQuitButton();
+
 	void ChangeCharacterImage(uint32 playerIndex, Protocol::PlayerType type, bool isLocal = true);
+	
+	UFUNCTION()
+	void HandleLeaveRoom();
 private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Data", meta = (AllowPrivateAccess = true))
 	TObjectPtr<class URoomListViewItemData> RoomData;
@@ -86,6 +95,8 @@ private:
 	UFUNCTION()
 	void OnClickedCharacterImage();
 
+	UFUNCTION()
+	void RefreshPlayers();
 public:
 	TObjectPtr<class URoomListViewItemData> GetRoomData() const { return RoomData; }
 	void SetRoomData(class URoomListViewItemData* data);
