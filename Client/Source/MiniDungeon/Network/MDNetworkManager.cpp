@@ -9,7 +9,8 @@
 #include "Protocol.pb.h"
 #include "ClientPacketHandler.h"
 #include "Game/MDGameInstance.h"
-#include "Character/PlayableCharacter.h"
+#include "Character/Aurora.h"
+#include "Character/Drongo.h"
 #include "Kismet/GameplayStatics.h"
 #include "Lobby/LobbyPlayerController.h"
 #include <Lobby/RoomListViewItemData.h>
@@ -108,6 +109,8 @@ void UMDNetworkManager::HandleLogin(const Protocol::STC_ENTER_LOBBY& enterLobbyP
 	{
 		return;
 	}
+
+	PlayerID = enterLobbyPkt.player().player_id();
 
 	auto* pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 
@@ -210,7 +213,7 @@ void UMDNetworkManager::HandleLeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoo
 
 }
 
-void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, bool isMine)
+void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, const Protocol::PlayerType charactertype, bool isMine)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)
 	{
@@ -238,6 +241,16 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, bool
 		APlayableCharacter* player = Cast<APlayableCharacter>(pc->GetPawn());
 		if (player == nullptr)
 		{
+			switch (charactertype)
+			{
+			case Protocol::PLAYER_TYPE_AURORA:
+				player = Cast<APlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->AuroraClass, &spawnLocation));
+				break;
+			case Protocol::PLAYER_TYPE_DRONGO:
+				player = Cast<APlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->DrongoClass, &spawnLocation));
+				break;
+			}
+			pc->Possess(player);
 			return;
 		}
 
@@ -247,23 +260,47 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, bool
 	}
 	else
 	{
-		APlayableCharacter* player = Cast<APlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->OtherPlayerClass, &spawnLocation));
-		//player->SetPlayerInfo(objectInfo.pos_info());
-		Players.Add(objectInfo.object_id(), player);
+		APlayableCharacter* player = nullptr;
+		switch (charactertype)
+		{
+		case Protocol::PLAYER_TYPE_AURORA:
+			player = Cast<APlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->AuroraClass, &spawnLocation));
+			Players.Add(objectInfo.object_id(), player);
+			break;
+		case Protocol::PLAYER_TYPE_DRONGO:
+			player = Cast<APlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->DrongoClass, &spawnLocation));
+			Players.Add(objectInfo.object_id(), player);
+			break;
+		}
 	}
+}
+
+void UMDNetworkManager::HandleSpawn(const Protocol::PlayerInfo& playerInfo, bool isMine)
+{
+	HandleSpawn(playerInfo.object_info(), playerInfo.player_type(), isMine);
 }
 
 void UMDNetworkManager::HandleSpawn(const Protocol::STC_ENTER_GAME& enterGamePkt)
 {
-	//HandleSpawn(enterGamePkt);
+	for (auto& player : enterGamePkt.players())
+	{
+		if(player.player_id() == PlayerID)
+		{
+			HandleSpawn(player, true);
+		}
+		else
+		{
+			HandleSpawn(player, false);
+		}
+	}
 }
 
 void UMDNetworkManager::HandleSpawn(const Protocol::STC_SPAWN& spawnPkt)
 {
-	for(auto& player : spawnPkt.players())
-	{
-		HandleSpawn(player, false);
-	}
+	//for(auto& player : spawnPkt.players())
+	//{
+	//	HandleSpawn(player, player  false);
+	//}
 }
 
 void UMDNetworkManager::HandleDespawn(uint64 objectId)

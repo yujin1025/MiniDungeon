@@ -9,5 +9,6 @@ Player::Player()
 
 Player::~Player()
 {
-
+	delete playerInfo;
+	playerInfo = nullptr;
 }

@@ -10,12 +10,13 @@ public:
 	bool IsPlayer() { return _isPlayer; }
 
 public:
-	Protocol::ObjectInfo* GetObjectInfo() { return objectInfo; }
+	const Protocol::ObjectInfo* GetObjectInfo() { return objectInfo; }
 	void SetObjectInfo(Protocol::ObjectInfo* objectInfo) { this->objectInfo = objectInfo; }
 
-	Protocol::PosInfo* GetPosInfo() { return posInfo; }
+	const Protocol::PosInfo* GetPosInfo() { return posInfo; }
 	void SetPosInfo(Protocol::PosInfo* posInfo) { this->posInfo = posInfo; }
 
+	void SetObjectID(int64 object_id) { this->objectInfo->set_object_id(object_id); this->posInfo->set_object_id(object_id); }
 public:
 	atomic<weak_ptr<Room>> room;
 

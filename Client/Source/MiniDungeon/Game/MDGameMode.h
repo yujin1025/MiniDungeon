@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "Engine/DataTable.h"
+#include "Protocol.pb.h"
 #include "MDGameMode.generated.h"
 
 class AMDGameState;
@@ -55,9 +56,9 @@ protected:
 	virtual void PostInitializeComponents() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
+	virtual void StartPlay() override;
 private:
 	virtual void OnPostLogin(AController* NewPlayer) override;
-
 
 public:
 	UPROPERTY()

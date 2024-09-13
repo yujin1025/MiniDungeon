@@ -4,6 +4,7 @@
 #include "Game/MDGameInstance.h"
 #include "MiniDungeon.h"
 #include "Struct.pb.h"
+#include <Kismet/GameplayStatics.h>
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -146,16 +147,6 @@ bool Handle_STC_CHANGE_CHARACTER(PacketSessionRef& session, Protocol::STC_CHANGE
 	return true;
 }
 
-//
-bool Handle_STC_ENTER_GAME(PacketSessionRef& session, Protocol::STC_ENTER_GAME& pkt)
-{
-	if (UMDNetworkManager* gameNetwork = GetWorldNetwork(session))
-	{
-		gameNetwork->HandleSpawn(pkt);
-	}
-
-	return true;
-}
 bool Handle_STC_LEAVE_ROOM(PacketSessionRef& session, Protocol::STC_LEAVE_ROOM& pkt)
 {
 	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
@@ -173,7 +164,28 @@ bool Handle_STC_LEAVE_ROOM(PacketSessionRef& session, Protocol::STC_LEAVE_ROOM& 
 	
 	return true;
 }
-//
+
+bool Handle_STC_ENTER_GAME(PacketSessionRef& session, Protocol::STC_ENTER_GAME& pkt)
+{
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
+	for(const auto& player : pkt.players())
+	{
+		if (IsValid(gameNetwork))
+		{
+			gameNetwork->PlayerInfos.Add(player.player_id(), MakeShared<Protocol::PlayerInfo>(player));
+		}
+	}
+
+	if (IsValid(gameNetwork))
+	{
+		UGameplayStatics::OpenLevel(gameNetwork, TEXT("InGame"));
+		//gameNetwork->HandleSpawn(pkt);
+	}
+
+	return true;
+}
+
 bool Handle_STC_LEAVE_GAME(PacketSessionRef& session, Protocol::STC_LEAVE_GAME& pkt)
 {
 	if (UMDNetworkManager* gameNetwork = GetWorldNetwork(session))

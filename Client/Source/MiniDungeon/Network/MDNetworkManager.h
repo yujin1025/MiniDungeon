@@ -43,7 +43,8 @@ public:
 	void HandleChangeCharacter(const Protocol::STC_CHANGE_CHARACTER& changeCharacterPkt);
 	void HandleLeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoomPkt);
 
-	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, bool isMine);
+	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, const Protocol::PlayerType charactertype, bool isMine);
+	void HandleSpawn(const Protocol::PlayerInfo& playerInfo, bool isMine);
 	void HandleSpawn(const Protocol::STC_ENTER_GAME& enterGamePkt);
 	void HandleSpawn(const Protocol::STC_SPAWN& spawnPkt);
 
@@ -63,10 +64,12 @@ public:
 	UPROPERTY()
 	TMap<uint64,TObjectPtr<class APlayableCharacter>> Players;
 
+	TMap<uint64, TSharedPtr<Protocol::PlayerInfo>> PlayerInfos;
+
 	UPROPERTY()
 	TObjectPtr<class APlayableCharacter> MyPlayer;
 	UPROPERTY()
-	FString PlayerID;
+	uint64 PlayerID;
 };
 
 template<typename T>

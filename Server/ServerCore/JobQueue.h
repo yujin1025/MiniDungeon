@@ -16,13 +16,6 @@ public:
 	}
 
 	template<typename T, typename Ret, typename... Args>
-	void DoAsync(Ret(T::* memFunc)(Args&&...), Args&&... args)
-	{
-		std::shared_ptr<T> owner = std::static_pointer_cast<T>(shared_from_this());
-		Push(std::make_shared<Job>(owner, memFunc, std::forward<Args&&>(args)...));
-	}
-
-	template<typename T, typename Ret, typename... Args>
 	void DoAsync(Ret(T::* memFunc)(Args...), Args... args)
 	{
 		shared_ptr<T> owner = static_pointer_cast<T>(shared_from_this());

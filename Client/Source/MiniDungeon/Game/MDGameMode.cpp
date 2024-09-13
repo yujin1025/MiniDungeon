@@ -6,6 +6,7 @@
 #include "MDGameState.h"
 #include "../Widget/MDWidget.h"
 #include "Blueprint/UserWidget.h"
+#include "MDNetworkManager.h"
 
 AMDGameMode::AMDGameMode()
 {
@@ -35,6 +36,28 @@ void AMDGameMode::PostLogin(APlayerController* NewPlayer)
 	Super::PostLogin(NewPlayer);
 
 	OnPostLogin(Cast<AMDPlayerController>(NewPlayer));
+}
+
+void AMDGameMode::StartPlay()
+{
+	Super::StartPlay();
+
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if (networkManager != nullptr)
+	{
+		for (const auto& playerInfo : networkManager->PlayerInfos)
+		{
+			if (playerInfo.Value->player_id() == networkManager->PlayerID)
+			{
+				networkManager->HandleSpawn(*(playerInfo.Value), true);
+			}
+			else
+			{
+				networkManager->HandleSpawn(*(playerInfo.Value), false);
+			}
+
+		}
+	}
 }
 
 

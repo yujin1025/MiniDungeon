@@ -12,69 +12,23 @@ Room::Room()
 {
 	_roomIndex = 0;
 	info = new Protocol::RoomInfo();
+
+	for (int i = 0; i < 4; i++)
+	{
+		Vector3 pos = { 940 + 50 * i, 400 + 50 * i, 120 };
+
+		_spawnPoints.insert(make_pair(i, pos));
+	}
 }
 
 Room::~Room()
 {
 	_players.clear();
 	_objects.clear();
+	_spawnPoints.clear();
 
 	info->Clear();
 	info = nullptr;
-}
-
-bool Room::EnterRoom(ObjectRef object)
-{
-	bool success = AddObject(object);
-
-	// 랜덤 위치
-
-	// 입장 사실을 신입 플레이어에게 알린다
-	if (auto player = dynamic_pointer_cast<Player>(object))
-	{
-		//Protocol::STC_ENTER_GAME enterGamePkt;
-		//enterGamePkt.set_success(success);
-
-		Protocol::ObjectInfo* playerInfo = new Protocol::ObjectInfo();
-		//playerInfo->CopyFrom(*object->objectInfo);
-		//enterGamePkt.set_allocated_player(playerInfo);
-
-		///SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
-		//if (auto session = player->session.lock())
-		//	session->Send(sendBuffer);
-	}
-
-	// 입장 사실을 다른 플레이어에게 알린다
-	{
-		Protocol::STC_SPAWN spawnPkt;
-
-		Protocol::ObjectInfo* objectInfo = spawnPkt.add_players();
-		//objectInfo->CopyFrom(*object->objectInfo);
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
-		//Broadcast(sendBuffer, object->objectInfo->object_id());
-	}
-
-	// 기존 입장한 플레이어 목록을 신입 플레이어한테 전송해준다
-	if (auto player = dynamic_pointer_cast<Player>(object))
-	{
-		Protocol::STC_SPAWN spawnPkt;
-
-		for (auto& item : _objects)
-		{
-			if (item.second->IsPlayer() == false)
-				continue;
-
-			Protocol::ObjectInfo* playerInfo = spawnPkt.add_players();
-			//playerInfo->CopyFrom(*item.second->objectInfo);
-		}
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
-		//if (auto session = player->session.lock())
-		//	session->Send(sendBuffer);
-	}
-
-	return success;
 }
 
 //bool Room::LeaveRoom(ObjectRef object)
@@ -133,7 +87,7 @@ bool Room::EnterRoom(PlayerRef player, bool isHost)
 			joinRoomPkt.set_allocated_player(playerInfo);
 
 			SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(joinRoomPkt);
-			BroadcastToPlayer(sendBuffer, player->GetPlayerInfo()->player_id());
+			BroadcastToPlayer(sendBuffer, player->GetObjectInfo()->object_id());
 		}
 	}
 
@@ -169,7 +123,7 @@ bool Room::LeaveRoom(PlayerRef player)
 	player->GetSession()->Send(sendBuffer);
 
 	// 퇴장 사실을 Room에 있는 모든 플레이어에게 알린다.
-	BroadcastToPlayer(sendBuffer, player->GetPlayerInfo()->player_id());
+	BroadcastToPlayer(sendBuffer, player->GetObjectInfo()->object_id());
 
 	if (_players.empty())
 	{
@@ -196,7 +150,7 @@ bool Room::ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType charac
 	changeCharacterPkt.set_roomindex(_roomIndex);
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(changeCharacterPkt);
-	BroadcastToPlayer(sendBuffer, playerIndex);
+	BroadcastToPlayer(sendBuffer, _players[playerIndex]->GetObjectInfo()->object_id());
 
 	return true;
 }
@@ -219,6 +173,93 @@ bool Room::HandleLeavePlayer(uint64 playerindex)
 	{
 		return LeaveRoom(leavedPlayer);
 	}
+
+	return true;
+}
+
+//bool Room::EnterRoom(ObjectRef object)
+//{
+//	bool success = AddObject(object);
+//
+//	// 랜덤 위치
+//
+//	// 입장 사실을 신입 플레이어에게 알린다
+//	if (auto player = dynamic_pointer_cast<Player>(object))
+//	{
+//		//Protocol::STC_ENTER_GAME enterGamePkt;
+//		//enterGamePkt.set_success(success);
+//
+//		Protocol::ObjectInfo* playerInfo = new Protocol::ObjectInfo();
+//		//playerInfo->CopyFrom(*object->objectInfo);
+//		//enterGamePkt.set_allocated_player(playerInfo);
+//
+//		///SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
+//		//if (auto session = player->session.lock())
+//		//	session->Send(sendBuffer);
+//	}
+//
+//	// 입장 사실을 다른 플레이어에게 알린다
+//	{
+//		Protocol::STC_SPAWN spawnPkt;
+//
+//		Protocol::ObjectInfo* objectInfo = spawnPkt.add_players();
+//		//objectInfo->CopyFrom(*object->objectInfo);
+//
+//		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
+//		//Broadcast(sendBuffer, object->objectInfo->object_id());
+//	}
+//
+//	// 기존 입장한 플레이어 목록을 신입 플레이어한테 전송해준다
+//	if (auto player = dynamic_pointer_cast<Player>(object))
+//	{
+//		Protocol::STC_SPAWN spawnPkt;
+//
+//		for (auto& item : _objects)
+//		{
+//			if (item.second->IsPlayer() == false)
+//				continue;
+//
+//			Protocol::ObjectInfo* playerInfo = spawnPkt.add_players();
+//			//playerInfo->CopyFrom(*item.second->objectInfo);
+//		}
+//
+//		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
+//		//if (auto session = player->session.lock())
+//		//	session->Send(sendBuffer);
+//	}
+//
+//	return success;
+//}
+
+void Room::HandleStartGame()
+{
+	Protocol::STC_ENTER_GAME enterGamePkt;
+	enterGamePkt.set_success(true);
+
+	int index = 0;
+	for(auto& player : _players)
+	{
+		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
+		Protocol::ObjectInfo* objectInfo = new Protocol::ObjectInfo();
+		Protocol::PosInfo* posInfo = new Protocol::PosInfo();
+
+		playerInfo->CopyFrom(*player.second->GetPlayerInfo());
+		objectInfo->CopyFrom(*player.second->GetObjectInfo());
+		posInfo->CopyFrom(*player.second->GetPosInfo());
+
+		posInfo->set_x(_spawnPoints[index].x);
+		posInfo->set_y(_spawnPoints[index].y);
+		posInfo->set_z(_spawnPoints[index].z);
+		index++;
+
+		objectInfo->set_allocated_pos_info(posInfo);
+		playerInfo->set_allocated_object_info(objectInfo);
+
+		enterGamePkt.add_players()->CopyFrom(*playerInfo);
+	}
+
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
+	Broadcast(sendBuffer);
 }
 
 void Room::HandleMove(Protocol::CTS_MOVE pkt)
@@ -270,10 +311,12 @@ void Room::ReleaseThisRoom()
 bool Room::AddObject(ObjectRef object)
 {
 	// 있다면 문제가 있다.
-	/*if (_objects.find(object->objectInfo->object_id()) != _objects.end())
+	if (_objects.find(object->GetObjectInfo()->object_id()) != _objects.end())
+	{
 		return false;
+	}
 
-	_objects.insert(make_pair(object->objectInfo->object_id(), object));*/
+	_objects.insert(make_pair(object->GetObjectInfo()->object_id(), object));
 
 	object->room.store(GetRoomRef());
 
@@ -303,8 +346,12 @@ bool Room::AddPlayer(PlayerRef player)
 	{
 		return false;
 	}
+	player->SetObjectID(ObjectUtils::GetNewObjectID());
+
 	_players.insert(make_pair(player->GetPlayerInfo()->player_id(), player));
+	_objects.insert(make_pair(player->GetObjectInfo()->object_id(), player));
 	player->room.store(GetRoomRef());
+
 
 	info->set_current_player_count(_players.size());
 	info->add_players()->CopyFrom(*player->GetPlayerInfo());
@@ -355,11 +402,12 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 		PlayerRef player = dynamic_pointer_cast<Player>(item.second);
 		if (player == nullptr)
 			continue;
-		//if (player->objectInfo->object_id() == exceptId)
-		//	continue;
 
-		//if (GameSessionRef session = player->session.lock())
-		//	session->Send(sendBuffer);
+		if (player->GetObjectInfo()->object_id() == exceptId)
+			continue;
+
+		if (GameSessionRef session = player->session.lock())
+			session->Send(sendBuffer);
 	}
 }
 
@@ -367,7 +415,7 @@ void Room::BroadcastToPlayer(SendBufferRef sendBuffer, uint64 exceptId)
 {
 	for (auto& player : _players)
 	{
-		if (player.second->GetPlayerInfo()->player_id() == exceptId)
+		if (player.second->GetObjectInfo()->object_id() == exceptId)
 			continue;
 
 		if (GameSessionRef session = player.second->GetSession())

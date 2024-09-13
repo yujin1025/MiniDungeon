@@ -11,7 +11,7 @@ public:
 	virtual ~Player();
 
 public:
-	GameSessionRef GetSession() { return session.lock(); }
+	GameSessionRef GetSession() const { return session.lock(); }
 
 	const Protocol::PlayerInfo* GetPlayerInfo() { return playerInfo; }
 	void SetPlayerInfo(const Protocol::PlayerInfo& playerInfo) { this->playerInfo->CopyFrom(playerInfo); }

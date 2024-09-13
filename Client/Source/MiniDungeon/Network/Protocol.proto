@@ -72,25 +72,26 @@ message STC_CHANGE_CHARACTER
 message CTS_LEAVE_ROOM
 {
 	uint64 roomIndex = 1;
-	uint64 player = 2;
+	uint64 player_id = 2;
 }
 
 message STC_LEAVE_ROOM
 {
 	bool success = 1;
 	RoomInfo room_info = 2;
-	uint64 player = 3;
+	uint64 player_id = 3;
+	repeated RoomInfo rooms = 4;
 }
 
 message CTS_ENTER_GAME
 {
-	uint64 playerIndex = 1;
+	uint64 room_id = 1;
 }
 
 message STC_ENTER_GAME
 {
 	bool success = 1;
-	ObjectInfo player = 2;
+	repeated PlayerInfo players = 2;
 }
 
 message CTS_LEAVE_GAME

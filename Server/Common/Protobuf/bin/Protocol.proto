@@ -85,13 +85,13 @@ message STC_LEAVE_ROOM
 
 message CTS_ENTER_GAME
 {
-	uint64 playerIndex = 1;
+	uint64 room_id = 1;
 }
 
 message STC_ENTER_GAME
 {
 	bool success = 1;
-	ObjectInfo player = 2;
+	repeated PlayerInfo players = 2;
 }
 
 message CTS_LEAVE_GAME

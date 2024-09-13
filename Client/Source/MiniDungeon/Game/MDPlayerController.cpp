@@ -4,6 +4,7 @@
 #include "MDPlayerController.h"
 #include "MDPlayerState.h"
 #include "../Character/MDCharacter.h"
+#include <Character/PlayableCharacter.h>
 
 void AMDPlayerController::PostInitializeComponents()
 {
@@ -13,7 +14,7 @@ void AMDPlayerController::PostInitializeComponents()
 void AMDPlayerController::OnPossess(APawn* aPawn)
 {
     Super::OnPossess(aPawn);
-    OnPossessCharacter(Cast<AMDCharacter>(aPawn));
+    OnPossessCharacter(Cast<APlayableCharacter>(aPawn));
 }
 
 void AMDPlayerController::OnPossessCharacter(AMDCharacter* aCharacter)

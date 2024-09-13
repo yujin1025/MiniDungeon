@@ -1,6 +1,11 @@
 #pragma once
 #include "JobQueue.h"
 
+struct Vector3
+{
+	float x, y, z;
+};
+
 
 class Room : public JobQueue
 {
@@ -9,7 +14,7 @@ public:
 	virtual ~Room();
 
 public:
-	bool EnterRoom(ObjectRef object);
+	//bool EnterRoom(ObjectRef object);
 
 	bool EnterRoom(PlayerRef player, bool isHost = true);
 	bool LeaveRoom(PlayerRef player);
@@ -17,6 +22,7 @@ public:
 
 	bool HandleEnterPlayer(PlayerRef player);
 	bool HandleLeavePlayer(uint64 playerIndex);
+	void HandleStartGame();
 
 	bool HandleChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType);
 	void HandleMove(Protocol::CTS_MOVE pkt);
@@ -46,6 +52,9 @@ private:
 	unordered_map<uint64, ObjectRef> _objects;
 	weak_ptr<class Lobby> _lobby;
 	uint64 _roomIndex = 0;
+
+private:
+	unordered_map<uint64, Vector3> _spawnPoints;
 
 protected:
 	Protocol::RoomInfo* info;

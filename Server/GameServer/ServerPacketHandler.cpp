@@ -103,11 +103,13 @@ bool Handle_CTS_CHANGE_CHARACTER(PacketSessionRef& session, Protocol::CTS_CHANGE
 
 bool Handle_CTS_ENTER_GAME(PacketSessionRef& session, Protocol::CTS_ENTER_GAME& pkt)
 {
-	// 플레이어 생성
-	PlayerRef player = ObjectUtils::CreatePlayer(static_pointer_cast<GameSession>(session));
+	// Lobby에 Room이 없다면 문제
+	if (GLobby->GetRooms().find(pkt.room_id()) == GLobby->GetRooms().end())
+	{
+		return false;
+	}
 
-	// 방에 입장
-	GRoom->DoAsync(&Room::HandleEnterPlayer, player);
+	GLobby->GetRooms()[pkt.room_id()]->DoAsync(&Room::HandleStartGame);
 
 	return true;
 }

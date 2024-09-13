@@ -87,7 +87,18 @@ void URoomWidget::NativeConstruct()
 
 void URoomWidget::OnClickedStartButton()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Start Button Clicked"));
+	auto pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	if(RoomData->GetHost()->player_id() != pc->GetPlayerInfo()->player_id())
+	{
+		return;
+	}
+
+	Protocol::CTS_ENTER_GAME pkt;
+	pkt.set_room_id(RoomData->RoomIndex);
+	 
+	SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	networkManager->SendPacket(sendBuffer);
 }
 
 void URoomWidget::OnClickedQuitButton()

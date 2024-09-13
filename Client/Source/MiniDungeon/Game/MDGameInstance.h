@@ -14,6 +14,11 @@ class MINIDUNGEON_API UMDGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 public:
+	UMDGameInstance();
+
+public:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class APlayableCharacter> OtherPlayerClass;
+	TSubclassOf<class APlayableCharacter> AuroraClass;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class APlayableCharacter> DrongoClass;
 };

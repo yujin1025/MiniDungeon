@@ -198,7 +198,7 @@ struct STC_LEAVE_ROOMDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 STC_LEAVE_ROOMDefaultTypeInternal _STC_LEAVE_ROOM_default_instance_;
 PROTOBUF_CONSTEXPR CTS_ENTER_GAME::CTS_ENTER_GAME(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.playerindex_)*/uint64_t{0u}
+    /*decltype(_impl_.room_id_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct CTS_ENTER_GAMEDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CTS_ENTER_GAMEDefaultTypeInternal()
@@ -211,7 +211,7 @@ struct CTS_ENTER_GAMEDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CTS_ENTER_GAMEDefaultTypeInternal _CTS_ENTER_GAME_default_instance_;
 PROTOBUF_CONSTEXPR STC_ENTER_GAME::STC_ENTER_GAME(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.player_)*/nullptr
+    /*decltype(_impl_.players_)*/{}
   , /*decltype(_impl_.success_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct STC_ENTER_GAMEDefaultTypeInternal {
@@ -440,7 +440,7 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::CTS_ENTER_GAME, _impl_.playerindex_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::CTS_ENTER_GAME, _impl_.room_id_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::STC_ENTER_GAME, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -448,7 +448,7 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::STC_ENTER_GAME, _impl_.success_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::STC_ENTER_GAME, _impl_.player_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::STC_ENTER_GAME, _impl_.players_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::CTS_LEAVE_GAME, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -583,17 +583,17 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "\016STC_LEAVE_ROOM\022\017\n\007success\030\001 \001(\010\022%\n\troom"
   "_info\030\002 \001(\0132\022.Protocol.RoomInfo\022\021\n\tplaye"
   "r_id\030\003 \001(\004\022!\n\005rooms\030\004 \003(\0132\022.Protocol.Roo"
-  "mInfo\"%\n\016CTS_ENTER_GAME\022\023\n\013playerIndex\030\001"
-  " \001(\004\"G\n\016STC_ENTER_GAME\022\017\n\007success\030\001 \001(\010\022"
-  "$\n\006player\030\002 \001(\0132\024.Protocol.ObjectInfo\"\020\n"
-  "\016CTS_LEAVE_GAME\"\020\n\016STC_LEAVE_GAME\"2\n\tSTC"
-  "_SPAWN\022%\n\007players\030\001 \003(\0132\024.Protocol.Objec"
-  "tInfo\"!\n\013STC_DESPAWN\022\022\n\nobject_ids\030\001 \003(\004"
-  "\"+\n\010CTS_MOVE\022\037\n\004info\030\001 \001(\0132\021.Protocol.Po"
-  "sInfo\"+\n\010STC_MOVE\022\037\n\004info\030\001 \001(\0132\021.Protoc"
-  "ol.PosInfo\"\027\n\010CTS_CHAT\022\013\n\003msg\030\001 \001(\t\")\n\010S"
-  "TC_CHAT\022\020\n\010playerId\030\001 \001(\004\022\013\n\003msg\030\002 \001(\tb\006"
-  "proto3"
+  "mInfo\"!\n\016CTS_ENTER_GAME\022\017\n\007room_id\030\001 \001(\004"
+  "\"H\n\016STC_ENTER_GAME\022\017\n\007success\030\001 \001(\010\022%\n\007p"
+  "layers\030\002 \003(\0132\024.Protocol.PlayerInfo\"\020\n\016CT"
+  "S_LEAVE_GAME\"\020\n\016STC_LEAVE_GAME\"2\n\tSTC_SP"
+  "AWN\022%\n\007players\030\001 \003(\0132\024.Protocol.ObjectIn"
+  "fo\"!\n\013STC_DESPAWN\022\022\n\nobject_ids\030\001 \003(\004\"+\n"
+  "\010CTS_MOVE\022\037\n\004info\030\001 \001(\0132\021.Protocol.PosIn"
+  "fo\"+\n\010STC_MOVE\022\037\n\004info\030\001 \001(\0132\021.Protocol."
+  "PosInfo\"\027\n\010CTS_CHAT\022\013\n\003msg\030\001 \001(\t\")\n\010STC_"
+  "CHAT\022\020\n\010playerId\030\001 \001(\004\022\013\n\003msg\030\002 \001(\tb\006pro"
+  "to3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -601,7 +601,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1486, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1483, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 22,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -3602,11 +3602,11 @@ CTS_ENTER_GAME::CTS_ENTER_GAME(const CTS_ENTER_GAME& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   CTS_ENTER_GAME* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.playerindex_){}
+      decltype(_impl_.room_id_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _this->_impl_.playerindex_ = from._impl_.playerindex_;
+  _this->_impl_.room_id_ = from._impl_.room_id_;
   // @@protoc_insertion_point(copy_constructor:Protocol.CTS_ENTER_GAME)
 }
 
@@ -3615,7 +3615,7 @@ inline void CTS_ENTER_GAME::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.playerindex_){uint64_t{0u}}
+      decltype(_impl_.room_id_){uint64_t{0u}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -3643,7 +3643,7 @@ void CTS_ENTER_GAME::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.playerindex_ = uint64_t{0u};
+  _impl_.room_id_ = uint64_t{0u};
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -3653,10 +3653,10 @@ const char* CTS_ENTER_GAME::_InternalParse(const char* ptr, ::_pbi::ParseContext
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // uint64 playerIndex = 1;
+      // uint64 room_id = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _impl_.playerindex_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          _impl_.room_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -3690,10 +3690,10 @@ uint8_t* CTS_ENTER_GAME::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // uint64 playerIndex = 1;
-  if (this->_internal_playerindex() != 0) {
+  // uint64 room_id = 1;
+  if (this->_internal_room_id() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_playerindex(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_room_id(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -3712,9 +3712,9 @@ size_t CTS_ENTER_GAME::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // uint64 playerIndex = 1;
-  if (this->_internal_playerindex() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_playerindex());
+  // uint64 room_id = 1;
+  if (this->_internal_room_id() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_room_id());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -3735,8 +3735,8 @@ void CTS_ENTER_GAME::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const :
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_playerindex() != 0) {
-    _this->_internal_set_playerindex(from._internal_playerindex());
+  if (from._internal_room_id() != 0) {
+    _this->_internal_set_room_id(from._internal_room_id());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -3755,7 +3755,7 @@ bool CTS_ENTER_GAME::IsInitialized() const {
 void CTS_ENTER_GAME::InternalSwap(CTS_ENTER_GAME* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_.playerindex_, other->_impl_.playerindex_);
+  swap(_impl_.room_id_, other->_impl_.room_id_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata CTS_ENTER_GAME::GetMetadata() const {
@@ -3768,18 +3768,10 @@ void CTS_ENTER_GAME::InternalSwap(CTS_ENTER_GAME* other) {
 
 class STC_ENTER_GAME::_Internal {
  public:
-  static const ::Protocol::ObjectInfo& player(const STC_ENTER_GAME* msg);
 };
 
-const ::Protocol::ObjectInfo&
-STC_ENTER_GAME::_Internal::player(const STC_ENTER_GAME* msg) {
-  return *msg->_impl_.player_;
-}
-void STC_ENTER_GAME::clear_player() {
-  if (GetArenaForAllocation() == nullptr && _impl_.player_ != nullptr) {
-    delete _impl_.player_;
-  }
-  _impl_.player_ = nullptr;
+void STC_ENTER_GAME::clear_players() {
+  _impl_.players_.Clear();
 }
 STC_ENTER_GAME::STC_ENTER_GAME(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
@@ -3791,14 +3783,11 @@ STC_ENTER_GAME::STC_ENTER_GAME(const STC_ENTER_GAME& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   STC_ENTER_GAME* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.player_){nullptr}
+      decltype(_impl_.players_){from._impl_.players_}
     , decltype(_impl_.success_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  if (from._internal_has_player()) {
-    _this->_impl_.player_ = new ::Protocol::ObjectInfo(*from._impl_.player_);
-  }
   _this->_impl_.success_ = from._impl_.success_;
   // @@protoc_insertion_point(copy_constructor:Protocol.STC_ENTER_GAME)
 }
@@ -3808,7 +3797,7 @@ inline void STC_ENTER_GAME::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.player_){nullptr}
+      decltype(_impl_.players_){arena}
     , decltype(_impl_.success_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
@@ -3825,7 +3814,7 @@ STC_ENTER_GAME::~STC_ENTER_GAME() {
 
 inline void STC_ENTER_GAME::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  if (this != internal_default_instance()) delete _impl_.player_;
+  _impl_.players_.~RepeatedPtrField();
 }
 
 void STC_ENTER_GAME::SetCachedSize(int size) const {
@@ -3838,10 +3827,7 @@ void STC_ENTER_GAME::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  if (GetArenaForAllocation() == nullptr && _impl_.player_ != nullptr) {
-    delete _impl_.player_;
-  }
-  _impl_.player_ = nullptr;
+  _impl_.players_.Clear();
   _impl_.success_ = false;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -3860,11 +3846,16 @@ const char* STC_ENTER_GAME::_InternalParse(const char* ptr, ::_pbi::ParseContext
         } else
           goto handle_unusual;
         continue;
-      // .Protocol.ObjectInfo player = 2;
+      // repeated .Protocol.PlayerInfo players = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          ptr = ctx->ParseMessage(_internal_mutable_player(), ptr);
-          CHK_(ptr);
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_players(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
         } else
           goto handle_unusual;
         continue;
@@ -3903,11 +3894,12 @@ uint8_t* STC_ENTER_GAME::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(1, this->_internal_success(), target);
   }
 
-  // .Protocol.ObjectInfo player = 2;
-  if (this->_internal_has_player()) {
+  // repeated .Protocol.PlayerInfo players = 2;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_players_size()); i < n; i++) {
+    const auto& repfield = this->_internal_players(i);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(2, _Internal::player(this),
-        _Internal::player(this).GetCachedSize(), target, stream);
+        InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -3926,11 +3918,11 @@ size_t STC_ENTER_GAME::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // .Protocol.ObjectInfo player = 2;
-  if (this->_internal_has_player()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *_impl_.player_);
+  // repeated .Protocol.PlayerInfo players = 2;
+  total_size += 1UL * this->_internal_players_size();
+  for (const auto& msg : this->_impl_.players_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
   // bool success = 1;
@@ -3956,10 +3948,7 @@ void STC_ENTER_GAME::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const :
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_has_player()) {
-    _this->_internal_mutable_player()->::Protocol::ObjectInfo::MergeFrom(
-        from._internal_player());
-  }
+  _this->_impl_.players_.MergeFrom(from._impl_.players_);
   if (from._internal_success() != 0) {
     _this->_internal_set_success(from._internal_success());
   }
@@ -3980,12 +3969,8 @@ bool STC_ENTER_GAME::IsInitialized() const {
 void STC_ENTER_GAME::InternalSwap(STC_ENTER_GAME* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(STC_ENTER_GAME, _impl_.success_)
-      + sizeof(STC_ENTER_GAME::_impl_.success_)
-      - PROTOBUF_FIELD_OFFSET(STC_ENTER_GAME, _impl_.player_)>(
-          reinterpret_cast<char*>(&_impl_.player_),
-          reinterpret_cast<char*>(&other->_impl_.player_));
+  _impl_.players_.InternalSwap(&other->_impl_.players_);
+  swap(_impl_.success_, other->_impl_.success_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata STC_ENTER_GAME::GetMetadata() const {
