@@ -56,6 +56,7 @@ protected:
 	virtual void PostInitializeComponents() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
+
 	virtual void StartPlay() override;
 private:
 	virtual void OnPostLogin(AController* NewPlayer) override;

@@ -2,6 +2,18 @@
 
 
 #include "Aurora.h"
+#include "MiniDungeon.h"
+
+AAurora::AAurora()
+{
+}
+
+void AAurora::BeginPlay()
+{
+	MD_LOG(LogMDNetwork, Log, TEXT("Begin"));
+	Super::BeginPlay();
+	MD_LOG(LogMDNetwork, Log, TEXT("End"));
+}
 
 void AAurora::OnUseQSkill()
 {

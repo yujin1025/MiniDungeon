@@ -19,6 +19,9 @@
     <Filter Include="Game\Object">
       <UniqueIdentifier>{ba4992f5-7866-498c-8f3b-81dd9e017c41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Room">
+      <UniqueIdentifier>{3f35d849-86a7-4b2a-83fb-1ceef9d32174}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -39,9 +42,6 @@
     <ClCompile Include="Utils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Room.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectUtils.cpp" />
     <ClCompile Include="Player.cpp">
       <Filter>Game\Object</Filter>
@@ -55,9 +55,6 @@
     <ClCompile Include="Creature.cpp">
       <Filter>Game\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Lobby.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="Protocol.pb.cc">
       <Filter>Protocol</Filter>
     </ClCompile>
@@ -66,6 +63,15 @@
     </ClCompile>
     <ClCompile Include="Enum.pb.cc">
       <Filter>Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="GameRoom.cpp">
+      <Filter>Game\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="Lobby.cpp">
+      <Filter>Game\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Game\Room</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -84,9 +90,6 @@
     <ClInclude Include="Utils.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Room.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectUtils.h" />
     <ClInclude Include="Player.h">
       <Filter>Game\Object</Filter>
@@ -100,9 +103,6 @@
     <ClInclude Include="Creature.h">
       <Filter>Game\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Lobby.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Protocol.pb.h">
       <Filter>Protocol</Filter>
     </ClInclude>
@@ -111,6 +111,15 @@
     </ClInclude>
     <ClInclude Include="Enum.pb.h">
       <Filter>Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Game\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="GameRoom.h">
+      <Filter>Game\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="Lobby.h">
+      <Filter>Game\Room</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

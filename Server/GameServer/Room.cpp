@@ -31,6 +31,16 @@ Room::~Room()
 	info = nullptr;
 }
 
+bool Room::Enter(PlayerRef player)
+{
+	return false;
+}
+
+bool Room::Leave(PlayerRef player)
+{
+	return false;
+}
+
 //bool Room::LeaveRoom(ObjectRef object)
 //{
 //	if (object == nullptr)

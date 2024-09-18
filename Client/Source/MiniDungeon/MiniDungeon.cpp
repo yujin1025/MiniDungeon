@@ -3,6 +3,7 @@
 #include "MiniDungeon.h"
 #include "Modules/ModuleManager.h"
 
+DEFINE_LOG_CATEGORY(LogMDNetwork);
 IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, MiniDungeon, "MiniDungeon" );
 
 /*----------------

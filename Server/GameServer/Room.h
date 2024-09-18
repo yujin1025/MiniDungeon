@@ -14,6 +14,8 @@ public:
 	virtual ~Room();
 
 public:
+	virtual bool Enter(PlayerRef player);
+	virtual bool Leave(PlayerRef player);
 	//bool EnterRoom(ObjectRef object);
 
 	bool EnterRoom(PlayerRef player, bool isHost = true);

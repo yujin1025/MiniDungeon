@@ -14,6 +14,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Lobby/LobbyPlayerController.h"
 #include <Lobby/RoomListViewItemData.h>
+#include "Game/MDPlayerController.h"
 
 
 void UMDNetworkManager::Initialize(FSubsystemCollectionBase& Collection)
@@ -237,7 +238,7 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 
 	if (isMine)
 	{
-		auto* pc = UGameplayStatics::GetPlayerController(this, 0);
+		AMDPlayerController* pc = Cast<AMDPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 		APlayableCharacter* player = Cast<APlayableCharacter>(pc->GetPawn());
 		if (player == nullptr)
 		{
@@ -250,7 +251,13 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 				player = Cast<APlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->DrongoClass, &spawnLocation));
 				break;
 			}
-			pc->Possess(player);
+
+			if (IsValid(pc))
+			{
+				pc->OnPossess(player);
+			}
+
+			//pc->Possess(player);
 			return;
 		}
 
