@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "Engine/DataTable.h"
 #include "Protocol.pb.h"
 #include "MDGameMode.generated.h"
@@ -43,7 +43,7 @@ public:
 
 
 UCLASS()
-class MINIDUNGEON_API AMDGameMode : public AGameModeBase
+class MINIDUNGEON_API AMDGameMode : public AGameMode
 {
 	GENERATED_BODY()
 

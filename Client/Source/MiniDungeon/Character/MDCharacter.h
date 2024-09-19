@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "MiniDungeon.h"
 #include "MDCharacter.generated.h"
 
 class UAttackComponent;

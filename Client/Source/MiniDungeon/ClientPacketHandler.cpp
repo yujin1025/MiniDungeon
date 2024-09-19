@@ -179,7 +179,9 @@ bool Handle_STC_ENTER_GAME(PacketSessionRef& session, Protocol::STC_ENTER_GAME& 
 
 	if (IsValid(gameNetwork))
 	{
+		MD_LOG(LogMDNetwork, Log, TEXT("OpenLevel Begin"));
 		UGameplayStatics::OpenLevel(gameNetwork, TEXT("InGame"));
+		MD_LOG(LogMDNetwork, Log, TEXT("OpenLevel End"));
 		//gameNetwork->HandleSpawn(pkt);
 	}
 

@@ -38,31 +38,30 @@ void AMDGameMode::PostLogin(APlayerController* NewPlayer)
 	OnPostLogin(Cast<AMDPlayerController>(NewPlayer));
 }
 
-//void AMDGameMode::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
-//{
-//	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
-//
-//	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-//	if (networkManager != nullptr)
-//	{
-//		for (const auto& playerInfo : networkManager->PlayerInfos)
-//		{
-//			if (playerInfo.Value->player_id() == networkManager->PlayerID)
-//			{
-//				networkManager->HandleSpawn(*(playerInfo.Value), true);
-//			}
-//			else
-//			{
-//				networkManager->HandleSpawn(*(playerInfo.Value), false);
-//			}
-//
-//		}
-//	}
-//}
-
 void AMDGameMode::StartPlay()
 {
+	MD_LOG(LogMDNetwork, Log, TEXT("Super Begin"));
 	Super::StartPlay();
+	MD_LOG(LogMDNetwork, Log, TEXT("Super End"));
+
+	MD_LOG(LogMDNetwork, Log, TEXT("Override Begin"));
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+
+	if (networkManager != nullptr)
+	{
+		for (const auto& playerInfo : networkManager->PlayerInfos)
+		{
+			if (playerInfo.Value->player_id() == networkManager->PlayerID)
+			{
+				networkManager->HandleSpawn(*(playerInfo.Value), true);
+			}
+			else
+			{
+				networkManager->HandleSpawn(*(playerInfo.Value), false);
+			}
+		}
+	}
+	MD_LOG(LogMDNetwork, Log, TEXT("Override End"));
 }
 
 

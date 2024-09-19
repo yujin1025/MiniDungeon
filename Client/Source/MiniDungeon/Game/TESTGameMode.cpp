@@ -51,7 +51,6 @@ void ATESTGameMode::StartPlay()
 
 	APlayableCharacter* player = Cast<APlayableCharacter>(pc->GetPawn());
 
-	if (!IsValid(player))
 	{
 		FVector location = FVector(940.0f, 400.0f, 120.0f);
 		player = Cast<APlayableCharacter>(GetWorld()->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->AuroraClass, &location));

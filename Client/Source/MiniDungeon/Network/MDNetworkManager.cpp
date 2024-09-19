@@ -257,13 +257,9 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 				pc->OnPossess(player);
 			}
 
-			//pc->Possess(player);
-			return;
+			MyPlayer = player;
+			Players.Add(objectInfo.object_id(), player);
 		}
-
-		//player->SetPlayerInfo(objectInfo.pos_info());
-		MyPlayer = player;
-		Players.Add(objectInfo.object_id(), player);
 	}
 	else
 	{
