@@ -15,8 +15,9 @@ AMDGameMode::AMDGameMode()
 
 void AMDGameMode::BeginPlay()
 {
+	MD_LOG(LogMDNetwork, Log, TEXT("Begin"));
 	Super::BeginPlay();
-
+	MD_LOG(LogMDNetwork, Log, TEXT("End"));
 	ingameWindowWidget = CreateWidget<UMDWidget>(GetWorld(), ingameWindowWidgetClass);
 	if (ingameWindowWidget != nullptr)
 	{
@@ -26,15 +27,17 @@ void AMDGameMode::BeginPlay()
 
 void AMDGameMode::PostInitializeComponents()
 {
+	MD_LOG(LogMDNetwork, Log, TEXT("Begin"));
 	Super::PostInitializeComponents();
-
+	MD_LOG(LogMDNetwork, Log, TEXT("End"));
 	MyGameState = Cast<AMDGameState>(GameState);
 }
 
 void AMDGameMode::PostLogin(APlayerController* NewPlayer)
 {
+	MD_LOG(LogMDNetwork, Log, TEXT("Begin"));
 	Super::PostLogin(NewPlayer);
-
+	MD_LOG(LogMDNetwork, Log, TEXT("End"));
 	OnPostLogin(Cast<AMDPlayerController>(NewPlayer));
 }
 

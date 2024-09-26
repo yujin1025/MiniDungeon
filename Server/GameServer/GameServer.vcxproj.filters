@@ -64,13 +64,13 @@
     <ClCompile Include="Enum.pb.cc">
       <Filter>Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="GameRoom.cpp">
-      <Filter>Game\Room</Filter>
-    </ClCompile>
     <ClCompile Include="Lobby.cpp">
       <Filter>Game\Room</Filter>
     </ClCompile>
     <ClCompile Include="Room.cpp">
+      <Filter>Game\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="GameRoom.cpp">
       <Filter>Game\Room</Filter>
     </ClCompile>
   </ItemGroup>
@@ -115,10 +115,10 @@
     <ClInclude Include="Room.h">
       <Filter>Game\Room</Filter>
     </ClInclude>
-    <ClInclude Include="GameRoom.h">
+    <ClInclude Include="Lobby.h">
       <Filter>Game\Room</Filter>
     </ClInclude>
-    <ClInclude Include="Lobby.h">
+    <ClInclude Include="GameRoom.h">
       <Filter>Game\Room</Filter>
     </ClInclude>
   </ItemGroup>

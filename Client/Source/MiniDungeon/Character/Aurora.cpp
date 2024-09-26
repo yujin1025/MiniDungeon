@@ -15,6 +15,11 @@ void AAurora::BeginPlay()
 	MD_LOG(LogMDNetwork, Log, TEXT("End"));
 }
 
+void AAurora::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
 void AAurora::OnUseQSkill()
 {
 }

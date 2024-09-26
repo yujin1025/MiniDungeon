@@ -21,4 +21,8 @@ private:
 
 protected:
 	virtual void NativeConstruct() override;
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetHP(int id, float HP);
 };

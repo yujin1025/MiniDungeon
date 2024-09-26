@@ -15,6 +15,7 @@
 #include "Lobby/LobbyPlayerController.h"
 #include <Lobby/RoomListViewItemData.h>
 #include "Game/MDPlayerController.h"
+#include <Game/MDGameMode.h>
 
 
 void UMDNetworkManager::Initialize(FSubsystemCollectionBase& Collection)
@@ -240,21 +241,31 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 	{
 		AMDPlayerController* pc = Cast<AMDPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 		APlayableCharacter* player = Cast<APlayableCharacter>(pc->GetPawn());
-		if (player == nullptr)
+		AMDGameMode* gameMode = Cast<AMDGameMode>(GetWorld()->GetAuthGameMode());
+
+		if (true)
 		{
 			switch (charactertype)
 			{
 			case Protocol::PLAYER_TYPE_AURORA:
 				player = Cast<APlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->AuroraClass, &spawnLocation));
+				MD_LOG(LogMDNetwork, Log, TEXT("Spawn Character"));
 				break;
 			case Protocol::PLAYER_TYPE_DRONGO:
 				player = Cast<APlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->DrongoClass, &spawnLocation));
+				MD_LOG(LogMDNetwork, Log, TEXT("Spawn Character"));
 				break;
 			}
 
 			if (IsValid(pc))
 			{
 				pc->OnPossess(player);
+				MD_LOG(LogMDNetwork, Log, TEXT("Possess To Character"));
+			}
+
+			if(IsValid(gameMode))
+			{
+				gameMode->MyPlayerState = pc->GetState();
 			}
 
 			MyPlayer = player;
@@ -268,13 +279,15 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 		{
 		case Protocol::PLAYER_TYPE_AURORA:
 			player = Cast<APlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->AuroraClass, &spawnLocation));
-			Players.Add(objectInfo.object_id(), player);
+			MD_LOG(LogMDNetwork, Log, TEXT("Spawn Character"));
 			break;
 		case Protocol::PLAYER_TYPE_DRONGO:
 			player = Cast<APlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->DrongoClass, &spawnLocation));
-			Players.Add(objectInfo.object_id(), player);
+			MD_LOG(LogMDNetwork, Log, TEXT("Spawn Character"));
 			break;
 		}
+
+		Players.Add(objectInfo.object_id(), player);
 	}
 }
 

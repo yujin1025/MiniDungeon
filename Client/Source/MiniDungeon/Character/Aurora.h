@@ -20,6 +20,9 @@ public:
 	virtual void BeginPlay() override;
 
 protected:
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+protected:
 	virtual void OnUseQSkill() override;
 	virtual void OnUseESkill() override;
 	virtual void OnUseShiftSkill() override;

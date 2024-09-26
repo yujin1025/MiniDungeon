@@ -13,13 +13,27 @@ void UHPBarWidget::NativeConstruct()
 	Super::NativeConstruct();
 	ProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HPBar")));
 
-	auto* GameMode = Cast<AMDGameMode>(GetWorld()->GetAuthGameMode());
+	AMDGameMode* GameMode = Cast<AMDGameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode == nullptr)
 		return;
 
-	GameMode->MyPlayerState->OnPlayerHPChanged.AddLambda([this](int id, float amount) -> void
+	/*GameMode->MyPlayerState->OnPlayerHPChanged.AddLambda([&](int id, float amount) -> void
 		{
 			float PercentValue = amount / 100.0f;
 			ProgressBar->SetPercent(PercentValue);
-		});
+		});*/
+
+	if (IsValid(GameMode->MyPlayerState))
+	{
+		GameMode->MyPlayerState->OnPlayerHPChanged.AddUObject(this, &UHPBarWidget::SetHP);
+	}
+}
+
+void UHPBarWidget::SetHP(int id, float HP)
+{
+	if (ProgressBar == nullptr)
+		return;
+
+	float PercentValue = HP / 100.0f;
+	ProgressBar->SetPercent(PercentValue);
 }
