@@ -5,11 +5,11 @@
 #include "Session.h"
 #include "GameSession.h"
 #include "GameSessionManager.h"
-//#include "ClientPacketHandler.h"
 #include <tchar.h>
 #include "Job.h"
 #include "Protocol.pb.h"
 #include "Room.h"
+#include "DBConnectionPool.h"
 
 enum
 {
@@ -35,6 +35,8 @@ void DoWorkerJob(ServerServiceRef& service)
 
 int main()
 {
+	ASSERT_CRASH(GDBConnectionPool->Connect(1, L"Driver={MySQL ODBC 8.4 ANSI Driver};Server=database-1.c5y046mwe85d.ap-northeast-2.rds.amazonaws.com;Database=MDDB;UID=hans4809;PWD=*gyqls124;"));
+
 	ServerPacketHandler::Init();
 
 	ServerServiceRef service = make_shared<ServerService>(
