@@ -10,6 +10,7 @@
 #include "Protocol.pb.h"
 #include "Room.h"
 #include "DBConnectionPool.h"
+#include "DBBind.h"
 
 enum
 {

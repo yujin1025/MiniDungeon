@@ -9,6 +9,8 @@
 #include "Player.h"
 #include "GameSession.h"
 #include "Lobby.h"
+#include "DBConnectionPool.h"
+#include "DBBind.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -21,16 +23,59 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 
 bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 {
-	// TODO : DB에서 Account 정보 긁어온다
-	// TODO : DB에서 유저 정보 긁어온다
+	DBConnection* dbConnection = GDBConnectionPool->Pop();
+	if (dbConnection == nullptr)
+	{
+		return false;
+	}
+
+	//DB에서 Account 정보 긁어온다, DB에서 유저 정보 긁어온다
+	DBBind<1, 3> dbBind(*dbConnection, L"SELECT player_id, ID, Password FROM MDDB.AccountInfo WHERE ID = ?");	
+
+	//WCHAR id[100];
+	wstring convertToWStringID = Utils::stringToWString(pkt.id());
+	//wcscpy_s(id, convertToWStringID.c_str());
+	dbBind.BindParam(0, convertToWStringID);
+
+	int32 outIndex;
+	WCHAR outID[100];
+	WCHAR outPW[100];
+
+	dbBind.BindColumn(0, OUT outIndex);
+	dbBind.BindColumn(1, OUT outID);
+	dbBind.BindColumn(2, OUT outPW);
+
+	ASSERT_CRASH(dbBind.Execute());
+
+	bool auth = false;
+
+	while (dbBind.Fetch())
+	{
+		string convertedOutID = Utils::WCHARToString(outID);
+		string convertedOutPW = Utils::WCHARToString(outPW);
+
+		string id = pkt.id();
+		id.push_back('\0');
+
+		string pw = pkt.pw();
+		pw.push_back('\0');
+
+		if (convertedOutID == id && convertedOutPW == pw)
+		{
+			auth = true;
+		}
+	}
 
 	Protocol::STC_LOGIN loginPkt;
-	if(pkt.id() == "Admin" && pkt.pw() == "Admin")
+	if(auth == true)
 	{
 		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
 		playerInfo->set_player_id(pkt.player_id());
-		playerInfo->set_allocated_player_name(new string("Admin"));
+
+		playerInfo->set_player_name(pkt.id());
+
 		playerInfo->set_player_type(Protocol::PlayerType::PLAYER_TYPE_AURORA);
+
 		Protocol::ObjectInfo* objectInfo = new Protocol::ObjectInfo();
 		objectInfo->set_object_id(0);
 		objectInfo->set_object_type(Protocol::ObjectType::OBJECT_TYPE_CREATURE);
