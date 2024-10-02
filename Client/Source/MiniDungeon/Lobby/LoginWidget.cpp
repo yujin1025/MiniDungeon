@@ -6,6 +6,12 @@
 #include "Components/EditableTextBox.h"
 #include <Kismet/GameplayStatics.h>
 #include <MDNetworkManager.h>
+#include "SignUpWidget.h"
+
+ULoginWidget::ULoginWidget(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+}
 
 void ULoginWidget::NativeConstruct()
 {
@@ -14,6 +20,16 @@ void ULoginWidget::NativeConstruct()
 	if (IsValid(LOGINButton))
 	{
 		LOGINButton->OnClicked.AddDynamic(this, &ULoginWidget::OnLOGINButtonClicked);
+	}
+
+	if (IsValid(SIGNUPButton))
+	{
+		SIGNUPButton->OnClicked.AddDynamic(this, &ULoginWidget::OnSIGNUPButtonClicked);
+	}
+
+	if (IsValid(WBP_SignUpWidget))
+	{
+		WBP_SignUpWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -35,5 +51,13 @@ void ULoginWidget::OnLOGINButtonClicked()
 			auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
 			networkManager->SendPacket(sendBuffer);
 		}
+	}
+}
+
+void ULoginWidget::OnSIGNUPButtonClicked()
+{
+	if (IsValid(WBP_SignUpWidget))
+	{
+		WBP_SignUpWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
