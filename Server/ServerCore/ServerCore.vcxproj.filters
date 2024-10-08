@@ -19,6 +19,9 @@
     <Filter Include="DB">
       <UniqueIdentifier>{cb30e584-f158-4d1a-a27f-b44bbe18168a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SMTP">
+      <UniqueIdentifier>{4758d391-1b2e-4cb2-824e-203f6a43712d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CorePch.h">
@@ -99,6 +102,9 @@
     <ClInclude Include="DBBind.h">
       <Filter>DB</Filter>
     </ClInclude>
+    <ClInclude Include="SMTPManager.h">
+      <Filter>SMTP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CorePch.cpp">
@@ -172,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="DBBind.cpp">
       <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="SMTPManager.cpp">
+      <Filter>SMTP</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
