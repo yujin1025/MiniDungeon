@@ -1,0 +1,27 @@
+220 mx.google.com ESMTP 41be03b00d2f7-7e9f6c6ecc6si11821449a12.385 - gsmtp
+ehlo google.co.kr
+250-mx.google.com at your service, [112.187.249.237]
+250-SIZE 157286400
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+mail from: <hans4809@gmail.com>
+250 2.1.0 OK 41be03b00d2f7-7e9f6c6ecc6si11821449a12.385 - gsmtp
+rcpt to:<hondaestudy@gmail.com>
+250 2.1.5 OK 41be03b00d2f7-7e9f6c6ecc6si11821449a12.385 - gsmtp
+data
+354  Go ahead 41be03b00d2f7-7e9f6c6ecc6si11821449a12.385 - gsmtp
+To:hondaestudy@gmail.com 
+From:hans4809@gmail.com 
+Subject:MAIL_TEST
+
+TEST
+.
+550-5.7.1 [112.187.249.237] Messages missing a valid Message-ID header are not
+550-5.7.1 accepted. For more information, go to
+550-5.7.1  https://support.google.com/mail/?p=RfcMessageNonCompliant and review
+550 5.7.1 RFC 5322 specifications. 41be03b00d2f7-7e9f6c6ecc6si11821449a12.385 - gsmtp
+quit

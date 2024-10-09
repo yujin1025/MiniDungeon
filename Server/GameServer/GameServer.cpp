@@ -11,6 +11,7 @@
 #include "Room.h"
 #include "DBConnectionPool.h"
 #include "DBBind.h"
+#include "SMTPManager.h"
 
 enum
 {
@@ -36,6 +37,27 @@ void DoWorkerJob(ServerServiceRef& service)
 
 int main()
 {
+	try
+	{
+		SMTPManager smtp;
+		smtp.SetDNSAddress("google.co.kr");
+		smtp.SetEmailFrom("hans4809@gmail.com");
+		smtp.SetEmailTo("hondaestudy@gmail.com");
+		smtp.SetMessage("TEST");
+		smtp.SetServerPort(25);
+		smtp.SetSMTPServer("smtp.gmail.com");
+		smtp.SetEmailSubject("MAIL_TEST");
+
+		smtp.Transport();
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
+
+
+
+
 	ASSERT_CRASH(GDBConnectionPool->Connect(1, L"Driver={MySQL ODBC 8.4 ANSI Driver};Server=database-1.c5y046mwe85d.ap-northeast-2.rds.amazonaws.com;Database=MDDB;UID=hans4809;PWD=*gyqls124;"));
 
 	ServerPacketHandler::Init();

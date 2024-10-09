@@ -3,6 +3,13 @@
 
 SMTPManager::SMTPManager()
 {
+	_DNSAddress = "";
+	_emailFrom = "";
+	_emailTo = "";
+	_message = "";
+	_serverPort = 0;
+	_smtpServer = "";
+	_emailSubject = "";
 }
 
 SMTPManager::~SMTPManager()
@@ -13,8 +20,7 @@ void SMTPManager::Transport()
 {
 	std::ofstream report;
 	SOCKET serverSocket;
-	char recvBuffer[0x200];
-	char sendBuffer[0x200];
+
 	int recvBytes;
 
 	/// Packet Log File
@@ -35,7 +41,7 @@ void SMTPManager::Transport()
 	recvBytes = recv(serverSocket, recvBuffer, sizeof(recvBuffer), 0);
 	recvBuffer[recvBytes] = '\0';
 	report << recvBuffer;
-	sprintf(sendBuffer, "ehlo %s\r\n", _DNSAddress.c_str());
+	sprintf_s(sendBuffer, "ehlo %s\r\n", _DNSAddress.c_str());
 	report << sendBuffer;
 	send(serverSocket, sendBuffer, strlen(sendBuffer), 0);
 
@@ -43,7 +49,7 @@ void SMTPManager::Transport()
 	recvBytes = recv(serverSocket, recvBuffer, sizeof(recvBuffer), 0);
 	recvBuffer[recvBytes] = '\0';
 	report << recvBuffer;
-	sprintf(sendBuffer, "mail from: <%s>\r\n", _emailFrom.c_str());
+	sprintf_s(sendBuffer, "mail from: <%s>\r\n", _emailFrom.c_str());
 	report << sendBuffer;
 	send(serverSocket, sendBuffer, strlen(sendBuffer), 0);
 
@@ -51,7 +57,7 @@ void SMTPManager::Transport()
 	recvBytes = recv(serverSocket, recvBuffer, sizeof(recvBuffer), 0);
 	recvBuffer[recvBytes] = '\0';
 	report << recvBuffer;
-	sprintf(sendBuffer, "rcpt to:<%s>\r\n", _emailTo.c_str());
+	sprintf_s(sendBuffer, "rcpt to:<%s>\r\n", _emailTo.c_str());
 	report << sendBuffer;
 	send(serverSocket, sendBuffer, (int)strlen(sendBuffer), 0);
 
@@ -59,7 +65,7 @@ void SMTPManager::Transport()
 	recvBytes = recv(serverSocket, recvBuffer, sizeof(recvBuffer), 0);
 	recvBuffer[recvBytes] = '\0';
 	report << recvBuffer;
-	sprintf(sendBuffer, "data\r\n");
+	sprintf_s(sendBuffer, "data\r\n");
 	report << sendBuffer;
 	send(serverSocket, sendBuffer, static_cast<int>(strlen(sendBuffer)), 0);
 
@@ -67,7 +73,7 @@ void SMTPManager::Transport()
 	recvBytes = recv(serverSocket, recvBuffer, sizeof(recvBuffer), 0);
 	recvBuffer[recvBytes] = '\0';
 	report << recvBuffer;
-	sprintf(sendBuffer, "To:%s \nFrom:%s \nSubject%s\r\n\r\n%s\r\n.\r\n", _emailTo.c_str(), _emailFrom.c_str(), _emailSubject.c_str(), _message.c_str());
+	sprintf_s(sendBuffer, "To:%s \nFrom:%s \nSubject:%s\r\n\r\n%s\r\n.\r\n", _emailTo.c_str(), _emailFrom.c_str(), _emailSubject.c_str(), _message.c_str());
 	report << sendBuffer;
 	send(serverSocket, sendBuffer, static_cast<int>(strlen(sendBuffer)), 0);
 
@@ -75,7 +81,7 @@ void SMTPManager::Transport()
 	recvBytes = recv(serverSocket, recvBuffer, sizeof(recvBuffer), 0);
 	recvBuffer[recvBytes] = '\0';
 	report << recvBuffer;
-	sprintf(sendBuffer, "quit\r\n");
+	sprintf_s(sendBuffer, "quit\r\n");
 	report << sendBuffer;
 	send(serverSocket, sendBuffer, static_cast<int>(strlen(sendBuffer)), 0);
 
@@ -112,6 +118,7 @@ SOCKET SMTPManager::Connect()
 	memset(&serverAddrIn, 0, sizeof(serverAddrIn));
 
 	host = gethostbyname(_smtpServer.c_str());
+
 	if (host == nullptr)
 	{
 		throw runtime_error("gethostbyname failed");
