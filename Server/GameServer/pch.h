@@ -5,6 +5,9 @@
 #ifdef _DEBUG
 #pragma comment(lib, "ServerCore\\Debug\\ServerCore.lib")
 #pragma comment(lib, "Protobuf\\Debug\\libprotobufd.lib")
+#pragma comment(lib, "wldap32.lib")
+#pragma comment(lib, "crypt32.lib")
+#pragma comment(lib, "curl\\Debug\\libcurld.lib")
 #else
 #pragma comment(lib, "ServerCore\\Release\\ServerCore.lib")
 #pragma comment(lib, "Protobuf\\Release\\libprotobuf.lib")

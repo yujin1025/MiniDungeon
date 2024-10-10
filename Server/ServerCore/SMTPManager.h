@@ -1,8 +1,6 @@
 #pragma once
-#include "EASendMail/easendmailobj.tlh"
 
 using namespace std;
-using namespace EASendMailObjLib;
 
 class SMTPManager
 {
