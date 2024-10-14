@@ -56,6 +56,10 @@ int main()
 	//	std::cerr << e.what() << std::endl;
 	//}
 
+	/*CURLMananger* curl = new CURLMananger();
+	curl->SetToAddr("hondaestudy@gmail.com");
+
+	curl->SendMail("hondaestudy@gmail.com");*/
 
 	CURLMananger::SendMail();
 
