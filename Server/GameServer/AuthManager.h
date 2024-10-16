@@ -14,13 +14,15 @@ public:
 		const string& fromAddr,
 		const string& nameFrom,
 		const string& subject,
-		const string& message,
+		int authNum,
 		const string& ccAddr = ""
 	);
-	~Email();
+
+public:
+	CURLcode Send();
 
 private:
-	struct StringData 
+	struct StringData
 	{
 		string msg;
 		size_t bytesleft;
@@ -29,50 +31,52 @@ private:
 	};
 
 	string DateTimeNow() const;
-	CURLcode Send(const string& url, const string& userName, const string& password);
+
 private:
 	string SetPayloadText();
 	string GenerateMessageID() const;
 	static size_t payload_source(void* ptr, size_t size, size_t nmemb, void* userp);
+
 private:
 	string _toAddr;
 	string _fromAddr;
 	string _nameFrom;
 	string _subject;
-	string _message;
+	string _htmlFormat;
 	string _ccAddr;
+	
+	int _authNum;
 };
 
-class CURLMananger
+class AuthManager
 {
 public:
-	CURLMananger();
-	~CURLMananger();
+	// Singleton
+	static AuthManager& GetInstance()
+	{
+		static AuthManager instance;
+		return instance;
+	}
+
+private:
+	// Singleton
+	AuthManager() = default;
+	AuthManager(const AuthManager&) = delete;
+	AuthManager& operator=(const AuthManager&) = delete;
+	AuthManager(AuthManager&&) = delete;
+	AuthManager& operator=(AuthManager&&) = delete;
 
 public:
-	static void SendMail();
-
-	void SendMail(const string& toAddr, const string& password);
-
-	void SetToAddr(const string& toAddr) { this->_toAddr = toAddr; }
-
-	void SetMessageID(const string& messageID) { this->_messageID = messageID; }
+	void SendMail();
 
 	void AddAuthWaiter(const string& email, const string& password);
 
+	void CheckAuthWaiter(const string& email, const string& authNum);
+
 private:
-	string GenerateMessageID(const std::string& domain);
-
-	string SetPayLoadText(const string& email, AuthInfo info);
-
 	int GenerateVerificationCode();
-private:
-	string _toAddr;
-	string _messageID;
 
-private: 
+private:
 	USE_LOCK;
 	map<string, AuthInfo> _authWaiters;
-	CURL* _connection;
-	string _payload;
 };
