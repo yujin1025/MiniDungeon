@@ -93,6 +93,16 @@ void AuthManager::AddAuthWaiter(const string& email, const string& password)
     info.password = password;
     info.authNo = GenerateVerificationCode();
     _authWaiters.insert(make_pair(email, info));
+
+    // 5분 뒤에 _authWaiters에서 방금 넣은 것을 삭제하는 타이머 스레드 생성
+    thread([this, email]() 
+        {
+            this_thread::sleep_for(std::chrono::minutes(5));
+            {
+                WRITE_LOCK;
+                _authWaiters.erase(email);
+            }
+        }).detach();
 }
 
 void AuthManager::CheckAuthWaiter(const string& email, const string& authNum)
@@ -134,8 +144,14 @@ void AuthManager::SendMail()
 
         for(const auto& [toAddr, info] : authWaitersCopy)
 		{
-			Email email(toAddr, FROM_ADDR, "MiniDungeon", "이메일 인증 코드", info.authNo);
-			email.Send();
+            if (info.isMailSent == false)
+            {
+                Email email(toAddr, FROM_ADDR, "MiniDungeon", "이메일 인증 코드", info.authNo);
+                email.Send();
+                
+                WRITE_LOCK;
+                _authWaiters[toAddr].isMailSent = true;
+            }
 		}
     }
 }

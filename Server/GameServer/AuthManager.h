@@ -5,6 +5,7 @@ struct AuthInfo
 {
 	string password;
 	int authNo;
+	bool isMailSent = false;
 };
 
 class Email
