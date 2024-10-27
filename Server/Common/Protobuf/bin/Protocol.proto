@@ -4,6 +4,39 @@ package Protocol;
 import "Enum.proto";
 import "Struct.proto";
 
+message CTS_EMAIL_VERIFICATION
+{
+	string email = 1;
+}
+
+message STC_EMAIL_VERIFICATION
+{
+	bool success = 1;
+}
+
+message CTS_AUTH
+{
+	string email = 1;
+	string auth_code = 2;
+}
+
+message STC_AUTH
+{
+	bool success = 1;
+}
+
+message CTS_REGISTER
+{
+	string id = 1;
+	string pw = 2;
+	string email = 3;
+}
+
+message STC_REGISTER
+{
+	bool success = 1;
+}
+
 message CTS_LOGIN
 {
 	string id = 1;

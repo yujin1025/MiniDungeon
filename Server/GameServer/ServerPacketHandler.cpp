@@ -21,6 +21,21 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 	return false;
 }
 
+bool Handle_CTS_EMAIL_VERIFICATION(PacketSessionRef& session, Protocol::CTS_EMAIL_VERIFICATION& pkt)
+{
+	return false;
+}
+
+bool Handle_CTS_AUTH(PacketSessionRef& session, Protocol::CTS_AUTH& pkt)
+{
+	return false;
+}
+
+bool Handle_CTS_REGISTER(PacketSessionRef& session, Protocol::CTS_REGISTER& pkt)
+{
+	return false;
+}
+
 bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 {
 	DBConnection* dbConnection = GDBConnectionPool->Pop();

@@ -39,6 +39,21 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 	return false;
 }
 
+bool Handle_STC_EMAIL_VERIFICATION(PacketSessionRef& session, Protocol::STC_EMAIL_VERIFICATION& pkt)
+{
+	return false;
+}
+
+bool Handle_STC_AUTH(PacketSessionRef& session, Protocol::STC_AUTH& pkt)
+{
+	return false;
+}
+
+bool Handle_STC_REGISTER(PacketSessionRef& session, Protocol::STC_REGISTER& pkt)
+{
+	return false;
+}
+
 bool Handle_STC_LOGIN(PacketSessionRef& session, Protocol::STC_LOGIN& pkt)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Recv STC_LOGIN Packet")));
