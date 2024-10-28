@@ -40,8 +40,13 @@ bool Listener::StartAccept(ServerServiceRef service)
 	if (SocketUtils::SetLinger(_socket, 0, 0) == false)
 		return false;
 
+	// 로컬인 경우
 	if (SocketUtils::Bind(_socket, _service->GetNetAddress()) == false)
 		return false;
+
+		// 로컬 아닌 경우
+	//if(SocketUtils::BindAnyAddress(_socket, _service->GetNetAddress().GetPort()) == false)
+	//	return false;
 
 	if (SocketUtils::Listen(_socket) == false)
 		return false;

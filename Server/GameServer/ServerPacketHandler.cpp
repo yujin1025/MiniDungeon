@@ -71,7 +71,7 @@ bool Handle_CTS_REGISTER(PacketSessionRef& session, Protocol::CTS_REGISTER& pkt)
 	}
 	else
 	{
-		DBBind<1, 3> dbBind(*dbConnection, L"INSERT INTO MDDB.AccountInfo (ID, Password, e_mail) VALUES (?, ?, ?)");
+		DBBind<3, 0> dbBind(*dbConnection, L"INSERT INTO MDDB.AccountInfo(ID, Password, e_mail) VALUES (?, ?, ?)");
 
 		wstring convertToWStringID = Utils::stringToWString(pkt.id());
 		dbBind.BindParam(0, convertToWStringID);
@@ -83,11 +83,9 @@ bool Handle_CTS_REGISTER(PacketSessionRef& session, Protocol::CTS_REGISTER& pkt)
 		dbBind.BindParam(2, convertToWStringEmail);
 
 		ASSERT_CRASH(dbBind.Execute());
+		GDBConnectionPool->Push(dbConnection);
 
-		while (dbBind.Fetch())
-		{
-			registerPkt.set_success(true);
-		}
+		registerPkt.set_success(true);
 	}
 
 	SEND_PACKET(registerPkt);
@@ -139,6 +137,8 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 			auth = true;
 		}
 	}
+
+	GDBConnectionPool->Push(dbConnection);
 
 	Protocol::STC_LOGIN loginPkt;
 	if(auth == true)
