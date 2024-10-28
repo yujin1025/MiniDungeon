@@ -36,12 +36,20 @@ void DoWorkerJob(ServerServiceRef& service)
 	}
 }
 
+void DoAuthManagerJob()
+{
+	while (true)
+	{
+		AuthManager& auth = AuthManager::GetInstance();
+		auth.RemoveExpiredWaiters();
+		this_thread::sleep_for(1s);
+	}
+}
+
 int main()
 {
-	AuthManager& auth = AuthManager::GetInstance();
-	auth.AddAuthWaiter("hondaestudy@gmail.com", "1234");
-	auth.SendMail();
-
+	//AuthManager& auth = AuthManager::GetInstance();
+	//auth.AddAuthWaiter("hondaestudy@gmail.com");
 
 	ASSERT_CRASH(GDBConnectionPool->Connect(1, L"Driver={MySQL ODBC 8.4 ANSI Driver};Server=database-1.c5y046mwe85d.ap-northeast-2.rds.amazonaws.com;Database=MDDB;UID=hans4809;PWD=*gyqls124;"));
 
@@ -62,6 +70,11 @@ int main()
 				DoWorkerJob(service);
 			});
 	}
+
+	GThreadManager->Launch([]()
+		{
+			DoAuthManagerJob();
+		});
 
 	// Main Thread
 	//DoWorkerJob(service);

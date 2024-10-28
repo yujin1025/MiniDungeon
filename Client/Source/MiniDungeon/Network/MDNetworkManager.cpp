@@ -99,6 +99,118 @@ void UMDNetworkManager::SendPacket(SendBufferRef sendBuffer)
 	GameServerSession->SendPacket(sendBuffer);
 }
 
+void UMDNetworkManager::HandleEmailSent()
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	auto* world = GetWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	auto* pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+
+	if(IsValid(pc))
+	{
+		pc->OpenAuthWidget();
+	}
+}
+
+void UMDNetworkManager::HandleEmailSendFail()
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	auto* world = GetWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+	
+	auto* pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+
+
+}
+
+void UMDNetworkManager::HandleAuthSuccess()
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	auto* world = GetWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	auto* pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (IsValid(pc))
+	{
+		pc->OpenSignUpWidget();
+	}
+}
+
+void UMDNetworkManager::HandleAuthFail()
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	auto* world = GetWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	auto* pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+}
+
+void UMDNetworkManager::HandleSignUpSuccess()
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	auto* world = GetWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	auto* pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+
+	if (IsValid(pc))
+	{
+		pc->OnRegistered();
+	}
+}
+
+void UMDNetworkManager::HandleSignUpFail()
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	auto* world = GetWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	auto* pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+}
+
 void UMDNetworkManager::HandleLogin(const Protocol::STC_ENTER_LOBBY& enterLobbyPkt)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)

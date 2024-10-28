@@ -33,7 +33,6 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class ULobbyWidget> LobbyWidget;
-
 private:
 	UPROPERTY()
 	TSubclassOf<UUserWidget> RoomWidgetClass;
@@ -60,6 +59,12 @@ public:
 	TMap<FString, TObjectPtr<class URoomListViewItemData>>& GetRoomList() { return RoomList; }
 
 public:
+	void OpenAuthWidget();
+
+	void OpenSignUpWidget();
+
+	void OnRegistered();
+
 	void CreateRoom(const Protocol::RoomInfo& info, bool isHost);
 
 	void OpenLobbyWidget();

@@ -41,17 +41,54 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 
 bool Handle_STC_EMAIL_VERIFICATION(PacketSessionRef& session, Protocol::STC_EMAIL_VERIFICATION& pkt)
 {
-	return false;
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
+	if(pkt.success() == false)
+	{
+		// 이메일 인증번호 보내기 실패
+		return false;
+	}
+
+	if(gameNetwork != nullptr)
+	{
+		gameNetwork->HandleEmailSent();
+	}
+
+	return true;
 }
 
 bool Handle_STC_AUTH(PacketSessionRef& session, Protocol::STC_AUTH& pkt)
 {
-	return false;
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+	if(pkt.success() == false)
+	{
+		// 인증 실패
+		return false;
+	}
+
+	if(gameNetwork != nullptr)
+	{
+		gameNetwork->HandleAuthSuccess();
+	}
+
+	return true;
 }
 
 bool Handle_STC_REGISTER(PacketSessionRef& session, Protocol::STC_REGISTER& pkt)
 {
-	return false;
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+	if(pkt.success() == false)
+	{
+		// 회원가입 실패
+		return false;
+	}
+
+	if(gameNetwork != nullptr)
+	{
+		gameNetwork->HandleSignUpSuccess();
+	}
+
+	return true;
 }
 
 bool Handle_STC_LOGIN(PacketSessionRef& session, Protocol::STC_LOGIN& pkt)

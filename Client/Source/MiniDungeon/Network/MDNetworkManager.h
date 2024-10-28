@@ -37,6 +37,12 @@ public:
 	void SendPacket(T& packet) const;
 
 public:
+	void HandleEmailSent();
+	void HandleEmailSendFail();
+	void HandleAuthSuccess();
+	void HandleAuthFail();
+	void HandleSignUpSuccess();
+	void HandleSignUpFail();
 	void HandleLogin(const Protocol::STC_ENTER_LOBBY& enterLobbyPkt);
 	void HandleCreateRoom(const Protocol::STC_CREATE_ROOM& createRoomPkt);
 	void HandleJoinRoom(const Protocol::STC_JOIN_ROOM& joinRoomPkt);

@@ -4,27 +4,27 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "SignUpWidget.generated.h"
+#include "AuthWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MINIDUNGEON_API USignUpWidget : public UUserWidget
+class MINIDUNGEON_API UAuthWidget : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+	UAuthWidget(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void NativeConstruct() override;
 
-protected:
+public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UButton> SIGNUPButton;
-
+	TObjectPtr<class UEditableTextBox> AuthInput;
+	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UEditableTextBox> IDInput;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UEditableTextBox> PWInput;
+	TObjectPtr<class UButton> AuthButton;
 
 private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Email", meta = (AllowPrivateAccess = "true"))
@@ -36,8 +36,7 @@ public:
 
 	UFUNCTION()
 	void SetEmailAddr(FString email) { EmailAddress = email; }
-
-protected:
+private:
 	UFUNCTION()
-	void OnSignUpButtonClicked();
+	void OnAuthButtonClicked();
 };

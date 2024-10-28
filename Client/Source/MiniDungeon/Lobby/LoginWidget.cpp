@@ -6,6 +6,8 @@
 #include "Components/EditableTextBox.h"
 #include <Kismet/GameplayStatics.h>
 #include <MDNetworkManager.h>
+#include "EmailWidget.h"
+#include "AuthWidget.h"
 #include "SignUpWidget.h"
 
 ULoginWidget::ULoginWidget(const FObjectInitializer& ObjectInitializer)
@@ -25,6 +27,16 @@ void ULoginWidget::NativeConstruct()
 	if (IsValid(SIGNUPButton))
 	{
 		SIGNUPButton->OnClicked.AddDynamic(this, &ULoginWidget::OnSIGNUPButtonClicked);
+	}
+
+	if (IsValid(WBP_EmailWidget))
+	{
+		WBP_EmailWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (IsValid(WBP_AuthWidget))
+	{
+		WBP_AuthWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 
 	if (IsValid(WBP_SignUpWidget))
@@ -56,8 +68,79 @@ void ULoginWidget::OnLOGINButtonClicked()
 
 void ULoginWidget::OnSIGNUPButtonClicked()
 {
+	OpenEmailWidget();
+}
+
+void ULoginWidget::OpenEmailWidget()
+{
+	if (IsValid(WBP_AuthWidget))
+	{
+		WBP_AuthWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
 	if (IsValid(WBP_SignUpWidget))
 	{
 		WBP_SignUpWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+
+	if (IsValid(WBP_EmailWidget))
+	{
+		WBP_EmailWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void ULoginWidget::OepnAuthWidget()
+{
+	if (IsValid(WBP_EmailWidget))
+	{
+		WBP_EmailWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+
+	if (IsValid(WBP_SignUpWidget))
+	{
+		WBP_SignUpWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (IsValid(WBP_AuthWidget))
+	{
+		WBP_AuthWidget->SetEmailAddr(WBP_EmailWidget->GetSendEmailAddr());
+		WBP_AuthWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void ULoginWidget::OpenSignUpWidget()
+{
+	if (IsValid(WBP_EmailWidget))
+	{
+		WBP_EmailWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (IsValid(WBP_AuthWidget))
+	{
+		WBP_AuthWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (IsValid(WBP_SignUpWidget))
+	{
+		WBP_SignUpWidget->SetEmailAddr(WBP_EmailWidget->GetSendEmailAddr());
+		WBP_SignUpWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void ULoginWidget::OnRegistered()
+{
+	if (IsValid(WBP_SignUpWidget))
+	{
+		WBP_SignUpWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (IsValid(WBP_EmailWidget))
+	{
+		WBP_EmailWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (IsValid(WBP_AuthWidget))
+	{
+		WBP_AuthWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }

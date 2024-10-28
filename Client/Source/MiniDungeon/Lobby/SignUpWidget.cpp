@@ -22,14 +22,14 @@ void USignUpWidget::OnSignUpButtonClicked()
 		FString PW = PWInput->GetText().ToString();
 		UE_LOG(LogTemp, Warning, TEXT("ID : %s, PW : %s"), *ID, *PW);
 		{
-			//Protocol::CTS_SIGNUP pkt;
-			//pkt.set_id(TCHAR_TO_UTF8(*ID));
-			//pkt.set_pw(TCHAR_TO_UTF8(*PW));
+			Protocol::CTS_REGISTER pkt;
+			pkt.set_id(TCHAR_TO_UTF8(*ID));
+			pkt.set_pw(TCHAR_TO_UTF8(*PW));
+			pkt.set_email(TCHAR_TO_UTF8(*EmailAddress));
 
-			//SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
-			//auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-			//networkManager->SendPacket(sendBuffer);
+			SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
+			auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+			networkManager->SendPacket(sendBuffer);
 		}
 	}
-	SetVisibility(ESlateVisibility::Hidden);
 }

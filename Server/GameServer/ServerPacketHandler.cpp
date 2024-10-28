@@ -11,6 +11,7 @@
 #include "Lobby.h"
 #include "DBConnectionPool.h"
 #include "DBBind.h"
+#include "AuthManager.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -23,17 +24,75 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 
 bool Handle_CTS_EMAIL_VERIFICATION(PacketSessionRef& session, Protocol::CTS_EMAIL_VERIFICATION& pkt)
 {
-	return false;
+	Protocol::STC_EMAIL_VERIFICATION emailVerificationPkt;
+	AuthManager& authManager = AuthManager::GetInstance();
+
+	if(authManager.AddAuthWaiter(pkt.email()) == false)
+	{
+		emailVerificationPkt.set_success(false);
+	}
+	else
+	{
+		emailVerificationPkt.set_success(true);
+	}
+
+	SEND_PACKET(emailVerificationPkt);
+
+	return true;
 }
 
 bool Handle_CTS_AUTH(PacketSessionRef& session, Protocol::CTS_AUTH& pkt)
 {
-	return false;
+	Protocol::STC_AUTH authPkt;
+	AuthManager& authManager = AuthManager::GetInstance();
+
+	if(authManager.CheckAuthWaiter(pkt.email(), pkt.auth_code()) == false)
+	{
+		authPkt.set_success(false);
+	}
+	else
+	{
+		authPkt.set_success(true);
+	}
+
+	SEND_PACKET(authPkt);
+
+	return true;
 }
 
 bool Handle_CTS_REGISTER(PacketSessionRef& session, Protocol::CTS_REGISTER& pkt)
 {
-	return false;
+	Protocol::STC_REGISTER registerPkt;
+
+	DBConnection* dbConnection = GDBConnectionPool->Pop();
+	if (dbConnection == nullptr)
+	{
+		registerPkt.set_success(false);
+	}
+	else
+	{
+		DBBind<1, 3> dbBind(*dbConnection, L"INSERT INTO MDDB.AccountInfo (ID, Password, e_mail) VALUES (?, ?, ?)");
+
+		wstring convertToWStringID = Utils::stringToWString(pkt.id());
+		dbBind.BindParam(0, convertToWStringID);
+
+		wstring convertToWStringPW = Utils::stringToWString(pkt.pw());
+		dbBind.BindParam(1, convertToWStringPW);
+
+		wstring convertToWStringEmail = Utils::stringToWString(pkt.email());
+		dbBind.BindParam(2, convertToWStringEmail);
+
+		ASSERT_CRASH(dbBind.Execute());
+
+		while (dbBind.Fetch())
+		{
+			registerPkt.set_success(true);
+		}
+	}
+
+	SEND_PACKET(registerPkt);
+
+	return true;
 }
 
 bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)

@@ -33,12 +33,34 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class UEditableTextBox> PlayerIDInput;
 
+public:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UEmailWidget> WBP_EmailWidget;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UAuthWidget> WBP_AuthWidget;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class USignUpWidget> WBP_SignUpWidget;
 
+private:
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Email", meta = (AllowPrivateAccess = "true"))
+	FString SendEmailAddress;
+
+public:
+	UFUNCTION()
+	FString GetSendEmailAddr() { return SendEmailAddress; }
 protected:
 	UFUNCTION()
-	void OnLOGINButtonClicked();
+	void OnLOGINButtonClicked();	
 	UFUNCTION()
 	void OnSIGNUPButtonClicked();
+
+public:
+	UFUNCTION()
+	void OpenEmailWidget();
+	UFUNCTION()
+	void OepnAuthWidget();
+	UFUNCTION()
+	void OpenSignUpWidget();
+	UFUNCTION()
+	void OnRegistered();
 };

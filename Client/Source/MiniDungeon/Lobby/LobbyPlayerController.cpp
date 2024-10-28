@@ -7,6 +7,8 @@
 #include "Lobby/RoomWidget.h"
 #include "Lobby/RoomListViewItemData.h"
 #include <Blueprint/WidgetLayoutLibrary.h>
+#include "AuthWidget.h"
+#include "SignUpWidget.h"
 
 ALobbyPlayerController::ALobbyPlayerController()
 {
@@ -115,6 +117,30 @@ URoomListViewItemData* ALobbyPlayerController::UpdateRoomData(const Protocol::Ro
 	}
 
 	return RoomList[roomName];
+}
+
+void ALobbyPlayerController::OpenAuthWidget()
+{
+	if (IsValid(LoginWidget))
+	{
+		LoginWidget->OepnAuthWidget();
+	}
+}
+
+void ALobbyPlayerController::OpenSignUpWidget()
+{
+	if(IsValid(LoginWidget))
+	{
+		LoginWidget->OpenSignUpWidget();
+	}
+}
+
+void ALobbyPlayerController::OnRegistered()
+{
+	if(IsValid(LoginWidget))
+	{
+		LoginWidget->OnRegistered();
+	}
 }
 
 void ALobbyPlayerController::CreateRoom(const Protocol::RoomInfo& info, bool isHost)

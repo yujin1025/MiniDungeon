@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <random>
 #include <cstring>
+#include <chrono>
 
 #define FROM_ADDR "hans4809@gmail.com"// 발신자의 이메일 주소
 #define TO_ADDR "hondaestudy@gmail.com"// 수신자의 이메일 주소
@@ -86,26 +87,27 @@
 //"</body>\r\n"
 //"</html>\r\n";
 
-void AuthManager::AddAuthWaiter(const string& email, const string& password)
+bool AuthManager::AddAuthWaiter(const string& email)
 {
-    WRITE_LOCK;
     AuthInfo info;
-    info.password = password;
     info.authNo = GenerateVerificationCode();
-    _authWaiters.insert(make_pair(email, info));
+    info.expiryTime = chrono::steady_clock::now() + chrono::minutes(5);
 
-    // 5분 뒤에 _authWaiters에서 방금 넣은 것을 삭제하는 타이머 스레드 생성
-    thread([this, email]() 
-        {
-            this_thread::sleep_for(std::chrono::minutes(5));
-            {
-                WRITE_LOCK;
-                _authWaiters.erase(email);
-            }
-        }).detach();
+    if (SendMail(email, info.authNo))
+    {    
+        WRITE_LOCK;
+        // 이미 인증 대기 중인 사용자가 있다면 AuthInfo 최신화
+        if (_authWaiters.find(email) != _authWaiters.end())
+            _authWaiters.erase(email);
+
+        _authWaiters.insert(make_pair(email, info));
+        return  true;
+    }
+
+    return false;
 }
 
-void AuthManager::CheckAuthWaiter(const string& email, const string& authNum)
+bool AuthManager::CheckAuthWaiter(const string& email, const string& authNum)
 {
 	WRITE_LOCK;
 	auto authUser = _authWaiters.find(email);
@@ -115,8 +117,30 @@ void AuthManager::CheckAuthWaiter(const string& email, const string& authNum)
 		{
             // TODO : 인증 성공 처리
 			_authWaiters.erase(authUser);
+
+            return true;
 		}
 	}
+
+	return false;
+}
+
+void AuthManager::RemoveExpiredWaiters()
+{
+    WRITE_LOCK;
+    auto now = chrono::steady_clock::now();
+
+    for (auto it = _authWaiters.begin(); it != _authWaiters.end(); ) 
+    {
+        if (it->second.expiryTime <= now) 
+        {
+            it = _authWaiters.erase(it);
+        }
+        else 
+        {
+            it++;
+        }
+    }
 }
 
 int AuthManager::GenerateVerificationCode()
@@ -132,28 +156,15 @@ int AuthManager::GenerateVerificationCode()
     return code;
 }
 
-void AuthManager::SendMail()
+bool AuthManager::SendMail(const string& toAddr, int authNo)
 {
-    //while (true)
+    Email email(toAddr, FROM_ADDR, "MiniDungeon", "이메일 인증 코드", authNo);
+    if (email.Send() != CURLE_OK)
     {
-        map<string, AuthInfo> authWaitersCopy;
-
-        {
-            authWaitersCopy = _authWaiters;
-        }
-
-        for(const auto& [toAddr, info] : authWaitersCopy)
-		{
-            if (info.isMailSent == false)
-            {
-                Email email(toAddr, FROM_ADDR, "MiniDungeon", "이메일 인증 코드", info.authNo);
-                email.Send();
-                
-                WRITE_LOCK;
-                _authWaiters[toAddr].isMailSent = true;
-            }
-		}
+        return false;
     }
+
+    return true;
 }
 
 Email::Email(const string& toAddr, const string& fromAddr, const string& nameFrom, const string& subject,int authNum, const string& ccAddr)

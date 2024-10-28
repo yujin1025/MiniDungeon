@@ -3,9 +3,8 @@
 
 struct AuthInfo
 {
-	string password;
-	int authNo;
-	bool isMailSent = false;
+	std::chrono::steady_clock::time_point expiryTime;
+	int authNo = 000000;
 };
 
 class Email
@@ -68,11 +67,13 @@ private:
 	AuthManager& operator=(AuthManager&&) = delete;
 
 public:
-	void SendMail();
+	bool SendMail(const string& toAddr, int authNo);
 
-	void AddAuthWaiter(const string& email, const string& password);
+	bool AddAuthWaiter(const string& email);
 
-	void CheckAuthWaiter(const string& email, const string& authNum);
+	bool CheckAuthWaiter(const string& email, const string& authNum);
+
+	void RemoveExpiredWaiters();
 
 private:
 	int GenerateVerificationCode();
