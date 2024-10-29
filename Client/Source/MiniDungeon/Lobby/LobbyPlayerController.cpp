@@ -135,11 +135,27 @@ void ALobbyPlayerController::OpenSignUpWidget()
 	}
 }
 
+void ALobbyPlayerController::OnIDChecked(bool isDuplicated)
+{
+	if(IsValid(LoginWidget))
+	{
+		LoginWidget->OnIDChecked(isDuplicated);
+	}
+}
+
 void ALobbyPlayerController::OnRegistered()
 {
 	if(IsValid(LoginWidget))
 	{
 		LoginWidget->OnRegistered();
+	}
+}
+
+void ALobbyPlayerController::CloseAllPopupWidget()
+{
+	if (IsValid(LoginWidget))
+	{
+		LoginWidget->CloseAllPopupWidget();
 	}
 }
 

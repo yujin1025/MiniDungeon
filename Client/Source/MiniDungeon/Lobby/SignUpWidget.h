@@ -13,12 +13,22 @@ UCLASS()
 class MINIDUNGEON_API USignUpWidget : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+	USignUpWidget(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void NativeConstruct() override;
 
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UCheckBox> IDCheckBox;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UButton> DuplicateButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class UButton> SIGNUPButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UButton> CancelButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class UEditableTextBox> IDInput;
@@ -40,4 +50,17 @@ public:
 protected:
 	UFUNCTION()
 	void OnSignUpButtonClicked();
+
+	UFUNCTION()
+	void OnCancelButtonClicked();
+
+	UFUNCTION()
+	void OnDuplicateButtonClicked();
+
+public:
+	UFUNCTION()
+	void CloseSignUpWidget();
+
+	UFUNCTION()
+	void OnIDChecked(bool isDuplicated);
 };

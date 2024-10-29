@@ -25,6 +25,11 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class UButton> SendButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UButton> CancelButton;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UCircularThrobber> LoadingCircle;
 
 private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Email", meta = (AllowPrivateAccess = "true"))
@@ -36,4 +41,11 @@ public:
 private:
 	UFUNCTION()
 	void OnSendButtonClicked();
+
+	UFUNCTION()
+	void OnCancelButtonClicked();
+
+public:
+	UFUNCTION()
+	void CloseEmailWidget();
 };

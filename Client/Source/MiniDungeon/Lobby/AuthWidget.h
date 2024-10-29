@@ -25,6 +25,8 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class UButton> AuthButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UButton> CancelButton;
 
 private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Email", meta = (AllowPrivateAccess = "true"))
@@ -39,4 +41,11 @@ public:
 private:
 	UFUNCTION()
 	void OnAuthButtonClicked();
+
+	UFUNCTION()
+	void OnCancelButtonClicked();
+
+public:
+	UFUNCTION()
+	void CloseAuthWidget();
 };

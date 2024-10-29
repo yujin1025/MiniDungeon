@@ -30,8 +30,6 @@ protected:
 	TObjectPtr<class UEditableTextBox> IDInput;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class UEditableTextBox> PWInput;
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	TObjectPtr<class UEditableTextBox> PlayerIDInput;
 
 public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -63,4 +61,9 @@ public:
 	void OpenSignUpWidget();
 	UFUNCTION()
 	void OnRegistered();
+	UFUNCTION()
+	void CloseAllPopupWidget();
+
+	UFUNCTION()
+	void OnIDChecked(bool isDuplicated);
 };

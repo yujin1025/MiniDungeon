@@ -51,13 +51,11 @@ void ULoginWidget::OnLOGINButtonClicked()
 	{
 		FString ID = IDInput->GetText().ToString();
 		FString PW = PWInput->GetText().ToString();
-		uint64 PlayerID = FCString::Atoi64(*PlayerIDInput->GetText().ToString());
 		UE_LOG(LogTemp, Warning, TEXT("ID : %s, PW : %s"), *ID, *PW);
 		{
 			Protocol::CTS_LOGIN pkt;
 			pkt.set_id(TCHAR_TO_UTF8(*ID));
 			pkt.set_pw(TCHAR_TO_UTF8(*PW));
-			pkt.set_player_id(PlayerID);
 
 			SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
 			auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
@@ -75,12 +73,12 @@ void ULoginWidget::OpenEmailWidget()
 {
 	if (IsValid(WBP_AuthWidget))
 	{
-		WBP_AuthWidget->SetVisibility(ESlateVisibility::Hidden);
+		WBP_AuthWidget->CloseAuthWidget();
 	}
 
 	if (IsValid(WBP_SignUpWidget))
 	{
-		WBP_SignUpWidget->SetVisibility(ESlateVisibility::Visible);
+		WBP_SignUpWidget->CloseSignUpWidget();
 	}
 
 	if (IsValid(WBP_EmailWidget))
@@ -93,12 +91,12 @@ void ULoginWidget::OepnAuthWidget()
 {
 	if (IsValid(WBP_EmailWidget))
 	{
-		WBP_EmailWidget->SetVisibility(ESlateVisibility::Visible);
+		WBP_EmailWidget->CloseEmailWidget();
 	}
 
 	if (IsValid(WBP_SignUpWidget))
 	{
-		WBP_SignUpWidget->SetVisibility(ESlateVisibility::Hidden);
+		WBP_SignUpWidget->CloseSignUpWidget();
 	}
 
 	if (IsValid(WBP_AuthWidget))
@@ -112,12 +110,12 @@ void ULoginWidget::OpenSignUpWidget()
 {
 	if (IsValid(WBP_EmailWidget))
 	{
-		WBP_EmailWidget->SetVisibility(ESlateVisibility::Hidden);
+		WBP_EmailWidget->CloseEmailWidget();
 	}
 
 	if (IsValid(WBP_AuthWidget))
 	{
-		WBP_AuthWidget->SetVisibility(ESlateVisibility::Hidden);
+		WBP_AuthWidget->CloseAuthWidget();
 	}
 
 	if (IsValid(WBP_SignUpWidget))
@@ -129,18 +127,31 @@ void ULoginWidget::OpenSignUpWidget()
 
 void ULoginWidget::OnRegistered()
 {
+	CloseAllPopupWidget();
+}
+
+void ULoginWidget::CloseAllPopupWidget()
+{
 	if (IsValid(WBP_SignUpWidget))
 	{
-		WBP_SignUpWidget->SetVisibility(ESlateVisibility::Hidden);
+		WBP_SignUpWidget->CloseSignUpWidget();
 	}
 
 	if (IsValid(WBP_EmailWidget))
 	{
-		WBP_EmailWidget->SetVisibility(ESlateVisibility::Hidden);
+		WBP_EmailWidget->CloseEmailWidget();
 	}
 
 	if (IsValid(WBP_AuthWidget))
 	{
-		WBP_AuthWidget->SetVisibility(ESlateVisibility::Hidden);
+		WBP_AuthWidget->CloseAuthWidget();
+	}
+}
+
+void ULoginWidget::OnIDChecked(bool isDuplicated)
+{
+	if (IsValid(WBP_SignUpWidget))
+	{
+		WBP_SignUpWidget->OnIDChecked(isDuplicated);
 	}
 }

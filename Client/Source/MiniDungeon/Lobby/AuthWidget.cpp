@@ -5,6 +5,8 @@
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
 #include <MDNetworkManager.h>
+#include <Kismet/GameplayStatics.h>
+#include "LobbyPlayerController.h"
 
 UAuthWidget::UAuthWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -15,6 +17,11 @@ UAuthWidget::UAuthWidget(const FObjectInitializer& ObjectInitializer)
 void UAuthWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	if(IsValid(CancelButton))
+	{
+		CancelButton->OnClicked.AddDynamic(this, &UAuthWidget::OnCancelButtonClicked);
+	}
 
 	if (IsValid(AuthButton))
 	{
@@ -36,4 +43,24 @@ void UAuthWidget::OnAuthButtonClicked()
 		auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
 		networkManager->SendPacket(sendBuffer);
 	}
+}
+
+void UAuthWidget::OnCancelButtonClicked()
+{
+	auto* pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	if (IsValid(pc))
+	{
+		pc->CloseAllPopupWidget();
+	}
+}
+
+void UAuthWidget::CloseAuthWidget()
+{
+	if(IsValid(AuthInput))
+	{
+		AuthInput->SetText(FText::FromString(""));
+	}
+	EmailAddress = "";
+	SetVisibility(ESlateVisibility::Hidden);
 }

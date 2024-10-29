@@ -74,6 +74,18 @@ bool Handle_STC_AUTH(PacketSessionRef& session, Protocol::STC_AUTH& pkt)
 	return true;
 }
 
+bool Handle_STC_CHECK_DUPLICATE(PacketSessionRef& session, Protocol::STC_CHECK_DUPLICATE& pkt)
+{
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
+	if(gameNetwork != nullptr)
+	{
+		gameNetwork->HandleDuplicateID(pkt.is_duplicate());
+	}
+
+	return true;
+}
+
 bool Handle_STC_REGISTER(PacketSessionRef& session, Protocol::STC_REGISTER& pkt)
 {
 	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);

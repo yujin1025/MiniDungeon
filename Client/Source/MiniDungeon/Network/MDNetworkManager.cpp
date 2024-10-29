@@ -174,6 +174,28 @@ void UMDNetworkManager::HandleAuthFail()
 	auto* pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 }
 
+void UMDNetworkManager::HandleDuplicateID(bool isDuplicated)
+{
+	if(Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	auto* world = GetWorld();
+	if(world == nullptr)
+	{
+		return;
+	}
+
+	auto* pc = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+
+	if(IsValid(pc))
+	{
+		pc->OnIDChecked(isDuplicated);
+	}
+
+}
+
 void UMDNetworkManager::HandleSignUpSuccess()
 {
 	if (Socket == nullptr || GameServerSession == nullptr)

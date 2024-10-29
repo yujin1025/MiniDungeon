@@ -25,6 +25,16 @@ message STC_AUTH
 	bool success = 1;
 }
 
+message CTS_CHECK_DUPLICATE
+{
+	string id = 1;
+}
+
+message STC_CHECK_DUPLICATE
+{
+	bool is_duplicate = 1;
+}
+
 message CTS_REGISTER
 {
 	string id = 1;
@@ -41,7 +51,6 @@ message CTS_LOGIN
 {
 	string id = 1;
 	string pw = 2;
-	uint64 player_id = 3;
 }
 
 message STC_LOGIN

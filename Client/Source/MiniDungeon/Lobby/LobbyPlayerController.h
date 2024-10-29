@@ -63,7 +63,11 @@ public:
 
 	void OpenSignUpWidget();
 
+	void OnIDChecked(bool isDuplicated);
+
 	void OnRegistered();
+
+	void CloseAllPopupWidget();
 
 	void CreateRoom(const Protocol::RoomInfo& info, bool isHost);
 

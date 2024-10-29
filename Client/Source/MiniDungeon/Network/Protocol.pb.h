@@ -57,6 +57,9 @@ extern CTS_CHANGE_CHARACTERDefaultTypeInternal _CTS_CHANGE_CHARACTER_default_ins
 class CTS_CHAT;
 struct CTS_CHATDefaultTypeInternal;
 extern CTS_CHATDefaultTypeInternal _CTS_CHAT_default_instance_;
+class CTS_CHECK_DUPLICATE;
+struct CTS_CHECK_DUPLICATEDefaultTypeInternal;
+extern CTS_CHECK_DUPLICATEDefaultTypeInternal _CTS_CHECK_DUPLICATE_default_instance_;
 class CTS_CREATE_ROOM;
 struct CTS_CREATE_ROOMDefaultTypeInternal;
 extern CTS_CREATE_ROOMDefaultTypeInternal _CTS_CREATE_ROOM_default_instance_;
@@ -96,6 +99,9 @@ extern STC_CHANGE_CHARACTERDefaultTypeInternal _STC_CHANGE_CHARACTER_default_ins
 class STC_CHAT;
 struct STC_CHATDefaultTypeInternal;
 extern STC_CHATDefaultTypeInternal _STC_CHAT_default_instance_;
+class STC_CHECK_DUPLICATE;
+struct STC_CHECK_DUPLICATEDefaultTypeInternal;
+extern STC_CHECK_DUPLICATEDefaultTypeInternal _STC_CHECK_DUPLICATE_default_instance_;
 class STC_CREATE_ROOM;
 struct STC_CREATE_ROOMDefaultTypeInternal;
 extern STC_CREATE_ROOMDefaultTypeInternal _STC_CREATE_ROOM_default_instance_;
@@ -137,6 +143,7 @@ PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::CTS_AUTH* Arena::CreateMaybeMessage<::Protocol::CTS_AUTH>(Arena*);
 template<> ::Protocol::CTS_CHANGE_CHARACTER* Arena::CreateMaybeMessage<::Protocol::CTS_CHANGE_CHARACTER>(Arena*);
 template<> ::Protocol::CTS_CHAT* Arena::CreateMaybeMessage<::Protocol::CTS_CHAT>(Arena*);
+template<> ::Protocol::CTS_CHECK_DUPLICATE* Arena::CreateMaybeMessage<::Protocol::CTS_CHECK_DUPLICATE>(Arena*);
 template<> ::Protocol::CTS_CREATE_ROOM* Arena::CreateMaybeMessage<::Protocol::CTS_CREATE_ROOM>(Arena*);
 template<> ::Protocol::CTS_EMAIL_VERIFICATION* Arena::CreateMaybeMessage<::Protocol::CTS_EMAIL_VERIFICATION>(Arena*);
 template<> ::Protocol::CTS_ENTER_GAME* Arena::CreateMaybeMessage<::Protocol::CTS_ENTER_GAME>(Arena*);
@@ -150,6 +157,7 @@ template<> ::Protocol::CTS_REGISTER* Arena::CreateMaybeMessage<::Protocol::CTS_R
 template<> ::Protocol::STC_AUTH* Arena::CreateMaybeMessage<::Protocol::STC_AUTH>(Arena*);
 template<> ::Protocol::STC_CHANGE_CHARACTER* Arena::CreateMaybeMessage<::Protocol::STC_CHANGE_CHARACTER>(Arena*);
 template<> ::Protocol::STC_CHAT* Arena::CreateMaybeMessage<::Protocol::STC_CHAT>(Arena*);
+template<> ::Protocol::STC_CHECK_DUPLICATE* Arena::CreateMaybeMessage<::Protocol::STC_CHECK_DUPLICATE>(Arena*);
 template<> ::Protocol::STC_CREATE_ROOM* Arena::CreateMaybeMessage<::Protocol::STC_CREATE_ROOM>(Arena*);
 template<> ::Protocol::STC_DESPAWN* Arena::CreateMaybeMessage<::Protocol::STC_DESPAWN>(Arena*);
 template<> ::Protocol::STC_EMAIL_VERIFICATION* Arena::CreateMaybeMessage<::Protocol::STC_EMAIL_VERIFICATION>(Arena*);
@@ -785,6 +793,307 @@ class STC_AUTH final :
 };
 // -------------------------------------------------------------------
 
+class CTS_CHECK_DUPLICATE final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.CTS_CHECK_DUPLICATE) */ {
+ public:
+  inline CTS_CHECK_DUPLICATE() : CTS_CHECK_DUPLICATE(nullptr) {}
+  ~CTS_CHECK_DUPLICATE() override;
+  explicit PROTOBUF_CONSTEXPR CTS_CHECK_DUPLICATE(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CTS_CHECK_DUPLICATE(const CTS_CHECK_DUPLICATE& from);
+  CTS_CHECK_DUPLICATE(CTS_CHECK_DUPLICATE&& from) noexcept
+    : CTS_CHECK_DUPLICATE() {
+    *this = ::std::move(from);
+  }
+
+  inline CTS_CHECK_DUPLICATE& operator=(const CTS_CHECK_DUPLICATE& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CTS_CHECK_DUPLICATE& operator=(CTS_CHECK_DUPLICATE&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CTS_CHECK_DUPLICATE& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CTS_CHECK_DUPLICATE* internal_default_instance() {
+    return reinterpret_cast<const CTS_CHECK_DUPLICATE*>(
+               &_CTS_CHECK_DUPLICATE_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(CTS_CHECK_DUPLICATE& a, CTS_CHECK_DUPLICATE& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CTS_CHECK_DUPLICATE* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CTS_CHECK_DUPLICATE* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CTS_CHECK_DUPLICATE* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CTS_CHECK_DUPLICATE>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CTS_CHECK_DUPLICATE& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CTS_CHECK_DUPLICATE& from) {
+    CTS_CHECK_DUPLICATE::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CTS_CHECK_DUPLICATE* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.CTS_CHECK_DUPLICATE";
+  }
+  protected:
+  explicit CTS_CHECK_DUPLICATE(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kIdFieldNumber = 1,
+  };
+  // string id = 1;
+  void clear_id();
+  const std::string& id() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_id(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_id();
+  PROTOBUF_NODISCARD std::string* release_id();
+  void set_allocated_id(std::string* id);
+  private:
+  const std::string& _internal_id() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_id(const std::string& value);
+  std::string* _internal_mutable_id();
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.CTS_CHECK_DUPLICATE)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr id_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class STC_CHECK_DUPLICATE final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.STC_CHECK_DUPLICATE) */ {
+ public:
+  inline STC_CHECK_DUPLICATE() : STC_CHECK_DUPLICATE(nullptr) {}
+  ~STC_CHECK_DUPLICATE() override;
+  explicit PROTOBUF_CONSTEXPR STC_CHECK_DUPLICATE(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  STC_CHECK_DUPLICATE(const STC_CHECK_DUPLICATE& from);
+  STC_CHECK_DUPLICATE(STC_CHECK_DUPLICATE&& from) noexcept
+    : STC_CHECK_DUPLICATE() {
+    *this = ::std::move(from);
+  }
+
+  inline STC_CHECK_DUPLICATE& operator=(const STC_CHECK_DUPLICATE& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline STC_CHECK_DUPLICATE& operator=(STC_CHECK_DUPLICATE&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const STC_CHECK_DUPLICATE& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const STC_CHECK_DUPLICATE* internal_default_instance() {
+    return reinterpret_cast<const STC_CHECK_DUPLICATE*>(
+               &_STC_CHECK_DUPLICATE_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  friend void swap(STC_CHECK_DUPLICATE& a, STC_CHECK_DUPLICATE& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(STC_CHECK_DUPLICATE* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(STC_CHECK_DUPLICATE* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  STC_CHECK_DUPLICATE* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<STC_CHECK_DUPLICATE>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const STC_CHECK_DUPLICATE& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const STC_CHECK_DUPLICATE& from) {
+    STC_CHECK_DUPLICATE::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(STC_CHECK_DUPLICATE* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.STC_CHECK_DUPLICATE";
+  }
+  protected:
+  explicit STC_CHECK_DUPLICATE(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kIsDuplicateFieldNumber = 1,
+  };
+  // bool is_duplicate = 1;
+  void clear_is_duplicate();
+  bool is_duplicate() const;
+  void set_is_duplicate(bool value);
+  private:
+  bool _internal_is_duplicate() const;
+  void _internal_set_is_duplicate(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.STC_CHECK_DUPLICATE)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    bool is_duplicate_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
 class CTS_REGISTER final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.CTS_REGISTER) */ {
  public:
@@ -833,7 +1142,7 @@ class CTS_REGISTER final :
                &_CTS_REGISTER_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    6;
 
   friend void swap(CTS_REGISTER& a, CTS_REGISTER& b) {
     a.Swap(&b);
@@ -1018,7 +1327,7 @@ class STC_REGISTER final :
                &_STC_REGISTER_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    7;
 
   friend void swap(STC_REGISTER& a, STC_REGISTER& b) {
     a.Swap(&b);
@@ -1166,7 +1475,7 @@ class CTS_LOGIN final :
                &_CTS_LOGIN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    8;
 
   friend void swap(CTS_LOGIN& a, CTS_LOGIN& b) {
     a.Swap(&b);
@@ -1241,7 +1550,6 @@ class CTS_LOGIN final :
   enum : int {
     kIdFieldNumber = 1,
     kPwFieldNumber = 2,
-    kPlayerIdFieldNumber = 3,
   };
   // string id = 1;
   void clear_id();
@@ -1271,15 +1579,6 @@ class CTS_LOGIN final :
   std::string* _internal_mutable_pw();
   public:
 
-  // uint64 player_id = 3;
-  void clear_player_id();
-  uint64_t player_id() const;
-  void set_player_id(uint64_t value);
-  private:
-  uint64_t _internal_player_id() const;
-  void _internal_set_player_id(uint64_t value);
-  public:
-
   // @@protoc_insertion_point(class_scope:Protocol.CTS_LOGIN)
  private:
   class _Internal;
@@ -1290,7 +1589,6 @@ class CTS_LOGIN final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr id_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr pw_;
-    uint64_t player_id_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1346,7 +1644,7 @@ class STC_LOGIN final :
                &_STC_LOGIN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    9;
 
   friend void swap(STC_LOGIN& a, STC_LOGIN& b) {
     a.Swap(&b);
@@ -1514,7 +1812,7 @@ class CTS_ENTER_LOBBY final :
                &_CTS_ENTER_LOBBY_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    10;
 
   friend void swap(CTS_ENTER_LOBBY& a, CTS_ENTER_LOBBY& b) {
     a.Swap(&b);
@@ -1671,7 +1969,7 @@ class STC_ENTER_LOBBY final :
                &_STC_ENTER_LOBBY_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    11;
 
   friend void swap(STC_ENTER_LOBBY& a, STC_ENTER_LOBBY& b) {
     a.Swap(&b);
@@ -1859,7 +2157,7 @@ class CTS_CREATE_ROOM final :
                &_CTS_CREATE_ROOM_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    12;
 
   friend void swap(CTS_CREATE_ROOM& a, CTS_CREATE_ROOM& b) {
     a.Swap(&b);
@@ -2016,7 +2314,7 @@ class STC_CREATE_ROOM final :
                &_STC_CREATE_ROOM_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    13;
 
   friend void swap(STC_CREATE_ROOM& a, STC_CREATE_ROOM& b) {
     a.Swap(&b);
@@ -2184,7 +2482,7 @@ class CTS_JOIN_ROOM final :
                &_CTS_JOIN_ROOM_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    12;
+    14;
 
   friend void swap(CTS_JOIN_ROOM& a, CTS_JOIN_ROOM& b) {
     a.Swap(&b);
@@ -2368,7 +2666,7 @@ class STC_JOIN_ROOM final :
                &_STC_JOIN_ROOM_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    13;
+    15;
 
   friend void swap(STC_JOIN_ROOM& a, STC_JOIN_ROOM& b) {
     a.Swap(&b);
@@ -2556,7 +2854,7 @@ class CTS_CHANGE_CHARACTER final :
                &_CTS_CHANGE_CHARACTER_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    14;
+    16;
 
   friend void swap(CTS_CHANGE_CHARACTER& a, CTS_CHANGE_CHARACTER& b) {
     a.Swap(&b);
@@ -2726,7 +3024,7 @@ class STC_CHANGE_CHARACTER final :
                &_STC_CHANGE_CHARACTER_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    15;
+    17;
 
   friend void swap(STC_CHANGE_CHARACTER& a, STC_CHANGE_CHARACTER& b) {
     a.Swap(&b);
@@ -2907,7 +3205,7 @@ class CTS_LEAVE_ROOM final :
                &_CTS_LEAVE_ROOM_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    16;
+    18;
 
   friend void swap(CTS_LEAVE_ROOM& a, CTS_LEAVE_ROOM& b) {
     a.Swap(&b);
@@ -3066,7 +3364,7 @@ class STC_LEAVE_ROOM final :
                &_STC_LEAVE_ROOM_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    17;
+    19;
 
   friend void swap(STC_LEAVE_ROOM& a, STC_LEAVE_ROOM& b) {
     a.Swap(&b);
@@ -3265,7 +3563,7 @@ class CTS_ENTER_GAME final :
                &_CTS_ENTER_GAME_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    18;
+    20;
 
   friend void swap(CTS_ENTER_GAME& a, CTS_ENTER_GAME& b) {
     a.Swap(&b);
@@ -3413,7 +3711,7 @@ class STC_ENTER_GAME final :
                &_STC_ENTER_GAME_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    19;
+    21;
 
   friend void swap(STC_ENTER_GAME& a, STC_ENTER_GAME& b) {
     a.Swap(&b);
@@ -3580,7 +3878,7 @@ class CTS_LEAVE_GAME final :
                &_CTS_LEAVE_GAME_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    20;
+    22;
 
   friend void swap(CTS_LEAVE_GAME& a, CTS_LEAVE_GAME& b) {
     a.Swap(&b);
@@ -3698,7 +3996,7 @@ class STC_LEAVE_GAME final :
                &_STC_LEAVE_GAME_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    21;
+    23;
 
   friend void swap(STC_LEAVE_GAME& a, STC_LEAVE_GAME& b) {
     a.Swap(&b);
@@ -3817,7 +4115,7 @@ class STC_SPAWN final :
                &_STC_SPAWN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    22;
+    24;
 
   friend void swap(STC_SPAWN& a, STC_SPAWN& b) {
     a.Swap(&b);
@@ -3974,7 +4272,7 @@ class STC_DESPAWN final :
                &_STC_DESPAWN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    23;
+    25;
 
   friend void swap(STC_DESPAWN& a, STC_DESPAWN& b) {
     a.Swap(&b);
@@ -4136,7 +4434,7 @@ class CTS_MOVE final :
                &_CTS_MOVE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    24;
+    26;
 
   friend void swap(CTS_MOVE& a, CTS_MOVE& b) {
     a.Swap(&b);
@@ -4293,7 +4591,7 @@ class STC_MOVE final :
                &_STC_MOVE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    25;
+    27;
 
   friend void swap(STC_MOVE& a, STC_MOVE& b) {
     a.Swap(&b);
@@ -4450,7 +4748,7 @@ class CTS_CHAT final :
                &_CTS_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    26;
+    28;
 
   friend void swap(CTS_CHAT& a, CTS_CHAT& b) {
     a.Swap(&b);
@@ -4603,7 +4901,7 @@ class STC_CHAT final :
                &_STC_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    27;
+    29;
 
   friend void swap(STC_CHAT& a, STC_CHAT& b) {
     a.Swap(&b);
@@ -4932,6 +5230,84 @@ inline void STC_AUTH::set_success(bool value) {
 
 // -------------------------------------------------------------------
 
+// CTS_CHECK_DUPLICATE
+
+// string id = 1;
+inline void CTS_CHECK_DUPLICATE::clear_id() {
+  _impl_.id_.ClearToEmpty();
+}
+inline const std::string& CTS_CHECK_DUPLICATE::id() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_CHECK_DUPLICATE.id)
+  return _internal_id();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CTS_CHECK_DUPLICATE::set_id(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.id_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.CTS_CHECK_DUPLICATE.id)
+}
+inline std::string* CTS_CHECK_DUPLICATE::mutable_id() {
+  std::string* _s = _internal_mutable_id();
+  // @@protoc_insertion_point(field_mutable:Protocol.CTS_CHECK_DUPLICATE.id)
+  return _s;
+}
+inline const std::string& CTS_CHECK_DUPLICATE::_internal_id() const {
+  return _impl_.id_.Get();
+}
+inline void CTS_CHECK_DUPLICATE::_internal_set_id(const std::string& value) {
+  
+  _impl_.id_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CTS_CHECK_DUPLICATE::_internal_mutable_id() {
+  
+  return _impl_.id_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CTS_CHECK_DUPLICATE::release_id() {
+  // @@protoc_insertion_point(field_release:Protocol.CTS_CHECK_DUPLICATE.id)
+  return _impl_.id_.Release();
+}
+inline void CTS_CHECK_DUPLICATE::set_allocated_id(std::string* id) {
+  if (id != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.id_.SetAllocated(id, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.id_.IsDefault()) {
+    _impl_.id_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.CTS_CHECK_DUPLICATE.id)
+}
+
+// -------------------------------------------------------------------
+
+// STC_CHECK_DUPLICATE
+
+// bool is_duplicate = 1;
+inline void STC_CHECK_DUPLICATE::clear_is_duplicate() {
+  _impl_.is_duplicate_ = false;
+}
+inline bool STC_CHECK_DUPLICATE::_internal_is_duplicate() const {
+  return _impl_.is_duplicate_;
+}
+inline bool STC_CHECK_DUPLICATE::is_duplicate() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_CHECK_DUPLICATE.is_duplicate)
+  return _internal_is_duplicate();
+}
+inline void STC_CHECK_DUPLICATE::_internal_set_is_duplicate(bool value) {
+  
+  _impl_.is_duplicate_ = value;
+}
+inline void STC_CHECK_DUPLICATE::set_is_duplicate(bool value) {
+  _internal_set_is_duplicate(value);
+  // @@protoc_insertion_point(field_set:Protocol.STC_CHECK_DUPLICATE.is_duplicate)
+}
+
+// -------------------------------------------------------------------
+
 // CTS_REGISTER
 
 // string id = 1;
@@ -5210,26 +5586,6 @@ inline void CTS_LOGIN::set_allocated_pw(std::string* pw) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:Protocol.CTS_LOGIN.pw)
-}
-
-// uint64 player_id = 3;
-inline void CTS_LOGIN::clear_player_id() {
-  _impl_.player_id_ = uint64_t{0u};
-}
-inline uint64_t CTS_LOGIN::_internal_player_id() const {
-  return _impl_.player_id_;
-}
-inline uint64_t CTS_LOGIN::player_id() const {
-  // @@protoc_insertion_point(field_get:Protocol.CTS_LOGIN.player_id)
-  return _internal_player_id();
-}
-inline void CTS_LOGIN::_internal_set_player_id(uint64_t value) {
-  
-  _impl_.player_id_ = value;
-}
-inline void CTS_LOGIN::set_player_id(uint64_t value) {
-  _internal_set_player_id(value);
-  // @@protoc_insertion_point(field_set:Protocol.CTS_LOGIN.player_id)
 }
 
 // -------------------------------------------------------------------
@@ -6979,6 +7335,10 @@ inline void STC_CHAT::set_allocated_msg(std::string* msg) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

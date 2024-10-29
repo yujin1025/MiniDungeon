@@ -25,15 +25,56 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 bool Handle_CTS_EMAIL_VERIFICATION(PacketSessionRef& session, Protocol::CTS_EMAIL_VERIFICATION& pkt)
 {
 	Protocol::STC_EMAIL_VERIFICATION emailVerificationPkt;
-	AuthManager& authManager = AuthManager::GetInstance();
 
-	if(authManager.AddAuthWaiter(pkt.email()) == false)
+	bool isExist = false;
+	DBConnection* dbConnection = GDBConnectionPool->Pop();
+	if (dbConnection == nullptr)
 	{
 		emailVerificationPkt.set_success(false);
 	}
 	else
 	{
-		emailVerificationPkt.set_success(true);
+		DBBind<1, 1> dbBind(*dbConnection, L"SELECT e_mail FROM MDDB.AccountInfo WHERE e_mail = ?");
+
+		wstring convertToWStringEmail = Utils::stringToWString(pkt.email());
+		dbBind.BindParam(0, convertToWStringEmail);
+
+		WCHAR outEmail[100];
+		dbBind.BindColumn(0, OUT outEmail);
+
+		ASSERT_CRASH(dbBind.Execute());
+		GDBConnectionPool->Push(dbConnection);
+
+		while (dbBind.Fetch())
+		{
+			string convertedOutID = Utils::WCHARToString(outEmail);
+
+			string email = pkt.email();
+			email.push_back('\0');
+
+			if(convertedOutID == email)
+			{
+				isExist = true;
+			}
+		}
+
+		if (isExist == true)
+		{
+			emailVerificationPkt.set_success(false);
+		}
+		else
+		{
+			AuthManager& authManager = AuthManager::GetInstance();
+
+			if (authManager.AddAuthWaiter(pkt.email()) == false)
+			{
+				emailVerificationPkt.set_success(false);
+			}
+			else
+			{
+				emailVerificationPkt.set_success(true);
+			}
+		}
 	}
 
 	SEND_PACKET(emailVerificationPkt);
@@ -58,6 +99,47 @@ bool Handle_CTS_AUTH(PacketSessionRef& session, Protocol::CTS_AUTH& pkt)
 	SEND_PACKET(authPkt);
 
 	return true;
+}
+
+bool Handle_CTS_CHECK_DUPLICATE(PacketSessionRef& session, Protocol::CTS_CHECK_DUPLICATE& pkt)
+{
+	Protocol::STC_CHECK_DUPLICATE checkDuplicatePkt;
+	bool isDuplicate = false;
+
+	DBConnection* dbConnection = GDBConnectionPool->Pop();
+	if (dbConnection == nullptr)
+	{
+		checkDuplicatePkt.set_is_duplicate(true);
+	}
+	else
+	{
+		DBBind<1, 1> dbBind(*dbConnection, L"SELECT ID FROM MDDB.AccountInfo WHERE ID = ?");
+
+		wstring convertToWStringID = Utils::stringToWString(pkt.id());
+		dbBind.BindParam(0, convertToWStringID);
+
+		WCHAR outID[100];
+		dbBind.BindColumn(0, OUT outID);
+
+		ASSERT_CRASH(dbBind.Execute());
+		GDBConnectionPool->Push(dbConnection);
+
+		while (dbBind.Fetch())
+		{
+			string convertedOutID = Utils::WCHARToString(outID);
+			if (convertedOutID == pkt.id())
+			{
+				isDuplicate = true;
+			}
+		}
+
+
+		checkDuplicatePkt.set_is_duplicate(isDuplicate);
+	}
+
+	SEND_PACKET(checkDuplicatePkt);
+
+	return false;
 }
 
 bool Handle_CTS_REGISTER(PacketSessionRef& session, Protocol::CTS_REGISTER& pkt)
@@ -144,7 +226,7 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 	if(auth == true)
 	{
 		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
-		playerInfo->set_player_id(pkt.player_id());
+		playerInfo->set_player_id(outIndex);
 
 		playerInfo->set_player_name(pkt.id());
 

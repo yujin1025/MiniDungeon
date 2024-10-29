@@ -41,6 +41,7 @@ public:
 	void HandleEmailSendFail();
 	void HandleAuthSuccess();
 	void HandleAuthFail();
+	void HandleDuplicateID(bool isDuplicated);
 	void HandleSignUpSuccess();
 	void HandleSignUpFail();
 	void HandleLogin(const Protocol::STC_ENTER_LOBBY& enterLobbyPkt);
