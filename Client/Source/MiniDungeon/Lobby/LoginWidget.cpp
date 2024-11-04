@@ -32,16 +32,19 @@ void ULoginWidget::NativeConstruct()
 	if (IsValid(WBP_EmailWidget))
 	{
 		WBP_EmailWidget->SetVisibility(ESlateVisibility::Hidden);
+		WBP_EmailWidget->SetParentWidget(this);
 	}
 
 	if (IsValid(WBP_AuthWidget))
 	{
 		WBP_AuthWidget->SetVisibility(ESlateVisibility::Hidden);
+		WBP_AuthWidget->SetParentWidget(this);
 	}
 
 	if (IsValid(WBP_SignUpWidget))
 	{
 		WBP_SignUpWidget->SetVisibility(ESlateVisibility::Hidden);
+		WBP_SignUpWidget->SetParentWidget(this);
 	}
 }
 
