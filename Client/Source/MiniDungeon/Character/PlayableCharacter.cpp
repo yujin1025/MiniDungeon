@@ -13,6 +13,7 @@
 #include "Net/UnrealNetwork.h"
 #include "../Network/MDNetworkManager.h"
 #include "../Game/MDGameInstance.h"
+#include "Kismet/KismetMathLibrary.h"
 
 APlayableCharacter::APlayableCharacter()
 {
@@ -54,6 +55,13 @@ void APlayableCharacter::BeginPlay()
 		}
 	}
 
+	FVector Location = GetActorLocation();
+	DestInfo->set_x(Location.X);
+	DestInfo->set_y(Location.Y);
+	DestInfo->set_z(Location.Z);
+	DestInfo->set_yaw(GetControlRotation().Yaw);
+
+	SetMoveState(Protocol::MOVE_STATE_IDLE);
 	TargetLocation = GetActorLocation();
 }
 
@@ -61,6 +69,14 @@ void APlayableCharacter::BeginPlay()
 void APlayableCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// 현재 위치를 PosInfo에 업데이트
+	FVector Location = GetActorLocation();
+	PosInfo->set_object_id(playerID);
+	PosInfo->set_x(Location.X);
+	PosInfo->set_y(Location.Y);
+	PosInfo->set_z(Location.Z);
+	PosInfo->set_yaw(GetControlRotation().Yaw);
 
 	// 로컬 플레이어의 경우, 자신의 이동 정보를 서버로 전송
 	if (IsMyPlayer())
@@ -84,42 +100,32 @@ void APlayableCharacter::Tick(float DeltaTime)
 
 		if (MovePacketSendTimer <= 0 || ForceSendPacket)
 		{
-			// 현재 위치를 PosInfo에 업데이트
-			//PosInfo->set_object_id(playerID);
-			//PosInfo->set_x(GetActorLocation().X);
-			//PosInfo->set_y(GetActorLocation().Y);
-			//PosInfo->set_z(GetActorLocation().Z);
-			//PosInfo->set_yaw(GetActorRotation().Yaw);
+			// 이동 패킷 전송
+			Protocol::CTS_MOVE MovePkt;
+			Protocol::PosInfo* Info = new Protocol::PosInfo();
+			Info->CopyFrom(*PosInfo);
+			Info->set_state(GetMoveState());
+			MovePkt.set_allocated_info(Info);
 
-			//// 이동 패킷 전송
-			//Protocol::CTS_MOVE MovePkt;
-			//Protocol::PosInfo* Info = new Protocol::PosInfo();
-			//Info->CopyFrom(*PosInfo);
-			//Info->set_state(GetMoveState());
-			//MovePkt.set_allocated_info(Info);
-
-			//UE_LOG(LogTemp, Log, TEXT("Sending CTS_MOVE Packet: ObjectID = %llu, X = %f, Y = %f, Z = %f, Yaw = %f, State = %d"),
-			//	Info->object_id(),
-			//	Info->x(),
-			//	Info->y(),
-			//	Info->z(),
-			//	Info->yaw(),
-			//	Info->state());
-
-			//// 패킷을 SendBufferRef로 직렬화
-			//SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
-			//auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-			//if (networkManager) {
-			//	networkManager->SendPacket(sendBuffer);
-			//}
+			// 패킷을 SendBufferRef로 직렬화
+			SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
+			auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+			if (networkManager) {
+				networkManager->SendPacket(sendBuffer);
+			}
 		}
 	}
 	else
 	{
 		// 다른 플레이어의 경우 서버에서 받은 정보를 기반으로 이동
-		FVector CurrentLocation = GetActorLocation();
-		FVector SmoothLocation = FMath::VInterpTo(CurrentLocation, TargetLocation, DeltaTime, 10.f);
-		SetActorLocation(SmoothLocation);
+		const Protocol::MoveState State = PosInfo->state();
+		SetMoveState(State);
+
+		if (State == Protocol::MOVE_STATE_RUN)
+		{
+			SetActorRotation(FRotator(0, DestInfo->yaw(), 0));
+			AddMovementInput(GetActorForwardVector());
+		}
 	}
 
 }
@@ -143,6 +149,7 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnMove);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &APlayableCharacter::OnMove);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnLook);
 
 		EnhancedInputComponent->BindAction(InputActionMap[EAttackType::QSkillAttack], ETriggerEvent::Triggered, this, &APlayableCharacter::OnQSkill);
@@ -163,33 +170,37 @@ void APlayableCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 void APlayableCharacter::OnMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
-	Move(MovementVector);
-	PosInfo->set_object_id(playerID);
-	PosInfo->set_x(GetActorLocation().X);
-	PosInfo->set_y(GetActorLocation().Y);
-	PosInfo->set_z(GetActorLocation().Z);
-	PosInfo->set_yaw(GetActorRotation().Yaw);
+	//Move(MovementVector);
 
-	// 이동 패킷 전송
-	Protocol::CTS_MOVE MovePkt;
-	Protocol::PosInfo* Info = new Protocol::PosInfo();
-	Info->CopyFrom(*PosInfo);
-	Info->set_state(GetMoveState());
-	MovePkt.set_allocated_info(Info);
+	if (Controller != nullptr)
+	{
+		// find out which way is forward
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-	UE_LOG(LogTemp, Log, TEXT("Sending CTS_MOVE Packet: ObjectID = %llu, X = %f, Y = %f, Z = %f, Yaw = %f, State = %d"),
-		Info->object_id(),
-		Info->x(),
-		Info->y(),
-		Info->z(),
-		Info->yaw(),
-		Info->state());
+		// get forward vector
+		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 
-	// 패킷을 SendBufferRef로 직렬화
-	SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
-	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-	if (networkManager) {
-		networkManager->SendPacket(sendBuffer);
+		// get right vector 
+		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+		// add movement 
+		AddMovementInput(ForwardDirection, MovementVector.Y);
+		AddMovementInput(RightDirection, MovementVector.X);
+
+		// Cache
+		{
+			DesiredInput = MovementVector;
+
+			DesiredMoveDirection = FVector::ZeroVector;
+			DesiredMoveDirection += ForwardDirection * MovementVector.Y;
+			DesiredMoveDirection += RightDirection * MovementVector.X;
+			DesiredMoveDirection.Normalize();
+
+			const FVector Location = GetActorLocation();
+			FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Location, Location + DesiredMoveDirection);
+			DesiredYaw = Rotator.Yaw;
+		}
 	}
 }
 
@@ -237,7 +248,6 @@ void APlayableCharacter::SetPlayerInfo(const Protocol::PosInfo& Info)
 	SetActorLocation(Location); 
 
 	TargetLocation = Location;
-	UE_LOG(LogTemp, Log, TEXT("SetPlayerInfo - Updated TargetLocation: X = %f, Y = %f, Z = %f"), TargetLocation.X, TargetLocation.Y, TargetLocation.Z);
 }
 
 void APlayableCharacter::SetDestInfo(const Protocol::PosInfo& Info)
