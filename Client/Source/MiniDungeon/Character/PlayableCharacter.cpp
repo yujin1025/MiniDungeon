@@ -85,33 +85,33 @@ void APlayableCharacter::Tick(float DeltaTime)
 		if (MovePacketSendTimer <= 0 || ForceSendPacket)
 		{
 			// 현재 위치를 PosInfo에 업데이트
-			PosInfo->set_object_id(playerID);
-			PosInfo->set_x(GetActorLocation().X);
-			PosInfo->set_y(GetActorLocation().Y);
-			PosInfo->set_z(GetActorLocation().Z);
-			PosInfo->set_yaw(GetActorRotation().Yaw);
+			//PosInfo->set_object_id(playerID);
+			//PosInfo->set_x(GetActorLocation().X);
+			//PosInfo->set_y(GetActorLocation().Y);
+			//PosInfo->set_z(GetActorLocation().Z);
+			//PosInfo->set_yaw(GetActorRotation().Yaw);
 
-			// 이동 패킷 전송
-			Protocol::CTS_MOVE MovePkt;
-			Protocol::PosInfo* Info = new Protocol::PosInfo();
-			Info->CopyFrom(*PosInfo);
-			Info->set_state(GetMoveState());
-			MovePkt.set_allocated_info(Info);
+			//// 이동 패킷 전송
+			//Protocol::CTS_MOVE MovePkt;
+			//Protocol::PosInfo* Info = new Protocol::PosInfo();
+			//Info->CopyFrom(*PosInfo);
+			//Info->set_state(GetMoveState());
+			//MovePkt.set_allocated_info(Info);
 
-			UE_LOG(LogTemp, Log, TEXT("Sending CTS_MOVE Packet: ObjectID = %llu, X = %f, Y = %f, Z = %f, Yaw = %f, State = %d"),
-				Info->object_id(),
-				Info->x(),
-				Info->y(),
-				Info->z(),
-				Info->yaw(),
-				Info->state());
+			//UE_LOG(LogTemp, Log, TEXT("Sending CTS_MOVE Packet: ObjectID = %llu, X = %f, Y = %f, Z = %f, Yaw = %f, State = %d"),
+			//	Info->object_id(),
+			//	Info->x(),
+			//	Info->y(),
+			//	Info->z(),
+			//	Info->yaw(),
+			//	Info->state());
 
-			// 패킷을 SendBufferRef로 직렬화
-			SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
-			auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-			if (networkManager) {
-				networkManager->SendPacket(sendBuffer);
-			}
+			//// 패킷을 SendBufferRef로 직렬화
+			//SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
+			//auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+			//if (networkManager) {
+			//	networkManager->SendPacket(sendBuffer);
+			//}
 		}
 	}
 	else
@@ -164,6 +164,33 @@ void APlayableCharacter::OnMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	Move(MovementVector);
+	PosInfo->set_object_id(playerID);
+	PosInfo->set_x(GetActorLocation().X);
+	PosInfo->set_y(GetActorLocation().Y);
+	PosInfo->set_z(GetActorLocation().Z);
+	PosInfo->set_yaw(GetActorRotation().Yaw);
+
+	// 이동 패킷 전송
+	Protocol::CTS_MOVE MovePkt;
+	Protocol::PosInfo* Info = new Protocol::PosInfo();
+	Info->CopyFrom(*PosInfo);
+	Info->set_state(GetMoveState());
+	MovePkt.set_allocated_info(Info);
+
+	UE_LOG(LogTemp, Log, TEXT("Sending CTS_MOVE Packet: ObjectID = %llu, X = %f, Y = %f, Z = %f, Yaw = %f, State = %d"),
+		Info->object_id(),
+		Info->x(),
+		Info->y(),
+		Info->z(),
+		Info->yaw(),
+		Info->state());
+
+	// 패킷을 SendBufferRef로 직렬화
+	SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if (networkManager) {
+		networkManager->SendPacket(sendBuffer);
+	}
 }
 
 void APlayableCharacter::OnLook(const FInputActionValue& Value)

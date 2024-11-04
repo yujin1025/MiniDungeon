@@ -347,8 +347,8 @@ bool Handle_CTS_MOVE(PacketSessionRef& session, Protocol::CTS_MOVE& pkt)
 	if (room == nullptr)
 		return false;
 
-	room->DoAsync(&Room::HandleMove, pkt);
-	room->HandleMove(pkt);
+	room->DoAsync(&Room::HandleMove, pkt.info());
+	//room->HandleMove(pkt);
 
 	return true;
 }

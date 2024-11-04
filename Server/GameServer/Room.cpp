@@ -272,9 +272,34 @@ void Room::HandleStartGame()
 	Broadcast(sendBuffer);
 }
 
-void Room::HandleMove(Protocol::CTS_MOVE pkt)
+//void Room::HandleMove(Protocol::CTS_MOVE pkt)
+//{
+//	const uint64 objectId = pkt.info().object_id();
+//	if (_objects.find(objectId) == _objects.end())
+//		return;
+//
+//	// 적용
+//	PlayerRef player = dynamic_pointer_cast<Player>(_objects[objectId]);
+//	if (!player)
+//		return;
+//
+//	// 최신 위치 정보로 업데이트
+//	player->posInfo->CopyFrom(pkt.info());
+//
+//	// 이동 사실을 알린다 (본인 포함? 빼고?)
+//	Protocol::STC_MOVE movePkt;
+//	Protocol::PosInfo* info = new Protocol::PosInfo();
+//	info->CopyFrom(*player->posInfo);
+//	movePkt.set_allocated_info(info);
+//
+//	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
+//	BroadcastToPlayer(sendBuffer, objectId);
+//	//Broadcast(sendBuffer);
+//}
+
+void Room::HandleMove(const Protocol::PosInfo& posInfo)
 {
-	const uint64 objectId = pkt.info().object_id();
+	const uint64 objectId = posInfo.object_id();
 	if (_objects.find(objectId) == _objects.end())
 		return;
 
@@ -284,7 +309,7 @@ void Room::HandleMove(Protocol::CTS_MOVE pkt)
 		return;
 
 	// 최신 위치 정보로 업데이트
-	player->posInfo->CopyFrom(pkt.info());
+	player->posInfo->CopyFrom(posInfo);
 
 	// 이동 사실을 알린다 (본인 포함? 빼고?)
 	Protocol::STC_MOVE movePkt;
@@ -293,7 +318,7 @@ void Room::HandleMove(Protocol::CTS_MOVE pkt)
 	movePkt.set_allocated_info(info);
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
-	Broadcast(sendBuffer);
+	BroadcastToPlayer(sendBuffer, objectId);
 }
 
 void Room::SetRoomIndex(uint64 roomIndex)

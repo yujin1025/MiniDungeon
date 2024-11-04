@@ -244,7 +244,7 @@ bool Handle_STC_ENTER_GAME(PacketSessionRef& session, Protocol::STC_ENTER_GAME& 
 	if (IsValid(gameNetwork))
 	{
 		MD_LOG(LogMDNetwork, Log, TEXT("OpenLevel Begin"));
-		UGameplayStatics::OpenLevel(gameNetwork, TEXT("InGame"));
+		UGameplayStatics::OpenLevel(gameNetwork, TEXT("InGame"), false);
 		MD_LOG(LogMDNetwork, Log, TEXT("OpenLevel End"));
 		//gameNetwork->HandleSpawn(pkt);
 	}
@@ -284,9 +284,10 @@ bool Handle_STC_DESPAWN(PacketSessionRef& session, Protocol::STC_DESPAWN& pkt)
 //
 bool Handle_STC_MOVE(PacketSessionRef& session, Protocol::STC_MOVE& pkt)
 {
-	UE_LOG(LogTemp, Log, TEXT("Received CTS_MOVE Packet: ObjectID = %llu"), pkt.info().object_id());
+	//UE_LOG(LogTemp, Log, TEXT("Received CTS_MOVE Packet: ObjectID = %llu"), pkt.info().object_id());
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
 
-	if (UMDNetworkManager* gameNetwork = GetWorldNetwork(session))
+	if (gameNetwork != nullptr)
 	{
 		gameNetwork->HandleMove(pkt);
 	}

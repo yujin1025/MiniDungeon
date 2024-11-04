@@ -41,6 +41,14 @@ void AMDGameMode::PostLogin(APlayerController* NewPlayer)
 	OnPostLogin(Cast<AMDPlayerController>(NewPlayer));
 }
 
+void AMDGameMode::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	networkManager->HandleRecvPackets();
+}
+
 void AMDGameMode::StartPlay()
 {
 	MD_LOG(LogMDNetwork, Log, TEXT("Super Begin"));

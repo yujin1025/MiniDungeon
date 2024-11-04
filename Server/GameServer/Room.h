@@ -27,7 +27,8 @@ public:
 	void HandleStartGame();
 
 	bool HandleChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType);
-	void HandleMove(Protocol::CTS_MOVE pkt);
+	//void HandleMove(Protocol::CTS_MOVE pkt);
+	void HandleMove(const Protocol::PosInfo &info);
 
 	uint64 GetRoomIndex() const { return _roomIndex; }
 	void SetRoomIndex(uint64 roomIndex);
