@@ -284,6 +284,8 @@ bool Handle_STC_DESPAWN(PacketSessionRef& session, Protocol::STC_DESPAWN& pkt)
 //
 bool Handle_STC_MOVE(PacketSessionRef& session, Protocol::STC_MOVE& pkt)
 {
+	UE_LOG(LogTemp, Log, TEXT("Received CTS_MOVE Packet: ObjectID = %llu"), pkt.info().object_id());
+
 	if (UMDNetworkManager* gameNetwork = GetWorldNetwork(session))
 	{
 		gameNetwork->HandleMove(pkt);

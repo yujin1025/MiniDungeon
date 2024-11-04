@@ -32,7 +32,6 @@ APlayableCharacter::APlayableCharacter()
 	InputActionMap.Add(EAttackType::ESkillAttack, nullptr);
 	InputActionMap.Add(EAttackType::ShiftAttack, nullptr);
 
-	TargetLocation = GetActorLocation();
 	PosInfo = new Protocol::PosInfo();
 	DestInfo = new Protocol::PosInfo();
 }
@@ -48,8 +47,14 @@ void APlayableCharacter::BeginPlay()
 	UMDNetworkManager* NetworkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
 	if (NetworkManager)
 	{
-		playerID = NetworkManager->PlayerID; // PlayerID 가져오기
+		const auto& playerInfoPtr = NetworkManager->PlayerInfos.Find(NetworkManager->PlayerID);
+		if (playerInfoPtr)
+		{
+			playerID = (*playerInfoPtr)->object_info().object_id(); // ObjectID 설정
+		}
 	}
+
+	TargetLocation = GetActorLocation();
 }
 
 
@@ -108,7 +113,6 @@ void APlayableCharacter::Tick(float DeltaTime)
 				networkManager->SendPacket(sendBuffer);
 			}
 		}
-		
 	}
 	else
 	{
@@ -203,7 +207,10 @@ void APlayableCharacter::SetPlayerInfo(const Protocol::PosInfo& Info)
 	PosInfo->CopyFrom(Info);
 
 	FVector Location(Info.x(), Info.y(), Info.z());
-	SetActorLocation(Location);
+	SetActorLocation(Location); 
+
+	TargetLocation = Location;
+	UE_LOG(LogTemp, Log, TEXT("SetPlayerInfo - Updated TargetLocation: X = %f, Y = %f, Z = %f"), TargetLocation.X, TargetLocation.Y, TargetLocation.Z);
 }
 
 void APlayableCharacter::SetDestInfo(const Protocol::PosInfo& Info)
@@ -218,4 +225,5 @@ void APlayableCharacter::SetDestInfo(const Protocol::PosInfo& Info)
 
 	// 상태만 바로 적용하자.
 	SetMoveState(Info.state());
+	TargetLocation = FVector(Info.x(), Info.y(), Info.z());
 }
