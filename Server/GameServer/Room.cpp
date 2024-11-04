@@ -280,6 +280,8 @@ void Room::HandleMove(Protocol::CTS_MOVE pkt)
 
 	// 적용
 	PlayerRef player = dynamic_pointer_cast<Player>(_objects[objectId]);
+	if (!player)
+		return;
 	//player->posInfo->CopyFrom(pkt.info());
 
 	// 이동 사실을 알린다 (본인 포함? 빼고?)

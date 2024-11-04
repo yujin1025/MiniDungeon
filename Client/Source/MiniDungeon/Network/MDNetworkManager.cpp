@@ -371,6 +371,11 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 
 	FVector spawnLocation(objectInfo.pos_info().x(), objectInfo.pos_info().y(), objectInfo.pos_info().z());
 
+	if (!isMine)
+	{
+		spawnLocation += FVector(15, 0, 0); 
+	}
+
 	if (isMine)
 	{
 		AMDPlayerController* pc = Cast<AMDPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
@@ -496,10 +501,11 @@ void UMDNetworkManager::HandleMove(const Protocol::STC_MOVE& movePkt)
 		return;
 	}
 
+	//이동하려는 플레이어 식별
 	const uint64 objectId = movePkt.info().object_id();
 
-	/*APlayableCharacter** findActor = Players.Find(objectId);
-	* if(findActor == nullptr)
+	TObjectPtr<APlayableCharacter>* findActor = Players.Find(objectId);
+	if(findActor == nullptr)
 	{
 		return;
 	}
@@ -510,9 +516,11 @@ void UMDNetworkManager::HandleMove(const Protocol::STC_MOVE& movePkt)
 		return;
 	}
 
+	//이동 정보 가져와서 업데이트 
 	const Protocol::PosInfo& info = movePkt.info();
-	//player->SetPlayerInfo(info);
-	player->SetDestInfo(Info)*/
+	player->SetPlayerInfo(info);
+	player->SetDestInfo(info);
+	MD_LOG(LogMDNetwork, Log, TEXT("PlayerID: %llu"), info.object_id());
 }
 
 

@@ -96,14 +96,11 @@
     <ClInclude Include="DBConnectionPool.h">
       <Filter>DB</Filter>
     </ClInclude>
-    <ClInclude Include="DBConnection.h">
-      <Filter>DB</Filter>
-    </ClInclude>
     <ClInclude Include="DBBind.h">
       <Filter>DB</Filter>
     </ClInclude>
-    <ClInclude Include="SMTPManager.h">
-      <Filter>SMTP</Filter>
+    <ClInclude Include="DBConnection.h">
+      <Filter>DB</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -170,17 +167,14 @@
     <ClCompile Include="BufferReader.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="DBBind.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
     <ClCompile Include="DBConnection.cpp">
       <Filter>DB</Filter>
     </ClCompile>
     <ClCompile Include="DBConnectionPool.cpp">
       <Filter>DB</Filter>
-    </ClCompile>
-    <ClCompile Include="DBBind.cpp">
-      <Filter>DB</Filter>
-    </ClCompile>
-    <ClCompile Include="SMTPManager.cpp">
-      <Filter>SMTP</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

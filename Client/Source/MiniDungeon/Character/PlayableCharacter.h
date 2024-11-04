@@ -1,9 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "MDCharacter.h"
+#include "Protocol.pb.h"
 #include "PlayableCharacter.generated.h"
 
 class UInputMappingContext;
@@ -43,6 +44,17 @@ class MINIDUNGEON_API APlayableCharacter : public AMDCharacter
 	
 public:
 	APlayableCharacter();
+
+	bool IsMyPlayer() const;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+protected:
+	// 네트워크 복제를 위한 변수
+	UPROPERTY(Replicated)
+	FVector ReplicatedLocation;
+
+	UPROPERTY(Replicated)
+	FRotator ReplicatedRotation;
 	
 private:
 	/** Camera boom positioning the camera behind the character */
@@ -55,7 +67,8 @@ private:
 
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 private:
 	void OnMove(const FInputActionValue& Value);
@@ -64,7 +77,37 @@ private:
 	void OnQSkill(const FInputActionValue& Value);
 	void OnESkill(const FInputActionValue& Value);
 	void OnShift(const FInputActionValue& Value);
-	//�̰� �ʿ��Ѱ��� ������
+	//이게 필요한건지 고민중
 	//void OnShiftEnd(const FInputActionValue& Value);
 
+protected:
+	const float MOVE_PACKET_SEND_DELAY = 0.2f;
+	float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+
+	// Cache
+	FVector2D DesiredInput;
+	FVector DesiredMoveDirection;
+	float DesiredYaw;
+
+	// Dirty Flag Test
+	FVector2D LastDesiredInput;
+
+	FVector TargetLocation;
+
+public:
+	Protocol::MoveState GetMoveState() { return PosInfo->state(); }
+	void SetMoveState(Protocol::MoveState State);
+	void SetPlayerInfo(const Protocol::PosInfo& Info);
+	void SetDestInfo(const Protocol::PosInfo& Info);
+
+protected:
+	class Protocol::PosInfo* PosInfo; // 현재 위치
+	class Protocol::PosInfo* DestInfo; // 목적지
+
+	UPROPERTY(Replicated)
+	uint64 playerID;
+
+public:
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	TObjectPtr<class UMDNetworkManager> Player;
 };

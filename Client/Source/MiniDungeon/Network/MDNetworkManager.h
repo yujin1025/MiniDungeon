@@ -77,6 +77,9 @@ public:
 	TObjectPtr<class APlayableCharacter> MyPlayer;
 	UPROPERTY()
 	uint64 PlayerID;
+
+	Protocol::PosInfo* PlayerInfo;
+	const Protocol::PosInfo* GetPlayerInfo() { return PlayerInfo; }
 };
 
 template<typename T>

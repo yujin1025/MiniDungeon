@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "MDGameInstance.h"
@@ -19,4 +19,21 @@ UMDGameInstance::UMDGameInstance()
 		DrongoClass = DrongoBP.Class;
 	}
 
+}
+
+void UMDGameInstance::Init()
+{
+	Super::Init();
+
+	// UMDNetworkManager를 서브시스템으로 초기화
+	NetworkManager = NewObject<UMDNetworkManager>(this);
+	if (NetworkManager)
+	{
+		NetworkManager->AddToRoot(); // 가비지 컬렉션 방지
+		UE_LOG(LogTemp, Log, TEXT("UMDNetworkManager initialized successfully."));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to initialize UMDNetworkManager."));
+	}
 }

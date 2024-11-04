@@ -338,16 +338,17 @@ bool Handle_CTS_MOVE(PacketSessionRef& session, Protocol::CTS_MOVE& pkt)
 {
 	auto gameSession = static_pointer_cast<GameSession>(session);
 
-	//PlayerRef player = gameSession->player.load();
-	//if (player == nullptr)
-	//	return false;
 
-	//RoomRef room = player->room.load().lock();
-	//if (room == nullptr)
-	//	return false;
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
 
-	//room->DoAsync(&Room::HandleMove, pkt);
-	//room->HandleMove(pkt);
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
+
+	room->DoAsync(&Room::HandleMove, pkt);
+	room->HandleMove(pkt);
 
 	return true;
 }

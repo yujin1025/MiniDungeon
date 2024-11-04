@@ -13,32 +13,50 @@ class UMDNetworkManager* GetWorldNetwork(const PacketSessionRef& Session);
 
 enum : uint16
 {
-	PKT_CTS_LOGIN = 1000,
-	PKT_STC_LOGIN = 1001,
-	PKT_CTS_ENTER_LOBBY = 1002,
-	PKT_STC_ENTER_LOBBY = 1003,
-	PKT_CTS_JOIN_OR_CREATE_ROOM = 1004,
-	PKT_STC_JOIN_OR_CREATE_ROOM = 1005,
-	PKT_CTS_ENTER_ROOM = 1006,
-	PKT_STC_ENTER_ROOM = 1007,
-	PKT_CTS_ENTER_GAME = 1008,
-	PKT_STC_ENTER_GAME = 1009,
-	PKT_CTS_LEAVE_GAME = 1010,
-	PKT_STC_LEAVE_GAME = 1011,
-	PKT_STC_SPAWN = 1012,
-	PKT_STC_DESPAWN = 1013,
-	PKT_CTS_MOVE = 1014,
-	PKT_STC_MOVE = 1015,
-	PKT_CTS_CHAT = 1016,
-	PKT_STC_CHAT = 1017,
+	PKT_CTS_EMAIL_VERIFICATION = 1000,
+	PKT_STC_EMAIL_VERIFICATION = 1001,
+	PKT_CTS_AUTH = 1002,
+	PKT_STC_AUTH = 1003,
+	PKT_CTS_CHECK_DUPLICATE = 1004,
+	PKT_STC_CHECK_DUPLICATE = 1005,
+	PKT_CTS_REGISTER = 1006,
+	PKT_STC_REGISTER = 1007,
+	PKT_CTS_LOGIN = 1008,
+	PKT_STC_LOGIN = 1009,
+	PKT_CTS_ENTER_LOBBY = 1010,
+	PKT_STC_ENTER_LOBBY = 1011,
+	PKT_CTS_CREATE_ROOM = 1012,
+	PKT_STC_CREATE_ROOM = 1013,
+	PKT_CTS_JOIN_ROOM = 1014,
+	PKT_STC_JOIN_ROOM = 1015,
+	PKT_CTS_CHANGE_CHARACTER = 1016,
+	PKT_STC_CHANGE_CHARACTER = 1017,
+	PKT_CTS_LEAVE_ROOM = 1018,
+	PKT_STC_LEAVE_ROOM = 1019,
+	PKT_CTS_ENTER_GAME = 1020,
+	PKT_STC_ENTER_GAME = 1021,
+	PKT_CTS_LEAVE_GAME = 1022,
+	PKT_STC_LEAVE_GAME = 1023,
+	PKT_STC_SPAWN = 1024,
+	PKT_STC_DESPAWN = 1025,
+	PKT_CTS_MOVE = 1026,
+	PKT_STC_MOVE = 1027,
+	PKT_CTS_CHAT = 1028,
+	PKT_STC_CHAT = 1029,
 };
 
 // Custom Handlers
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
+bool Handle_CTS_EMAIL_VERIFICATION(PacketSessionRef& session, Protocol::CTS_EMAIL_VERIFICATION& pkt);
+bool Handle_CTS_AUTH(PacketSessionRef& session, Protocol::CTS_AUTH& pkt);
+bool Handle_CTS_CHECK_DUPLICATE(PacketSessionRef& session, Protocol::CTS_CHECK_DUPLICATE& pkt);
+bool Handle_CTS_REGISTER(PacketSessionRef& session, Protocol::CTS_REGISTER& pkt);
 bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt);
 bool Handle_CTS_ENTER_LOBBY(PacketSessionRef& session, Protocol::CTS_ENTER_LOBBY& pkt);
-bool Handle_CTS_JOIN_OR_CREATE_ROOM(PacketSessionRef& session, Protocol::CTS_JOIN_OR_CREATE_ROOM& pkt);
-bool Handle_CTS_ENTER_ROOM(PacketSessionRef& session, Protocol::CTS_ENTER_ROOM& pkt);
+bool Handle_CTS_CREATE_ROOM(PacketSessionRef& session, Protocol::CTS_CREATE_ROOM& pkt);
+bool Handle_CTS_JOIN_ROOM(PacketSessionRef& session, Protocol::CTS_JOIN_ROOM& pkt);
+bool Handle_CTS_CHANGE_CHARACTER(PacketSessionRef& session, Protocol::CTS_CHANGE_CHARACTER& pkt);
+bool Handle_CTS_LEAVE_ROOM(PacketSessionRef& session, Protocol::CTS_LEAVE_ROOM& pkt);
 bool Handle_CTS_ENTER_GAME(PacketSessionRef& session, Protocol::CTS_ENTER_GAME& pkt);
 bool Handle_CTS_LEAVE_GAME(PacketSessionRef& session, Protocol::CTS_LEAVE_GAME& pkt);
 bool Handle_CTS_MOVE(PacketSessionRef& session, Protocol::CTS_MOVE& pkt);
@@ -51,10 +69,16 @@ public:
 	{
 		for (int32 i = 0; i < UINT16_MAX; i++)
 			GPacketHandler[i] = Handle_INVALID;
+		GPacketHandler[PKT_CTS_EMAIL_VERIFICATION] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_EMAIL_VERIFICATION>(Handle_CTS_EMAIL_VERIFICATION, session, buffer, len); };
+		GPacketHandler[PKT_CTS_AUTH] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_AUTH>(Handle_CTS_AUTH, session, buffer, len); };
+		GPacketHandler[PKT_CTS_CHECK_DUPLICATE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_CHECK_DUPLICATE>(Handle_CTS_CHECK_DUPLICATE, session, buffer, len); };
+		GPacketHandler[PKT_CTS_REGISTER] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_REGISTER>(Handle_CTS_REGISTER, session, buffer, len); };
 		GPacketHandler[PKT_CTS_LOGIN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_LOGIN>(Handle_CTS_LOGIN, session, buffer, len); };
 		GPacketHandler[PKT_CTS_ENTER_LOBBY] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_ENTER_LOBBY>(Handle_CTS_ENTER_LOBBY, session, buffer, len); };
-		GPacketHandler[PKT_CTS_JOIN_OR_CREATE_ROOM] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_JOIN_OR_CREATE_ROOM>(Handle_CTS_JOIN_OR_CREATE_ROOM, session, buffer, len); };
-		GPacketHandler[PKT_CTS_ENTER_ROOM] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_ENTER_ROOM>(Handle_CTS_ENTER_ROOM, session, buffer, len); };
+		GPacketHandler[PKT_CTS_CREATE_ROOM] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_CREATE_ROOM>(Handle_CTS_CREATE_ROOM, session, buffer, len); };
+		GPacketHandler[PKT_CTS_JOIN_ROOM] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_JOIN_ROOM>(Handle_CTS_JOIN_ROOM, session, buffer, len); };
+		GPacketHandler[PKT_CTS_CHANGE_CHARACTER] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_CHANGE_CHARACTER>(Handle_CTS_CHANGE_CHARACTER, session, buffer, len); };
+		GPacketHandler[PKT_CTS_LEAVE_ROOM] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_LEAVE_ROOM>(Handle_CTS_LEAVE_ROOM, session, buffer, len); };
 		GPacketHandler[PKT_CTS_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_ENTER_GAME>(Handle_CTS_ENTER_GAME, session, buffer, len); };
 		GPacketHandler[PKT_CTS_LEAVE_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_LEAVE_GAME>(Handle_CTS_LEAVE_GAME, session, buffer, len); };
 		GPacketHandler[PKT_CTS_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_MOVE>(Handle_CTS_MOVE, session, buffer, len); };
@@ -66,10 +90,16 @@ public:
 		PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 		return GPacketHandler[header->id](session, buffer, len);
 	}
+	static SendBufferRef MakeSendBuffer(Protocol::STC_EMAIL_VERIFICATION& pkt) { return MakeSendBuffer(pkt, PKT_STC_EMAIL_VERIFICATION); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_AUTH& pkt) { return MakeSendBuffer(pkt, PKT_STC_AUTH); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_CHECK_DUPLICATE& pkt) { return MakeSendBuffer(pkt, PKT_STC_CHECK_DUPLICATE); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_REGISTER& pkt) { return MakeSendBuffer(pkt, PKT_STC_REGISTER); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_LOGIN& pkt) { return MakeSendBuffer(pkt, PKT_STC_LOGIN); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_ENTER_LOBBY& pkt) { return MakeSendBuffer(pkt, PKT_STC_ENTER_LOBBY); }
-	static SendBufferRef MakeSendBuffer(Protocol::STC_JOIN_OR_CREATE_ROOM& pkt) { return MakeSendBuffer(pkt, PKT_STC_JOIN_OR_CREATE_ROOM); }
-	static SendBufferRef MakeSendBuffer(Protocol::STC_ENTER_ROOM& pkt) { return MakeSendBuffer(pkt, PKT_STC_ENTER_ROOM); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_CREATE_ROOM& pkt) { return MakeSendBuffer(pkt, PKT_STC_CREATE_ROOM); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_JOIN_ROOM& pkt) { return MakeSendBuffer(pkt, PKT_STC_JOIN_ROOM); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_CHANGE_CHARACTER& pkt) { return MakeSendBuffer(pkt, PKT_STC_CHANGE_CHARACTER); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_LEAVE_ROOM& pkt) { return MakeSendBuffer(pkt, PKT_STC_LEAVE_ROOM); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_STC_ENTER_GAME); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_LEAVE_GAME& pkt) { return MakeSendBuffer(pkt, PKT_STC_LEAVE_GAME); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_SPAWN& pkt) { return MakeSendBuffer(pkt, PKT_STC_SPAWN); }

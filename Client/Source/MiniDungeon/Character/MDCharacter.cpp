@@ -205,7 +205,15 @@ void AMDCharacter::OnDie()
 
 bool AMDCharacter::IsPlayer()
 {
-	return Controller->IsPlayerController();
+	if (Controller)
+	{
+		return Controller->IsPlayerController();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Controller is nullptr in IsPlayer()"));
+		return false;
+	}
 }
 
 FVector AMDCharacter::GetLookVector(AMDCharacter*& Target) const
