@@ -99,6 +99,8 @@ public:
 	void SetMoveState(Protocol::MoveState State);
 	void SetPlayerInfo(const Protocol::PosInfo& Info);
 	void SetDestInfo(const Protocol::PosInfo& Info);
+	void Other_Attack(const Protocol::AttackInfo& Info);
+	void PlayAttackMontage(EAttackType AttackType);
 
 protected:
 	class Protocol::PosInfo* PosInfo; // 현재 위치

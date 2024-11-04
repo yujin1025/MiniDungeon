@@ -1,5 +1,6 @@
 #pragma once
 #include "JobQueue.h"
+#include "Struct.pb.h"
 
 struct Vector3
 {
@@ -29,6 +30,8 @@ public:
 	bool HandleChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType);
 	//void HandleMove(Protocol::CTS_MOVE pkt);
 	void HandleMove(const Protocol::PosInfo &info);
+
+	void HandleAttack(Protocol::CTS_ATTACK pkt);
 
 	uint64 GetRoomIndex() const { return _roomIndex; }
 	void SetRoomIndex(uint64 roomIndex);

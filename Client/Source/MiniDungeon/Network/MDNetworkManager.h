@@ -60,6 +60,8 @@ public:
 
 	void HandleMove(const Protocol::STC_MOVE& movePkt);
 
+	void HandleAttack(const Protocol::STC_ATTACK& AtkPkt);
+
 public:
 	class FSocket* Socket;
 	FString IpAddress = TEXT("127.0.0.1");

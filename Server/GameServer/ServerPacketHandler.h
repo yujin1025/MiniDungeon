@@ -43,6 +43,8 @@ enum : uint16
 	PKT_STC_MOVE = 1027,
 	PKT_CTS_CHAT = 1028,
 	PKT_STC_CHAT = 1029,
+	PKT_CTS_ATTACK = 1030,
+	PKT_STC_ATTACK = 1031,
 };
 
 // Custom Handlers
@@ -61,6 +63,7 @@ bool Handle_CTS_ENTER_GAME(PacketSessionRef& session, Protocol::CTS_ENTER_GAME& 
 bool Handle_CTS_LEAVE_GAME(PacketSessionRef& session, Protocol::CTS_LEAVE_GAME& pkt);
 bool Handle_CTS_MOVE(PacketSessionRef& session, Protocol::CTS_MOVE& pkt);
 bool Handle_CTS_CHAT(PacketSessionRef& session, Protocol::CTS_CHAT& pkt);
+bool Handle_CTS_ATTACK(PacketSessionRef& session, Protocol::CTS_ATTACK& pkt);
 
 class ServerPacketHandler
 {
@@ -83,6 +86,7 @@ public:
 		GPacketHandler[PKT_CTS_LEAVE_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_LEAVE_GAME>(Handle_CTS_LEAVE_GAME, session, buffer, len); };
 		GPacketHandler[PKT_CTS_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_MOVE>(Handle_CTS_MOVE, session, buffer, len); };
 		GPacketHandler[PKT_CTS_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_CHAT>(Handle_CTS_CHAT, session, buffer, len); };
+		GPacketHandler[PKT_CTS_ATTACK] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_ATTACK>(Handle_CTS_ATTACK, session, buffer, len); };
 	}
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -106,6 +110,7 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::STC_DESPAWN& pkt) { return MakeSendBuffer(pkt, PKT_STC_DESPAWN); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_STC_MOVE); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_STC_CHAT); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_ATTACK& pkt) { return MakeSendBuffer(pkt, PKT_STC_ATTACK); }
 
 private:
 	template<typename PacketType, typename ProcessFunc>

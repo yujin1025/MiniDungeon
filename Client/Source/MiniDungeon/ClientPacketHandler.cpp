@@ -302,3 +302,15 @@ bool Handle_STC_CHAT(PacketSessionRef& session, Protocol::STC_CHAT& pkt)
 
 	return true;
 }
+
+bool Handle_STC_ATTACK(PacketSessionRef& session, Protocol::STC_ATTACK& pkt)
+{
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
+	if (gameNetwork != nullptr)
+	{
+		gameNetwork->HandleAttack(pkt);
+	}
+
+	return true;
+}

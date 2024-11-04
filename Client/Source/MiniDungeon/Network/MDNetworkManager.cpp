@@ -523,4 +523,25 @@ void UMDNetworkManager::HandleMove(const Protocol::STC_MOVE& movePkt)
 	MD_LOG(LogMDNetwork, Log, TEXT("PlayerID: %llu"), info.object_id());
 }
 
+void UMDNetworkManager::HandleAttack(const Protocol::STC_ATTACK& AtkPkt)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	const uint64 ObjectId = AtkPkt.info().object_id();
+
+	TObjectPtr<APlayableCharacter>* findActor = Players.Find(ObjectId);
+	if (findActor == nullptr)
+		return;
+
+	APlayableCharacter* player = (*findActor);
+
+	const Protocol::AttackInfo& Info = AtkPkt.info();
+	player->Other_Attack(Info);
+}
+
 

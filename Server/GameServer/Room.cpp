@@ -321,6 +321,21 @@ void Room::HandleMove(const Protocol::PosInfo& posInfo)
 	BroadcastToPlayer(sendBuffer, objectId);
 }
 
+void Room::HandleAttack(Protocol::CTS_ATTACK pkt)
+{
+	const uint64 objectId = pkt.info().object_id();
+	if (_objects.find(objectId) == _objects.end())
+		return;
+
+	Protocol::STC_ATTACK atkPkt;
+	Protocol::AttackInfo* info = new Protocol::AttackInfo();
+	info->CopyFrom(pkt.info());
+	atkPkt.set_allocated_info(info);
+
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(atkPkt);
+	Broadcast(sendBuffer);
+}
+
 void Room::SetRoomIndex(uint64 roomIndex)
 {
 	_roomIndex = roomIndex;

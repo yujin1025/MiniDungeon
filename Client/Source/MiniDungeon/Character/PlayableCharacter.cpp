@@ -14,6 +14,8 @@
 #include "../Network/MDNetworkManager.h"
 #include "../Game/MDGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "../Component/AttackComponent.h"
+#include "../Component/HealthComponent.h"
 
 APlayableCharacter::APlayableCharacter()
 {
@@ -263,4 +265,28 @@ void APlayableCharacter::SetDestInfo(const Protocol::PosInfo& Info)
 	// 상태만 바로 적용하자.
 	SetMoveState(Info.state());
 	TargetLocation = FVector(Info.x(), Info.y(), Info.z());
+}
+
+void APlayableCharacter::Other_Attack(const Protocol::AttackInfo& Info)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Other_Hit"));
+	// 1. 공격 타입에 따라 애니메이션을 재생합니다.
+	EAttackType AttackType = static_cast<EAttackType>(Info.attack_type());
+	PlayAttackMontage(AttackType);
+
+	// 2. 피해를 적용합니다.
+	float Damage = Info.damage();
+	if (HealthComponent) 
+	{
+		//HealthComponent->ChangeHealth(this, -Damage);
+	}
+}
+
+void APlayableCharacter::PlayAttackMontage(EAttackType AttackType)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && ActionComponentMap.Contains(AttackType))
+	{
+		ActionComponentMap[AttackType]->PlayAttackMontage();
+	}
 }

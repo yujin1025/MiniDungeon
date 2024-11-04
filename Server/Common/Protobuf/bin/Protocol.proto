@@ -1,4 +1,4 @@
-syntax = "proto3";
+﻿syntax = "proto3";
 package Protocol;
 
 import "Enum.proto";
@@ -175,4 +175,14 @@ message STC_CHAT
 {
 	uint64 playerId = 1;
 	string msg = 2;
+}
+
+message CTS_ATTACK
+{
+	AttackInfo info = 1;
+}
+
+message STC_ATTACK
+{
+	AttackInfo info = 1;
 }
