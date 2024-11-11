@@ -22,17 +22,23 @@ MonsterRef ObjectUtils::CreateMonster()
 	MonsterRef monster = make_shared<Monster>();
 	monster->CurrentHp = monster->MaxHp;
 
-	monster->objectInfo->set_object_id(newId);
-	monster->objectInfo->set_creature_type(monster->creatureType);
-	monster->objectInfo->set_allocated_pos_info(monster->posInfo);
-
 	monster->posInfo->set_object_id(newId);
 	monster->posInfo->set_x(monster->SpawnVec.x);
 	monster->posInfo->set_y(monster->SpawnVec.y);
 	monster->posInfo->set_z(monster->SpawnVec.z);
 	monster->posInfo->set_yaw(monster->SpawnYaw);
 
-	monster->monsterInfo->set_allocated_object_info(monster->objectInfo);
+	Protocol::PosInfo* pos = new Protocol::PosInfo();
+	pos->CopyFrom(*monster->posInfo);
+
+	monster->objectInfo->set_object_id(newId);
+	monster->objectInfo->set_creature_type(monster->creatureType);
+	monster->objectInfo->set_allocated_pos_info(pos);
+
+	Protocol::ObjectInfo* objInfo = new Protocol::ObjectInfo();
+	objInfo->CopyFrom(*monster->objectInfo);
+
+	monster->monsterInfo->set_allocated_object_info(objInfo);
 	monster->monsterInfo->set_object_type(Protocol::ObjectType::OBJECT_TYPE_CREATURE);
 	monster->monsterInfo->set_monster_hp(monster->MaxHp);
 	monster->monsterInfo->set_speed(monster->Speed);

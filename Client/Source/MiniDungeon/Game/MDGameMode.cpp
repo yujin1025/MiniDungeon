@@ -72,6 +72,11 @@ void AMDGameMode::StartPlay()
 			}
 		}
 	}
+
+	Protocol::CTS_MONSTERINFO pkt;
+	pkt.set_allocated_info(new Protocol::MonsterInfo());
+	networkManager->SendPacket(pkt);
+
 	MD_LOG(LogMDNetwork, Log, TEXT("Override End"));
 }
 

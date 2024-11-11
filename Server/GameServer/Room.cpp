@@ -348,7 +348,19 @@ void Room::UpdateTick()
 {
 	cout << "Update Room" << endl;
 
-	//DoTimer(100, &Room::UpdateTick);
+	// TODO : 몬스터 이동, 공격
+
+	for(auto& monster : _objects)
+	{
+		MonsterRef mon = dynamic_pointer_cast<Monster>(monster.second);
+		if (mon)
+		{
+			mon->CalcDist();
+			mon->CanAttack();
+		}
+	}
+
+	DoTimer(100, &Room::UpdateTick);
 }
 
 RoomRef Room::GetRoomRef()
