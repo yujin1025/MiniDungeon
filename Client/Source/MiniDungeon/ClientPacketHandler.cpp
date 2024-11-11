@@ -314,3 +314,18 @@ bool Handle_STC_ATTACK(PacketSessionRef& session, Protocol::STC_ATTACK& pkt)
 
 	return true;
 }
+
+bool Handle_STC_MONSTERINFO(PacketSessionRef& session, Protocol::STC_MONSTERINFO& pkt)
+{
+	if (UMDNetworkManager* gameNetwork = GetWorldNetwork(session))
+	{
+		gameNetwork->HandleSpawnMonster(pkt);
+	}
+
+	return true;
+}
+
+bool Handle_STC_MONSTERMOVE(PacketSessionRef& session, Protocol::STC_MONSTERMOVE& pkt)
+{
+	return true;
+}

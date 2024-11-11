@@ -2,4 +2,26 @@
 
 
 #include "Khaimera.h"
+#include "../AI/MDAIController.h"
 
+AKhaimera::AKhaimera()
+{
+}
+
+void AKhaimera::BeginPlay()
+{
+    MD_LOG(LogMDNetwork, Log, TEXT("Begin"));
+    Super::BeginPlay();
+    MD_LOG(LogMDNetwork, Log, TEXT("End"));
+
+    if (AIControllerClass)
+    {
+        AMDAIController* AIController = Cast<AMDAIController>(GetController());
+        if (!AIController)
+        {
+            AIController = GetWorld()->SpawnActor<AMDAIController>(AIControllerClass);
+            AIController->Possess(this);
+            MD_LOG(LogMDNetwork, Log, TEXT("Poss"));
+        }
+    }
+}

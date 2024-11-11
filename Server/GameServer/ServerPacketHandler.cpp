@@ -372,6 +372,29 @@ bool Handle_CTS_ATTACK(PacketSessionRef& session, Protocol::CTS_ATTACK& pkt)
 	return true;
 }
 
+bool Handle_CTS_MONSTERINFO(PacketSessionRef& session, Protocol::CTS_MONSTERINFO& pkt)
+{
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
+
+	// 서버에서 몬스터 소환
+	room->DoAsync(&Room::SpawnMonster);
+
+	return true;
+}
+
+bool Handle_CTS_MONSTERMOVE(PacketSessionRef& session, Protocol::CTS_MONSTERMOVE& pkt)
+{
+	return false;
+}
+
 bool Handle_CTS_CHAT(PacketSessionRef& session, Protocol::CTS_CHAT& pkt)
 {
 	return true;

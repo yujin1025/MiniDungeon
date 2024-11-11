@@ -209,7 +209,8 @@ struct ArenaOptions {
 // the appropriate protocol (described below), and Create<T>, which works for
 // any arbitrary type T. CreateMessage<T> is better when the type T supports it,
 // because this interface (i) passes the arena pointer to the created object so
-// that its sub-objects and internal allocations can use the arena too, and (ii)
+// that its sub-
+//  and internal allocations can use the arena too, and (ii)
 // elides the object's destructor call when possible. Create<T> does not place
 // any special requirements on the type T, and will invoke the object's
 // destructor when the arena is destroyed.

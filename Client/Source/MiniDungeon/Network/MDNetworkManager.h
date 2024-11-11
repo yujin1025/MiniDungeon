@@ -62,6 +62,8 @@ public:
 
 	void HandleAttack(const Protocol::STC_ATTACK& AtkPkt);
 
+	void HandleSpawnMonster(const Protocol::STC_MONSTERINFO& InfoPkt);
+
 public:
 	class FSocket* Socket;
 	FString IpAddress = TEXT("127.0.0.1");

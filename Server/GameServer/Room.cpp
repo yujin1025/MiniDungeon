@@ -243,6 +243,8 @@ bool Room::HandleLeavePlayer(uint64 playerindex)
 
 void Room::HandleStartGame()
 {
+	SpawnMonster();
+
 	Protocol::STC_ENTER_GAME enterGamePkt;
 	enterGamePkt.set_success(true);
 
@@ -358,6 +360,46 @@ void Room::ReleaseThisRoom()
 {
 	auto self = GetRoomRef();
 	_lobby.lock()->RemoveRoom(self);
+}
+
+void Room::SpawnMonster()
+{
+	// 보스 생성
+	MonsterRef monster = ObjectUtils::CreateMonster(); 
+
+	// 보스를 방에 추가
+	if (AddObject(monster))
+	{
+		Protocol::STC_SPAWN spawnPkt;
+		Protocol::STC_MONSTERINFO monsterInfoPkt;
+		Protocol::STC_MONSTERMOVE monsterMovePkt;
+
+		Protocol::ObjectInfo* monsterInfo = spawnPkt.add_players();
+		monsterInfo->CopyFrom(*monster->objectInfo);
+
+		Protocol::PosInfo* posInfo = monsterInfo->mutable_pos_info();
+		posInfo->CopyFrom(*monster->posInfo);
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
+		Broadcast(sendBuffer);
+
+		if (auto boss = dynamic_pointer_cast<Monster>(monster))
+		{
+			Protocol::PosInfo* info = monsterMovePkt.mutable_info();
+			auto dest = boss->GetDestination();
+			info->set_x(boss->posInfo->x());
+			info->set_y(boss->posInfo->y());
+			info->set_z(boss->posInfo->z());
+
+			monsterInfoPkt.set_allocated_info(boss->monsterInfo);
+		}
+
+		SendBufferRef sendBuffer2 = ServerPacketHandler::MakeSendBuffer(monsterInfoPkt);
+		Broadcast(sendBuffer2);
+
+		SendBufferRef sendBuffer3 = ServerPacketHandler::MakeSendBuffer(monsterMovePkt);
+		Broadcast(sendBuffer3);
+	}
 }
 
 bool Room::AddObject(ObjectRef object)

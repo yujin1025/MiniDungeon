@@ -4,6 +4,7 @@
 #include "MDGameInstance.h"
 #include "Character/Aurora.h"
 #include "Character/Drongo.h"
+#include "Character/Khaimera.h"
 
 UMDGameInstance::UMDGameInstance()
 {
@@ -17,6 +18,12 @@ UMDGameInstance::UMDGameInstance()
 	if (DrongoBP.Succeeded())
 	{
 		DrongoClass = DrongoBP.Class;
+	}
+
+	ConstructorHelpers::FClassFinder<AKhaimera> KhaimeraBP(TEXT("/Script/Engine.Blueprint'/Game/Assets/BluePrints/NPC/BP_Khaimera.BP_Khaimera_C'"));
+	if (KhaimeraBP.Succeeded())
+	{
+		KhaimeraClass = KhaimeraBP.Class;
 	}
 
 }

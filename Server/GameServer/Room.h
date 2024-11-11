@@ -37,6 +37,9 @@ public:
 	void SetRoomIndex(uint64 roomIndex);
 
 	void ReleaseThisRoom();
+
+	void SpawnMonster();
+
 public:
 	void UpdateTick();
 

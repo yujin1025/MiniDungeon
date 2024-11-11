@@ -409,7 +409,8 @@ inline void InlinedStringField::SetAllocatedNoArena(
 
 inline void InlinedStringField::DestroyNoArena(const std::string*) {
   // This is invoked from the generated message's ArenaDtor, which is used to
-  // clean up objects not allocated on the Arena.
+  // clean up 
+  //  not allocated on the Arena.
   this->~InlinedStringField();
 }
 

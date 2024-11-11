@@ -27,6 +27,8 @@ public:
 	TSubclassOf<class APlayableCharacter> AuroraClass;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class APlayableCharacter> DrongoClass;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ANonPlayableCharacter> KhaimeraClass;
 
 	UPROPERTY()
 	UMDNetworkManager* NetworkManager;

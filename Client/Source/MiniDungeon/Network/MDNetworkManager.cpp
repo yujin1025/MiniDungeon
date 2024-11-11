@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Network/MDNetworkManager.h"
@@ -15,6 +15,8 @@
 #include "Lobby/LobbyPlayerController.h"
 #include <Lobby/RoomListViewItemData.h>
 #include "Game/MDPlayerController.h"
+#include "../Character/Khaimera.h"
+#include "../AI/MDAIController.h"
 #include <Game/MDGameMode.h>
 
 
@@ -48,7 +50,7 @@ void UMDNetworkManager::ConnectToServer()
 		GameServerSession = MakeShared<PacketSession>(Socket);
 		GameServerSession->Run();
 
-		// TEMP : Lobby¿¡¼­ Ä³¸¯ÅÍ ¼±ÅÃÃ¢ µî
+		// TEMP : Lobbyì—ì„œ ìºë¦­í„° ì„ íƒì°½ ë“±
 		//{
 		//	Protocol::CTS_LOGIN pkt;
 		//	SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
@@ -362,7 +364,7 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 		return;
 	}
 
-	// Áßº¹ Ã³¸® Ã¼Å©
+	// ì¤‘ë³µ ì²˜ë¦¬ ì²´í¬
 	const uint64 objectId = objectInfo.object_id();
 	if (Players.Find(objectId) != nullptr)
 	{
@@ -501,7 +503,7 @@ void UMDNetworkManager::HandleMove(const Protocol::STC_MOVE& movePkt)
 		return;
 	}
 
-	//ÀÌµ¿ÇÏ·Á´Â ÇÃ·¹ÀÌ¾î ½Äº°
+	//ì´ë™í•˜ë ¤ëŠ” í”Œë ˆì´ì–´ ì‹ë³„
 	const uint64 objectId = movePkt.info().object_id();
 
 	TObjectPtr<APlayableCharacter>* findActor = Players.Find(objectId);
@@ -516,7 +518,7 @@ void UMDNetworkManager::HandleMove(const Protocol::STC_MOVE& movePkt)
 		return;
 	}
 
-	//ÀÌµ¿ Á¤º¸ °¡Á®¿Í¼­ ¾÷µ¥ÀÌÆ® 
+	//ì´ë™ ì •ë³´ ê°€ì ¸ì™€ì„œ ì—…ë°ì´íŠ¸ 
 	const Protocol::PosInfo& info = movePkt.info();
 	player->SetPlayerInfo(info);
 	player->SetDestInfo(info);
@@ -542,6 +544,38 @@ void UMDNetworkManager::HandleAttack(const Protocol::STC_ATTACK& AtkPkt)
 
 	const Protocol::AttackInfo& Info = AtkPkt.info();
 	player->Other_Attack(Info);
+}
+
+void UMDNetworkManager::HandleSpawnMonster(const Protocol::STC_MONSTERINFO& InfoPkt)
+{
+	auto* world = GetWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	/*
+	const uint64 objectId = InfoPkt.info().player_id();
+	if (Players.Find(objectId) != nullptr)
+	{
+		return;
+	}*/
+
+	FVector spawnLocation(1000.0f, 1000.0f, 100.0f);
+	ANonPlayableCharacter* npc = Cast<ANonPlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->KhaimeraClass, &spawnLocation));
+	MD_LOG(LogMDNetwork, Log, TEXT("Spawn Character"));
+
+	//FVector spawnLocation(InfoPkt.info().object_info().pos_info().x(), InfoPkt.info().object_info().pos_info().y(), InfoPkt.info().object_info().pos_info().z());
+	//AGrux* Grux = world->SpawnActor<AGrux>(AGrux::StaticClass(), spawnLocation, FRotator(0.f, 0.f, 0.f));
+
+	/*
+	UClass* KhaimeraClass = LoadObject<UClass>(nullptr, TEXT("Blueprint'/Game/Assets/BluePrints/NPC/BP_Khaimera.BP_Khaimera_C'"));
+	if (KhaimeraClass)
+	{
+		FVector spawnLocation(1000.0f, 1000.0f, 100.0f);
+		AKhaimera* Khaimera = world->SpawnActor<AKhaimera>(KhaimeraClass, spawnLocation, FRotator(0.f, 0.f, 0.f));
+		UE_LOG(LogTemp, Log, TEXT("GruxClass loaded: %s"), *KhaimeraClass->GetName());
+	}*/
 }
 
 

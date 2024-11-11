@@ -45,6 +45,10 @@ enum : uint16
 	PKT_STC_CHAT = 1029,
 	PKT_CTS_ATTACK = 1030,
 	PKT_STC_ATTACK = 1031,
+	PKT_CTS_MONSTERINFO = 1032,
+	PKT_STC_MONSTERINFO = 1033,
+	PKT_CTS_MONSTERMOVE = 1034,
+	PKT_STC_MONSTERMOVE = 1035,
 };
 
 // Custom Handlers
@@ -64,6 +68,8 @@ bool Handle_CTS_LEAVE_GAME(PacketSessionRef& session, Protocol::CTS_LEAVE_GAME& 
 bool Handle_CTS_MOVE(PacketSessionRef& session, Protocol::CTS_MOVE& pkt);
 bool Handle_CTS_CHAT(PacketSessionRef& session, Protocol::CTS_CHAT& pkt);
 bool Handle_CTS_ATTACK(PacketSessionRef& session, Protocol::CTS_ATTACK& pkt);
+bool Handle_CTS_MONSTERINFO(PacketSessionRef& session, Protocol::CTS_MONSTERINFO& pkt);
+bool Handle_CTS_MONSTERMOVE(PacketSessionRef& session, Protocol::CTS_MONSTERMOVE& pkt);
 
 class ServerPacketHandler
 {
@@ -87,6 +93,8 @@ public:
 		GPacketHandler[PKT_CTS_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_MOVE>(Handle_CTS_MOVE, session, buffer, len); };
 		GPacketHandler[PKT_CTS_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_CHAT>(Handle_CTS_CHAT, session, buffer, len); };
 		GPacketHandler[PKT_CTS_ATTACK] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_ATTACK>(Handle_CTS_ATTACK, session, buffer, len); };
+		GPacketHandler[PKT_CTS_MONSTERINFO] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_MONSTERINFO>(Handle_CTS_MONSTERINFO, session, buffer, len); };
+		GPacketHandler[PKT_CTS_MONSTERMOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_MONSTERMOVE>(Handle_CTS_MONSTERMOVE, session, buffer, len); };
 	}
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -111,6 +119,8 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::STC_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_STC_MOVE); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_STC_CHAT); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_ATTACK& pkt) { return MakeSendBuffer(pkt, PKT_STC_ATTACK); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_MONSTERINFO& pkt) { return MakeSendBuffer(pkt, PKT_STC_MONSTERINFO); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_MONSTERMOVE& pkt) { return MakeSendBuffer(pkt, PKT_STC_MONSTERMOVE); }
 
 private:
 	template<typename PacketType, typename ProcessFunc>
