@@ -29,11 +29,13 @@ void ULobbyWidget::NativeConstruct()
 	
 	if (IsValid(CreateButton))
 	{
+		if (CreateButton->OnClicked.IsBound()) CreateButton->OnClicked.Clear();
 		CreateButton->OnClicked.AddDynamic(this, &ULobbyWidget::OnClickedCreateButton);
 	}
 
 	if (IsValid(JoinButton))
 	{
+		if (JoinButton->OnClicked.IsBound()) JoinButton->OnClicked.Clear();
 		JoinButton->OnClicked.AddDynamic(this, &ULobbyWidget::OnClickedJoinButton);
 	}
 }
@@ -146,11 +148,7 @@ void ULobbyWidget::RemoveRoom(const uint64 roomIndex)
 
 void ULobbyWidget::UpdateRoom(const uint64 roomIndex, const uint64 playerNum)
 {
-	
-	if (IsValid(RoomWidget))
-	{
-		
-	}
+
 }
 
 void ULobbyWidget::ClearRoomList()

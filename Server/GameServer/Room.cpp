@@ -83,22 +83,20 @@ bool Room::EnterRoom(PlayerRef player, bool isHost)
 
 	if (!isHost)
 	{
+		Protocol::STC_JOIN_ROOM joinRoomPkt;
+		joinRoomPkt.set_success(success);
+
+		Protocol::RoomInfo* roomInfo = new Protocol::RoomInfo();
+		roomInfo->CopyFrom(*info);
+		joinRoomPkt.set_allocated_room_info(roomInfo);
+
+		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
+		playerInfo->CopyFrom(*player->GetPlayerInfo());
+		joinRoomPkt.set_allocated_player(playerInfo);
+
 		// 방에 입장한 사실을 방에 있는 다른 플레이어들에게 알린다
-		{
-			Protocol::STC_JOIN_ROOM joinRoomPkt;
-			joinRoomPkt.set_success(success);
-
-			Protocol::RoomInfo* roomInfo = new Protocol::RoomInfo();
-			roomInfo->CopyFrom(*info);
-			joinRoomPkt.set_allocated_room_info(roomInfo);
-
-			Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
-			playerInfo->CopyFrom(*player->GetPlayerInfo());
-			joinRoomPkt.set_allocated_player(playerInfo);
-
-			SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(joinRoomPkt);
-			BroadcastToPlayer(sendBuffer, player->GetObjectInfo()->object_id());
-		}
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(joinRoomPkt);
+		Broadcast(sendBuffer, player->GetObjectInfo()->object_id());
 	}
 
 	return success;
@@ -133,7 +131,7 @@ bool Room::LeaveRoom(PlayerRef player)
 	player->GetSession()->Send(sendBuffer);
 
 	// 퇴장 사실을 Room에 있는 모든 플레이어에게 알린다.
-	BroadcastToPlayer(sendBuffer, player->GetObjectInfo()->object_id());
+	Broadcast(sendBuffer, player->GetObjectInfo()->object_id());
 
 	if (_players.empty())
 	{
@@ -160,7 +158,7 @@ bool Room::ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType charac
 	changeCharacterPkt.set_roomindex(_roomIndex);
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(changeCharacterPkt);
-	BroadcastToPlayer(sendBuffer, _players[playerIndex]->GetObjectInfo()->object_id());
+	Broadcast(sendBuffer, _players[playerIndex]->GetObjectInfo()->object_id());
 
 	return true;
 }
@@ -361,7 +359,6 @@ bool Room::AddPlayer(PlayerRef player)
 	_players.insert(make_pair(player->GetPlayerInfo()->player_id(), player));
 	_objects.insert(make_pair(player->GetObjectInfo()->object_id(), player));
 	player->room.store(GetRoomRef());
-
 
 	info->set_current_player_count(_players.size());
 	info->add_players()->CopyFrom(*player->GetPlayerInfo());

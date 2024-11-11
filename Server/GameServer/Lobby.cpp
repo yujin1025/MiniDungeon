@@ -92,33 +92,43 @@ bool Lobby::CreateRoom(const Protocol::RoomInfo& roomInfo)
 	// 방 생성
 	RoomRef room = make_shared<Room>();
 	room->SetRoomInfo(roomInfo);
-	AddRoom(room);
-
-	// 방 생성 성공 시 패킷 세팅
-	createRoomPkt.set_success(true);
-
-	Protocol::RoomInfo* info = new Protocol::RoomInfo();
-
-	info->CopyFrom(*room->GetRoomInfo());
-
-	createRoomPkt.set_allocated_room_info(info);
-
-	// 방 생성 사실을 생성한 클라이언트에게 전달
-	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(createRoomPkt);
-
-	uint64 host_id = roomInfo.host().player_id();
-	if (auto session = _players[host_id]->session.lock())
+	if (AddRoom(room)) // 방 생성 성공 시 패킷 세팅
 	{
-		session->Send(sendBuffer);
-	}
+		createRoomPkt.set_success(true);
 
-	// 방 생성 사실을 다른 클라이언트들에게도 전달
-	{
+		Protocol::RoomInfo* info = new Protocol::RoomInfo();
+
+		info->CopyFrom(*room->GetRoomInfo());
+
+		createRoomPkt.set_allocated_room_info(info);
+
+		// 방 생성 사실을 생성한 클라이언트에게 전달
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(createRoomPkt);
+
+		uint64 host_id = roomInfo.host().player_id();
+		if (auto session = _players[host_id]->session.lock())
+		{
+			session->Send(sendBuffer);
+		}
+
+		// 방 생성 사실을 다른 클라이언트들에게도 전달
 		Broadcast(sendBuffer, host_id);
-	}
 
-	_players.erase(host_id);
-	return true;
+		_players.erase(host_id);
+		return true;
+	}
+	else
+	{
+		createRoomPkt.set_success(false);
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(createRoomPkt);
+		if (auto session = _players[roomInfo.host().player_id()]->session.lock())
+		{
+			session->Send(sendBuffer);
+		}
+
+		return false;
+	}
 }
 
 bool Lobby::AddRoom(RoomRef room)
@@ -134,12 +144,20 @@ bool Lobby::AddRoom(RoomRef room)
 	room->SetRoomIndex(newId);
 
 	uint64 host_id = room->GetRoomInfo()->host().player_id();
+	if (_players.find(host_id) == _players.end())
+	{
+		return false;
+	}
 
-	room->EnterRoom(_players[host_id], true);
-
-	_rooms.insert(make_pair(newId, room));
-
-	return true;
+	if (room->EnterRoom(_players[host_id], true))
+	{
+		_rooms.insert(make_pair(newId, room));
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool Lobby::RemoveRoom(RoomRef room)

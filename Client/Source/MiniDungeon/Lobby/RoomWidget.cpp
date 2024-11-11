@@ -44,43 +44,41 @@ void URoomWidget::NativeConstruct()
 
 	if (IsValid(StartButton))
 	{
+		if(StartButton->OnClicked.IsBound()) StartButton->OnClicked.Clear();
 		StartButton->OnClicked.AddDynamic(this, &URoomWidget::OnClickedStartButton);
 	}
 
 	if (IsValid(QuitButton))
 	{
+		if (QuitButton->OnClicked.IsBound()) QuitButton->OnClicked.Clear();
 		QuitButton->OnClicked.AddDynamic(this, &URoomWidget::OnClickedQuitButton);
 	}
 
-	{
-		if (PlayerNames.Num() != 0)
-			PlayerNames.Empty();
-		
-		for (int i = 1; i <= 4; i++)
-		{
-			FString PlayerNum_Name = FString::Printf(TEXT("Player%d_Name"), i);
-			PlayerNames.Add(Cast<UTextBlock>(GetWidgetFromName(FName(PlayerNum_Name))));
-		}
 
-		if (PlayerCharacters.Num() != 0)
-			PlayerCharacters.Empty();
+	if (PlayerNames.Num() != 0)
+		PlayerNames.Empty();
 
-		for (int i = 1; i <= 4; i++)
-		{
-			FString PlayerNum_Image = FString::Printf(TEXT("Player%d_Image"), i);
-			PlayerCharacters.Add(Cast<UImage>(GetWidgetFromName(FName(PlayerNum_Image))));
-		}
+	PlayerNames.Add(Player1_Name);
+	PlayerNames.Add(Player2_Name);
+	PlayerNames.Add(Player3_Name);
+	PlayerNames.Add(Player4_Name);
 
-		if (PlayerButtons.Num() != 0)
-			PlayerButtons.Empty();
+	if (PlayerCharacters.Num() != 0)
+		PlayerCharacters.Empty();
 
-		for (int i = 1; i <= 4; i++)
-		{
-			FString PlayerNum_Button = FString::Printf(TEXT("Player%d_Button"), i);
-			PlayerButtons.Add(Cast<UButton>(GetWidgetFromName(FName(PlayerNum_Button))));
-		}
-	}
+	PlayerCharacters.Add(Player1_Image);
+	PlayerCharacters.Add(Player2_Image);
+	PlayerCharacters.Add(Player3_Image);
+	PlayerCharacters.Add(Player4_Image);
 
+	if (PlayerButtons.Num() != 0)
+		PlayerButtons.Empty();
+
+	PlayerButtons.Add(Player1_Button);
+	PlayerButtons.Add(Player2_Button);
+	PlayerButtons.Add(Player3_Button);
+	PlayerButtons.Add(Player4_Button);
+	
 	RefreshPlayers();
 }
 
@@ -124,10 +122,7 @@ void URoomWidget::RefreshPlayers()
 {
 	for (auto& playerButton : PlayerButtons)
 	{
-		if (playerButton->OnClicked.IsBound())
-		{
-			playerButton->OnClicked.Clear();
-		}
+		if (playerButton->OnClicked.IsBound()) playerButton->OnClicked.Clear();
 	}
 
 	int index = 0;
@@ -138,6 +133,7 @@ void URoomWidget::RefreshPlayers()
 
 		if (player.Value->player_id() == pc->GetPlayerInfo()->player_id())
 		{
+			if(PlayerButtons[index]->OnClicked.IsBound()) PlayerButtons[index]->OnClicked.Clear();
 			PlayerButtons[index]->OnClicked.AddDynamic(this, &URoomWidget::OnClickedCharacterImage);
 		}
 
@@ -150,14 +146,13 @@ void URoomWidget::RefreshPlayers()
 		case Protocol::PLAYER_TYPE_AURORA:
 			PlayerCharacters[index]->SetBrushFromMaterial(CharacterImages[Protocol::PLAYER_TYPE_AURORA]);
 			PlayerCharacters[index]->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
-			index++;
 			break;
 		case Protocol::PLAYER_TYPE_DRONGO:
 			PlayerCharacters[index]->SetBrushFromMaterial(CharacterImages[Protocol::PLAYER_TYPE_DRONGO]);
 			PlayerCharacters[index]->SetBrushTintColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
-			index++;
 			break;
 		}
+		index++;
 	}
 
 	for (index; index < 4; index++)

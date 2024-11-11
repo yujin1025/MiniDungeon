@@ -301,7 +301,14 @@ void UMDNetworkManager::HandleJoinRoom(const Protocol::STC_JOIN_ROOM& joinRoomPk
 
 	if (IsValid(pc))
 	{
-		pc->JoinRoom(joinRoomPkt.room_info());
+		if(joinRoomPkt.player().player_id() == pc->GetPlayerInfo()->player_id())
+		{
+			pc->JoinRoom(joinRoomPkt.room_info(), true);
+		}
+		else
+		{
+			pc->JoinRoom(joinRoomPkt.room_info(), false);
+		}
 	}
 }
 
