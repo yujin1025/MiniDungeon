@@ -16,11 +16,7 @@
 ULobbyWidget::ULobbyWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> roomWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Assets/UI/Lobby/WBP_RoomWidget.WBP_RoomWidget_C'"));
-	if (roomWidgetClass.Succeeded())
-	{
-		RoomWidgetClass = roomWidgetClass.Class;
-	}
+
 }
 
 void ULobbyWidget::NativeConstruct()

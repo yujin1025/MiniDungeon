@@ -11,15 +11,27 @@ LPFN_ACCEPTEX		SocketUtils::AcceptEx = nullptr;
 
 void SocketUtils::Init()
 {
+	LOG("Initializing WinSock");
 	WSADATA wsaData;
 	ASSERT_CRASH(::WSAStartup(MAKEWORD(2, 2), OUT &wsaData) == 0);
-	
+	LOG("WinSock initialized successfully");
+
 	/* 런타임에 주소 얻어오는 API */
+	LOG("Creating dummy socket for function binding");
 	SOCKET dummySocket = CreateSocket();
+
 	ASSERT_CRASH(BindWindowsFunction(dummySocket, WSAID_CONNECTEX, reinterpret_cast<LPVOID*>(&ConnectEx)));
+	LOG("ConnectEx function bound successfully");
+
 	ASSERT_CRASH(BindWindowsFunction(dummySocket, WSAID_DISCONNECTEX, reinterpret_cast<LPVOID*>(&DisconnectEx)));
+	LOG("DisconnectEx function bound successfully");
+
 	ASSERT_CRASH(BindWindowsFunction(dummySocket, WSAID_ACCEPTEX, reinterpret_cast<LPVOID*>(&AcceptEx)));
+	LOG("AcceptEx function bound successfully");
+	
+	LOG("Closing dummy socket");
 	Close(dummySocket);
+	LOG("Dummy socket closed");
 }
 
 void SocketUtils::Clear()
@@ -29,8 +41,20 @@ void SocketUtils::Clear()
 
 bool SocketUtils::BindWindowsFunction(SOCKET socket, GUID guid, LPVOID* fn)
 {
+	LOG("Binding Windows function with GUID");
 	DWORD bytes = 0;
-	return SOCKET_ERROR != ::WSAIoctl(socket, SIO_GET_EXTENSION_FUNCTION_POINTER, &guid, sizeof(guid), fn, sizeof(*fn), OUT & bytes, NULL, NULL);
+
+	bool result = SOCKET_ERROR != ::WSAIoctl(socket, SIO_GET_EXTENSION_FUNCTION_POINTER, &guid, sizeof(guid), fn, sizeof(*fn), OUT & bytes, NULL, NULL);
+
+	if (!result)
+	{
+		LOG("Failed to bind Windows function with error: " << WSAGetLastError());
+	}
+	else
+	{
+		LOG("Windows function bound successfully");
+	}
+	return result;
 }
 
 SOCKET SocketUtils::CreateSocket()
@@ -79,17 +103,31 @@ bool SocketUtils::Bind(SOCKET socket, NetAddress netAddr)
 
 bool SocketUtils::BindAnyAddress(SOCKET socket, uint16 port)
 {
+	LOG("Binding socket to any address...");
 	SOCKADDR_IN myAddress;
 	myAddress.sin_family = AF_INET;
 	myAddress.sin_addr.s_addr = ::htonl(INADDR_ANY);
 	myAddress.sin_port = ::htons(port);
 
-	return SOCKET_ERROR != ::bind(socket, reinterpret_cast<const SOCKADDR*>(&myAddress), sizeof(myAddress));
+	if (SOCKET_ERROR == ::bind(socket, reinterpret_cast<const SOCKADDR*>(&myAddress), sizeof(myAddress)))
+	{
+		LOG("Bind failed with error: " << WSAGetLastError());
+		return false;
+	}
+
+	LOG("Bind successful on port: " << port);
+	return true;
 }
 
 bool SocketUtils::Listen(SOCKET socket, int32 backlog)
 {
-	return SOCKET_ERROR != ::listen(socket, backlog);
+	if (SOCKET_ERROR == ::listen(socket, backlog))
+	{
+		LOG("Listen failed with error: " << WSAGetLastError());
+		return false;
+	}
+	LOG("Listening successfully started");
+	return true;
 }
 
 void SocketUtils::Close(SOCKET& socket)

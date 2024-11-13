@@ -19,7 +19,14 @@ IocpCore::~IocpCore()
 
 bool IocpCore::Register(IocpObjectRef iocpObject)
 {
-	return ::CreateIoCompletionPort(iocpObject->GetHandle(), _iocpHandle, /*key*/0, 0);
+	LOG("Registering IOCP object...");
+	if (::CreateIoCompletionPort(iocpObject->GetHandle(), _iocpHandle, /*key*/0, 0) == NULL)
+	{
+		LOG("Failed to register IOCP object with error: " << GetLastError());
+		return false;
+	}
+	LOG("IOCP object registered successfully");
+	return true;
 }
 
 bool IocpCore::Dispatch(uint32 timeoutMs)
@@ -30,6 +37,7 @@ bool IocpCore::Dispatch(uint32 timeoutMs)
 
 	if (::GetQueuedCompletionStatus(_iocpHandle, OUT &numOfBytes, OUT &key, OUT reinterpret_cast<LPOVERLAPPED*>(&iocpEvent), timeoutMs))
 	{
+		LOG("GetQueuedCompletionStatus succeeded");
 		IocpObjectRef iocpObject = iocpEvent->owner;
 		iocpObject->Dispatch(iocpEvent, numOfBytes);
 	}
@@ -41,9 +49,16 @@ bool IocpCore::Dispatch(uint32 timeoutMs)
 		case WAIT_TIMEOUT:
 			return false;
 		default:
-			// TODO : ·Î±× Âï±â
-			IocpObjectRef iocpObject = iocpEvent->owner;
-			iocpObject->Dispatch(iocpEvent, numOfBytes);
+			LOG("GetQueuedCompletionStatus failed with error: " << errCode);
+			IocpObjectRef iocpObject = iocpEvent ? iocpEvent->owner : nullptr;
+			if (iocpObject)
+			{
+				iocpObject->Dispatch(iocpEvent, numOfBytes);
+			}
+			else
+			{
+				LOG("IocpEvent owner is null, cannot dispatch");
+			}
 			break;
 		}
 	}

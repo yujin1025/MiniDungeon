@@ -18,18 +18,23 @@
 	  Crash
 ---------------*/
 
-#define CRASH(cause)						\
-{											\
-	uint32* crash = nullptr;				\
-	__analysis_assume(crash != nullptr);	\
-	*crash = 0xDEADBEEF;					\
+#define LOG_CRASH(cause) std::cerr << "Crash Cause: " << cause << std::endl;
+
+#define CRASH(cause)                                     \
+{                                                        \
+    LOG_CRASH(cause);                                    \
+    std::cerr << "Press Enter to exit..." << std::endl;  \
+    std::cin.get();                                      \
+    uint32* crash = nullptr;                             \
+    __analysis_assume(crash != nullptr);                 \
+    *crash = 0xDEADBEEF;                                 \
 }
 
-#define ASSERT_CRASH(expr)			\
-{									\
-	if (!(expr))					\
-	{								\
-		CRASH("ASSERT_CRASH");		\
-		__analysis_assume(expr);	\
-	}								\
+#define ASSERT_CRASH(expr)                  \
+{                                           \
+    if (!(expr))                            \
+    {                                       \
+        CRASH("ASSERT_CRASH: " #expr);      \
+        __analysis_assume(expr);            \
+    }                                       \
 }
