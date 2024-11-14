@@ -102,6 +102,7 @@ int main()
 	//DoWorkerJob(service);
 
 	//GRoom->DoAsync(&Room::UpdateTick);
+	GLobby->DoAsync(&Lobby::UpdateTick);
 
 	while (true)
 	{
@@ -110,7 +111,6 @@ int main()
 		//auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 
 		//GSessionManager.Broadcast(sendBuffer);
-		GLobby->DoAsync(&Lobby::UpdateTick);
 	}
 
 	LOG("Joining all threads");
