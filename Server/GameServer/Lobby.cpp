@@ -61,6 +61,16 @@ bool Lobby::EnterLobby(PlayerRef player)
 	return true;
 }
 
+bool Lobby::LeaveLobby(PlayerRef player)
+{
+	if (_players.find(player->GetPlayerInfo()->player_id()) == _players.end())
+	{
+		return false;
+	}
+
+	return RemovePlayer(player);
+}
+
 bool Lobby::AddPlayer(PlayerRef player)
 {
 	if (_players.find(player->GetPlayerInfo()->player_id()) != _players.end())
@@ -70,6 +80,23 @@ bool Lobby::AddPlayer(PlayerRef player)
 
 	_players.insert(make_pair(player->GetPlayerInfo()->player_id(), player));
 	player->lobby.store(static_pointer_cast<Lobby>(shared_from_this()));
+
+	return true;
+}
+
+bool Lobby::RemovePlayer(uint64 playerID)
+{
+	return RemovePlayer(_players[playerID]);
+}
+
+bool Lobby::RemovePlayer(PlayerRef player)
+{
+	if (_players.find(player->GetPlayerInfo()->player_id()) == _players.end())
+	{
+		return false;
+	}
+
+	_players.erase(player->GetPlayerInfo()->player_id());
 
 	return true;
 }
@@ -114,7 +141,8 @@ bool Lobby::CreateRoom(const Protocol::RoomInfo& roomInfo)
 		// 방 생성 사실을 다른 클라이언트들에게도 전달
 		Broadcast(sendBuffer, host_id);
 
-		_players.erase(host_id);
+		RemovePlayer(host_id);
+
 		return true;
 	}
 	else
@@ -248,6 +276,21 @@ void Lobby::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 		if (auto session = player.second->session.lock())
 			session->Send(sendBuffer);
 	}
+}
+
+void Lobby::UpdateTick()
+{
+	for (auto& room : _rooms)
+	{
+		room.second->UpdateTick();
+	}
+
+	for (auto& player : _players)
+	{
+		//player.second->UpdateTick();
+	}
+
+	this_thread::sleep_for(chrono::milliseconds(100));
 }
 
 

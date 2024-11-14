@@ -133,6 +133,9 @@ bool Room::LeaveRoom(PlayerRef player)
 	// 퇴장 사실을 Room에 있는 모든 플레이어에게 알린다.
 	Broadcast(sendBuffer, player->GetObjectInfo()->object_id());
 
+	// 퇴장 사실을 Lobby에 있는 모든 플레이어에게도 알린다.
+	_lobby.lock()->Broadcast(sendBuffer, player->GetPlayerInfo()->player_id());
+
 	if (_players.empty())
 	{
 		ReleaseThisRoom();
@@ -385,6 +388,7 @@ bool Room::RemovePlayer(PlayerRef player)
 		
 		if (next(originHost) != _players.end())
 		{ 
+			// 새로운 호스트 지정
 			Protocol::PlayerInfo* newHost = new Protocol::PlayerInfo();
 			newHost->CopyFrom(*(next(originHost)->second->GetPlayerInfo()));
 			info->set_allocated_host(newHost);

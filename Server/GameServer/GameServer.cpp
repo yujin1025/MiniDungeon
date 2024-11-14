@@ -12,6 +12,7 @@
 #include "DBConnectionPool.h"
 #include "DBBind.h"
 #include "AuthManager.h"
+#include "Lobby.h"
 
 enum
 {
@@ -110,6 +111,7 @@ int main()
 
 		//GSessionManager.Broadcast(sendBuffer);
 		this_thread::sleep_for(0.1s);
+		GLobby->DoTimer(100, &Lobby::UpdateTick);
 	}
 
 	LOG("Joining all threads");

@@ -230,20 +230,30 @@ void ALobbyPlayerController::LeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoom
 		UpdateRoomData(roomData);
 	}
 
-	if (PlayerInfo->player_id()  == leaveRoomPkt.player_id())
+	// Lobby를 나간 플레이어일 경우
+	if (PlayerInfo->player_id() == leaveRoomPkt.player_id())
 	{
 		UWidgetLayoutLibrary::RemoveAllWidgets(this);
+		RoomWidget->SetRoomData(nullptr);
 		OpenLobbyWidget();	
 		return;
 	}
 
-	if (IsValid(RoomWidget))
+	// Room에 있는 플레이어일 경우
+	if (IsValid(RoomWidget) && IsValid(RoomWidget->GetRoomData()))
 	{
 		const FString roomName = UTF8_TO_TCHAR(leaveRoomPkt.room_info().room_name().c_str());
 		if (RoomList.Contains(roomName))
 		{
 			RoomWidget->SetRoomData(RoomList[roomName]);
 			RoomWidget->HandleLeaveRoom();
+		}
+	}
+	else
+	{
+		if (IsValid(LobbyWidget))
+		{
+			LobbyWidget->RefreshListView(RoomList);
 		}
 	}
 }
