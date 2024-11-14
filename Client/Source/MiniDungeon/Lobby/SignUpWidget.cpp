@@ -44,7 +44,7 @@ void USignUpWidget::OnSignUpButtonClicked()
 {
 	if (IsValid(IDCheckBox))
 	{
-		if (IDCheckBox->CheckedState != ECheckBoxState::Checked)
+		if (IDCheckBox->GetCheckedState() != ECheckBoxState::Checked)
 		{
 			return;
 		}

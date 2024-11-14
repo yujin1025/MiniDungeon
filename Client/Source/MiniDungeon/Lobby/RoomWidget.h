@@ -88,15 +88,15 @@ public:
 	
 	UFUNCTION()
 	void HandleLeaveRoom();
+
+	UFUNCTION()
+	void RefreshPlayers();
 private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Data", meta = (AllowPrivateAccess = true))
 	TObjectPtr<class URoomListViewItemData> RoomData;
 
 	UFUNCTION()
 	void OnClickedCharacterImage();
-
-	UFUNCTION()
-	void RefreshPlayers();
 public:
 	TObjectPtr<class URoomListViewItemData> GetRoomData() const { return RoomData; }
 	void SetRoomData(class URoomListViewItemData* data);

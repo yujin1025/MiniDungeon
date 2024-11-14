@@ -75,7 +75,7 @@ public:
 
 	void HandleOpenLobbyWidget(const Protocol::STC_ENTER_LOBBY& enterLobbyPkt);
 
-	void JoinRoom(const Protocol::RoomInfo& info);
+	void JoinRoom(const Protocol::RoomInfo& info, bool isJoin);
 
 	void ChangeCharacter(const Protocol::STC_CHANGE_CHARACTER& changeCharacterPkt);
 

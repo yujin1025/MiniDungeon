@@ -32,16 +32,19 @@ void ULoginWidget::NativeConstruct()
 	if (IsValid(WBP_EmailWidget))
 	{
 		WBP_EmailWidget->SetVisibility(ESlateVisibility::Hidden);
+		WBP_EmailWidget->SetParentWidget(this);
 	}
 
 	if (IsValid(WBP_AuthWidget))
 	{
 		WBP_AuthWidget->SetVisibility(ESlateVisibility::Hidden);
+		WBP_AuthWidget->SetParentWidget(this);
 	}
 
 	if (IsValid(WBP_SignUpWidget))
 	{
 		WBP_SignUpWidget->SetVisibility(ESlateVisibility::Hidden);
+		WBP_SignUpWidget->SetParentWidget(this);
 	}
 }
 
@@ -89,6 +92,12 @@ void ULoginWidget::OpenEmailWidget()
 
 void ULoginWidget::OepnAuthWidget()
 {
+	if (IsValid(WBP_AuthWidget))
+	{
+		WBP_AuthWidget->SetEmailAddr(WBP_EmailWidget->GetSendEmailAddr());
+		WBP_AuthWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+
 	if (IsValid(WBP_EmailWidget))
 	{
 		WBP_EmailWidget->CloseEmailWidget();
@@ -98,16 +107,16 @@ void ULoginWidget::OepnAuthWidget()
 	{
 		WBP_SignUpWidget->CloseSignUpWidget();
 	}
-
-	if (IsValid(WBP_AuthWidget))
-	{
-		WBP_AuthWidget->SetEmailAddr(WBP_EmailWidget->GetSendEmailAddr());
-		WBP_AuthWidget->SetVisibility(ESlateVisibility::Visible);
-	}
 }
 
 void ULoginWidget::OpenSignUpWidget()
 {
+	if (IsValid(WBP_SignUpWidget))
+	{
+		WBP_SignUpWidget->SetEmailAddr(WBP_EmailWidget->GetSendEmailAddr());
+		WBP_SignUpWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+
 	if (IsValid(WBP_EmailWidget))
 	{
 		WBP_EmailWidget->CloseEmailWidget();
@@ -116,12 +125,6 @@ void ULoginWidget::OpenSignUpWidget()
 	if (IsValid(WBP_AuthWidget))
 	{
 		WBP_AuthWidget->CloseAuthWidget();
-	}
-
-	if (IsValid(WBP_SignUpWidget))
-	{
-		WBP_SignUpWidget->SetEmailAddr(WBP_EmailWidget->GetSendEmailAddr());
-		WBP_SignUpWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 

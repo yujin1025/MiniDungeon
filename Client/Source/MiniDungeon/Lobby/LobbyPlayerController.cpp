@@ -63,13 +63,17 @@ void ALobbyPlayerController::OpenLobbyWidget()
 
 	if (IsValid(LobbyWidgetClass))
 	{
-		LobbyWidget = CreateWidget<ULobbyWidget>(this, LobbyWidgetClass);
-		if (IsValid(LobbyWidget))
+		if (!IsValid(LobbyWidget))
 		{
-			Cast<ULobbyWidget>(LobbyWidget)->Owner = this;
-			LobbyWidget->AddToViewport();
-			LobbyWidget->RefreshListView(RoomList);
+			LobbyWidget = CreateWidget<ULobbyWidget>(this, LobbyWidgetClass);
 		}
+	}
+
+	if (IsValid(LobbyWidget))
+	{
+		LobbyWidget->Owner = this;
+		LobbyWidget->AddToViewport();
+		LobbyWidget->RefreshListView(RoomList);
 	}
 }
 
@@ -168,12 +172,16 @@ void ALobbyPlayerController::CreateRoom(const Protocol::RoomInfo& info, bool isH
 		UWidgetLayoutLibrary::RemoveAllWidgets(this);
 		if (IsValid(RoomWidgetClass))
 		{
-			RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
-			if (IsValid(RoomWidget))
+			if (!IsValid(RoomWidget))
 			{
-				RoomWidget->SetRoomData(roomData);
-				RoomWidget->AddToViewport();
+				RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
 			}
+		}
+
+		if (IsValid(RoomWidget))
+		{
+			RoomWidget->SetRoomData(roomData);
+			RoomWidget->AddToViewport();
 		}
 	}
 	else
@@ -185,19 +193,31 @@ void ALobbyPlayerController::CreateRoom(const Protocol::RoomInfo& info, bool isH
 	}
 }
 
-void ALobbyPlayerController::JoinRoom(const Protocol::RoomInfo& info)
+void ALobbyPlayerController::JoinRoom(const Protocol::RoomInfo& info, bool isJoin)
 {
 	auto roomData = UpdateRoomData(info);
 
-	UWidgetLayoutLibrary::RemoveAllWidgets(this);
-	if (IsValid(RoomWidgetClass))
+	if (isJoin)
 	{
-		RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
+		UWidgetLayoutLibrary::RemoveAllWidgets(this);
+		if (IsValid(RoomWidgetClass))
+		{
+			if (!IsValid(RoomWidget))
+				RoomWidget = CreateWidget<URoomWidget>(this, RoomWidgetClass);
+		}
+
 		if (IsValid(RoomWidget))
 		{
-			const FString roomName = UTF8_TO_TCHAR(info.room_name().c_str());
 			RoomWidget->SetRoomData(roomData);
 			RoomWidget->AddToViewport();
+		}
+	}
+	else
+	{
+		if (IsValid(RoomWidget))
+		{
+			RoomWidget->SetRoomData(roomData);
+			RoomWidget->RefreshPlayers();
 		}
 	}
 }
@@ -210,20 +230,30 @@ void ALobbyPlayerController::LeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoom
 		UpdateRoomData(roomData);
 	}
 
-	if (PlayerInfo->player_id()  == leaveRoomPkt.player_id())
+	// Lobby를 나간 플레이어일 경우
+	if (PlayerInfo->player_id() == leaveRoomPkt.player_id())
 	{
 		UWidgetLayoutLibrary::RemoveAllWidgets(this);
+		RoomWidget->SetRoomData(nullptr);
 		OpenLobbyWidget();	
 		return;
 	}
 
-	if (IsValid(RoomWidget))
+	// Room에 있는 플레이어일 경우
+	if (IsValid(RoomWidget) && IsValid(RoomWidget->GetRoomData()))
 	{
 		const FString roomName = UTF8_TO_TCHAR(leaveRoomPkt.room_info().room_name().c_str());
 		if (RoomList.Contains(roomName))
 		{
 			RoomWidget->SetRoomData(RoomList[roomName]);
 			RoomWidget->HandleLeaveRoom();
+		}
+	}
+	else
+	{
+		if (IsValid(LobbyWidget))
+		{
+			LobbyWidget->RefreshListView(RoomList);
 		}
 	}
 }
@@ -235,8 +265,8 @@ void ALobbyPlayerController::SetPlayerInfo(const Protocol::PlayerInfo& info)
 
 void ALobbyPlayerController::ChangeCharacter(const Protocol::STC_CHANGE_CHARACTER& changeCharacterPkt)
 {
-	if(IsValid(LobbyWidget))
+	if(IsValid(RoomWidget))
 	{
-		LobbyWidget->GetRoomWidget()->ChangeCharacterImage(changeCharacterPkt.player_id(), changeCharacterPkt.character(), false);
+		RoomWidget->ChangeCharacterImage(changeCharacterPkt.player_id(), changeCharacterPkt.character(), false);
 	}
 }

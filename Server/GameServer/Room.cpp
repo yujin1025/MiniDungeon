@@ -83,22 +83,20 @@ bool Room::EnterRoom(PlayerRef player, bool isHost)
 
 	if (!isHost)
 	{
-		// 방에 입장한 사실을 방에 있는 다른 플레이어들에게 알린다
-		{
-			Protocol::STC_JOIN_ROOM joinRoomPkt;
-			joinRoomPkt.set_success(success);
+		Protocol::STC_JOIN_ROOM joinRoomPkt;
+		joinRoomPkt.set_success(success);
 
-			Protocol::RoomInfo* roomInfo = new Protocol::RoomInfo();
-			roomInfo->CopyFrom(*info);
-			joinRoomPkt.set_allocated_room_info(roomInfo);
+		Protocol::RoomInfo* roomInfo = new Protocol::RoomInfo();
+		roomInfo->CopyFrom(*info);
+		joinRoomPkt.set_allocated_room_info(roomInfo);
 
-			Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
-			playerInfo->CopyFrom(*player->GetPlayerInfo());
-			joinRoomPkt.set_allocated_player(playerInfo);
+		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
+		playerInfo->CopyFrom(*player->GetPlayerInfo());
+		joinRoomPkt.set_allocated_player(playerInfo);
 
-			SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(joinRoomPkt);
-			BroadcastToPlayer(sendBuffer, player->GetObjectInfo()->object_id());
-		}
+		// �濡 ������ ����� �濡 �ִ� �ٸ� �÷��̾�鿡�� �˸���
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(joinRoomPkt);
+		Broadcast(sendBuffer, player->GetObjectInfo()->object_id());
 	}
 
 	return success;
@@ -132,8 +130,11 @@ bool Room::LeaveRoom(PlayerRef player)
 	// 퇴장 사실을 퇴장하는 플레이어에게 알린다
 	player->GetSession()->Send(sendBuffer);
 
-	// 퇴장 사실을 Room에 있는 모든 플레이어에게 알린다.
-	BroadcastToPlayer(sendBuffer, player->GetObjectInfo()->object_id());
+	// ���� ����� Room�� �ִ� ��� �÷��̾�� �˸���.
+	Broadcast(sendBuffer, player->GetObjectInfo()->object_id());
+
+	// ���� ����� Lobby�� �ִ� ��� �÷��̾�Ե� �˸���.
+	_lobby.lock()->Broadcast(sendBuffer, player->GetPlayerInfo()->player_id());
 
 	if (_players.empty())
 	{
@@ -160,7 +161,7 @@ bool Room::ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType charac
 	changeCharacterPkt.set_roomindex(_roomIndex);
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(changeCharacterPkt);
-	BroadcastToPlayer(sendBuffer, _players[playerIndex]->GetObjectInfo()->object_id());
+	Broadcast(sendBuffer, _players[playerIndex]->GetObjectInfo()->object_id());
 
 	return true;
 }
@@ -458,7 +459,6 @@ bool Room::AddPlayer(PlayerRef player)
 	_objects.insert(make_pair(player->GetObjectInfo()->object_id(), player));
 	player->room.store(GetRoomRef());
 
-
 	info->set_current_player_count(_players.size());
 	info->add_players()->CopyFrom(*player->GetPlayerInfo());
 
@@ -484,6 +484,7 @@ bool Room::RemovePlayer(PlayerRef player)
 		
 		if (next(originHost) != _players.end())
 		{ 
+			// ���ο� ȣ��Ʈ ����
 			Protocol::PlayerInfo* newHost = new Protocol::PlayerInfo();
 			newHost->CopyFrom(*(next(originHost)->second->GetPlayerInfo()));
 			info->set_allocated_host(newHost);

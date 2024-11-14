@@ -15,7 +15,12 @@ public:
 
 	bool AddPlayer(PlayerRef player);
 
+	bool RemovePlayer(uint64 playerID);
+	bool RemovePlayer(PlayerRef player);
+
 	bool EnterLobby(PlayerRef player);
+
+	bool LeaveLobby(PlayerRef player);
 
 	bool HandleEnterPlayer(PlayerRef player);
 
@@ -27,8 +32,11 @@ public:
 
 	bool HandleJoinRoom(uint64 playerId, uint64 roomId);
 
-private:
+public:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
+
+public:
+	void UpdateTick();
 
 private:
 	unordered_map<uint64, PlayerRef> _players;

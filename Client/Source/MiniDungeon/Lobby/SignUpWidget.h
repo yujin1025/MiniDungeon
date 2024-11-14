@@ -40,12 +40,17 @@ private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Email", meta = (AllowPrivateAccess = "true"))
 	FString EmailAddress;
 
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Widget", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class ULoginWidget> ParentWidget;
 public:
 	UFUNCTION()
 	FString GetEmailAddr() { return EmailAddress; }
 
 	UFUNCTION()
 	void SetEmailAddr(FString email) { EmailAddress = email; }
+
+	UFUNCTION()
+	void SetParentWidget(ULoginWidget* parent) { ParentWidget = parent; }
 
 protected:
 	UFUNCTION()

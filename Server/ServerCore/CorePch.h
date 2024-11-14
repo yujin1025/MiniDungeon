@@ -34,4 +34,6 @@ using namespace std;
 #include "Session.h"
 #include "JobQueue.h"
 
+#define LOG(msg) cout << msg << endl;
+
 
