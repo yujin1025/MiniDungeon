@@ -110,8 +110,7 @@ int main()
 		//auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 
 		//GSessionManager.Broadcast(sendBuffer);
-		this_thread::sleep_for(0.1s);
-		GLobby->DoTimer(100, &Lobby::UpdateTick);
+		GLobby->DoAsync(&Lobby::UpdateTick);
 	}
 
 	LOG("Joining all threads");

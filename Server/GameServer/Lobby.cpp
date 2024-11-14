@@ -284,13 +284,6 @@ void Lobby::UpdateTick()
 	{
 		room.second->UpdateTick();
 	}
-
-	for (auto& player : _players)
-	{
-		//player.second->UpdateTick();
-	}
-
-	this_thread::sleep_for(chrono::milliseconds(100));
 }
 
 
