@@ -245,6 +245,8 @@ bool Room::HandleLeavePlayer(uint64 playerindex)
 void Room::HandleStartGame()
 {
 	SpawnMonster();
+	RoomRef sharedDoAsync = GetRoomRef();
+	sharedDoAsync->DoAsync(&Room::UpdateTick);
 
 	Protocol::STC_ENTER_GAME enterGamePkt;
 	enterGamePkt.set_success(true);

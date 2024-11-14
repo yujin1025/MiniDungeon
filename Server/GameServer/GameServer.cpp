@@ -102,7 +102,6 @@ int main()
 	//DoWorkerJob(service);
 
 	//GRoom->DoAsync(&Room::UpdateTick);
-	GLobby->DoAsync(&Lobby::UpdateTick);
 
 	while (true)
 	{
