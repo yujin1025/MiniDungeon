@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Network/MDNetworkManager.h"
@@ -15,6 +15,8 @@
 #include "Lobby/LobbyPlayerController.h"
 #include <Lobby/RoomListViewItemData.h>
 #include "Game/MDPlayerController.h"
+#include "../Character/Khaimera.h"
+#include "../AI/MDAIController.h"
 #include <Game/MDGameMode.h>
 
 
@@ -48,7 +50,7 @@ void UMDNetworkManager::ConnectToServer()
 		GameServerSession = MakeShared<PacketSession>(Socket);
 		GameServerSession->Run();
 
-		// TEMP : Lobby���� ĳ���� ����â ��
+		// TEMP : Lobby에서 캐릭터 선택창 등
 		//{
 		//	Protocol::CTS_LOGIN pkt;
 		//	SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
@@ -362,7 +364,7 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 		return;
 	}
 
-	// �ߺ� ó�� üũ
+	// 중복 처리 체크
 	const uint64 objectId = objectInfo.object_id();
 	if (Players.Find(objectId) != nullptr)
 	{
@@ -370,6 +372,11 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 	}
 
 	FVector spawnLocation(objectInfo.pos_info().x(), objectInfo.pos_info().y(), objectInfo.pos_info().z());
+
+	if (!isMine)
+	{
+		spawnLocation += FVector(15, 0, 0); 
+	}
 
 	if (isMine)
 	{
@@ -496,10 +503,11 @@ void UMDNetworkManager::HandleMove(const Protocol::STC_MOVE& movePkt)
 		return;
 	}
 
+	//이동하려는 플레이어 식별
 	const uint64 objectId = movePkt.info().object_id();
 
-	/*APlayableCharacter** findActor = Players.Find(objectId);
-	* if(findActor == nullptr)
+	TObjectPtr<APlayableCharacter>* findActor = Players.Find(objectId);
+	if(findActor == nullptr)
 	{
 		return;
 	}
@@ -510,9 +518,92 @@ void UMDNetworkManager::HandleMove(const Protocol::STC_MOVE& movePkt)
 		return;
 	}
 
+	//이동 정보 가져와서 업데이트 
 	const Protocol::PosInfo& info = movePkt.info();
-	//player->SetPlayerInfo(info);
-	player->SetDestInfo(Info)*/
+	player->SetPlayerInfo(info);
+	player->SetDestInfo(info);
+	MD_LOG(LogMDNetwork, Log, TEXT("PlayerID: %llu"), info.object_id());
+}
+
+void UMDNetworkManager::HandleAttack(const Protocol::STC_ATTACK& AtkPkt)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	const uint64 ObjectId = AtkPkt.info().object_id();
+
+	TObjectPtr<APlayableCharacter>* findActor = Players.Find(ObjectId);
+	if (findActor == nullptr)
+		return;
+
+	APlayableCharacter* player = (*findActor);
+
+	const Protocol::AttackInfo& Info = AtkPkt.info();
+	player->Other_Attack(Info);
+}
+
+void UMDNetworkManager::HandleSpawnMonster(const Protocol::STC_MONSTERINFO& InfoPkt)
+{
+	auto* world = GetWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	const Protocol::MonsterInfo& monsterInfo = InfoPkt.info();
+	uint64 objectId = monsterInfo.object_info().object_id();
+
+	FVector spawnLocation(1000.0f, 1000.0f, 100.0f);
+	ANonPlayableCharacter* npc = Cast<ANonPlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->KhaimeraClass, &spawnLocation));
+	
+	Monsters.Add(objectId, npc);
+	MD_LOG(LogMDNetwork, Log, TEXT("Spawn Character"));
+}
+
+void UMDNetworkManager::HandleMonsterInfo(const Protocol::STC_MONSTERINFO& infoPkt)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	Protocol::MonsterInfo Info = infoPkt.info();
+	const uint64 ObjectId = Info.object_info().object_id();
+
+	// 보스 찾기
+	TObjectPtr<ANonPlayableCharacter>* MonsterPtr = Monsters.Find(ObjectId);
+	if (MonsterPtr == nullptr)
+		return;
+
+	ANonPlayableCharacter* Monster = *MonsterPtr;
+	Monster->MaxHP = Info.monster_hp();
+	Monster->CurrentHP = Monster->MaxHP;
+	Monster->Speed = Info.speed();
+	Monster->Damage = Info.damage();
+	Monster->IsFindPlayer = Info.isfindplayer();
+
+	// 타겟 플레이어 찾기
+	TObjectPtr<APlayableCharacter>* FindPlayer = Players.Find(Info.targetplayer_id());
+	if (FindPlayer == nullptr)
+		return;
+
+	APlayableCharacter* Player = *FindPlayer;
+	Monster->TargetPlayer = Player;
+
+	if (Monster->AIControllerClass)
+	{
+		AMDAIController* AIController = Cast<AMDAIController>(Monster->AIControllerClass);
+		if (AIController)
+		{
+			AIController->SetBlackboardValues(Monster->IsFindPlayer, Monster->TargetPlayer, Monster->TargetPlayer->GetActorLocation(), Monster->Speed, Info.calcdist());
+		}
+	}
 }
 
 

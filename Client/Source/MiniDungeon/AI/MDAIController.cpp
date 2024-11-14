@@ -72,3 +72,18 @@ void AMDAIController::OnDamaged(AMDCharacter* Attacker, float Amount)
 	int DamagedCount = blackboardComponent->GetValueAsInt(DamagedCountKey);
 	blackboardComponent->SetValueAsInt(DamagedCountKey, DamagedCount + 1);
 }
+
+void AMDAIController::SetBlackboardValues(bool isFindPlayer, APlayableCharacter* target, FVector playerLocation, float speed, float calcDist)
+{
+	UBlackboardComponent* blackboardComponent = Blackboard;
+
+	if (blackboardComponent)
+	{
+		blackboardComponent->SetValueAsBool(TEXT("IsFindPlayer"), isFindPlayer);
+		if (target)
+			blackboardComponent->SetValueAsObject(TEXT("TargetObject"), target);
+		blackboardComponent->SetValueAsVector(TEXT("PlayerPos"), playerLocation);
+		blackboardComponent->SetValueAsFloat(TEXT("Speed"), speed);
+		blackboardComponent->SetValueAsFloat(TEXT("CalcDist"), calcDist);
+	}
+}

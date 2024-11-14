@@ -1,5 +1,6 @@
 #pragma once
 #include "JobQueue.h"
+#include "Struct.pb.h"
 
 struct Vector3
 {
@@ -27,12 +28,18 @@ public:
 	void HandleStartGame();
 
 	bool HandleChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType);
-	void HandleMove(Protocol::CTS_MOVE pkt);
+	//void HandleMove(Protocol::CTS_MOVE pkt);
+	void HandleMove(const Protocol::PosInfo &info);
+
+	void HandleAttack(Protocol::CTS_ATTACK pkt);
 
 	uint64 GetRoomIndex() const { return _roomIndex; }
 	void SetRoomIndex(uint64 roomIndex);
 
 	void ReleaseThisRoom();
+
+	void SpawnMonster();
+
 public:
 	void UpdateTick();
 
@@ -44,12 +51,12 @@ private:
 
 	bool AddPlayer(PlayerRef player);
 	bool RemovePlayer(PlayerRef player);
-private:
+public:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 
 	void BroadcastToPlayer(SendBufferRef sendBuffer, uint64 exceptId = 0);
 
-private:
+public:
 	unordered_map<uint64, PlayerRef> _players;
 	unordered_map<uint64, ObjectRef> _objects;
 	weak_ptr<class Lobby> _lobby;

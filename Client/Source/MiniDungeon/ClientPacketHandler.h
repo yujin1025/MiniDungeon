@@ -43,6 +43,14 @@ enum : uint16
 	PKT_STC_MOVE = 1027,
 	PKT_CTS_CHAT = 1028,
 	PKT_STC_CHAT = 1029,
+	PKT_CTS_ATTACK = 1030,
+	PKT_STC_ATTACK = 1031,
+	PKT_CTS_MONSTERINFO = 1032,
+	PKT_STC_MONSTERINFO = 1033,
+	PKT_CTS_MONSTERMOVE = 1034,
+	PKT_STC_MONSTERMOVE = 1035,
+	PKT_CTS_STANDARD_MONSTER = 1036,
+	PKT_STC_STANDARD_MONSTER = 1037,
 };
 
 // Custom Handlers
@@ -63,6 +71,10 @@ bool Handle_STC_SPAWN(PacketSessionRef& session, Protocol::STC_SPAWN& pkt);
 bool Handle_STC_DESPAWN(PacketSessionRef& session, Protocol::STC_DESPAWN& pkt);
 bool Handle_STC_MOVE(PacketSessionRef& session, Protocol::STC_MOVE& pkt);
 bool Handle_STC_CHAT(PacketSessionRef& session, Protocol::STC_CHAT& pkt);
+bool Handle_STC_ATTACK(PacketSessionRef& session, Protocol::STC_ATTACK& pkt);
+bool Handle_STC_MONSTERINFO(PacketSessionRef& session, Protocol::STC_MONSTERINFO& pkt);
+bool Handle_STC_MONSTERMOVE(PacketSessionRef& session, Protocol::STC_MONSTERMOVE& pkt);
+bool Handle_STC_STANDARD_MONSTER(PacketSessionRef& session, Protocol::STC_STANDARD_MONSTER& pkt);
 
 class ClientPacketHandler
 {
@@ -87,6 +99,10 @@ public:
 		GPacketHandler[PKT_STC_DESPAWN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::STC_DESPAWN>(Handle_STC_DESPAWN, session, buffer, len); };
 		GPacketHandler[PKT_STC_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::STC_MOVE>(Handle_STC_MOVE, session, buffer, len); };
 		GPacketHandler[PKT_STC_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::STC_CHAT>(Handle_STC_CHAT, session, buffer, len); };
+		GPacketHandler[PKT_STC_ATTACK] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::STC_ATTACK>(Handle_STC_ATTACK, session, buffer, len); };
+		GPacketHandler[PKT_STC_MONSTERINFO] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::STC_MONSTERINFO>(Handle_STC_MONSTERINFO, session, buffer, len); };
+		GPacketHandler[PKT_STC_MONSTERMOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::STC_MONSTERMOVE>(Handle_STC_MONSTERMOVE, session, buffer, len); };
+		GPacketHandler[PKT_STC_STANDARD_MONSTER] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::STC_STANDARD_MONSTER>(Handle_STC_STANDARD_MONSTER, session, buffer, len); };
 	}
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -108,6 +124,10 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_LEAVE_GAME& pkt) { return MakeSendBuffer(pkt, PKT_CTS_LEAVE_GAME); }
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_CTS_MOVE); }
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_CTS_CHAT); }
+	static SendBufferRef MakeSendBuffer(Protocol::CTS_ATTACK& pkt) { return MakeSendBuffer(pkt, PKT_CTS_ATTACK); }
+	static SendBufferRef MakeSendBuffer(Protocol::CTS_MONSTERINFO& pkt) { return MakeSendBuffer(pkt, PKT_CTS_MONSTERINFO); }
+	static SendBufferRef MakeSendBuffer(Protocol::CTS_MONSTERMOVE& pkt) { return MakeSendBuffer(pkt, PKT_CTS_MONSTERMOVE); }
+	static SendBufferRef MakeSendBuffer(Protocol::CTS_STANDARD_MONSTER& pkt) { return MakeSendBuffer(pkt, PKT_CTS_STANDARD_MONSTER); }
 
 private:
 	template<typename PacketType, typename ProcessFunc>

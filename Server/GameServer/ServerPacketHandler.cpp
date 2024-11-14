@@ -338,21 +338,69 @@ bool Handle_CTS_MOVE(PacketSessionRef& session, Protocol::CTS_MOVE& pkt)
 {
 	auto gameSession = static_pointer_cast<GameSession>(session);
 
-	//PlayerRef player = gameSession->player.load();
-	//if (player == nullptr)
-	//	return false;
 
-	//RoomRef room = player->room.load().lock();
-	//if (room == nullptr)
-	//	return false;
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
 
-	//room->DoAsync(&Room::HandleMove, pkt);
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
+
+	room->DoAsync(&Room::HandleMove, pkt.info());
 	//room->HandleMove(pkt);
 
 	return true;
 }
 
+bool Handle_CTS_ATTACK(PacketSessionRef& session, Protocol::CTS_ATTACK& pkt)
+{
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
+
+	//room->DoAsync(&Room::HandleAttack, pkt.info());
+	room->DoAsync(&Room::HandleAttack, pkt);
+	//room->HandleAttack(pkt);
+
+	return true;
+}
+
+bool Handle_CTS_MONSTERINFO(PacketSessionRef& session, Protocol::CTS_MONSTERINFO& pkt)
+{
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
+
+	// 서버에서 몬스터 소환
+	room->DoAsync(&Room::SpawnMonster);
+
+	return true;
+}
+
+bool Handle_CTS_MONSTERMOVE(PacketSessionRef& session, Protocol::CTS_MONSTERMOVE& pkt)
+{
+	return true;
+}
+
+bool Handle_CTS_STANDARD_MONSTER(PacketSessionRef& session, Protocol::CTS_STANDARD_MONSTER& pkt)
+{
+	return true;
+}
+
 bool Handle_CTS_CHAT(PacketSessionRef& session, Protocol::CTS_CHAT& pkt)
 {
-	return false;
+	return true;
 }

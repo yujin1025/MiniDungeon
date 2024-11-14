@@ -4,7 +4,7 @@ class ObjectUtils
 {
 public:
 	static PlayerRef CreatePlayer(GameSessionRef session);
-
+	static MonsterRef CreateMonster();
 	static const uint64 GetNewObjectID();
 
 private:

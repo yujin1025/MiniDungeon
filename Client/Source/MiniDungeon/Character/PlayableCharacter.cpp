@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "PlayableCharacter.h"
@@ -9,9 +9,18 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "InputMappingContext.h"
+#include "Protocol.pb.h"
+#include "Net/UnrealNetwork.h"
+#include "../Network/MDNetworkManager.h"
+#include "../Game/MDGameInstance.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "../Component/AttackComponent.h"
+#include "../Component/HealthComponent.h"
 
 APlayableCharacter::APlayableCharacter()
 {
+	bReplicates = true;
+
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 400.0f; 
@@ -25,6 +34,102 @@ APlayableCharacter::APlayableCharacter()
 	InputActionMap.Add(EAttackType::QSkillAttack, nullptr);
 	InputActionMap.Add(EAttackType::ESkillAttack, nullptr);
 	InputActionMap.Add(EAttackType::ShiftAttack, nullptr);
+
+	PosInfo = new Protocol::PosInfo();
+	DestInfo = new Protocol::PosInfo();
+}
+
+bool APlayableCharacter::IsMyPlayer() const
+{
+	return IsLocallyControlled();
+}
+
+void APlayableCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	UMDNetworkManager* NetworkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if (NetworkManager)
+	{
+		const auto& playerInfoPtr = NetworkManager->PlayerInfos.Find(NetworkManager->PlayerID);
+		if (playerInfoPtr)
+		{
+			playerID = (*playerInfoPtr)->object_info().object_id(); // ObjectID 설정
+		}
+	}
+
+	FVector Location = GetActorLocation();
+	DestInfo->set_x(Location.X);
+	DestInfo->set_y(Location.Y);
+	DestInfo->set_z(Location.Z);
+	DestInfo->set_yaw(GetControlRotation().Yaw);
+
+	SetMoveState(Protocol::MOVE_STATE_IDLE);
+	TargetLocation = GetActorLocation();
+}
+
+
+void APlayableCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	// 현재 위치를 PosInfo에 업데이트
+	FVector Location = GetActorLocation();
+	PosInfo->set_object_id(playerID);
+	PosInfo->set_x(Location.X);
+	PosInfo->set_y(Location.Y);
+	PosInfo->set_z(Location.Z);
+	PosInfo->set_yaw(GetControlRotation().Yaw);
+
+	// 로컬 플레이어의 경우, 자신의 이동 정보를 서버로 전송
+	if (IsMyPlayer())
+	{
+		// Send 판정
+		bool ForceSendPacket = false;
+
+		if (LastDesiredInput != DesiredInput)
+		{
+			ForceSendPacket = true;
+			LastDesiredInput = DesiredInput;
+		}
+
+		// State 정보
+		if (DesiredInput == FVector2D::Zero())
+			SetMoveState(Protocol::MOVE_STATE_IDLE);
+		else
+			SetMoveState(Protocol::MOVE_STATE_RUN);
+
+		MovePacketSendTimer -= DeltaTime;
+
+		if (MovePacketSendTimer <= 0 || ForceSendPacket)
+		{
+			// 이동 패킷 전송
+			Protocol::CTS_MOVE MovePkt;
+			Protocol::PosInfo* Info = new Protocol::PosInfo();
+			Info->CopyFrom(*PosInfo);
+			Info->set_state(GetMoveState());
+			MovePkt.set_allocated_info(Info);
+
+			// 패킷을 SendBufferRef로 직렬화
+			SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
+			auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+			if (networkManager) {
+				networkManager->SendPacket(sendBuffer);
+			}
+		}
+	}
+	else
+	{
+		// 다른 플레이어의 경우 서버에서 받은 정보를 기반으로 이동
+		const Protocol::MoveState State = PosInfo->state();
+		SetMoveState(State);
+
+		if (State == Protocol::MOVE_STATE_RUN)
+		{
+			SetActorRotation(FRotator(0, DestInfo->yaw(), 0));
+			AddMovementInput(GetActorForwardVector());
+		}
+	}
+
 }
 
 void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -46,6 +151,7 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnMove);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &APlayableCharacter::OnMove);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnLook);
 
 		EnhancedInputComponent->BindAction(InputActionMap[EAttackType::QSkillAttack], ETriggerEvent::Triggered, this, &APlayableCharacter::OnQSkill);
@@ -55,10 +161,49 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	}
 }
 
+void APlayableCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(APlayableCharacter, ReplicatedLocation);
+	DOREPLIFETIME(APlayableCharacter, ReplicatedRotation);
+}
+
 void APlayableCharacter::OnMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
-	Move(MovementVector);
+	//Move(MovementVector);
+
+	if (Controller != nullptr)
+	{
+		// find out which way is forward
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		// get forward vector
+		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+
+		// get right vector 
+		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+		// add movement 
+		AddMovementInput(ForwardDirection, MovementVector.Y);
+		AddMovementInput(RightDirection, MovementVector.X);
+
+		// Cache
+		{
+			DesiredInput = MovementVector;
+
+			DesiredMoveDirection = FVector::ZeroVector;
+			DesiredMoveDirection += ForwardDirection * MovementVector.Y;
+			DesiredMoveDirection += RightDirection * MovementVector.X;
+			DesiredMoveDirection.Normalize();
+
+			const FVector Location = GetActorLocation();
+			FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Location, Location + DesiredMoveDirection);
+			DesiredYaw = Rotator.Yaw;
+		}
+	}
 }
 
 void APlayableCharacter::OnLook(const FInputActionValue& Value)
@@ -82,4 +227,66 @@ void APlayableCharacter::OnShift(const FInputActionValue& Value)
 	UseSkill(EAttackType::ShiftAttack);
 }
 
+void APlayableCharacter::SetMoveState(Protocol::MoveState State)
+{
+	if (PosInfo->state() == State)
+		return;
 
+	PosInfo->set_state(State);
+
+	// TODO
+}
+
+void APlayableCharacter::SetPlayerInfo(const Protocol::PosInfo& Info)
+{
+	if (PosInfo->object_id() != 0)
+	{
+		assert(PosInfo->object_id() == Info.object_id());
+	}
+
+	PosInfo->CopyFrom(Info);
+
+	FVector Location(Info.x(), Info.y(), Info.z());
+	SetActorLocation(Location); 
+
+	TargetLocation = Location;
+}
+
+void APlayableCharacter::SetDestInfo(const Protocol::PosInfo& Info)
+{
+	if (PosInfo->object_id() != 0)
+	{
+		assert(PosInfo->object_id() == Info.object_id());
+	}
+
+	// Dest에 최종 상태 복사.
+	DestInfo->CopyFrom(Info);
+
+	// 상태만 바로 적용하자.
+	SetMoveState(Info.state());
+	TargetLocation = FVector(Info.x(), Info.y(), Info.z());
+}
+
+void APlayableCharacter::Other_Attack(const Protocol::AttackInfo& Info)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Other_Hit"));
+	// 1. 공격 타입에 따라 애니메이션을 재생합니다.
+	EAttackType AttackType = static_cast<EAttackType>(Info.attack_type());
+	PlayAttackMontage(AttackType);
+
+	// 2. 피해를 적용합니다.
+	float Damage = Info.damage();
+	if (HealthComponent) 
+	{
+		//HealthComponent->ChangeHealth(this, -Damage);
+	}
+}
+
+void APlayableCharacter::PlayAttackMontage(EAttackType AttackType)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && ActionComponentMap.Contains(AttackType))
+	{
+		ActionComponentMap[AttackType]->PlayAttackMontage();
+	}
+}

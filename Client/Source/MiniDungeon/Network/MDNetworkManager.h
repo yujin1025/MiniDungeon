@@ -60,6 +60,11 @@ public:
 
 	void HandleMove(const Protocol::STC_MOVE& movePkt);
 
+	void HandleAttack(const Protocol::STC_ATTACK& AtkPkt);
+
+	void HandleSpawnMonster(const Protocol::STC_MONSTERINFO& InfoPkt);
+	void HandleMonsterInfo(const Protocol::STC_MONSTERINFO& infoPkt);
+
 public:
 	class FSocket* Socket;
 	FString IpAddress = TEXT("127.0.0.1");
@@ -77,6 +82,12 @@ public:
 	TObjectPtr<class APlayableCharacter> MyPlayer;
 	UPROPERTY()
 	uint64 PlayerID;
+
+	Protocol::PosInfo* PlayerInfo;
+	const Protocol::PosInfo* GetPlayerInfo() { return PlayerInfo; }
+
+	UPROPERTY()
+	TMap<uint64, TObjectPtr<class ANonPlayableCharacter>> Monsters;
 };
 
 template<typename T>

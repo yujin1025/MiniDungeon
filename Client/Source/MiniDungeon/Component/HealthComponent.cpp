@@ -62,12 +62,12 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 
 	if (Character->IsPlayer()) 
 	{
-		GameMode->MyPlayerState->OnChangePlayerHealth(Character->CharacterId, CurrentHealth);
+		//GameMode->MyPlayerState->OnChangePlayerHealth(Character->CharacterId, CurrentHealth);
 		UE_LOG(LogTemp, Warning, TEXT("Player Number : (%d) Current Health: %f"), Character->CharacterId, CurrentHealth);
 	}
 	else
 	{
-		GameMode->MyGameState->OnChangedHealth(Character->CharacterId, CurrentHealth);
+		//GameMode->MyGameState->OnChangedHealth(Character->CharacterId, CurrentHealth);
 		UE_LOG(LogTemp, Warning, TEXT("Non Player Number : (%d) Current Health: %f"), Character->CharacterId, CurrentHealth);
 	}
 

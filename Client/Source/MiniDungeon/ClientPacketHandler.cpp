@@ -244,7 +244,7 @@ bool Handle_STC_ENTER_GAME(PacketSessionRef& session, Protocol::STC_ENTER_GAME& 
 	if (IsValid(gameNetwork))
 	{
 		MD_LOG(LogMDNetwork, Log, TEXT("OpenLevel Begin"));
-		UGameplayStatics::OpenLevel(gameNetwork, TEXT("InGame"));
+		UGameplayStatics::OpenLevel(gameNetwork, TEXT("InGame"), false);
 		MD_LOG(LogMDNetwork, Log, TEXT("OpenLevel End"));
 		//gameNetwork->HandleSpawn(pkt);
 	}
@@ -284,7 +284,10 @@ bool Handle_STC_DESPAWN(PacketSessionRef& session, Protocol::STC_DESPAWN& pkt)
 //
 bool Handle_STC_MOVE(PacketSessionRef& session, Protocol::STC_MOVE& pkt)
 {
-	if (UMDNetworkManager* gameNetwork = GetWorldNetwork(session))
+	//UE_LOG(LogTemp, Log, TEXT("Received CTS_MOVE Packet: ObjectID = %llu"), pkt.info().object_id());
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
+	if (gameNetwork != nullptr)
 	{
 		gameNetwork->HandleMove(pkt);
 	}
@@ -298,4 +301,36 @@ bool Handle_STC_CHAT(PacketSessionRef& session, Protocol::STC_CHAT& pkt)
 
 
 	return true;
+}
+
+bool Handle_STC_ATTACK(PacketSessionRef& session, Protocol::STC_ATTACK& pkt)
+{
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
+	if (gameNetwork != nullptr)
+	{
+		gameNetwork->HandleAttack(pkt);
+	}
+
+	return true;
+}
+
+bool Handle_STC_MONSTERINFO(PacketSessionRef& session, Protocol::STC_MONSTERINFO& pkt)
+{
+	if (UMDNetworkManager* gameNetwork = GetWorldNetwork(session))
+	{
+		gameNetwork->HandleSpawnMonster(pkt);
+	}
+
+	return true;
+}
+
+bool Handle_STC_MONSTERMOVE(PacketSessionRef& session, Protocol::STC_MONSTERMOVE& pkt)
+{
+	return true;
+}
+
+bool Handle_STC_STANDARD_MONSTER(PacketSessionRef& session, Protocol::STC_STANDARD_MONSTER& pkt)
+{
+	return false;
 }

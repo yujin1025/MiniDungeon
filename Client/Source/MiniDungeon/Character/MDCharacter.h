@@ -45,6 +45,9 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+
 public:
 	void Move(const FVector2D Value);
 	void Look(const FVector2D Value);
@@ -52,6 +55,8 @@ public:
 
 // Attack Section
 public:
+	void SendAttackPacket(EAttackType AttackType);
+
 	bool UseSkill(EAttackType AttackType);
 	void OnFinishedSkillMotion(EAttackType AttackType);
 
@@ -72,7 +77,7 @@ public:
 	virtual void OnHit();
 	virtual void OnDie();
 
-private:
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Action, meta = (AllowPrivateAccess = "true"))
 	TMap<EAttackType, UAttackComponent*> ActionComponentMap;
 
@@ -101,5 +106,8 @@ protected:
 	// Character type
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")
 	ECharacterType CharacterType;
+
+	UPROPERTY(Replicated)
+	uint64 objectID;
 
 };

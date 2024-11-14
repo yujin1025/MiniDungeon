@@ -13,5 +13,10 @@ UCLASS()
 class MINIDUNGEON_API AKhaimera : public ANonPlayableCharacter
 {
 	GENERATED_BODY()
+
+public:
+	AKhaimera();
+
+	virtual void BeginPlay() override;
 	
 };

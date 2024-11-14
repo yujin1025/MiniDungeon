@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Room.h"
 #include "Player.h"
 #include "GameSession.h"
@@ -49,7 +49,7 @@ bool Room::Leave(PlayerRef player)
 //	//const uint64 objectId = object->objectInfo->object_id();
 //	//bool success = RemoveObject(objectId);
 //
-//	// ÅğÀå »ç½ÇÀ» ÅğÀåÇÏ´Â ÇÃ·¹ÀÌ¾î¿¡°Ô ¾Ë¸°´Ù
+//	// í‡´ì¥ ì‚¬ì‹¤ì„ í‡´ì¥í•˜ëŠ” í”Œë ˆì´ì–´ì—ê²Œ ì•Œë¦°ë‹¤
 //	if (auto player = dynamic_pointer_cast<Player>(object))
 //	{
 //		Protocol::STC_LEAVE_GAME leaveGamePkt;
@@ -59,7 +59,7 @@ bool Room::Leave(PlayerRef player)
 //			session->Send(sendBuffer);*/
 //	}
 //
-//	// ÅğÀå »ç½ÇÀ» ¾Ë¸°´Ù
+//	// í‡´ì¥ ì‚¬ì‹¤ì„ ì•Œë¦°ë‹¤
 //	{
 //		Protocol::STC_DESPAWN despawnPkt;
 //		//despawnPkt.add_object_ids(objectId);
@@ -83,7 +83,7 @@ bool Room::EnterRoom(PlayerRef player, bool isHost)
 
 	if (!isHost)
 	{
-		// ¹æ¿¡ ÀÔÀåÇÑ »ç½ÇÀ» ¹æ¿¡ ÀÖ´Â ´Ù¸¥ ÇÃ·¹ÀÌ¾îµé¿¡°Ô ¾Ë¸°´Ù
+		// ë°©ì— ì…ì¥í•œ ì‚¬ì‹¤ì„ ë°©ì— ìˆëŠ” ë‹¤ë¥¸ í”Œë ˆì´ì–´ë“¤ì—ê²Œ ì•Œë¦°ë‹¤
 		{
 			Protocol::STC_JOIN_ROOM joinRoomPkt;
 			joinRoomPkt.set_success(success);
@@ -129,10 +129,10 @@ bool Room::LeaveRoom(PlayerRef player)
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(leaveRoomPkt);
 
-	// ÅğÀå »ç½ÇÀ» ÅğÀåÇÏ´Â ÇÃ·¹ÀÌ¾î¿¡°Ô ¾Ë¸°´Ù
+	// í‡´ì¥ ì‚¬ì‹¤ì„ í‡´ì¥í•˜ëŠ” í”Œë ˆì´ì–´ì—ê²Œ ì•Œë¦°ë‹¤
 	player->GetSession()->Send(sendBuffer);
 
-	// ÅğÀå »ç½ÇÀ» Room¿¡ ÀÖ´Â ¸ğµç ÇÃ·¹ÀÌ¾î¿¡°Ô ¾Ë¸°´Ù.
+	// í‡´ì¥ ì‚¬ì‹¤ì„ Roomì— ìˆëŠ” ëª¨ë“  í”Œë ˆì´ì–´ì—ê²Œ ì•Œë¦°ë‹¤.
 	BroadcastToPlayer(sendBuffer, player->GetObjectInfo()->object_id());
 
 	if (_players.empty())
@@ -147,13 +147,13 @@ bool Room::ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType charac
 {
 	Protocol::STC_CHANGE_CHARACTER changeCharacterPkt;
 
-	// ÇÃ·¹ÀÌ¾î°¡ ¹æ¿¡ ¾ø´Ù¸é ¹®Á¦°¡ ÀÖ´Ù.
+	// í”Œë ˆì´ì–´ê°€ ë°©ì— ì—†ë‹¤ë©´ ë¬¸ì œê°€ ìˆë‹¤.
 	if (_players.find(playerIndex) == _players.end())
 	{
 		return false;
 	}
 
-	// Ä³¸¯ÅÍ º¯°æ »ç½ÇÀ» ¾Ë¸°´Ù.
+	// ìºë¦­í„° ë³€ê²½ ì‚¬ì‹¤ì„ ì•Œë¦°ë‹¤.
 	changeCharacterPkt.set_success(true);
 	changeCharacterPkt.set_player_id(playerIndex);
 	changeCharacterPkt.set_character(characterType);
@@ -191,9 +191,9 @@ bool Room::HandleLeavePlayer(uint64 playerindex)
 //{
 //	bool success = AddObject(object);
 //
-//	// ·£´ı À§Ä¡
+//	// ëœë¤ ìœ„ì¹˜
 //
-//	// ÀÔÀå »ç½ÇÀ» ½ÅÀÔ ÇÃ·¹ÀÌ¾î¿¡°Ô ¾Ë¸°´Ù
+//	// ì…ì¥ ì‚¬ì‹¤ì„ ì‹ ì… í”Œë ˆì´ì–´ì—ê²Œ ì•Œë¦°ë‹¤
 //	if (auto player = dynamic_pointer_cast<Player>(object))
 //	{
 //		//Protocol::STC_ENTER_GAME enterGamePkt;
@@ -208,7 +208,7 @@ bool Room::HandleLeavePlayer(uint64 playerindex)
 //		//	session->Send(sendBuffer);
 //	}
 //
-//	// ÀÔÀå »ç½ÇÀ» ´Ù¸¥ ÇÃ·¹ÀÌ¾î¿¡°Ô ¾Ë¸°´Ù
+//	// ì…ì¥ ì‚¬ì‹¤ì„ ë‹¤ë¥¸ í”Œë ˆì´ì–´ì—ê²Œ ì•Œë¦°ë‹¤
 //	{
 //		Protocol::STC_SPAWN spawnPkt;
 //
@@ -219,7 +219,7 @@ bool Room::HandleLeavePlayer(uint64 playerindex)
 //		//Broadcast(sendBuffer, object->objectInfo->object_id());
 //	}
 //
-//	// ±âÁ¸ ÀÔÀåÇÑ ÇÃ·¹ÀÌ¾î ¸ñ·ÏÀ» ½ÅÀÔ ÇÃ·¹ÀÌ¾îÇÑÅ× Àü¼ÛÇØÁØ´Ù
+//	// ê¸°ì¡´ ì…ì¥í•œ í”Œë ˆì´ì–´ ëª©ë¡ì„ ì‹ ì… í”Œë ˆì´ì–´í•œí…Œ ì „ì†¡í•´ì¤€ë‹¤
 //	if (auto player = dynamic_pointer_cast<Player>(object))
 //	{
 //		Protocol::STC_SPAWN spawnPkt;
@@ -243,6 +243,8 @@ bool Room::HandleLeavePlayer(uint64 playerindex)
 
 void Room::HandleStartGame()
 {
+	SpawnMonster();
+
 	Protocol::STC_ENTER_GAME enterGamePkt;
 	enterGamePkt.set_success(true);
 
@@ -272,26 +274,68 @@ void Room::HandleStartGame()
 	Broadcast(sendBuffer);
 }
 
-void Room::HandleMove(Protocol::CTS_MOVE pkt)
+//void Room::HandleMove(Protocol::CTS_MOVE pkt)
+//{
+//	const uint64 objectId = pkt.info().object_id();
+//	if (_objects.find(objectId) == _objects.end())
+//		return;
+//
+//	// ì ìš©
+//	PlayerRef player = dynamic_pointer_cast<Player>(_objects[objectId]);
+//	if (!player)
+//		return;
+//
+//	// ìµœì‹  ìœ„ì¹˜ ì •ë³´ë¡œ ì—…ë°ì´íŠ¸
+//	player->posInfo->CopyFrom(pkt.info());
+//
+//	// ì´ë™ ì‚¬ì‹¤ì„ ì•Œë¦°ë‹¤ (ë³¸ì¸ í¬í•¨? ë¹¼ê³ ?)
+//	Protocol::STC_MOVE movePkt;
+//	Protocol::PosInfo* info = new Protocol::PosInfo();
+//	info->CopyFrom(*player->posInfo);
+//	movePkt.set_allocated_info(info);
+//
+//	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
+//	BroadcastToPlayer(sendBuffer, objectId);
+//	//Broadcast(sendBuffer);
+//}
+
+void Room::HandleMove(const Protocol::PosInfo& posInfo)
+{
+	const uint64 objectId = posInfo.object_id();
+	if (_objects.find(objectId) == _objects.end())
+		return;
+
+	// ì ìš©
+	PlayerRef player = dynamic_pointer_cast<Player>(_objects[objectId]);
+	if (!player)
+		return;
+
+	// ìµœì‹  ìœ„ì¹˜ ì •ë³´ë¡œ ì—…ë°ì´íŠ¸
+	player->posInfo->CopyFrom(posInfo);
+
+	// ì´ë™ ì‚¬ì‹¤ì„ ì•Œë¦°ë‹¤ (ë³¸ì¸ í¬í•¨? ë¹¼ê³ ?)
+	Protocol::STC_MOVE movePkt;
+	Protocol::PosInfo* info = new Protocol::PosInfo();
+	info->CopyFrom(*player->posInfo);
+	movePkt.set_allocated_info(info);
+
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
+	BroadcastToPlayer(sendBuffer, objectId);
+}
+
+void Room::HandleAttack(Protocol::CTS_ATTACK pkt)
 {
 	const uint64 objectId = pkt.info().object_id();
 	if (_objects.find(objectId) == _objects.end())
 		return;
 
-	// Àû¿ë
-	PlayerRef player = dynamic_pointer_cast<Player>(_objects[objectId]);
-	//player->posInfo->CopyFrom(pkt.info());
+	Protocol::STC_ATTACK atkPkt;
+	Protocol::AttackInfo* info = new Protocol::AttackInfo();
+	info->CopyFrom(pkt.info());
+	atkPkt.set_allocated_info(info);
 
-	// ÀÌµ¿ »ç½ÇÀ» ¾Ë¸°´Ù (º»ÀÎ Æ÷ÇÔ? »©°í?)
-	{
-		Protocol::STC_MOVE movePkt;
-		{
-			Protocol::PosInfo* info = movePkt.mutable_info();
-			info->CopyFrom(pkt.info());
-		}
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
-		Broadcast(sendBuffer);
-	}
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(atkPkt);
+	Broadcast(sendBuffer);
 }
 
 void Room::SetRoomIndex(uint64 roomIndex)
@@ -304,7 +348,19 @@ void Room::UpdateTick()
 {
 	cout << "Update Room" << endl;
 
-	//DoTimer(100, &Room::UpdateTick);
+	// TODO : ëª¬ìŠ¤í„° ì´ë™, ê³µê²©
+
+	for(auto& monster : _objects)
+	{
+		MonsterRef mon = dynamic_pointer_cast<Monster>(monster.second);
+		if (mon)
+		{
+			mon->CalcDist();
+			mon->CanAttack();
+		}
+	}
+
+	DoTimer(100, &Room::UpdateTick);
 }
 
 RoomRef Room::GetRoomRef()
@@ -318,9 +374,49 @@ void Room::ReleaseThisRoom()
 	_lobby.lock()->RemoveRoom(self);
 }
 
+void Room::SpawnMonster()
+{
+	// ë³´ìŠ¤ ìƒì„±
+	MonsterRef monster = ObjectUtils::CreateMonster(); 
+
+	// ë³´ìŠ¤ë¥¼ ë°©ì— ì¶”ê°€
+	if (AddObject(monster))
+	{
+		Protocol::STC_SPAWN spawnPkt;
+		Protocol::STC_MONSTERINFO monsterInfoPkt;
+		Protocol::STC_MONSTERMOVE monsterMovePkt;
+
+		Protocol::ObjectInfo* monsterInfo = spawnPkt.add_players();
+		monsterInfo->CopyFrom(*monster->objectInfo);
+
+		Protocol::PosInfo* posInfo = monsterInfo->mutable_pos_info();
+		posInfo->CopyFrom(*monster->posInfo);
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
+		Broadcast(sendBuffer);
+
+		if (auto boss = dynamic_pointer_cast<Monster>(monster))
+		{
+			Protocol::PosInfo* info = monsterMovePkt.mutable_info();
+			auto dest = boss->GetDestination();
+			info->set_x(boss->posInfo->x());
+			info->set_y(boss->posInfo->y());
+			info->set_z(boss->posInfo->z());
+
+			monsterInfoPkt.set_allocated_info(boss->monsterInfo);
+		}
+
+		SendBufferRef sendBuffer2 = ServerPacketHandler::MakeSendBuffer(monsterInfoPkt);
+		Broadcast(sendBuffer2);
+
+		SendBufferRef sendBuffer3 = ServerPacketHandler::MakeSendBuffer(monsterMovePkt);
+		Broadcast(sendBuffer3);
+	}
+}
+
 bool Room::AddObject(ObjectRef object)
 {
-	// ÀÖ´Ù¸é ¹®Á¦°¡ ÀÖ´Ù.
+	// ìˆë‹¤ë©´ ë¬¸ì œê°€ ìˆë‹¤.
 	if (_objects.find(object->GetObjectInfo()->object_id()) != _objects.end())
 	{
 		return false;
@@ -335,7 +431,7 @@ bool Room::AddObject(ObjectRef object)
 
 bool Room::RemoveObject(uint64 objectId)
 {
-	// Room¿¡ ¾ø´Ù¸é ¹®Á¦°¡ ÀÖ´Ù.
+	// Roomì— ì—†ë‹¤ë©´ ë¬¸ì œê°€ ìˆë‹¤.
 	if (_objects.find(objectId) == _objects.end())
 		return false;
 
@@ -351,7 +447,7 @@ bool Room::RemoveObject(uint64 objectId)
 
 bool Room::AddPlayer(PlayerRef player)
 {
-	// Room¿¡ ÀÖ´Ù¸é ¹®Á¦°¡ ÀÖ´Ù.
+	// Roomì— ìˆë‹¤ë©´ ë¬¸ì œê°€ ìˆë‹¤.
 	if (_players.find(player->GetPlayerInfo()->player_id()) != _players.end())
 	{
 		return false;
@@ -372,7 +468,7 @@ bool Room::AddPlayer(PlayerRef player)
 bool Room::RemovePlayer(PlayerRef player)
 {
 	uint64 playerIndex = player->GetPlayerInfo()->player_id();
-	// ÇÃ·¹ÀÌ¾î°¡ Room¿¡ ¾øÀ¸¸é ¹®Á¦°¡ ÀÖ´Ù.
+	// í”Œë ˆì´ì–´ê°€ Roomì— ì—†ìœ¼ë©´ ë¬¸ì œê°€ ìˆë‹¤.
 	if (_players.find(playerIndex) == _players.end())
 	{
 		return false;

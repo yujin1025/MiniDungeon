@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "MDCharacter.h"
@@ -7,6 +7,8 @@
 #include "../Component/HealthComponent.h"
 #include "../Component/HitDeadComponent.h"
 #include "../Game/MDGameMode.h"
+#include "../Network/MDNetworkManager.h"
+#include "../Game/MDGameInstance.h"
 
 AMDCharacter::AMDCharacter()
 {
@@ -81,6 +83,21 @@ void AMDCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UMDNetworkManager* NetworkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if (NetworkManager)
+	{
+		const auto& playerInfoPtr = NetworkManager->PlayerInfos.Find(NetworkManager->PlayerID);
+		if (playerInfoPtr)
+		{
+			objectID = (*playerInfoPtr)->object_info().object_id(); // ObjectID 설정
+		}
+	}
+}
+
+void AMDCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
 }
 
 void AMDCharacter::Move(const FVector2D Value)
@@ -113,6 +130,43 @@ void AMDCharacter::Look(const FVector2D Value)
 	}
 }
 
+void AMDCharacter::SendAttackPacket(EAttackType AttackType)
+{
+	// 공격 정보를 설정
+	Protocol::AttackInfo attackInfo;
+	attackInfo.set_object_id(objectID);
+
+	float damage = 0.0f;
+	switch (AttackType)
+	{
+	case EAttackType::QSkillAttack:
+		damage = 10.0f; 
+		break;
+	case EAttackType::ESkillAttack:
+		damage = 20.0f; 
+		break;
+	case EAttackType::ShiftAttack:
+		damage = 30.0f; 
+		break;
+	}
+
+	attackInfo.set_damage(damage); // 데미지 설정
+	attackInfo.set_attack_type(static_cast<uint64>(AttackType)); // 공격 타입 설정
+
+	// 패킷을 생성
+	Protocol::CTS_ATTACK attackPkt;
+	*attackPkt.mutable_info() = attackInfo;
+
+	// SendBufferRef로 직렬화
+	SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(attackPkt);
+
+	// 네트워크 매니저를 통해 패킷 전송
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if (networkManager) {
+		networkManager->SendPacket(sendBuffer);
+	}
+}
+
 bool AMDCharacter::UseSkill(EAttackType AttackType)
 {
 	if (IsDead)
@@ -132,6 +186,8 @@ bool AMDCharacter::UseSkill(EAttackType AttackType)
 
 	ActionComponentMap[AttackType]->PlayAttackMontage();
 	CurrentActionCoolTimeMap[AttackType] = CurrentDeltaTime + ActionCoolTimeMap[AttackType];
+
+	SendAttackPacket(AttackType);
 
 	switch (AttackType)
 	{
@@ -205,7 +261,15 @@ void AMDCharacter::OnDie()
 
 bool AMDCharacter::IsPlayer()
 {
-	return Controller->IsPlayerController();
+	if (Controller)
+	{
+		return Controller->IsPlayerController();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Controller is nullptr in IsPlayer()"));
+		return false;
+	}
 }
 
 FVector AMDCharacter::GetLookVector(AMDCharacter*& Target) const

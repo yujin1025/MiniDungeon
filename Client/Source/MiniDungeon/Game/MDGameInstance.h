@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "../Network/MDNetworkManager.h"
 #include "MDGameInstance.generated.h"
 
 /**
@@ -16,9 +17,19 @@ class MINIDUNGEON_API UMDGameInstance : public UGameInstance
 public:
 	UMDGameInstance();
 
+	UMDNetworkManager* GetNetworkManager() const { return NetworkManager; }
+
+protected:
+	virtual void Init() override;
+
 public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class APlayableCharacter> AuroraClass;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class APlayableCharacter> DrongoClass;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ANonPlayableCharacter> KhaimeraClass;
+
+	UPROPERTY()
+	UMDNetworkManager* NetworkManager;
 };

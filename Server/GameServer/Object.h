@@ -22,6 +22,8 @@ public:
 
 protected:
 	bool _isPlayer = false;
+	
+public:
 	Protocol::ObjectInfo* objectInfo;
 	Protocol::PosInfo* posInfo;
 };

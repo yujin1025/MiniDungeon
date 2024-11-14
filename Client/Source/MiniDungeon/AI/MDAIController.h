@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "../Character/PlayableCharacter.h"
 #include "MDAIController.generated.h"
 
 /**
@@ -31,6 +32,8 @@ public:
 
 	UFUNCTION()
 	void OnDamaged(AMDCharacter* Attacker, float Amount);
+
+	void SetBlackboardValues(bool isFindPlayer, APlayableCharacter* target, FVector playerLocation, float speed, float calcDist);
 
 private:
 	UPROPERTY(EditAnywhere)

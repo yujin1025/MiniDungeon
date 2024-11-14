@@ -13,5 +13,10 @@ UCLASS()
 class MINIDUNGEON_API AGrux : public ANonPlayableCharacter
 {
 	GENERATED_BODY()
-	
+
+public:
+	AGrux();
+
+	virtual void BeginPlay() override;
+
 };

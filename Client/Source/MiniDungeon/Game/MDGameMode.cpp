@@ -41,6 +41,14 @@ void AMDGameMode::PostLogin(APlayerController* NewPlayer)
 	OnPostLogin(Cast<AMDPlayerController>(NewPlayer));
 }
 
+void AMDGameMode::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	networkManager->HandleRecvPackets();
+}
+
 void AMDGameMode::StartPlay()
 {
 	MD_LOG(LogMDNetwork, Log, TEXT("Super Begin"));
@@ -64,6 +72,11 @@ void AMDGameMode::StartPlay()
 			}
 		}
 	}
+
+	Protocol::CTS_MONSTERINFO pkt;
+	pkt.set_allocated_info(new Protocol::MonsterInfo());
+	networkManager->SendPacket(pkt);
+
 	MD_LOG(LogMDNetwork, Log, TEXT("Override End"));
 }
 
