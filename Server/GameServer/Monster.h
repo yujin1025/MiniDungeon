@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Creature.h"
 #include "Room.h"
 
@@ -10,6 +10,7 @@ public:
 
 	void CalcDist();
 	void CanAttack();
+	float DistanceTo(const Protocol::PosInfo* targetPos);
 	Vector3 GetDestination() { return Vector3{ 0,0,0 }; }
 
 	Protocol::CreatureType creatureType = Protocol::CreatureType::CREATURE_TYPE_MONSTER;
@@ -17,9 +18,9 @@ public:
 
 	const Vector3 SpawnVec{ 3390.f, 640.f, 178.f };
 	const float SpawnYaw = 180.f;
-	const float BossSight = 1500.f; //º¸½º°¡ ÇÃ·¹ÀÌ¾î¸¦ °¨ÁöÇÒ ¼ö ÀÖ´Â ¹üÀ§
-	const float BossLoseSight = 2000.f; //º¸½º°¡ ÇÃ·¹ÀÌ¾î¸¦ ³õÄ¡´Â °Å¸®
-	const float BossSightAngle = 360.f; //º¸½º°¡ °¨ÁöÇÒ ¼ö ÀÖ´Â °¢µµ
+	const float BossSight = 1500.f; //ë³´ìŠ¤ê°€ í”Œë ˆì´ì–´ë¥¼ ê°ì§€í•  ìˆ˜ ìˆëŠ” ë²”ìœ„
+	const float BossLoseSight = 2000.f; //ë³´ìŠ¤ê°€ í”Œë ˆì´ì–´ë¥¼ ë†“ì¹˜ëŠ” ê±°ë¦¬
+	const float BossSightAngle = 360.f; //ë³´ìŠ¤ê°€ ê°ì§€í•  ìˆ˜ ìˆëŠ” ê°ë„
 	const float MaxHp = 600.f;
 	const float Speed = 300.f;
 
@@ -27,10 +28,10 @@ public:
 	float Damage = 20;
 	float CalacDist;
 
-	bool IsPlayerAlive; //½º°¡ ÃßÀûÇÏ´Â ÇÃ·¹ÀÌ¾î°¡ »ì¾ÆÀÖ´ÂÁö È®ÀÎ
+	bool IsPlayerAlive; //ìŠ¤ê°€ ì¶”ì í•˜ëŠ” í”Œë ˆì´ì–´ê°€ ì‚´ì•„ìˆëŠ”ì§€ í™•ì¸
 	bool IsDead;
 	bool IsFindPlayer;
 	 
-	ObjectRef TrackedPlayer; //º¸½º°¡ ÃßÀûÇÏ´Â ÇÃ·¹ÀÌ¾î °´Ã¼
+	ObjectRef TargetPlayer; //ë³´ìŠ¤ê°€ ì¶”ì í•˜ëŠ” í”Œë ˆì´ì–´ ê°ì²´
 };
 

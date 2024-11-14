@@ -16,4 +16,22 @@ class MINIDUNGEON_API ANonPlayableCharacter : public AMDCharacter
 	
 public:
 	ANonPlayableCharacter();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster Stats")
+	float MaxHP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster Stats")
+	float CurrentHP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster Stats")
+	float Speed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster Stats")
+	float Damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster Stats")
+	bool IsFindPlayer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster Stats")
+	APlayableCharacter* TargetPlayer;
 };

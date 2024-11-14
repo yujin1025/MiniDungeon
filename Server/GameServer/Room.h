@@ -51,12 +51,12 @@ private:
 
 	bool AddPlayer(PlayerRef player);
 	bool RemovePlayer(PlayerRef player);
-private:
+public:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 
 	void BroadcastToPlayer(SendBufferRef sendBuffer, uint64 exceptId = 0);
 
-private:
+public:
 	unordered_map<uint64, PlayerRef> _players;
 	unordered_map<uint64, ObjectRef> _objects;
 	weak_ptr<class Lobby> _lobby;

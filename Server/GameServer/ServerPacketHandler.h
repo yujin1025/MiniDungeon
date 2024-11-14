@@ -49,6 +49,8 @@ enum : uint16
 	PKT_STC_MONSTERINFO = 1033,
 	PKT_CTS_MONSTERMOVE = 1034,
 	PKT_STC_MONSTERMOVE = 1035,
+	PKT_CTS_STANDARD_MONSTER = 1036,
+	PKT_STC_STANDARD_MONSTER = 1037,
 };
 
 // Custom Handlers
@@ -70,6 +72,7 @@ bool Handle_CTS_CHAT(PacketSessionRef& session, Protocol::CTS_CHAT& pkt);
 bool Handle_CTS_ATTACK(PacketSessionRef& session, Protocol::CTS_ATTACK& pkt);
 bool Handle_CTS_MONSTERINFO(PacketSessionRef& session, Protocol::CTS_MONSTERINFO& pkt);
 bool Handle_CTS_MONSTERMOVE(PacketSessionRef& session, Protocol::CTS_MONSTERMOVE& pkt);
+bool Handle_CTS_STANDARD_MONSTER(PacketSessionRef& session, Protocol::CTS_STANDARD_MONSTER& pkt);
 
 class ServerPacketHandler
 {
@@ -95,6 +98,7 @@ public:
 		GPacketHandler[PKT_CTS_ATTACK] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_ATTACK>(Handle_CTS_ATTACK, session, buffer, len); };
 		GPacketHandler[PKT_CTS_MONSTERINFO] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_MONSTERINFO>(Handle_CTS_MONSTERINFO, session, buffer, len); };
 		GPacketHandler[PKT_CTS_MONSTERMOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_MONSTERMOVE>(Handle_CTS_MONSTERMOVE, session, buffer, len); };
+		GPacketHandler[PKT_CTS_STANDARD_MONSTER] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_STANDARD_MONSTER>(Handle_CTS_STANDARD_MONSTER, session, buffer, len); };
 	}
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -121,6 +125,7 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::STC_ATTACK& pkt) { return MakeSendBuffer(pkt, PKT_STC_ATTACK); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_MONSTERINFO& pkt) { return MakeSendBuffer(pkt, PKT_STC_MONSTERINFO); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_MONSTERMOVE& pkt) { return MakeSendBuffer(pkt, PKT_STC_MONSTERMOVE); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_STANDARD_MONSTER& pkt) { return MakeSendBuffer(pkt, PKT_STC_STANDARD_MONSTER); }
 
 private:
 	template<typename PacketType, typename ProcessFunc>

@@ -111,10 +111,12 @@ PROTOBUF_CONSTEXPR MonsterInfo::MonsterInfo(
   , /*decltype(_impl_.attack_info_)*/nullptr
   , /*decltype(_impl_.pos_info_)*/nullptr
   , /*decltype(_impl_.object_type_)*/0
-  , /*decltype(_impl_.player_id_)*/0u
+  , /*decltype(_impl_.targetplayer_id_)*/0u
   , /*decltype(_impl_.monster_hp_)*/0u
   , /*decltype(_impl_.speed_)*/0u
   , /*decltype(_impl_.damage_)*/0u
+  , /*decltype(_impl_.isfindplayer_)*/false
+  , /*decltype(_impl_.calcdist_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct MonsterInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR MonsterInfoDefaultTypeInternal()
@@ -194,11 +196,13 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::Protocol::MonsterInfo, _impl_.object_info_),
   PROTOBUF_FIELD_OFFSET(::Protocol::MonsterInfo, _impl_.object_type_),
   PROTOBUF_FIELD_OFFSET(::Protocol::MonsterInfo, _impl_.attack_info_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::MonsterInfo, _impl_.player_id_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::MonsterInfo, _impl_.targetplayer_id_),
   PROTOBUF_FIELD_OFFSET(::Protocol::MonsterInfo, _impl_.monster_hp_),
   PROTOBUF_FIELD_OFFSET(::Protocol::MonsterInfo, _impl_.speed_),
   PROTOBUF_FIELD_OFFSET(::Protocol::MonsterInfo, _impl_.damage_),
   PROTOBUF_FIELD_OFFSET(::Protocol::MonsterInfo, _impl_.pos_info_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::MonsterInfo, _impl_.isfindplayer_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::MonsterInfo, _impl_.calcdist_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::PosInfo)},
@@ -236,21 +240,22 @@ const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "rent_player_count\030\005 \001(\r\022%\n\007players\030\006 \003(\013"
   "2\024.Protocol.PlayerInfo\"S\n\nAttackInfo\022\021\n\t"
   "object_id\030\001 \001(\004\022\016\n\006damage\030\002 \001(\002\022\023\n\013attac"
-  "k_type\030\003 \001(\004\022\r\n\005ishit\030\004 \001(\010\"\371\001\n\013MonsterI"
+  "k_type\030\003 \001(\004\022\r\n\005ishit\030\004 \001(\010\"\247\002\n\013MonsterI"
   "nfo\022)\n\013object_info\030\001 \001(\0132\024.Protocol.Obje"
   "ctInfo\022)\n\013object_type\030\002 \001(\0162\024.Protocol.O"
   "bjectType\022)\n\013attack_info\030\003 \001(\0132\024.Protoco"
-  "l.AttackInfo\022\021\n\tplayer_id\030\004 \001(\r\022\022\n\nmonst"
-  "er_hp\030\005 \001(\r\022\r\n\005speed\030\006 \001(\r\022\016\n\006damage\030\007 \001"
-  "(\r\022#\n\010pos_info\030\010 \001(\0132\021.Protocol.PosInfob"
-  "\006proto3"
+  "l.AttackInfo\022\027\n\017targetplayer_id\030\004 \001(\r\022\022\n"
+  "\nmonster_hp\030\005 \001(\r\022\r\n\005speed\030\006 \001(\r\022\016\n\006dama"
+  "ge\030\007 \001(\r\022#\n\010pos_info\030\010 \001(\0132\021.Protocol.Po"
+  "sInfo\022\024\n\014isfindplayer\030\t \001(\010\022\020\n\010calcdist\030"
+  "\n \001(\002b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 967, descriptor_table_protodef_Struct_2eproto,
+    false, false, 1013, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 6,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -1906,10 +1911,12 @@ MonsterInfo::MonsterInfo(const MonsterInfo& from)
     , decltype(_impl_.attack_info_){nullptr}
     , decltype(_impl_.pos_info_){nullptr}
     , decltype(_impl_.object_type_){}
-    , decltype(_impl_.player_id_){}
+    , decltype(_impl_.targetplayer_id_){}
     , decltype(_impl_.monster_hp_){}
     , decltype(_impl_.speed_){}
     , decltype(_impl_.damage_){}
+    , decltype(_impl_.isfindplayer_){}
+    , decltype(_impl_.calcdist_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -1923,8 +1930,8 @@ MonsterInfo::MonsterInfo(const MonsterInfo& from)
     _this->_impl_.pos_info_ = new ::Protocol::PosInfo(*from._impl_.pos_info_);
   }
   ::memcpy(&_impl_.object_type_, &from._impl_.object_type_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.damage_) -
-    reinterpret_cast<char*>(&_impl_.object_type_)) + sizeof(_impl_.damage_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.calcdist_) -
+    reinterpret_cast<char*>(&_impl_.object_type_)) + sizeof(_impl_.calcdist_));
   // @@protoc_insertion_point(copy_constructor:Protocol.MonsterInfo)
 }
 
@@ -1937,10 +1944,12 @@ inline void MonsterInfo::SharedCtor(
     , decltype(_impl_.attack_info_){nullptr}
     , decltype(_impl_.pos_info_){nullptr}
     , decltype(_impl_.object_type_){0}
-    , decltype(_impl_.player_id_){0u}
+    , decltype(_impl_.targetplayer_id_){0u}
     , decltype(_impl_.monster_hp_){0u}
     , decltype(_impl_.speed_){0u}
     , decltype(_impl_.damage_){0u}
+    , decltype(_impl_.isfindplayer_){false}
+    , decltype(_impl_.calcdist_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -1984,8 +1993,8 @@ void MonsterInfo::Clear() {
   }
   _impl_.pos_info_ = nullptr;
   ::memset(&_impl_.object_type_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.damage_) -
-      reinterpret_cast<char*>(&_impl_.object_type_)) + sizeof(_impl_.damage_));
+      reinterpret_cast<char*>(&_impl_.calcdist_) -
+      reinterpret_cast<char*>(&_impl_.object_type_)) + sizeof(_impl_.calcdist_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2020,10 +2029,10 @@ const char* MonsterInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* c
         } else
           goto handle_unusual;
         continue;
-      // uint32 player_id = 4;
+      // uint32 targetplayer_id = 4;
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
-          _impl_.player_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _impl_.targetplayer_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -2057,6 +2066,22 @@ const char* MonsterInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* c
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 66)) {
           ptr = ctx->ParseMessage(_internal_mutable_pos_info(), ptr);
           CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool isfindplayer = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
+          _impl_.isfindplayer_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // float calcdist = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 85)) {
+          _impl_.calcdist_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
         } else
           goto handle_unusual;
         continue;
@@ -2110,10 +2135,10 @@ uint8_t* MonsterInfo::_InternalSerialize(
         _Internal::attack_info(this).GetCachedSize(), target, stream);
   }
 
-  // uint32 player_id = 4;
-  if (this->_internal_player_id() != 0) {
+  // uint32 targetplayer_id = 4;
+  if (this->_internal_targetplayer_id() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(4, this->_internal_player_id(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(4, this->_internal_targetplayer_id(), target);
   }
 
   // uint32 monster_hp = 5;
@@ -2139,6 +2164,22 @@ uint8_t* MonsterInfo::_InternalSerialize(
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessage(8, _Internal::pos_info(this),
         _Internal::pos_info(this).GetCachedSize(), target, stream);
+  }
+
+  // bool isfindplayer = 9;
+  if (this->_internal_isfindplayer() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(9, this->_internal_isfindplayer(), target);
+  }
+
+  // float calcdist = 10;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_calcdist = this->_internal_calcdist();
+  uint32_t raw_calcdist;
+  memcpy(&raw_calcdist, &tmp_calcdist, sizeof(tmp_calcdist));
+  if (raw_calcdist != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(10, this->_internal_calcdist(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -2184,9 +2225,9 @@ size_t MonsterInfo::ByteSizeLong() const {
       ::_pbi::WireFormatLite::EnumSize(this->_internal_object_type());
   }
 
-  // uint32 player_id = 4;
-  if (this->_internal_player_id() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_player_id());
+  // uint32 targetplayer_id = 4;
+  if (this->_internal_targetplayer_id() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_targetplayer_id());
   }
 
   // uint32 monster_hp = 5;
@@ -2202,6 +2243,20 @@ size_t MonsterInfo::ByteSizeLong() const {
   // uint32 damage = 7;
   if (this->_internal_damage() != 0) {
     total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_damage());
+  }
+
+  // bool isfindplayer = 9;
+  if (this->_internal_isfindplayer() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // float calcdist = 10;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_calcdist = this->_internal_calcdist();
+  uint32_t raw_calcdist;
+  memcpy(&raw_calcdist, &tmp_calcdist, sizeof(tmp_calcdist));
+  if (raw_calcdist != 0) {
+    total_size += 1 + 4;
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -2237,8 +2292,8 @@ void MonsterInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PR
   if (from._internal_object_type() != 0) {
     _this->_internal_set_object_type(from._internal_object_type());
   }
-  if (from._internal_player_id() != 0) {
-    _this->_internal_set_player_id(from._internal_player_id());
+  if (from._internal_targetplayer_id() != 0) {
+    _this->_internal_set_targetplayer_id(from._internal_targetplayer_id());
   }
   if (from._internal_monster_hp() != 0) {
     _this->_internal_set_monster_hp(from._internal_monster_hp());
@@ -2248,6 +2303,16 @@ void MonsterInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PR
   }
   if (from._internal_damage() != 0) {
     _this->_internal_set_damage(from._internal_damage());
+  }
+  if (from._internal_isfindplayer() != 0) {
+    _this->_internal_set_isfindplayer(from._internal_isfindplayer());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_calcdist = from._internal_calcdist();
+  uint32_t raw_calcdist;
+  memcpy(&raw_calcdist, &tmp_calcdist, sizeof(tmp_calcdist));
+  if (raw_calcdist != 0) {
+    _this->_internal_set_calcdist(from._internal_calcdist());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -2267,8 +2332,8 @@ void MonsterInfo::InternalSwap(MonsterInfo* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(MonsterInfo, _impl_.damage_)
-      + sizeof(MonsterInfo::_impl_.damage_)
+      PROTOBUF_FIELD_OFFSET(MonsterInfo, _impl_.calcdist_)
+      + sizeof(MonsterInfo::_impl_.calcdist_)
       - PROTOBUF_FIELD_OFFSET(MonsterInfo, _impl_.object_info_)>(
           reinterpret_cast<char*>(&_impl_.object_info_),
           reinterpret_cast<char*>(&other->_impl_.object_info_));

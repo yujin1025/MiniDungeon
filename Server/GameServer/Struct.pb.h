@@ -1202,10 +1202,12 @@ class MonsterInfo final :
     kAttackInfoFieldNumber = 3,
     kPosInfoFieldNumber = 8,
     kObjectTypeFieldNumber = 2,
-    kPlayerIdFieldNumber = 4,
+    kTargetplayerIdFieldNumber = 4,
     kMonsterHpFieldNumber = 5,
     kSpeedFieldNumber = 6,
     kDamageFieldNumber = 7,
+    kIsfindplayerFieldNumber = 9,
+    kCalcdistFieldNumber = 10,
   };
   // .Protocol.ObjectInfo object_info = 1;
   bool has_object_info() const;
@@ -1270,13 +1272,13 @@ class MonsterInfo final :
   void _internal_set_object_type(::Protocol::ObjectType value);
   public:
 
-  // uint32 player_id = 4;
-  void clear_player_id();
-  uint32_t player_id() const;
-  void set_player_id(uint32_t value);
+  // uint32 targetplayer_id = 4;
+  void clear_targetplayer_id();
+  uint32_t targetplayer_id() const;
+  void set_targetplayer_id(uint32_t value);
   private:
-  uint32_t _internal_player_id() const;
-  void _internal_set_player_id(uint32_t value);
+  uint32_t _internal_targetplayer_id() const;
+  void _internal_set_targetplayer_id(uint32_t value);
   public:
 
   // uint32 monster_hp = 5;
@@ -1306,6 +1308,24 @@ class MonsterInfo final :
   void _internal_set_damage(uint32_t value);
   public:
 
+  // bool isfindplayer = 9;
+  void clear_isfindplayer();
+  bool isfindplayer() const;
+  void set_isfindplayer(bool value);
+  private:
+  bool _internal_isfindplayer() const;
+  void _internal_set_isfindplayer(bool value);
+  public:
+
+  // float calcdist = 10;
+  void clear_calcdist();
+  float calcdist() const;
+  void set_calcdist(float value);
+  private:
+  float _internal_calcdist() const;
+  void _internal_set_calcdist(float value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.MonsterInfo)
  private:
   class _Internal;
@@ -1318,10 +1338,12 @@ class MonsterInfo final :
     ::Protocol::AttackInfo* attack_info_;
     ::Protocol::PosInfo* pos_info_;
     int object_type_;
-    uint32_t player_id_;
+    uint32_t targetplayer_id_;
     uint32_t monster_hp_;
     uint32_t speed_;
     uint32_t damage_;
+    bool isfindplayer_;
+    float calcdist_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2358,24 +2380,24 @@ inline void MonsterInfo::set_allocated_attack_info(::Protocol::AttackInfo* attac
   // @@protoc_insertion_point(field_set_allocated:Protocol.MonsterInfo.attack_info)
 }
 
-// uint32 player_id = 4;
-inline void MonsterInfo::clear_player_id() {
-  _impl_.player_id_ = 0u;
+// uint32 targetplayer_id = 4;
+inline void MonsterInfo::clear_targetplayer_id() {
+  _impl_.targetplayer_id_ = 0u;
 }
-inline uint32_t MonsterInfo::_internal_player_id() const {
-  return _impl_.player_id_;
+inline uint32_t MonsterInfo::_internal_targetplayer_id() const {
+  return _impl_.targetplayer_id_;
 }
-inline uint32_t MonsterInfo::player_id() const {
-  // @@protoc_insertion_point(field_get:Protocol.MonsterInfo.player_id)
-  return _internal_player_id();
+inline uint32_t MonsterInfo::targetplayer_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.MonsterInfo.targetplayer_id)
+  return _internal_targetplayer_id();
 }
-inline void MonsterInfo::_internal_set_player_id(uint32_t value) {
+inline void MonsterInfo::_internal_set_targetplayer_id(uint32_t value) {
   
-  _impl_.player_id_ = value;
+  _impl_.targetplayer_id_ = value;
 }
-inline void MonsterInfo::set_player_id(uint32_t value) {
-  _internal_set_player_id(value);
-  // @@protoc_insertion_point(field_set:Protocol.MonsterInfo.player_id)
+inline void MonsterInfo::set_targetplayer_id(uint32_t value) {
+  _internal_set_targetplayer_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.MonsterInfo.targetplayer_id)
 }
 
 // uint32 monster_hp = 5;
@@ -2526,6 +2548,46 @@ inline void MonsterInfo::set_allocated_pos_info(::Protocol::PosInfo* pos_info) {
   }
   _impl_.pos_info_ = pos_info;
   // @@protoc_insertion_point(field_set_allocated:Protocol.MonsterInfo.pos_info)
+}
+
+// bool isfindplayer = 9;
+inline void MonsterInfo::clear_isfindplayer() {
+  _impl_.isfindplayer_ = false;
+}
+inline bool MonsterInfo::_internal_isfindplayer() const {
+  return _impl_.isfindplayer_;
+}
+inline bool MonsterInfo::isfindplayer() const {
+  // @@protoc_insertion_point(field_get:Protocol.MonsterInfo.isfindplayer)
+  return _internal_isfindplayer();
+}
+inline void MonsterInfo::_internal_set_isfindplayer(bool value) {
+  
+  _impl_.isfindplayer_ = value;
+}
+inline void MonsterInfo::set_isfindplayer(bool value) {
+  _internal_set_isfindplayer(value);
+  // @@protoc_insertion_point(field_set:Protocol.MonsterInfo.isfindplayer)
+}
+
+// float calcdist = 10;
+inline void MonsterInfo::clear_calcdist() {
+  _impl_.calcdist_ = 0;
+}
+inline float MonsterInfo::_internal_calcdist() const {
+  return _impl_.calcdist_;
+}
+inline float MonsterInfo::calcdist() const {
+  // @@protoc_insertion_point(field_get:Protocol.MonsterInfo.calcdist)
+  return _internal_calcdist();
+}
+inline void MonsterInfo::_internal_set_calcdist(float value) {
+  
+  _impl_.calcdist_ = value;
+}
+inline void MonsterInfo::set_calcdist(float value) {
+  _internal_set_calcdist(value);
+  // @@protoc_insertion_point(field_set:Protocol.MonsterInfo.calcdist)
 }
 
 #ifdef __GNUC__

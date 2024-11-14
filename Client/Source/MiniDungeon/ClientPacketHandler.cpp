@@ -329,3 +329,8 @@ bool Handle_STC_MONSTERMOVE(PacketSessionRef& session, Protocol::STC_MONSTERMOVE
 {
 	return true;
 }
+
+bool Handle_STC_STANDARD_MONSTER(PacketSessionRef& session, Protocol::STC_STANDARD_MONSTER& pkt)
+{
+	return false;
+}

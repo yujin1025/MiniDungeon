@@ -392,7 +392,12 @@ bool Handle_CTS_MONSTERINFO(PacketSessionRef& session, Protocol::CTS_MONSTERINFO
 
 bool Handle_CTS_MONSTERMOVE(PacketSessionRef& session, Protocol::CTS_MONSTERMOVE& pkt)
 {
-	return false;
+	return true;
+}
+
+bool Handle_CTS_STANDARD_MONSTER(PacketSessionRef& session, Protocol::CTS_STANDARD_MONSTER& pkt)
+{
+	return true;
 }
 
 bool Handle_CTS_CHAT(PacketSessionRef& session, Protocol::CTS_CHAT& pkt)

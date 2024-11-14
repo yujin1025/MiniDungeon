@@ -55,9 +55,11 @@ message MonsterInfo
 	ObjectInfo object_info = 1;
 	ObjectType object_type = 2;
 	AttackInfo attack_info = 3;
-	uint32 player_id = 4;
+	uint32 targetplayer_id = 4;
 	uint32 monster_hp = 5;
 	uint32 speed = 6;
 	uint32 damage = 7;
 	PosInfo pos_info = 8;
+	bool isfindplayer = 9;
+	float calcdist = 10;
 }

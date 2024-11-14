@@ -554,28 +554,56 @@ void UMDNetworkManager::HandleSpawnMonster(const Protocol::STC_MONSTERINFO& Info
 		return;
 	}
 
-	/*
-	const uint64 objectId = InfoPkt.info().player_id();
-	if (Players.Find(objectId) != nullptr)
-	{
-		return;
-	}*/
+	const Protocol::MonsterInfo& monsterInfo = InfoPkt.info();
+	uint64 objectId = monsterInfo.object_info().object_id();
 
 	FVector spawnLocation(1000.0f, 1000.0f, 100.0f);
 	ANonPlayableCharacter* npc = Cast<ANonPlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->KhaimeraClass, &spawnLocation));
+	
+	Monsters.Add(objectId, npc);
 	MD_LOG(LogMDNetwork, Log, TEXT("Spawn Character"));
+}
 
-	//FVector spawnLocation(InfoPkt.info().object_info().pos_info().x(), InfoPkt.info().object_info().pos_info().y(), InfoPkt.info().object_info().pos_info().z());
-	//AGrux* Grux = world->SpawnActor<AGrux>(AGrux::StaticClass(), spawnLocation, FRotator(0.f, 0.f, 0.f));
+void UMDNetworkManager::HandleMonsterInfo(const Protocol::STC_MONSTERINFO& infoPkt)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
 
-	/*
-	UClass* KhaimeraClass = LoadObject<UClass>(nullptr, TEXT("Blueprint'/Game/Assets/BluePrints/NPC/BP_Khaimera.BP_Khaimera_C'"));
-	if (KhaimeraClass)
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	Protocol::MonsterInfo Info = infoPkt.info();
+	const uint64 ObjectId = Info.object_info().object_id();
+
+	// 보스 찾기
+	TObjectPtr<ANonPlayableCharacter>* MonsterPtr = Monsters.Find(ObjectId);
+	if (MonsterPtr == nullptr)
+		return;
+
+	ANonPlayableCharacter* Monster = *MonsterPtr;
+	Monster->MaxHP = Info.monster_hp();
+	Monster->CurrentHP = Monster->MaxHP;
+	Monster->Speed = Info.speed();
+	Monster->Damage = Info.damage();
+	Monster->IsFindPlayer = Info.isfindplayer();
+
+	// 타겟 플레이어 찾기
+	TObjectPtr<APlayableCharacter>* FindPlayer = Players.Find(Info.targetplayer_id());
+	if (FindPlayer == nullptr)
+		return;
+
+	APlayableCharacter* Player = *FindPlayer;
+	Monster->TargetPlayer = Player;
+
+	if (Monster->AIControllerClass)
 	{
-		FVector spawnLocation(1000.0f, 1000.0f, 100.0f);
-		AKhaimera* Khaimera = world->SpawnActor<AKhaimera>(KhaimeraClass, spawnLocation, FRotator(0.f, 0.f, 0.f));
-		UE_LOG(LogTemp, Log, TEXT("GruxClass loaded: %s"), *KhaimeraClass->GetName());
-	}*/
+		AMDAIController* AIController = Cast<AMDAIController>(Monster->AIControllerClass);
+		if (AIController)
+		{
+			AIController->SetBlackboardValues(Monster->IsFindPlayer, Monster->TargetPlayer, Monster->TargetPlayer->GetActorLocation(), Monster->Speed, Info.calcdist());
+		}
+	}
 }
 
 
