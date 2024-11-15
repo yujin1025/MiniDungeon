@@ -1,3 +1,5 @@
 
 Server/Server.sln
 *.sln
+
+Build/*
