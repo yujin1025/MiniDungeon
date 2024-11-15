@@ -315,6 +315,10 @@ bool Handle_CTS_ENTER_GAME(PacketSessionRef& session, Protocol::CTS_ENTER_GAME& 
 	return true;
 }
 
+bool Handle_CTS_SPAWN(PacketSessionRef& session, Protocol::CTS_SPAWN& pkt)
+{
+	return false;
+}
 
 
 bool Handle_CTS_LEAVE_GAME(PacketSessionRef& session, Protocol::CTS_LEAVE_GAME& pkt)

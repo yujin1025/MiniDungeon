@@ -108,6 +108,6 @@ protected:
 	ECharacterType CharacterType;
 
 	UPROPERTY(Replicated)
-	uint64 objectID;
+	uint64 ObjectID;
 
 };

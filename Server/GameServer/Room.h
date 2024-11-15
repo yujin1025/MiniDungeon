@@ -20,7 +20,7 @@ public:
 	//bool EnterRoom(ObjectRef object);
 
 	bool EnterRoom(PlayerRef player, bool isHost = true);
-	bool LeaveRoom(PlayerRef player);
+	bool LeaveRoom(PlayerRef player, bool isExitGame = false);
 	bool ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType);
 
 	bool HandleEnterPlayer(PlayerRef player);

@@ -50,8 +50,8 @@ public:
 	void HandleChangeCharacter(const Protocol::STC_CHANGE_CHARACTER& changeCharacterPkt);
 	void HandleLeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoomPkt);
 
-	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, const Protocol::PlayerType charactertype, bool isMine);
-	void HandleSpawn(const Protocol::PlayerInfo& playerInfo, bool isMine);
+	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, const Protocol::PlayerType charactertype, TArray<AActor*> spawns, bool isMine);
+	void HandleSpawn(const Protocol::PlayerInfo& playerInfo, TArray<AActor*> spawns, bool isMine);
 	void HandleSpawn(const Protocol::STC_ENTER_GAME& enterGamePkt);
 	void HandleSpawn(const Protocol::STC_SPAWN& spawnPkt);
 
@@ -73,20 +73,29 @@ public:
 	TSharedPtr<class PacketSession> GameServerSession;
 
 public:
-	UPROPERTY()
+	/// <summary>
+	/// Key : ObjectID
+	/// Value : PlayerCharacter
+	/// </summary>
 	TMap<uint64,TObjectPtr<class APlayableCharacter>> Players;
 
+	/// <summary>
+	/// Key : PlayerID
+	/// Value : PlayerInfo
+	/// </summary>
 	TMap<uint64, TSharedPtr<Protocol::PlayerInfo>> PlayerInfos;
 
-	UPROPERTY()
 	TObjectPtr<class APlayableCharacter> MyPlayer;
-	UPROPERTY()
+
 	uint64 PlayerID;
 
 	Protocol::PosInfo* PlayerInfo;
 	const Protocol::PosInfo* GetPlayerInfo() { return PlayerInfo; }
 
-	UPROPERTY()
+	/// <summary>
+	/// Key : ObjectID
+	/// Value : MonsterCharacter
+	/// </summary>
 	TMap<uint64, TObjectPtr<class ANonPlayableCharacter>> Monsters;
 };
 

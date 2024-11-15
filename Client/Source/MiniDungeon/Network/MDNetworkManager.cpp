@@ -358,7 +358,7 @@ void UMDNetworkManager::HandleLeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoo
 
 }
 
-void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, const Protocol::PlayerType charactertype, bool isMine)
+void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, const Protocol::PlayerType charactertype, TArray<AActor*> spawns, bool isMine)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)
 	{
@@ -378,17 +378,17 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 		return;
 	}
 
-	FVector spawnLocation(objectInfo.pos_info().x(), objectInfo.pos_info().y(), objectInfo.pos_info().z());
+	FVector spawnLocation = spawns[objectId + 1]->GetActorLocation();
 
-	if (!isMine)
-	{
-		spawnLocation += FVector(15, 0, 0); 
-	}
+	//if (!isMine)
+	//{
+	//	spawnLocation += FVector(15, 0, 0); 
+	//}
 
 	if (isMine)
 	{
 		AMDPlayerController* pc = Cast<AMDPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
-		APlayableCharacter* player = Cast<APlayableCharacter>(pc->GetPawn());
+		APlayableCharacter* player = nullptr;
 		AMDGameMode* gameMode = Cast<AMDGameMode>(GetWorld()->GetAuthGameMode());
 
 		if (true)
@@ -409,6 +409,10 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 			{
 				pc->OnPossess(player);
 				MD_LOG(LogMDNetwork, Log, TEXT("Possess To Character"));
+			}
+			else
+			{
+				MD_LOG(LogMDNetwork, Log, TEXT("PlayerController is not valid"));
 			}
 
 			if(IsValid(gameMode))
@@ -439,24 +443,25 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 	}
 }
 
-void UMDNetworkManager::HandleSpawn(const Protocol::PlayerInfo& playerInfo, bool isMine)
+void UMDNetworkManager::HandleSpawn(const Protocol::PlayerInfo& playerInfo, TArray<AActor*> spawns, bool isMine)
 {
-	HandleSpawn(playerInfo.object_info(), playerInfo.player_type(), isMine);
+	HandleSpawn(playerInfo.object_info(), playerInfo.player_type(), spawns, isMine);
 }
 
 void UMDNetworkManager::HandleSpawn(const Protocol::STC_ENTER_GAME& enterGamePkt)
 {
-	for (auto& player : enterGamePkt.players())
-	{
-		if(player.player_id() == PlayerID)
-		{
-			HandleSpawn(player, true);
-		}
-		else
-		{
-			HandleSpawn(player, false);
-		}
-	}
+	//for (auto& player : enterGamePkt.players())
+	//{
+	//	if(player.player_id() == PlayerID)
+	//	{
+	//		HandleSpawn(player, true);
+	//	}
+	//	else
+	//	{
+	//		HandleSpawn(player, false);
+	//	}
+	//	}
+	//}
 }
 
 void UMDNetworkManager::HandleSpawn(const Protocol::STC_SPAWN& spawnPkt)

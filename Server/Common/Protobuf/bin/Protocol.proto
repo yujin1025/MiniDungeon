@@ -146,6 +146,12 @@ message STC_LEAVE_GAME
 
 }
 
+message CTS_SPAWN
+{
+	CreatureType creature_type = 1;
+	PosInfo pos_info = 2;
+}
+
 message STC_SPAWN
 {
 	repeated ObjectInfo players = 1;

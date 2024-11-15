@@ -102,7 +102,7 @@ bool Room::EnterRoom(PlayerRef player, bool isHost)
 	return success;
 }
 
-bool Room::LeaveRoom(PlayerRef player)
+bool Room::LeaveRoom(PlayerRef player, bool isExitGame)
 {
 	bool success = RemovePlayer(player);
 
@@ -127,14 +127,17 @@ bool Room::LeaveRoom(PlayerRef player)
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(leaveRoomPkt);
 
-	// 퇴장 사실을 퇴장하는 플레이어에게 알린다
-	player->GetSession()->Send(sendBuffer);
+	if (isExitGame == false)
+	{
+		// 퇴장 사실을 퇴장하는 플레이어에게 알린다
+		player->GetSession()->Send(sendBuffer);
 
-	// ���� ����� Room�� �ִ� ��� �÷��̾�� �˸���.
-	Broadcast(sendBuffer, player->GetObjectInfo()->object_id());
+		// ���� ����� Room�� �ִ� ��� �÷��̾�� �˸���.
+		Broadcast(sendBuffer, player->GetObjectInfo()->object_id());
 
-	// ���� ����� Lobby�� �ִ� ��� �÷��̾�Ե� �˸���.
-	_lobby.lock()->Broadcast(sendBuffer, player->GetPlayerInfo()->player_id());
+		// ���� ����� Lobby�� �ִ� ��� �÷��̾�Ե� �˸���.
+		_lobby.lock()->Broadcast(sendBuffer, player->GetPlayerInfo()->player_id());
+	}
 
 	if (_players.empty())
 	{

@@ -80,7 +80,13 @@ private:
 	UPROPERTY()
 	UMDWidget* ingameWindowWidget;
 
+	UPROPERTY()
+	TSet<AActor*> SpawnedActors;
+
 public:
 	FCharacterStatData* GetCharacterStat(ECharacterType type);
 
+private:
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class ALevelScriptActor> CurrentLevelScriptActor;
 };

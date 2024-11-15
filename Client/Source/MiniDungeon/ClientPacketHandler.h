@@ -37,20 +37,21 @@ enum : uint16
 	PKT_STC_ENTER_GAME = 1021,
 	PKT_CTS_LEAVE_GAME = 1022,
 	PKT_STC_LEAVE_GAME = 1023,
-	PKT_STC_SPAWN = 1024,
-	PKT_STC_DESPAWN = 1025,
-	PKT_CTS_MOVE = 1026,
-	PKT_STC_MOVE = 1027,
-	PKT_CTS_CHAT = 1028,
-	PKT_STC_CHAT = 1029,
-	PKT_CTS_ATTACK = 1030,
-	PKT_STC_ATTACK = 1031,
-	PKT_CTS_MONSTERINFO = 1032,
-	PKT_STC_MONSTERINFO = 1033,
-	PKT_CTS_MONSTERMOVE = 1034,
-	PKT_STC_MONSTERMOVE = 1035,
-	PKT_CTS_STANDARD_MONSTER = 1036,
-	PKT_STC_STANDARD_MONSTER = 1037,
+	PKT_CTS_SPAWN = 1024,
+	PKT_STC_SPAWN = 1025,
+	PKT_STC_DESPAWN = 1026,
+	PKT_CTS_MOVE = 1027,
+	PKT_STC_MOVE = 1028,
+	PKT_CTS_CHAT = 1029,
+	PKT_STC_CHAT = 1030,
+	PKT_CTS_ATTACK = 1031,
+	PKT_STC_ATTACK = 1032,
+	PKT_CTS_MONSTERINFO = 1033,
+	PKT_STC_MONSTERINFO = 1034,
+	PKT_CTS_MONSTERMOVE = 1035,
+	PKT_STC_MONSTERMOVE = 1036,
+	PKT_CTS_STANDARD_MONSTER = 1037,
+	PKT_STC_STANDARD_MONSTER = 1038,
 };
 
 // Custom Handlers
@@ -122,6 +123,7 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_LEAVE_ROOM& pkt) { return MakeSendBuffer(pkt, PKT_CTS_LEAVE_ROOM); }
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_CTS_ENTER_GAME); }
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_LEAVE_GAME& pkt) { return MakeSendBuffer(pkt, PKT_CTS_LEAVE_GAME); }
+	static SendBufferRef MakeSendBuffer(Protocol::CTS_SPAWN& pkt) { return MakeSendBuffer(pkt, PKT_CTS_SPAWN); }
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_CTS_MOVE); }
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_CTS_CHAT); }
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_ATTACK& pkt) { return MakeSendBuffer(pkt, PKT_CTS_ATTACK); }

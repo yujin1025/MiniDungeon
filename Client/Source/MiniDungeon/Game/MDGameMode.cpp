@@ -7,6 +7,7 @@
 #include "../Widget/MDWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "MDNetworkManager.h"
+#include "InGameLevelScriptActor.h"
 
 AMDGameMode::AMDGameMode()
 {
@@ -23,6 +24,8 @@ void AMDGameMode::BeginPlay()
 	{
 		ingameWindowWidget->AddToViewport();
 	}
+
+	CurrentLevelScriptActor = GetWorld()->GetLevelScriptActor();
 }
 
 void AMDGameMode::PostInitializeComponents()
@@ -56,6 +59,8 @@ void AMDGameMode::StartPlay()
 	MD_LOG(LogMDNetwork, Log, TEXT("Super End"));
 
 	MD_LOG(LogMDNetwork, Log, TEXT("Override Begin"));
+
+	auto ingameLevelScriptActor = Cast<AInGameLevelScriptActor>(CurrentLevelScriptActor);
 	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
 
 	if (networkManager != nullptr)
@@ -64,18 +69,17 @@ void AMDGameMode::StartPlay()
 		{
 			if (playerInfo.Value->player_id() == networkManager->PlayerID)
 			{
-				networkManager->HandleSpawn(*(playerInfo.Value), true);
+				networkManager->HandleSpawn(*(playerInfo.Value), ingameLevelScriptActor->GetPlayerStarts(), true);
 			}
 			else
 			{
-				networkManager->HandleSpawn(*(playerInfo.Value), false);
+				networkManager->HandleSpawn(*(playerInfo.Value), ingameLevelScriptActor->GetPlayerStarts(), false);
 			}
 		}
+		Protocol::CTS_MONSTERINFO pkt;
+		pkt.set_allocated_info(new Protocol::MonsterInfo());
+		networkManager->SendPacket(pkt);
 	}
-
-	Protocol::CTS_MONSTERINFO pkt;
-	pkt.set_allocated_info(new Protocol::MonsterInfo());
-	networkManager->SendPacket(pkt);
 
 	MD_LOG(LogMDNetwork, Log, TEXT("Override End"));
 }

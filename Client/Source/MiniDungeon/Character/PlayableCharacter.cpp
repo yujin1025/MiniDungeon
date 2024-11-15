@@ -53,7 +53,7 @@ void APlayableCharacter::BeginPlay()
 		const auto& playerInfoPtr = NetworkManager->PlayerInfos.Find(NetworkManager->PlayerID);
 		if (playerInfoPtr)
 		{
-			playerID = (*playerInfoPtr)->object_info().object_id(); // ObjectID 설정
+			ObjectID = (*playerInfoPtr)->object_info().object_id(); // ObjectID 설정
 		}
 	}
 
@@ -74,7 +74,7 @@ void APlayableCharacter::Tick(float DeltaTime)
 
 	// 현재 위치를 PosInfo에 업데이트
 	FVector Location = GetActorLocation();
-	PosInfo->set_object_id(playerID);
+	PosInfo->set_object_id(ObjectID);
 	PosInfo->set_x(Location.X);
 	PosInfo->set_y(Location.Y);
 	PosInfo->set_z(Location.Z);

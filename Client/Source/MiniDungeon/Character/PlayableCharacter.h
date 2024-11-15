@@ -106,9 +106,6 @@ protected:
 	class Protocol::PosInfo* PosInfo; // 현재 위치
 	class Protocol::PosInfo* DestInfo; // 목적지
 
-	UPROPERTY(Replicated)
-	uint64 playerID;
-
 public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	TObjectPtr<class UMDNetworkManager> Player;
