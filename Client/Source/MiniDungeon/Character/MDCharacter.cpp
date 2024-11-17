@@ -9,6 +9,7 @@
 #include "../Game/MDGameMode.h"
 #include "../Network/MDNetworkManager.h"
 #include "../Game/MDGameInstance.h"
+#include <Kismet/GameplayStatics.h>
 
 AMDCharacter::AMDCharacter()
 {
@@ -46,6 +47,9 @@ AMDCharacter::AMDCharacter()
 		CharacterId = 3;
 		break;
 	}
+
+	PosInfo = new Protocol::PosInfo();
+	DestInfo = new Protocol::PosInfo();
 }
 
 FString AMDCharacter::GetEnumNameAsString(EAttackType EnumValue)
@@ -66,6 +70,17 @@ FString AMDCharacter::GetEnumNameAsString(EAttackType EnumValue)
 }
 
 
+void AMDCharacter::BeginDestroy()
+{
+	Super::BeginDestroy();
+
+	delete PosInfo;
+	PosInfo = nullptr;
+
+	delete DestInfo;
+	DestInfo = nullptr;
+}
+
 void AMDCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -81,15 +96,19 @@ void AMDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AMDCharacter::BeginPlay()
 {
+	MD_LOG(LogMDNetwork, Log, TEXT("Super Begin"));
 	Super::BeginPlay();
+	MD_LOG(LogMDNetwork, Log, TEXT("Super End"));
 
 	UMDNetworkManager* NetworkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+
 	if (NetworkManager)
 	{
 		const auto& playerInfoPtr = NetworkManager->PlayerInfos.Find(NetworkManager->PlayerID);
+		MD_LOG(LogMDNetwork, Log, TEXT("This NetManager PlayerID : %d"), NetworkManager->PlayerID);
 		if (playerInfoPtr)
 		{
-			objectID = (*playerInfoPtr)->object_info().object_id(); // ObjectID 설정
+			ObjectID = (*playerInfoPtr)->object_info().object_id(); // ObjectID 설정
 		}
 	}
 }
@@ -134,7 +153,7 @@ void AMDCharacter::SendAttackPacket(EAttackType AttackType)
 {
 	// 공격 정보를 설정
 	Protocol::AttackInfo attackInfo;
-	attackInfo.set_object_id(objectID);
+	attackInfo.set_object_id(ObjectID);
 
 	float damage = 0.0f;
 	switch (AttackType)
@@ -316,6 +335,46 @@ void AMDCharacter::SetRotation(FRotator Rotation, float RotationSpeed)
 {
 	FRotator TargetRotation = FMath::RInterpTo(GetActorRotation(), Rotation, GetWorld()->GetDeltaSeconds(), RotationSpeed);
 	SetActorRotation(TargetRotation);
+}
+
+void AMDCharacter::SetMoveState(Protocol::MoveState State)
+{
+	if (PosInfo->state() == State)
+		return;
+
+	PosInfo->set_state(State);
+
+	// TODO
+}
+
+void AMDCharacter::SetPosInfo(const Protocol::PosInfo& Info)
+{
+	if (PosInfo->object_id() != 0)
+	{
+		assert(PosInfo->object_id() == Info.object_id());
+	}
+
+	PosInfo->CopyFrom(Info);
+
+	FVector Location(Info.x(), Info.y(), Info.z());
+	SetActorLocation(Location);
+
+	TargetLocation = Location;
+}
+
+void AMDCharacter::SetDestInfo(const Protocol::PosInfo& Info)
+{
+	if (PosInfo->object_id() != 0)
+	{
+		assert(PosInfo->object_id() == Info.object_id());
+	}
+
+	// Dest에 최종 상태 복사.
+	DestInfo->CopyFrom(Info);
+
+	// 상태만 바로 적용하자.
+	SetMoveState(Info.state());
+	TargetLocation = FVector(Info.x(), Info.y(), Info.z());
 }
 
 

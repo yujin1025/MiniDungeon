@@ -28,7 +28,6 @@ public:
 	void DisconnectFromServer();
 
 	UFUNCTION(BlueprintCallable)
-
 	void HandleRecvPackets();
 
 	void SendPacket(SendBufferRef sendBuffer);
@@ -52,8 +51,7 @@ public:
 
 	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, const Protocol::PlayerType charactertype, TArray<AActor*> spawns, bool isMine);
 	void HandleSpawn(const Protocol::PlayerInfo& playerInfo, TArray<AActor*> spawns, bool isMine);
-	void HandleSpawn(const Protocol::STC_ENTER_GAME& enterGamePkt);
-	void HandleSpawn(const Protocol::STC_SPAWN& spawnPkt);
+	void HandleSpawn(const Protocol::ObjectInfo& objectInfo);
 
 	void HandleDespawn(uint64 objectId);
 	void HandleDespawn(const Protocol::STC_DESPAWN& despawnPkt);
@@ -67,7 +65,7 @@ public:
 
 public:
 	class FSocket* Socket;
-	FString IpAddress = TEXT("127.0.0.1");
+	FString IpAddress = TEXT("43.202.241.72");
 	int16 Port = 7777;
 
 	TSharedPtr<class PacketSession> GameServerSession;
@@ -83,20 +81,25 @@ public:
 	/// Key : PlayerID
 	/// Value : PlayerInfo
 	/// </summary>
-	TMap<uint64, TSharedPtr<Protocol::PlayerInfo>> PlayerInfos;
+	TMap<uint64, Protocol::PlayerInfo*> PlayerInfos;
+	void AddPlayerInfo(uint64 player_id, const Protocol::PlayerInfo& info);
 
 	TObjectPtr<class APlayableCharacter> MyPlayer;
 
 	uint64 PlayerID;
 
-	Protocol::PosInfo* PlayerInfo;
-	const Protocol::PosInfo* GetPlayerInfo() { return PlayerInfo; }
+	Protocol::PosInfo* PosInfo;
+	const Protocol::PosInfo* GetPlayerInfo() { return PosInfo; }
 
 	/// <summary>
 	/// Key : ObjectID
 	/// Value : MonsterCharacter
 	/// </summary>
 	TMap<uint64, TObjectPtr<class ANonPlayableCharacter>> Monsters;
+
+	bool isHost = false;
+
+	uint64 RoomID;
 };
 
 template<typename T>

@@ -11,20 +11,15 @@ public:
 
 public:
 	const Protocol::ObjectInfo* GetObjectInfo() { return objectInfo; }
-	void SetObjectInfo(Protocol::ObjectInfo* objectInfo) { this->objectInfo = objectInfo; }
 
-	const Protocol::PosInfo* GetPosInfo() { return posInfo; }
-	void SetPosInfo(Protocol::PosInfo* posInfo) { this->posInfo = posInfo; }
-
-	void SetObjectID(int64 object_id) { this->objectInfo->set_object_id(object_id); this->posInfo->set_object_id(object_id); }
+	const Protocol::PosInfo GetPosInfo() { return objectInfo->pos_info(); }
 public:
 	atomic<weak_ptr<Room>> room;
 
 protected:
 	bool _isPlayer = false;
 	
-public:
+protected:
 	Protocol::ObjectInfo* objectInfo;
-	Protocol::PosInfo* posInfo;
 };
 

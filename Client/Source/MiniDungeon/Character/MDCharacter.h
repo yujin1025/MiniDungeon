@@ -30,6 +30,8 @@ class MINIDUNGEON_API AMDCharacter : public ACharacter
 
 public:
 	AMDCharacter();
+
+	virtual void BeginDestroy() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -110,4 +112,17 @@ protected:
 	UPROPERTY(Replicated)
 	uint64 ObjectID;
 
+protected:
+	class Protocol::PosInfo* PosInfo; // 현재 위치
+	class Protocol::PosInfo* DestInfo; // 목적지
+
+	FVector TargetLocation;
+
+	const float MOVE_PACKET_SEND_DELAY = 0.2f;
+	float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+public:
+	Protocol::MoveState GetMoveState() { return PosInfo->state(); }
+	void SetMoveState(Protocol::MoveState State);
+	void SetPosInfo(const Protocol::PosInfo& Info);
+	void SetDestInfo(const Protocol::PosInfo& Info);
 };

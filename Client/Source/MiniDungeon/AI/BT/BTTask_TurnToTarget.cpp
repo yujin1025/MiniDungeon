@@ -6,6 +6,7 @@
 #include "BehaviorTree/BlackBoardComponent.h"
 #include "../../Character/MDCharacter.h"
 #include "../MDAIController.h"
+#include <MDNetworkManager.h>
 
 UBTTask_TurnToTarget::UBTTask_TurnToTarget()
 {
@@ -33,6 +34,8 @@ EBTNodeResult::Type UBTTask_TurnToTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 		return EBTNodeResult::Failed;
 
 	MyCharacter->RotateToTarget(TargetCharacter, RotateSpeed);
+	auto networdManager = GetWorld()->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	// TODO : Send RotateToTarget Info to Server
 
 	return EBTNodeResult::Succeeded;
 }

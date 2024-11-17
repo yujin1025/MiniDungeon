@@ -31,6 +31,8 @@ public:
 	//void HandleMove(Protocol::CTS_MOVE pkt);
 	void HandleMove(const Protocol::PosInfo &info);
 
+	void HandleMoveMonster(const Protocol::PosInfo &info);
+
 	void HandleAttack(Protocol::CTS_ATTACK pkt);
 
 	uint64 GetRoomIndex() const { return _roomIndex; }
@@ -38,7 +40,9 @@ public:
 
 	void ReleaseThisRoom();
 
-	void SpawnMonster();
+	void SpawnMonster(const Protocol::PosInfo& pos_Info);
+
+	void Spawn(const Protocol::CreatureType creatureType, const Protocol::PosInfo &info);
 
 public:
 	void UpdateTick();
@@ -51,6 +55,9 @@ private:
 
 	bool AddPlayer(PlayerRef player);
 	bool RemovePlayer(PlayerRef player);
+
+	bool AddMonster(MonsterRef monster, const Protocol::PosInfo& pos_Info);
+	bool RemoveMonster(uint64 monsterId);
 public:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 
@@ -59,6 +66,7 @@ public:
 public:
 	unordered_map<uint64, PlayerRef> _players;
 	unordered_map<uint64, ObjectRef> _objects;
+	unordered_map<uint64, MonsterRef> _monsters;
 	weak_ptr<class Lobby> _lobby;
 	uint64 _roomIndex = 0;
 

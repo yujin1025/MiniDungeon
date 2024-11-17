@@ -148,13 +148,14 @@ message STC_LEAVE_GAME
 
 message CTS_SPAWN
 {
-	CreatureType creature_type = 1;
-	PosInfo pos_info = 2;
+	uint64 room_id = 1;
+	CreatureType creature_type = 2;
+	PosInfo pos_info = 3;
 }
 
 message STC_SPAWN
 {
-	repeated ObjectInfo players = 1;
+	ObjectInfo object_info = 1;
 }
 
 message STC_DESPAWN
@@ -170,6 +171,30 @@ message CTS_MOVE
 message STC_MOVE
 {
 	PosInfo info = 1;
+}
+
+message CTS_DETECT
+{
+	uint64 detect_object_id = 1;
+	uint64 target_object_id = 2;
+}
+
+message STC_DETECT
+{
+	uint64 detect_object_id = 1;
+	uint64 target_object_id = 2;
+}
+
+message CTS_MONSTER_ATTACK
+{
+	uint64 monster_id = 1;
+	uint64 target_id = 2;
+}
+
+message STC_MONSTER_ATTACK
+{
+	uint64 monster_id = 1;
+	uint64 target_id = 2;
 }
 
 message CTS_CHAT

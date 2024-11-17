@@ -4,14 +4,19 @@
 
 Monster::Monster()
 {
-	objectInfo = new Protocol::ObjectInfo();
 	monsterInfo = new Protocol::MonsterInfo();
+    Protocol::ObjectInfo* obj_info = new Protocol::ObjectInfo();
+    objectInfo->set_creature_type(Protocol::CreatureType::CREATURE_TYPE_MONSTER);
+    obj_info->CopyFrom(*objectInfo);
+
+    monsterInfo->set_allocated_object_info(obj_info);
+    monsterInfo->set_monster_hp(MaxHp);
 }
 
 Monster::~Monster()
 {
-	delete objectInfo;
 	delete monsterInfo;
+    monsterInfo = nullptr;
 }
 
 void Monster::CalcDist()
@@ -21,7 +26,8 @@ void Monster::CalcDist()
 
     auto _room = room.load().lock(); // Room 객체 가져오기
 
-    if (!TargetPlayer)
+    auto targetPlayer = TargetPlayer.load().lock(); // 타겟 플레이어 가져오기
+    if (targetPlayer == nullptr)
     {
         // 플레이어 감지
         for (auto& pair : _room->_objects)
@@ -32,11 +38,11 @@ void Monster::CalcDist()
                 float distance = DistanceTo(player->GetPosInfo());
                 if (distance < BossSight)
                 {
-                    TargetPlayer = player;
+                    TargetPlayer.store(player);
                     IsFindPlayer = true;
                     monsterInfo->set_isfindplayer(IsFindPlayer);
 
-                    standardMonsterPkt.set_object_id(TargetPlayer->objectInfo->object_id());
+                    standardMonsterPkt.set_object_id(TargetPlayer.load().lock()->GetObjectInfo().object_id());
                     standardMonsterPkt.set_isstandard(true);
 
                     // 어그로 플레이어에게 보스 정보 전송
@@ -48,12 +54,15 @@ void Monster::CalcDist()
     }
     else
     {
-        if (_room->_objects.find(TargetPlayer->objectInfo->object_id()) == _room->_objects.end())
+        if (_room->_objects.find(targetPlayer->GetObjectInfo().object_id()) == _room->_objects.end())
         {
-            TargetPlayer = nullptr;
+            TargetPlayer.store(std::weak_ptr<Player>());
             monsterInfo->set_isfindplayer(false);
             monsterInfo->set_targetplayer_id(-1);
             monsterInfo->set_calcdist(0.f);
+
+            Protocol::MonsterInfo* monsterInfo = new Protocol::MonsterInfo();
+            monsterInfo->CopyFrom(GetMonsterInfo());
 
             monsterInfoPkt.set_allocated_info(monsterInfo);
             SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(monsterInfoPkt);
@@ -63,10 +72,10 @@ void Monster::CalcDist()
             return;
         }
         
-        float distance = DistanceTo(TargetPlayer->GetPosInfo());
+        float distance = DistanceTo(targetPlayer->GetPosInfo());
         CanAttack();
 
-        monsterInfo->set_targetplayer_id(TargetPlayer->objectInfo->object_id());
+        monsterInfo->set_targetplayer_id(targetPlayer->GetObjectInfo().object_id());
         monsterInfo->set_monster_hp(CurrentHp);
         monsterInfo->set_calcdist(distance);
 
@@ -81,12 +90,34 @@ void Monster::CanAttack()
 {
 }
 
-float Monster::DistanceTo(const Protocol::PosInfo* targetPos)
+float Monster::DistanceTo(const Protocol::PosInfo& targetPos)
 {
     // 보스 위치 (posInfo)와 타겟 플레이어 위치 (targetPos) 간의 거리 계산
-    float dx = posInfo->x() - targetPos->x();
-    float dy = posInfo->y() - targetPos->y();
-    float dz = posInfo->z() - targetPos->z();
+    float dx = GetPosInfo().x() - targetPos.x();
+    float dy = GetPosInfo().y() - targetPos.y();
+    float dz = GetPosInfo().z() - targetPos.z();
 
     return sqrt(dx * dx + dy * dy + dz * dz);
+}
+
+void Monster::SetObjectInfo(const Protocol::ObjectInfo& obj_Info)
+{
+	Protocol::ObjectInfo* obj_info = new Protocol::ObjectInfo();
+	obj_info->CopyFrom(obj_Info);
+
+	monsterInfo->set_allocated_object_info(obj_info);
+    objectInfo->CopyFrom(monsterInfo->object_info());
+}
+
+void Monster::SetPosInfo(const Protocol::PosInfo& pos_Info)
+{
+    Protocol::PosInfo* pos_info = new Protocol::PosInfo();
+	pos_info->CopyFrom(pos_Info);
+
+	Protocol::ObjectInfo* obj_info = new Protocol::ObjectInfo();
+	obj_info->CopyFrom(monsterInfo->object_info());
+	obj_info->set_allocated_pos_info(pos_info);
+
+	monsterInfo->set_allocated_object_info(obj_info);
+    objectInfo->CopyFrom(monsterInfo->object_info());
 }

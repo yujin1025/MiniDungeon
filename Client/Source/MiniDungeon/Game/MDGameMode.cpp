@@ -28,6 +28,37 @@ void AMDGameMode::BeginPlay()
 	CurrentLevelScriptActor = GetWorld()->GetLevelScriptActor();
 }
 
+void AMDGameMode::SpawnEnemy()
+{
+	MD_LOG(LogMDNetwork, Log, TEXT("Begin"));
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+
+	AInGameLevelScriptActor* currentLevelScript = Cast<AInGameLevelScriptActor>(CurrentLevelScriptActor);
+	if (IsValid(currentLevelScript))
+	{
+		for (auto spanwPoint : currentLevelScript->GetEnemySpawns())
+		{
+			MD_LOG(LogMDNetwork, Log, TEXT("SpawnEnemy"));
+			Protocol::CTS_SPAWN pkt;
+
+			Protocol::PosInfo* posInfo = new Protocol::PosInfo();
+			posInfo->set_x(spanwPoint->GetActorLocation().X);
+			posInfo->set_y(spanwPoint->GetActorLocation().Y);
+			posInfo->set_z(spanwPoint->GetActorLocation().Z);
+
+			pkt.set_room_id(networkManager->RoomID);
+			pkt.set_creature_type(Protocol::CREATURE_TYPE_MONSTER);
+			pkt.set_allocated_pos_info(posInfo);
+
+			if (IsValid(networkManager))
+			{
+				networkManager->SendPacket(pkt);
+			}
+		}
+	}
+	MD_LOG(LogMDNetwork, Log, TEXT("End"));
+}
+
 void AMDGameMode::PostInitializeComponents()
 {
 	MD_LOG(LogMDNetwork, Log, TEXT("Begin"));
@@ -76,9 +107,11 @@ void AMDGameMode::StartPlay()
 				networkManager->HandleSpawn(*(playerInfo.Value), ingameLevelScriptActor->GetPlayerStarts(), false);
 			}
 		}
-		Protocol::CTS_MONSTERINFO pkt;
-		pkt.set_allocated_info(new Protocol::MonsterInfo());
-		networkManager->SendPacket(pkt);
+
+		if(networkManager->isHost)
+		{
+			SpawnEnemy();
+		}
 	}
 
 	MD_LOG(LogMDNetwork, Log, TEXT("Override End"));

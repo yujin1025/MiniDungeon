@@ -36,8 +36,10 @@ ALobbyPlayerController::ALobbyPlayerController()
 	PlayerInfo = new Protocol::PlayerInfo();
 }
 
-ALobbyPlayerController::~ALobbyPlayerController()
+void ALobbyPlayerController::BeginDestroy()
 {
+	Super::BeginDestroy();
+
 	delete PlayerInfo;
 	PlayerInfo = nullptr;
 }
@@ -235,7 +237,7 @@ void ALobbyPlayerController::LeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoom
 	{
 		UWidgetLayoutLibrary::RemoveAllWidgets(this);
 		RoomWidget->SetRoomData(nullptr);
-		OpenLobbyWidget();	
+		OpenLobbyWidget();
 		return;
 	}
 

@@ -2,6 +2,8 @@
 
 
 #include "Lobby/RoomListViewItemData.h"
+#include <MDNetworkManager.h>
+#include <Kismet/GameplayStatics.h>
 
 URoomListViewItemData::URoomListViewItemData()
 {
@@ -11,8 +13,10 @@ URoomListViewItemData::URoomListViewItemData()
 	RoomIndex = -1;
 }
 
-URoomListViewItemData::~URoomListViewItemData()
+void URoomListViewItemData::BeginDestroy()
 {
+	Super::BeginDestroy();
+
 	delete Host;
 	Host = nullptr;
 

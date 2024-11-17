@@ -17,8 +17,6 @@ class MINIDUNGEON_API UMDGameInstance : public UGameInstance
 public:
 	UMDGameInstance();
 
-	UMDNetworkManager* GetNetworkManager() const { return NetworkManager; }
-
 protected:
 	virtual void Init() override;
 
@@ -29,7 +27,4 @@ public:
 	TSubclassOf<class APlayableCharacter> DrongoClass;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ANonPlayableCharacter> KhaimeraClass;
-
-	UPROPERTY()
-	UMDNetworkManager* NetworkManager;
 };

@@ -17,7 +17,7 @@ class MINIDUNGEON_API URoomListViewItemData : public UObject
 public:
 	URoomListViewItemData();
 
-	~URoomListViewItemData();
+	virtual void BeginDestroy() override;
 
 	UPROPERTY(EditAnywhere)
 	uint64 RoomIndex;

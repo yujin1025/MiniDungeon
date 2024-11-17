@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Protocol.pb.h"
 
 #define LOG_NETMODEINFO (TEXT("STANDALONE"))
 #define LOG_CALLINFO ANSI_TO_TCHAR(__FUNCTION__)

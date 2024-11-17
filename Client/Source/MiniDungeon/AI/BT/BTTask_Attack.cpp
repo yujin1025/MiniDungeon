@@ -3,6 +3,7 @@
 
 #include "BTTask_Attack.h"
 #include "../../Character/MDCharacter.h"
+#include <MDNetworkManager.h>
 
 UBTTask_Attack::UBTTask_Attack()
 {
@@ -20,6 +21,9 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 	if (Character->IsSatisfiedAttack(AttackType) == false)
 		return EBTNodeResult::Failed;
+
+	auto networdManager = GetWorld()->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	// TODO : Send Attack Info to Server
 
 	Character->UseSkill(AttackType);
 	bIsProcessing = true;

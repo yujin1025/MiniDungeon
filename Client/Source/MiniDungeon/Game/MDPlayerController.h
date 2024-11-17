@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "MiniDungeon.h"
 #include "MDPlayerController.generated.h"
 
 class AMDPlayerState;
@@ -17,6 +18,9 @@ class MINIDUNGEON_API AMDPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
+	AMDPlayerController();
+	virtual void BeginDestroy() override;
+
 	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
 	virtual void OnPossess(APawn* aPawn) override;
@@ -24,7 +28,12 @@ public:
 private:
 	void OnPossessCharacter(AMDCharacter* aCharacter);
 	AMDCharacter* OwnerCharacter;
-	
+
+	Protocol::PlayerInfo* PlayerInfo;
+
+public:
+	const Protocol::PlayerInfo* GetPlayerInfo() { return PlayerInfo; }
+	void SetPlayerInfo(const Protocol::PlayerInfo& info);
 public:
 	AMDPlayerState* GetState();
 	AMDCharacter* GetCharacter();

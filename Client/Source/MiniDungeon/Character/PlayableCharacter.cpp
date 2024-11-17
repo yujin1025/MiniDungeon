@@ -34,9 +34,6 @@ APlayableCharacter::APlayableCharacter()
 	InputActionMap.Add(EAttackType::QSkillAttack, nullptr);
 	InputActionMap.Add(EAttackType::ESkillAttack, nullptr);
 	InputActionMap.Add(EAttackType::ShiftAttack, nullptr);
-
-	PosInfo = new Protocol::PosInfo();
-	DestInfo = new Protocol::PosInfo();
 }
 
 bool APlayableCharacter::IsMyPlayer() const
@@ -227,45 +224,6 @@ void APlayableCharacter::OnShift(const FInputActionValue& Value)
 	UseSkill(EAttackType::ShiftAttack);
 }
 
-void APlayableCharacter::SetMoveState(Protocol::MoveState State)
-{
-	if (PosInfo->state() == State)
-		return;
-
-	PosInfo->set_state(State);
-
-	// TODO
-}
-
-void APlayableCharacter::SetPlayerInfo(const Protocol::PosInfo& Info)
-{
-	if (PosInfo->object_id() != 0)
-	{
-		assert(PosInfo->object_id() == Info.object_id());
-	}
-
-	PosInfo->CopyFrom(Info);
-
-	FVector Location(Info.x(), Info.y(), Info.z());
-	SetActorLocation(Location); 
-
-	TargetLocation = Location;
-}
-
-void APlayableCharacter::SetDestInfo(const Protocol::PosInfo& Info)
-{
-	if (PosInfo->object_id() != 0)
-	{
-		assert(PosInfo->object_id() == Info.object_id());
-	}
-
-	// Dest에 최종 상태 복사.
-	DestInfo->CopyFrom(Info);
-
-	// 상태만 바로 적용하자.
-	SetMoveState(Info.state());
-	TargetLocation = FVector(Info.x(), Info.y(), Info.z());
-}
 
 void APlayableCharacter::Other_Attack(const Protocol::AttackInfo& Info)
 {

@@ -242,7 +242,6 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 		playerInfo->set_allocated_object_info(objectInfo);
 
 		loginPkt.set_allocated_player(playerInfo);
-		//loginPkt.set_id(pkt.id());
 		loginPkt.set_success(true);
 	}
 	else
@@ -317,6 +316,13 @@ bool Handle_CTS_ENTER_GAME(PacketSessionRef& session, Protocol::CTS_ENTER_GAME& 
 
 bool Handle_CTS_SPAWN(PacketSessionRef& session, Protocol::CTS_SPAWN& pkt)
 {
+	if (GLobby->GetRooms().find(pkt.room_id()) == GLobby->GetRooms().end())
+	{
+		return false;
+	}
+
+	GLobby->GetRooms()[pkt.room_id()]->DoAsync(&Room::Spawn, pkt.creature_type(), pkt.pos_info());
+
 	return false;
 }
 
@@ -342,7 +348,6 @@ bool Handle_CTS_MOVE(PacketSessionRef& session, Protocol::CTS_MOVE& pkt)
 {
 	auto gameSession = static_pointer_cast<GameSession>(session);
 
-
 	PlayerRef player = gameSession->player.load();
 	if (player == nullptr)
 		return false;
@@ -355,6 +360,16 @@ bool Handle_CTS_MOVE(PacketSessionRef& session, Protocol::CTS_MOVE& pkt)
 	//room->HandleMove(pkt);
 
 	return true;
+}
+
+bool Handle_CTS_DETECT(PacketSessionRef& session, Protocol::CTS_DETECT& pkt)
+{
+	return false;
+}
+
+bool Handle_CTS_MONSTER_ATTACK(PacketSessionRef& session, Protocol::CTS_MONSTER_ATTACK& pkt)
+{
+	return false;
 }
 
 bool Handle_CTS_ATTACK(PacketSessionRef& session, Protocol::CTS_ATTACK& pkt)
@@ -389,7 +404,7 @@ bool Handle_CTS_MONSTERINFO(PacketSessionRef& session, Protocol::CTS_MONSTERINFO
 		return false;
 
 	// 서버에서 몬스터 소환
-	room->DoAsync(&Room::SpawnMonster);
+	//room->DoAsync(&Room::SpawnMonster);
 
 	return true;
 }

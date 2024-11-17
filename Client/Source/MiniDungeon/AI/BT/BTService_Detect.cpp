@@ -7,6 +7,7 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "DrawDebugHelpers.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include <MDNetworkManager.h>
 
 
 void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -78,6 +79,10 @@ void UBTService_Detect::SetDetectedTarget(UBehaviorTreeComponent& OwnerComp, AMD
 	auto* BlackBoard = GetBlackboardComponent(OwnerComp);
 	if (BlackBoard == nullptr)
 		return;
+
+	auto networkManager = GetWorld()->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+
+	// TODO : Send TargetCharacter Info to Server
 
 	BlackBoard->SetValueAsObject(AMDAIController::TargetObjectKey, TargetCharacter);
 
