@@ -158,6 +158,8 @@ bool Room::ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType charac
 		return false;
 	}
 
+	_players[playerIndex]->SetPlayerType(characterType);
+
 	// 캐릭터 변경 사실을 알린다.
 	changeCharacterPkt.set_success(true);
 	changeCharacterPkt.set_player_id(playerIndex);
