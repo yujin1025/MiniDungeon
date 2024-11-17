@@ -22,10 +22,16 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	if (Character->IsSatisfiedAttack(AttackType) == false)
 		return EBTNodeResult::Failed;
 
-	auto networdManager = GetWorld()->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-	// TODO : Send Attack Info to Server
+	auto networdManager = Character->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
 
-	Character->UseSkill(AttackType);
+	if (IsValid(networdManager))
+	{
+		Protocol::CTS_MONSTER_ATTACK monstAttackPkt;
+		monstAttackPkt.set_monster_id(Character->GetObjectID());
+		// TODO : Send Attack Info to Server
+	}
+
+	//Character->UseSkill(AttackType);
 	bIsProcessing = true;
 	Character->OnUseSkillDelegate.AddLambda([this](EAttackType AttackType) -> void
 	{

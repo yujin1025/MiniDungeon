@@ -364,12 +364,40 @@ bool Handle_CTS_MOVE(PacketSessionRef& session, Protocol::CTS_MOVE& pkt)
 
 bool Handle_CTS_DETECT(PacketSessionRef& session, Protocol::CTS_DETECT& pkt)
 {
-	return false;
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+	
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
+
+	//room->HandleDetect(pkt);
+
+	return true;
 }
 
 bool Handle_CTS_MONSTER_ATTACK(PacketSessionRef& session, Protocol::CTS_MONSTER_ATTACK& pkt)
 {
-	return false;
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
+
+	Protocol::STC_MONSTER_ATTACK monsterAttackPkt;
+	monsterAttackPkt.set_monster_id(pkt.monster_id());
+
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(monsterAttackPkt);
+	room->Broadcast(sendBuffer);
+
+	return true;
 }
 
 bool Handle_CTS_ATTACK(PacketSessionRef& session, Protocol::CTS_ATTACK& pkt)

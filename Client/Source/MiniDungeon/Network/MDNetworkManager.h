@@ -57,8 +57,11 @@ public:
 	void HandleDespawn(const Protocol::STC_DESPAWN& despawnPkt);
 
 	void HandleMove(const Protocol::STC_MOVE& movePkt);
+	void HandleMovePlayer(class APlayableCharacter* player, const Protocol::PosInfo& posInfo);
+	void HandleMoveMonster(class ANonPlayableCharacter* monster, const Protocol::PosInfo& posInfo);
 
 	void HandleAttack(const Protocol::STC_ATTACK& AtkPkt);
+	void HandleMonsterAttack(uint64 obj_id);
 
 	void HandleSpawnMonster(const Protocol::STC_MONSTERINFO& InfoPkt);
 	void HandleMonsterInfo(const Protocol::STC_MONSTERINFO& infoPkt);

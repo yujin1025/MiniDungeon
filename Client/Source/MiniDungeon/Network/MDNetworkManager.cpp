@@ -491,6 +491,7 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo)
 
 	FVector spawnLocation = FVector(objectInfo.pos_info().x(), objectInfo.pos_info().y(), objectInfo.pos_info().z());
 	ANonPlayableCharacter* monster = Cast<ANonPlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->KhaimeraClass, &spawnLocation));
+	monster->SetObjectID(objectId);
 	Monsters.Add(objectId, monster);
 	MD_LOG(LogMDNetwork, Log, TEXT("Spawn Monster"));
 }
@@ -541,23 +542,41 @@ void UMDNetworkManager::HandleMove(const Protocol::STC_MOVE& movePkt)
 	//이동하려는 플레이어 식별
 	const uint64 objectId = movePkt.info().object_id();
 
-	TObjectPtr<APlayableCharacter>* findActor = Players.Find(objectId);
-	if(findActor == nullptr)
+	if(Players.Contains(objectId))
 	{
+		HandleMovePlayer(*Players.Find(objectId), movePkt.info());
 		return;
 	}
 
-	APlayableCharacter* player = (*findActor);
-	if(player->IsMyPlayer())
+	if(Monsters.Contains(objectId))
+	{
+		HandleMoveMonster(*Monsters.Find(objectId), movePkt.info());
+		return;
+	}
+	
+}
+
+void UMDNetworkManager::HandleMovePlayer(APlayableCharacter* player, const Protocol::PosInfo& posInfo)
+{
+	if (player->IsMyPlayer())
 	{
 		return;
 	}
 
 	//이동 정보 가져와서 업데이트 
-	const Protocol::PosInfo& info = movePkt.info();
-	player->SetPosInfo(info);
-	player->SetDestInfo(info);
-	MD_LOG(LogMDNetwork, Log, TEXT("PlayerID: %llu"), info.object_id());
+	player->SetPosInfo(posInfo);
+	player->SetDestInfo(posInfo);
+}
+
+void UMDNetworkManager::HandleMoveMonster(ANonPlayableCharacter* monster, const Protocol::PosInfo& posInfo)
+{
+	if(isHost)
+	{
+		return;
+	}
+
+	monster->SetPosInfo(posInfo);
+	monster->SetDestInfo(posInfo);
 }
 
 void UMDNetworkManager::HandleAttack(const Protocol::STC_ATTACK& AtkPkt)
@@ -579,6 +598,23 @@ void UMDNetworkManager::HandleAttack(const Protocol::STC_ATTACK& AtkPkt)
 
 	const Protocol::AttackInfo& Info = AtkPkt.info();
 	player->Other_Attack(Info);
+}
+
+void UMDNetworkManager::HandleMonsterAttack(uint64 obj_id)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	TObjectPtr<ANonPlayableCharacter>* MonsterPtr = Monsters.Find(obj_id);
+	if (MonsterPtr == nullptr)
+		return;
+
+	ANonPlayableCharacter* Monster = *MonsterPtr;
+	Monster->UseSkill(EAttackType::QSkillAttack);
 }
 
 void UMDNetworkManager::HandleSpawnMonster(const Protocol::STC_MONSTERINFO& InfoPkt)

@@ -29,8 +29,12 @@ EBTNodeResult::Type UBTTask_FindPatrolPos::ExecuteTask(UBehaviorTreeComponent& O
 		return EBTNodeResult::Failed;
 
 	BlackBoard->SetValueAsVector(AMDAIController::PatrolPosKey, NextPatrol.Location);
-	auto networdManager = GetWorld()->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-	// TODO : Send NextPatrol.Location Info to Server
+
+	auto networdManager = GetAIController(OwnerComp)->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if(IsValid(networdManager))
+	{
+		// TODO : Send NextPatrol.Location Info to Server
+	}
 
 	return EBTNodeResult::Succeeded;
 }

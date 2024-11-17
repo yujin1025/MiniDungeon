@@ -52,6 +52,17 @@ AMDCharacter::AMDCharacter()
 	DestInfo = new Protocol::PosInfo();
 }
 
+void AMDCharacter::BeginDestroy()
+{
+	Super::BeginDestroy();
+
+	delete PosInfo;
+	PosInfo = nullptr;
+
+	delete DestInfo;
+	DestInfo = nullptr;
+}
+
 FString AMDCharacter::GetEnumNameAsString(EAttackType EnumValue)
 {
 	switch (EnumValue)
@@ -67,18 +78,6 @@ FString AMDCharacter::GetEnumNameAsString(EAttackType EnumValue)
 	}
 
 	return "";
-}
-
-
-void AMDCharacter::BeginDestroy()
-{
-	Super::BeginDestroy();
-
-	delete PosInfo;
-	PosInfo = nullptr;
-
-	delete DestInfo;
-	DestInfo = nullptr;
 }
 
 void AMDCharacter::Tick(float DeltaTime)
@@ -99,18 +98,6 @@ void AMDCharacter::BeginPlay()
 	MD_LOG(LogMDNetwork, Log, TEXT("Super Begin"));
 	Super::BeginPlay();
 	MD_LOG(LogMDNetwork, Log, TEXT("Super End"));
-
-	UMDNetworkManager* NetworkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-
-	if (NetworkManager)
-	{
-		const auto& playerInfoPtr = NetworkManager->PlayerInfos.Find(NetworkManager->PlayerID);
-		MD_LOG(LogMDNetwork, Log, TEXT("This NetManager PlayerID : %d"), NetworkManager->PlayerID);
-		if (playerInfoPtr)
-		{
-			ObjectID = (*playerInfoPtr)->object_info().object_id(); // ObjectID 설정
-		}
-	}
 }
 
 void AMDCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

@@ -301,6 +301,12 @@ bool Handle_STC_DETECT(PacketSessionRef& session, Protocol::STC_DETECT& pkt)
 
 bool Handle_STC_MONSTER_ATTACK(PacketSessionRef& session, Protocol::STC_MONSTER_ATTACK& pkt)
 {
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
+	if (gameNetwork != nullptr)
+	{
+		gameNetwork->HandleMonsterAttack(pkt.monster_id());
+	}
 	return true;
 }
 //

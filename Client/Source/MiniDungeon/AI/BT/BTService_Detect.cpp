@@ -80,7 +80,11 @@ void UBTService_Detect::SetDetectedTarget(UBehaviorTreeComponent& OwnerComp, AMD
 	if (BlackBoard == nullptr)
 		return;
 
-	auto networkManager = GetWorld()->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	auto networkManager = OwnerComp.GetAIOwner()->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if(IsValid(networkManager))
+	{
+		// TODO : Send TargetCharacter Info to Server
+	}
 
 	// TODO : Send TargetCharacter Info to Server
 

@@ -125,4 +125,7 @@ public:
 	void SetMoveState(Protocol::MoveState State);
 	void SetPosInfo(const Protocol::PosInfo& Info);
 	void SetDestInfo(const Protocol::PosInfo& Info);
+
+	uint64 GetObjectID() const { return ObjectID; }
+	void SetObjectID(uint64 obj_id) { ObjectID = obj_id; }
 };
