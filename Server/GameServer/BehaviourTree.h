@@ -1,10 +1,18 @@
 #pragma once
+#include <any>
 
 enum class ENodeState
 {
-	Running,
 	Success,
-	Failure
+	Failure,
+	Abort,
+	Running,
+};
+
+enum class EBlackboardKey
+{
+	Target,
+	Position,
 };
 
 struct Vector3
@@ -20,11 +28,11 @@ struct Vector2
 	float y = 0.0f;
 };
 
-class BehaviourTree
+class BehaviourTree : public enable_shared_from_this<BehaviourTree>
 {
 public:
-	BehaviourTree() = default;
-	virtual ~BehaviourTree() = default;
+	BehaviourTree(shared_ptr<Monster> _owner);
+	virtual ~BehaviourTree();
 
 	ENodeState Update();
 
@@ -32,30 +40,34 @@ public:
 
 	static void Traverse(const std::shared_ptr<Node>& node, const std::function<void(const std::shared_ptr<Node>&)>& visitor);
 
-	shared_ptr<BehaviourTree> Clone() const;
-
-	void Bind(void* context);
+	void Bind(any* context);
 public:
-	shared_ptr<Node> rootNode;
-	ENodeState treeState = ENodeState::Running;
+	weak_ptr<class Monster> owner;
+
+	shared_ptr<class RootNode> rootNode;
 	vector<shared_ptr<Node>> nodes;
+
 	shared_ptr<Blackboard> blackboard;
+
+	atomic<ENodeState> treeState = ENodeState::Running;
 };
 
-class Blackboard
+class Blackboard : public enable_shared_from_this<Blackboard>
 {
 public:
 	Blackboard() = default;
-	virtual ~Blackboard() = default;
+	virtual ~Blackboard();
 
-	Vector3 moveToPosition;
+public:
+	weak_ptr<BehaviourTree> tree;
+	map<EBlackboardKey, atomic<any>> data;
 };
 
 class Node : public enable_shared_from_this<Node>
 {
 public:
-	Node() = default;
-	virtual ~Node() = default;
+	Node();
+	virtual ~Node();
 
 	ENodeState Update();
 
@@ -67,26 +79,14 @@ protected:
 	virtual ENodeState OnUpdate() = 0;
 
 public:
-	ENodeState state = ENodeState::Running;
-	bool started = false;
+	weak_ptr<BehaviourTree> tree;
 	shared_ptr<Blackboard> blackboard;
-	void* context = nullptr;
+	weak_ptr<Node> parent;
+
+	atomic<ENodeState> state = ENodeState::Running;
+
+	bool started = false;
+
+	atomic<any> context;
 };
-
-class RootNode : public Node
-{
-public:
-	RootNode() = default;
-	virtual ~RootNode() = default;
-
-protected:
-	virtual void OnStart() override;
-	virtual void OnStop() override;
-	virtual ENodeState OnUpdate() override;
-
-public:
-	shared_ptr<Node> child;
-};
-
-
 

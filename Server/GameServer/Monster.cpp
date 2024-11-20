@@ -1,6 +1,11 @@
 ﻿#include "pch.h"
 #include "Monster.h"
 #include "Player.h"
+#include "BehaviourTree.h"
+#include "CompositeNode.h"
+#include "DecoratorNode.h"
+#include "ServiceNode.h"
+#include "ActionNode.h"
 
 Monster::Monster()
 {
@@ -11,6 +16,15 @@ Monster::Monster()
 
     monsterInfo->set_allocated_object_info(obj_info);
     monsterInfo->set_monster_hp(MaxHp);
+
+    blackboard = make_shared<MonsterBlackboard>();
+    behaviourTree = make_shared<BehaviourTree>();
+
+    // 루트 노드 생성
+    auto root = make_shared<RootNode>();
+
+    // 자식 노드 생성
+    auto selector = make_shared<SelectorNode>();
 }
 
 Monster::~Monster()
@@ -26,8 +40,8 @@ void Monster::CalcDist()
 
     auto _room = room.load().lock(); // Room 객체 가져오기
 
-    auto targetPlayer = TargetPlayer.load().lock(); // 타겟 플레이어 가져오기
-    if (targetPlayer == nullptr)
+    auto targetPlayer = TargetPlayer.load();
+    if (targetPlayer)
     {
         // 플레이어 감지
         for (auto& pair : _room->_objects)
@@ -42,7 +56,7 @@ void Monster::CalcDist()
                     IsFindPlayer = true;
                     monsterInfo->set_isfindplayer(IsFindPlayer);
 
-                    standardMonsterPkt.set_object_id(TargetPlayer.load().lock()->GetObjectInfo().object_id());
+                    standardMonsterPkt.set_object_id(player->GetObjectInfo().object_id());
                     standardMonsterPkt.set_isstandard(true);
 
                     // 어그로 플레이어에게 보스 정보 전송
@@ -56,7 +70,7 @@ void Monster::CalcDist()
     {
         if (_room->_objects.find(targetPlayer->GetObjectInfo().object_id()) == _room->_objects.end())
         {
-            TargetPlayer.store(std::weak_ptr<Player>());
+            TargetPlayer.store(nullptr);
             monsterInfo->set_isfindplayer(false);
             monsterInfo->set_targetplayer_id(-1);
             monsterInfo->set_calcdist(0.f);
@@ -72,10 +86,10 @@ void Monster::CalcDist()
             return;
         }
         
-        float distance = DistanceTo(targetPlayer->GetPosInfo());
+        float distance = DistanceTo(TargetPlayer.load()->GetPosInfo());
         CanAttack();
 
-        monsterInfo->set_targetplayer_id(targetPlayer->GetObjectInfo().object_id());
+        monsterInfo->set_targetplayer_id(TargetPlayer.load()->GetObjectInfo().object_id());
         monsterInfo->set_monster_hp(CurrentHp);
         monsterInfo->set_calcdist(distance);
 
@@ -95,9 +109,8 @@ float Monster::DistanceTo(const Protocol::PosInfo& targetPos)
     // 보스 위치 (posInfo)와 타겟 플레이어 위치 (targetPos) 간의 거리 계산
     float dx = GetPosInfo().x() - targetPos.x();
     float dy = GetPosInfo().y() - targetPos.y();
-    float dz = GetPosInfo().z() - targetPos.z();
 
-    return sqrt(dx * dx + dy * dy + dz * dz);
+    return sqrt(dx * dx + dy * dy);
 }
 
 void Monster::SetObjectInfo(const Protocol::ObjectInfo& obj_Info)

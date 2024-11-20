@@ -39,3 +39,8 @@ USING_SHARED_PTR(Lobby);
 
 
 #define LOG(msg) cout << msg << endl;
+
+#define LOG_INFO() \
+		cout << "File: " << __FILE__ \
+              << ", Line: " << __LINE__ \
+              << ", Function: " << __func__ << endl;

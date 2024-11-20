@@ -1,6 +1,17 @@
 ﻿#pragma once
 #include "Creature.h"
 #include "Room.h"
+#include "BehaviourTree.h"
+
+class MonsterBlackboard : public Blackboard
+{
+public:
+	MonsterBlackboard() = default;
+	virtual ~MonsterBlackboard() = default;
+
+	Vector3 moveToPosition;
+};
+
 
 class Monster : public Creature
 {
@@ -14,7 +25,6 @@ public:
 	Vector3 GetDestination() { return Vector3{ 0,0,0 }; }
 
 	Protocol::CreatureType creatureType = Protocol::CreatureType::CREATURE_TYPE_MONSTER;
-	
 
 	const Vector3 SpawnVec{ 3390.f, 640.f, 178.f };
 	const float SpawnYaw = 180.f;
@@ -32,7 +42,8 @@ public:
 	bool IsDead;
 	bool IsFindPlayer;
 	 
-	atomic<weak_ptr<Player>> TargetPlayer; //보스가 추적하는 플레이어 객체
+	atomic<shared_ptr<Player>> TargetPlayer; //보스가 추적하는 플레이어 객체
+	atomic<bool> isAttacking = false;
 
 private:
 	Protocol::MonsterInfo* monsterInfo;
@@ -46,5 +57,9 @@ public:
 
 	const Protocol::PosInfo GetPosInfo() { return GetObjectInfo().pos_info(); }
 	void SetPosInfo(const Protocol::PosInfo& pos_Info);
+
+private:
+	shared_ptr<BehaviourTree> behaviourTree;
+	shared_ptr<MonsterBlackboard> blackboard;
 };
 

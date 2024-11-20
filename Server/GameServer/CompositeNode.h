@@ -4,8 +4,8 @@
 class CompositeNode : public Node
 {
 public:
-	CompositeNode() = default;
-	virtual ~CompositeNode() = default;
+	CompositeNode();
+	virtual ~CompositeNode();
 
 public:
 	vector<shared_ptr<Node>> children;

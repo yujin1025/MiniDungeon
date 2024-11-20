@@ -51,3 +51,20 @@ protected:
 	virtual void OnStop() override;
 	virtual ENodeState OnUpdate() override;
 };
+
+class AttackNode : public ActionNode
+{
+public:
+	AttackNode() = default;
+	virtual ~AttackNode() = default;
+
+	void SetIsAttackSuccessful(bool value) { isAttackSuccessful = value; }
+
+protected:
+	virtual void OnStart() override;
+	virtual void OnStop() override;
+	virtual ENodeState OnUpdate() override;
+
+private:
+	atomic<bool> isAttackSuccessful = false;
+};
