@@ -3837,6 +3837,7 @@ class STC_ENTER_GAME final :
 
   enum : int {
     kPlayersFieldNumber = 2,
+    kMonstersFieldNumber = 3,
     kSuccessFieldNumber = 1,
   };
   // repeated .Protocol.PlayerInfo players = 2;
@@ -3857,6 +3858,24 @@ class STC_ENTER_GAME final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >&
       players() const;
 
+  // repeated .Protocol.MonsterInfo monsters = 3;
+  int monsters_size() const;
+  private:
+  int _internal_monsters_size() const;
+  public:
+  void clear_monsters();
+  ::Protocol::MonsterInfo* mutable_monsters(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::MonsterInfo >*
+      mutable_monsters();
+  private:
+  const ::Protocol::MonsterInfo& _internal_monsters(int index) const;
+  ::Protocol::MonsterInfo* _internal_add_monsters();
+  public:
+  const ::Protocol::MonsterInfo& monsters(int index) const;
+  ::Protocol::MonsterInfo* add_monsters();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::MonsterInfo >&
+      monsters() const;
+
   // bool success = 1;
   void clear_success();
   bool success() const;
@@ -3875,6 +3894,7 @@ class STC_ENTER_GAME final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo > players_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::MonsterInfo > monsters_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -9073,6 +9093,43 @@ inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >
 STC_ENTER_GAME::players() const {
   // @@protoc_insertion_point(field_list:Protocol.STC_ENTER_GAME.players)
   return _impl_.players_;
+}
+
+// repeated .Protocol.MonsterInfo monsters = 3;
+inline int STC_ENTER_GAME::_internal_monsters_size() const {
+  return _impl_.monsters_.size();
+}
+inline int STC_ENTER_GAME::monsters_size() const {
+  return _internal_monsters_size();
+}
+inline ::Protocol::MonsterInfo* STC_ENTER_GAME::mutable_monsters(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.STC_ENTER_GAME.monsters)
+  return _impl_.monsters_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::MonsterInfo >*
+STC_ENTER_GAME::mutable_monsters() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.STC_ENTER_GAME.monsters)
+  return &_impl_.monsters_;
+}
+inline const ::Protocol::MonsterInfo& STC_ENTER_GAME::_internal_monsters(int index) const {
+  return _impl_.monsters_.Get(index);
+}
+inline const ::Protocol::MonsterInfo& STC_ENTER_GAME::monsters(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_ENTER_GAME.monsters)
+  return _internal_monsters(index);
+}
+inline ::Protocol::MonsterInfo* STC_ENTER_GAME::_internal_add_monsters() {
+  return _impl_.monsters_.Add();
+}
+inline ::Protocol::MonsterInfo* STC_ENTER_GAME::add_monsters() {
+  ::Protocol::MonsterInfo* _add = _internal_add_monsters();
+  // @@protoc_insertion_point(field_add:Protocol.STC_ENTER_GAME.monsters)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::MonsterInfo >&
+STC_ENTER_GAME::monsters() const {
+  // @@protoc_insertion_point(field_list:Protocol.STC_ENTER_GAME.monsters)
+  return _impl_.monsters_;
 }
 
 // -------------------------------------------------------------------

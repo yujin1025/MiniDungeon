@@ -241,6 +241,14 @@ bool Handle_STC_ENTER_GAME(PacketSessionRef& session, Protocol::STC_ENTER_GAME& 
 		}
 	}
 
+	for(const auto& monster : pkt.monsters())
+	{
+		if (IsValid(gameNetwork))
+		{
+			gameNetwork->AddMonsterInfo(monster.object_info().object_id(), monster);
+		}
+	}
+
 	if (IsValid(gameNetwork))
 	{
 		MD_LOG(LogMDNetwork, Log, TEXT("OpenLevel Begin"));

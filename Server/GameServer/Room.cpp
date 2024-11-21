@@ -250,7 +250,6 @@ bool Room::HandleLeavePlayer(uint64 playerindex)
 
 void Room::HandleStartGame()
 {
-	//SpawnMonster();
 	GetRoomRef()->DoAsync(&Room::UpdateTick);
 
 	Protocol::STC_ENTER_GAME enterGamePkt;
@@ -276,6 +275,21 @@ void Room::HandleStartGame()
 		playerInfo->set_allocated_object_info(objectInfo);
 
 		enterGamePkt.add_players()->CopyFrom(*playerInfo);
+	}
+
+	SpawnMonsters();
+
+	for (auto& monster : _monsters)
+	{
+		Protocol::MonsterInfo* monsterInfo = new Protocol::MonsterInfo();
+		Protocol::ObjectInfo* objectInfo = new Protocol::ObjectInfo();
+		Protocol::PosInfo* posInfo = new Protocol::PosInfo();
+
+		monsterInfo->CopyFrom(monster.second->GetMonsterInfo());
+		objectInfo->CopyFrom(monster.second->GetObjectInfo());
+		posInfo->CopyFrom(monster.second->GetPosInfo());
+
+		enterGamePkt.add_monsters()->CopyFrom(*monsterInfo);
 	}
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
@@ -404,6 +418,16 @@ void Room::ReleaseThisRoom()
 	auto self = GetRoomRef();
 	_lobby.lock()->RemoveRoom(self);
 	ClearJobs();
+}
+
+void Room::SpawnMonsters()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		MonsterRef monster = ObjectUtils::CreateMonster();
+
+		AddMonster(monster);
+	}
 }
 
 void Room::SpawnMonster(const Protocol::PosInfo& pos_Info)

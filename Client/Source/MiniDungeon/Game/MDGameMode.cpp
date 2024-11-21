@@ -108,10 +108,17 @@ void AMDGameMode::StartPlay()
 			}
 		}
 
-		if(networkManager->isHost)
+		for(const auto& monsterInfo : networkManager->MonsterInfos)
 		{
-			SpawnEnemy();
+			uint64 object_id = (monsterInfo.Value)->object_info().object_id();
+			FVector spawnLocation = ingameLevelScriptActor->GetEnemySpawns()[object_id % 4]->GetActorLocation();
+			networkManager->HandleSpawn((monsterInfo.Value)->object_info(), spawnLocation);
 		}
+
+		//if(networkManager->isHost)
+		//{
+		//	SpawnEnemy();
+		//}
 	}
 
 	MD_LOG(LogMDNetwork, Log, TEXT("Override End"));

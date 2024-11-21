@@ -134,6 +134,7 @@ message STC_ENTER_GAME
 {
 	bool success = 1;
 	repeated PlayerInfo players = 2;
+	repeated MonsterInfo monsters = 3;
 }
 
 message CTS_LEAVE_GAME
