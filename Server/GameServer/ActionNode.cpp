@@ -90,34 +90,18 @@ ENodeState MoveToPosition::OnUpdate()
 
 void AttackNode::OnStart()
 {
-}
-
-void AttackNode::OnStop()
-{
-}
-
-ENodeState AttackNode::OnUpdate()
-{
 	auto bt = tree.lock();
 	if (bt == nullptr)
 	{
-		LOG("Attack Failed : bt is nullptr");
-		return ENodeState::Failure;
+		LOG("AttackNode bt is nullptr");
+		return;
 	}
-
 
 	auto ownerMonster = bt->owner.lock();
 	if (ownerMonster == nullptr)
 	{
-		LOG("Attack Failed : ownerMonster is nullptr");
-		return ENodeState::Failure;
-	}
-
-
-	if(ownerMonster->isAttacking == false)
-	{
-		LOG("Attack Finished");
-		return ENodeState::Success;
+		LOG("AttackNode ownerMonster is nullptr");
+		return;
 	}
 
 	auto target = ownerMonster->TargetPlayer.load();
@@ -136,6 +120,44 @@ ENodeState AttackNode::OnUpdate()
 
 		LOG("Attack Start");
 		ownerMonster->isAttacking = true;
+		startTime = GetTickCount64() / 1000;
+		return;
+	}
+
+	LOG("AttackNode target is nullptr");
+	return;
+}
+
+void AttackNode::OnStop()
+{
+}
+
+ENodeState AttackNode::OnUpdate()
+{
+	if (GetTickCount64() / 1000 - startTime >= duration)
+	{
+		LOG("Attack Finished");
+		return ENodeState::Success;
+	}
+
+	auto bt = tree.lock();
+	if (bt == nullptr)
+	{
+		LOG("Attack Failed : bt is nullptr");
+		return ENodeState::Failure;
+	}
+
+	auto ownerMonster = bt->owner.lock();
+	if (ownerMonster == nullptr)
+	{
+		LOG("Attack Failed : ownerMonster is nullptr");
+		return ENodeState::Failure;
+	}
+
+	auto target = ownerMonster->TargetPlayer.load();
+	if (target)
+	{
+		LOG("Attacking")
 		return ENodeState::Running;
 	}
 

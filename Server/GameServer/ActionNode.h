@@ -53,13 +53,12 @@ class AttackNode : public ActionNode
 public:
 	AttackNode(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : ActionNode(_tree, _blackboard) {}
 
-	void SetIsAttackSuccessful(bool value) { isAttackSuccessful = value; }
-
 protected:
 	virtual void OnStart() override;
 	virtual void OnStop() override;
 	virtual ENodeState OnUpdate() override;
 
 private:
-	atomic<bool> isAttackSuccessful = false;
+	float startTime;
+	float duration = 1;
 };
