@@ -3,7 +3,6 @@
 
 Player::Player()
 {
-	LOG("Player Constructor");
 	_isPlayer = true;
 	playerInfo = new Protocol::PlayerInfo();
 	Protocol::ObjectInfo* obj_info = new Protocol::ObjectInfo();

@@ -19,6 +19,8 @@ public:
 	Monster();
 	virtual ~Monster();
 
+	void Init();
+
 	void CalcDist();
 	void CanAttack();
 	float DistanceTo(const Protocol::PosInfo& targetPos);
@@ -61,5 +63,8 @@ public:
 private:
 	shared_ptr<BehaviourTree> behaviourTree;
 	shared_ptr<MonsterBlackboard> blackboard;
+
+public:
+	void UpdateBehaviourTree();
 };
 

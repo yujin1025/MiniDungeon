@@ -4,15 +4,13 @@
 class ActionNode : public Node
 {
 public:
-	ActionNode() = default;
-	virtual ~ActionNode() = default;
+	ActionNode(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : Node(_tree, _blackboard) {}
 };
 
 class WaitNode : public ActionNode
 {
 public:
-	WaitNode() = default;
-	virtual ~WaitNode() = default;
+	WaitNode(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : ActionNode(_tree, _blackboard) {}
 
 protected:
 	virtual void OnStart() override;
@@ -27,8 +25,7 @@ public:
 class RandomPosition : public ActionNode
 {
 public:
-	RandomPosition() = default;
-	virtual ~RandomPosition() = default;
+	RandomPosition(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : ActionNode(_tree, _blackboard) {}
 
 protected:
 	virtual void OnStart() override;
@@ -43,8 +40,7 @@ public:
 class MoveToPosition : public ActionNode
 {
 public:
-	MoveToPosition() = default;
-	virtual ~MoveToPosition() = default;
+	MoveToPosition(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : ActionNode(_tree, _blackboard) {}
 
 protected:
 	virtual void OnStart() override;
@@ -55,8 +51,7 @@ protected:
 class AttackNode : public ActionNode
 {
 public:
-	AttackNode() = default;
-	virtual ~AttackNode() = default;
+	AttackNode(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : ActionNode(_tree, _blackboard) {}
 
 	void SetIsAttackSuccessful(bool value) { isAttackSuccessful = value; }
 

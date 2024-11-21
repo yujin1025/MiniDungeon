@@ -3,13 +3,9 @@
 #include "CompositeNode.h"
 #include "DecoratorNode.h"
 
-BehaviourTree::BehaviourTree(shared_ptr<Monster> _owner)
+BehaviourTree::BehaviourTree()
 {
-	owner = _owner;
 	treeState = ENodeState::Running;
-
-	rootNode = make_shared<RootNode>();
-	nodes.push_back(rootNode);
 }
 
 BehaviourTree::~BehaviourTree()
@@ -66,23 +62,13 @@ void BehaviourTree::Bind(any* context)
 {
 	Traverse(rootNode, [&](const shared_ptr<Node>& node)
 		{
-			node->context = context;
 			node->blackboard = blackboard;
 		});
-}
-
-
-Node::Node()
-{
-	started = false;
-	state = ENodeState::Running;
-	context = nullptr;
 }
 
 Node::~Node()
 {
 	blackboard.reset();
-	context = nullptr;
 }
 
 ENodeState Node::Update()
@@ -109,13 +95,16 @@ void Node::Abort()
 {
 	BehaviourTree::Traverse(shared_from_this(), [&](const shared_ptr<Node>& node)
 		{
-			LOG_INFO();
-			if (node->state == ENodeState::Running)
+			if (node)
 			{
-				node->started = false;
-				node->state = ENodeState::Running;
-				node->OnStop();
+				if (node->state == ENodeState::Running)
+				{
+					node->started = false;
+					node->state = ENodeState::Running;
+					node->OnStop();
+				}
 			}
+			LOG_INFO();
 		});
 }
 

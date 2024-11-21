@@ -82,7 +82,7 @@
     <ClCompile Include="AuthManager.cpp">
       <Filter>Auth</Filter>
     </ClCompile>
-    <ClCompile Include="BehaviourTree.cpp">
+    <ClCompile Include="ServiceNode.cpp">
       <Filter>BT</Filter>
     </ClCompile>
     <ClCompile Include="DecoratorNode.cpp">
@@ -91,10 +91,10 @@
     <ClCompile Include="CompositeNode.cpp">
       <Filter>BT</Filter>
     </ClCompile>
-    <ClCompile Include="ActionNode.cpp">
+    <ClCompile Include="BehaviourTree.cpp">
       <Filter>BT</Filter>
     </ClCompile>
-    <ClCompile Include="ServiceNode.cpp">
+    <ClCompile Include="ActionNode.cpp">
       <Filter>BT</Filter>
     </ClCompile>
   </ItemGroup>
@@ -148,7 +148,7 @@
     <ClInclude Include="AuthManager.h">
       <Filter>Auth</Filter>
     </ClInclude>
-    <ClInclude Include="BehaviourTree.h">
+    <ClInclude Include="ServiceNode.h">
       <Filter>BT</Filter>
     </ClInclude>
     <ClInclude Include="DecoratorNode.h">
@@ -157,10 +157,10 @@
     <ClInclude Include="CompositeNode.h">
       <Filter>BT</Filter>
     </ClInclude>
-    <ClInclude Include="ActionNode.h">
+    <ClInclude Include="BehaviourTree.h">
       <Filter>BT</Filter>
     </ClInclude>
-    <ClInclude Include="ServiceNode.h">
+    <ClInclude Include="ActionNode.h">
       <Filter>BT</Filter>
     </ClInclude>
   </ItemGroup>

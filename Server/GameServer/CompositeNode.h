@@ -4,7 +4,7 @@
 class CompositeNode : public Node
 {
 public:
-	CompositeNode();
+	CompositeNode(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : Node(_tree, _blackboard) {}
 	virtual ~CompositeNode();
 
 public:
@@ -14,8 +14,7 @@ public:
 class SequencerNode : public CompositeNode
 {
 public:
-	SequencerNode() = default;
-	virtual ~SequencerNode() = default;
+	SequencerNode(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : CompositeNode(_tree, _blackboard) {}
 
 protected:
 	virtual void OnStart() override;
@@ -29,8 +28,7 @@ protected:
 class SelectorNode : public CompositeNode
 {
 public:
-	SelectorNode() = default;
-	virtual ~SelectorNode() = default;
+	SelectorNode(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : CompositeNode(_tree, _blackboard) {}
 
 protected:
 	virtual void OnStart() override;
@@ -44,8 +42,8 @@ protected:
 class ParallelNode : public CompositeNode
 {
 public:
-	ParallelNode() = default;
-	virtual ~ParallelNode() = default;
+	ParallelNode(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : CompositeNode(_tree, _blackboard) {}
+	virtual ~ParallelNode();
 
 	void AbortRunningChildren();
 

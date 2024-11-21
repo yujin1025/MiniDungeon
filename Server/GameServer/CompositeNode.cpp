@@ -1,10 +1,6 @@
 #include "pch.h"
 #include "CompositeNode.h"
 
-CompositeNode::CompositeNode()
-{
-}
-
 CompositeNode::~CompositeNode()
 {
 	children.clear();
@@ -111,6 +107,11 @@ ENodeState ParallelNode::OnUpdate()
 	}
 
 	return stillRunning ? ENodeState::Running : ENodeState::Success;
+}
+
+ParallelNode::~ParallelNode()
+{
+	childrenLeftToExcute.clear();
 }
 
 void ParallelNode::AbortRunningChildren()

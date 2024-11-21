@@ -2,12 +2,6 @@
 #include "JobQueue.h"
 #include "Struct.pb.h"
 
-struct Vector3
-{
-	float x, y, z;
-};
-
-
 class Room : public JobQueue
 {
 public:

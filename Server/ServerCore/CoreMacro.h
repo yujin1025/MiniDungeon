@@ -1,4 +1,8 @@
 #pragma once
+#include <iostream>
+#include <sstream>
+#include <cstdarg>  // 가변 인자 처리에 필요한 헤더
+#include <cstdio>   // printf 스타일 포맷팅을 위해 사용
 
 #define OUT
 
@@ -38,3 +42,22 @@
         __analysis_assume(expr);            \
     }                                       \
 }
+
+/*---------------
+	  Log
+----------------*/
+
+#define LOG(msg) {                          \
+    std::cout << msg << std::endl;          \
+}
+
+#define LOGF(fmt, ...) {                    \
+	char buffer[256];                       \
+	sprintf_s(buffer, fmt, __VA_ARGS__);      \
+	std::cout << buffer << std::endl;       \
+}
+
+#define LOG_INFO()                                      \
+		cout << "File: " << __FILE__                    \
+              << ", Line: " << __LINE__                 \
+              << ", Function: " << __func__ << endl;

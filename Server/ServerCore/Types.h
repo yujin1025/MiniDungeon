@@ -13,6 +13,33 @@ using uint16 = unsigned __int16;
 using uint32 = unsigned __int32;
 using uint64 = unsigned __int64;
 
+enum class ENodeState
+{
+	Success,
+	Failure,
+	Abort,
+	Running,
+};
+
+enum class EBlackboardKey
+{
+	Target,
+	Position,
+};
+
+struct Vector3
+{
+	float x = 0.0f;
+	float y = 0.0f;
+	float z = 0.0f;
+};
+
+struct Vector2
+{
+	float x = 0.0f;
+	float y = 0.0f;
+};
+
 //template<typename T>
 //using Atomic = std::atomic<T>;
 //using Mutex = std::mutex;

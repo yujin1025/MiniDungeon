@@ -36,11 +36,3 @@ USING_SHARED_PTR(Lobby);
 #define SEND_PACKET(pkt)													\
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);	\
 	session->Send(sendBuffer);
-
-
-#define LOG(msg) cout << msg << endl;
-
-#define LOG_INFO() \
-		cout << "File: " << __FILE__ \
-              << ", Line: " << __LINE__ \
-              << ", Function: " << __func__ << endl;

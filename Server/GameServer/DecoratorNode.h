@@ -18,13 +18,8 @@ enum class EFlowAbortMode
 class DecoratorNode : public Node
 {
 public:
-	DecoratorNode() = default;
+	DecoratorNode(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : Node(_tree, _blackboard) {}
 	virtual ~DecoratorNode();
-
-protected:
-	virtual void OnStart() override;
-	virtual void OnStop() override;
-	virtual ENodeState OnUpdate() override;
 
 public:
 	shared_ptr<Node> child;
@@ -33,8 +28,7 @@ public:
 class RepeaterNode : public DecoratorNode
 {
 public:
-	RepeaterNode() = default;
-	virtual ~RepeaterNode() = default;
+	RepeaterNode(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : DecoratorNode(_tree, _blackboard) {}
 
 protected:
 	virtual void OnStart() override;
@@ -49,8 +43,11 @@ public:
 class RootNode : public RepeaterNode
 {
 public:
-	RootNode();
-	virtual ~RootNode() = default;
+	RootNode(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : RepeaterNode(_tree, _blackboard)
+	{
+		restartOnSuccess = true;
+		restartOnFailure = true;
+	}
 
 protected:
 	virtual void OnStart() override;
@@ -61,8 +58,7 @@ protected:
 class HasTargetDecorator : public DecoratorNode
 {
 public:
-	HasTargetDecorator() = default;
-	virtual ~HasTargetDecorator() = default;
+	HasTargetDecorator(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : DecoratorNode(_tree, _blackboard) {}
 
 protected:
 	virtual void OnStart() override;
@@ -74,8 +70,7 @@ protected:
 class NoTargetDecorator : public DecoratorNode
 {
 public:
-	NoTargetDecorator() = default;
-	virtual ~NoTargetDecorator() = default;
+	NoTargetDecorator(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : DecoratorNode(_tree, _blackboard) {}
 
 protected:
 	virtual void OnStart() override;
@@ -86,9 +81,7 @@ protected:
 class CanAttackDecorator : public DecoratorNode
 {
 public:
-	CanAttackDecorator() = default;
-	virtual ~CanAttackDecorator() = default;
-
+	CanAttackDecorator(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : DecoratorNode(_tree, _blackboard) {}
 protected:
 	virtual void OnStart() override;
 	virtual void OnStop() override;
@@ -101,8 +94,7 @@ private:
 class CanNotAttackDecorator : public DecoratorNode
 {
 public:
-	CanNotAttackDecorator() = default;
-	virtual ~CanNotAttackDecorator() = default;
+	CanNotAttackDecorator(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : DecoratorNode(_tree, _blackboard) {}
 
 protected:
 	virtual void OnStart() override;

@@ -1,37 +1,12 @@
 #pragma once
-#include <any>
 
-enum class ENodeState
-{
-	Success,
-	Failure,
-	Abort,
-	Running,
-};
-
-enum class EBlackboardKey
-{
-	Target,
-	Position,
-};
-
-struct Vector3
-{
-	float x = 0.0f;
-	float y = 0.0f;
-	float z = 0.0f;
-};
-
-struct Vector2
-{
-	float x = 0.0f;
-	float y = 0.0f;
-};
+class Node;
+class Blackboard;
 
 class BehaviourTree : public enable_shared_from_this<BehaviourTree>
 {
 public:
-	BehaviourTree(shared_ptr<Monster> _owner);
+	BehaviourTree();
 	virtual ~BehaviourTree();
 
 	ENodeState Update();
@@ -60,13 +35,48 @@ public:
 
 public:
 	weak_ptr<BehaviourTree> tree;
-	map<EBlackboardKey, atomic<any>> data;
+private:
+	USE_LOCK;
+	map<EBlackboardKey, any> data;
+
+public:
+	void SetData(EBlackboardKey key, any value) 
+	{
+		WRITE_LOCK;
+		data[key] = move(value);
+	}
+
+	any GetData(EBlackboardKey key) 
+	{
+		WRITE_LOCK;
+		auto it = data.find(key);
+		if (it != data.end()) 
+		{
+			return it->second;
+		}
+		return GetDefaultValue(key);
+	}
+
+	any GetDefaultValue(EBlackboardKey key)
+	{
+		switch (key)
+		{
+		case EBlackboardKey::Target:
+			return nullptr;  // Target은 포인터 타입으로 기본값 nullptr.
+		case EBlackboardKey::Position:
+			return Vector3{ 0.0f, 0.0f, 0.0f };  // Vector3 타입 기본값.
+		default:
+			return {};  // 기본적으로 비어 있는 std::any 반환.
+		}
+	}
 };
 
 class Node : public enable_shared_from_this<Node>
 {
 public:
-	Node();
+	Node(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard)
+	: tree(_tree), blackboard(_blackboard), started(false), state(ENodeState::Running) {}
+
 	virtual ~Node();
 
 	ENodeState Update();
@@ -86,7 +96,5 @@ public:
 	atomic<ENodeState> state = ENodeState::Running;
 
 	bool started = false;
-
-	atomic<any> context;
 };
 

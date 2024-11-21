@@ -251,7 +251,7 @@ bool Room::HandleLeavePlayer(uint64 playerindex)
 void Room::HandleStartGame()
 {
 	//SpawnMonster();
-	//GetRoomRef()->DoAsync(&Room::UpdateTick);
+	GetRoomRef()->DoAsync(&Room::UpdateTick);
 
 	Protocol::STC_ENTER_GAME enterGamePkt;
 	enterGamePkt.set_success(true);
@@ -382,17 +382,16 @@ void Room::SetRoomIndex(uint64 roomIndex)
 
 void Room::UpdateTick()
 {
-	cout << "Update Room" << endl;
-
 	// TODO : 몬스터 이동, 공격
 
 	for(auto& monster : _monsters)
 	{
-		monster.second->CalcDist();
-		monster.second->CanAttack();
+		//monster.second->CalcDist();
+		//monster.second->CanAttack();
+		monster.second->UpdateBehaviourTree();
 	}
 
-	DoTimer(100, &Room::UpdateTick);
+	DoTimer(500, &Room::UpdateTick);
 }
 
 RoomRef Room::GetRoomRef()
@@ -553,6 +552,8 @@ bool Room::AddMonster(MonsterRef monster, const Protocol::PosInfo& pos_Info)
 	_objects.insert(make_pair(monster->GetObjectInfo().object_id(), monster));
 
 	monster->room.store(GetRoomRef());
+
+	monster->Init();
 
 	return true;
 }

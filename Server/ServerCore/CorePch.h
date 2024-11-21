@@ -19,8 +19,9 @@
 #include <memory>
 
 #include <windows.h>
-#include <iostream>
 #include <assert.h>
+#include <any>
+
 using namespace std;
 
 #include <winsock2.h>
@@ -33,7 +34,5 @@ using namespace std;
 #include "SendBuffer.h"
 #include "Session.h"
 #include "JobQueue.h"
-
-#define LOG(msg) cout << msg << endl;
 
 

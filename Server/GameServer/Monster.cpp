@@ -16,21 +16,61 @@ Monster::Monster()
 
     monsterInfo->set_allocated_object_info(obj_info);
     monsterInfo->set_monster_hp(MaxHp);
-
-    blackboard = make_shared<MonsterBlackboard>();
-    behaviourTree = make_shared<BehaviourTree>();
-
-    // 루트 노드 생성
-    auto root = make_shared<RootNode>();
-
-    // 자식 노드 생성
-    auto selector = make_shared<SelectorNode>();
 }
 
 Monster::~Monster()
 {
 	delete monsterInfo;
     monsterInfo = nullptr;
+}
+
+void Monster::Init()
+{
+    blackboard = make_shared<MonsterBlackboard>();
+    behaviourTree = make_shared<BehaviourTree>();
+    behaviourTree->blackboard = blackboard;
+    behaviourTree->owner = dynamic_pointer_cast<Monster>(shared_from_this());
+    behaviourTree->rootNode = make_shared<RootNode>(behaviourTree, blackboard);
+
+    auto calcDist = make_shared<DetectionService>(behaviourTree, blackboard);
+    behaviourTree->rootNode->child = calcDist;
+
+    // 자식 노드 생성
+    auto selector1 = make_shared<SelectorNode>(behaviourTree, blackboard);
+    calcDist->child = selector1;
+
+    auto hasTargetDeco = make_shared<HasTargetDecorator>(behaviourTree, blackboard);
+    selector1->children.push_back(hasTargetDeco);
+
+    auto selector2 = make_shared<SelectorNode>(behaviourTree, blackboard);
+    hasTargetDeco->child = selector2;
+
+    auto canAttackDeco = make_shared<CanAttackDecorator>(behaviourTree, blackboard);
+    selector2->children.push_back(canAttackDeco);
+
+    auto attackNode = make_shared<AttackNode>(behaviourTree, blackboard);
+    canAttackDeco->child = attackNode;
+
+    auto canNotAttackDeco = make_shared<CanNotAttackDecorator>(behaviourTree, blackboard);
+    selector2->children.push_back(canNotAttackDeco);
+
+    auto moveToPlayerNode = make_shared<MoveToPosition>(behaviourTree, blackboard);
+    canNotAttackDeco->child = moveToPlayerNode;
+
+    auto noTaragetDeco = make_shared<NoTargetDecorator>(behaviourTree, blackboard);
+    selector1->children.push_back(noTaragetDeco);
+
+    auto sequencer1 = make_shared<SequencerNode>(behaviourTree, blackboard);
+    noTaragetDeco->child = sequencer1;
+
+    auto waitNode = make_shared<WaitNode>(behaviourTree, blackboard);
+    sequencer1->children.push_back(waitNode);
+
+    auto randomPositionNode = make_shared<RandomPosition>(behaviourTree, blackboard);
+    sequencer1->children.push_back(randomPositionNode);
+
+    auto moveToPositionNode = make_shared<MoveToPosition>(behaviourTree, blackboard);
+    sequencer1->children.push_back(moveToPositionNode);
 }
 
 void Monster::CalcDist()
@@ -133,4 +173,12 @@ void Monster::SetPosInfo(const Protocol::PosInfo& pos_Info)
 
 	monsterInfo->set_allocated_object_info(obj_info);
     objectInfo->CopyFrom(monsterInfo->object_info());
+}
+
+void Monster::UpdateBehaviourTree()
+{
+    if (behaviourTree)
+    {
+        behaviourTree->Update();
+    }
 }

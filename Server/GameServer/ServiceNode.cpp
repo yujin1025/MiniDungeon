@@ -4,6 +4,11 @@
 #include "Player.h"
 #include "Room.h"
 
+ServiceNode::~ServiceNode()
+{
+    child.reset();
+}
+
 void ServiceNode::OnStart()
 {
 	lastUpdateTime = static_cast<float>(GetTickCount64()) / 1000.0f; // Initialize time in seconds
@@ -25,35 +30,29 @@ ENodeState ServiceNode::OnUpdate()
         OnUpdateService(); // Perform Service-specific logic
     }
 
+    if(child != nullptr)
+        child->Update(); // Update child node
+
     // Always return Running, as ServiceNode is not a terminal node
     return ENodeState::Running;
-}
-
-void DetectionService::OnStart()
-{
-}
-
-void DetectionService::OnStop()
-{
-}
-
-ENodeState DetectionService::OnUpdate()
-{
-    return ENodeState();
 }
 
 void DetectionService::OnUpdateService()
 {
     LOG_INFO();
-    auto ownerMonster = tree.lock()->owner.lock();
-    if (!ownerMonster)
+    auto bt = tree.lock();
+    if(bt == nullptr)
+		return;
+
+    auto ownerMonster = bt->owner.lock();
+    if (ownerMonster == nullptr)
 		return;
 
     auto target = ownerMonster->TargetPlayer.load();
-    if (!target)
+    if (target == nullptr)
     {
         auto currentRoom = ownerMonster->room.load().lock();
-        if (!currentRoom)
+        if (currentRoom == nullptr)
 			return;
 
         auto players = currentRoom->_players;
