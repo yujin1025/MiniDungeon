@@ -14,11 +14,13 @@ void WaitNode::OnStop()
 
 ENodeState WaitNode::OnUpdate()
 {
-	LOG_INFO();
 	if(GetTickCount64() / 1000 - startTime >= duration)
 	{
+		LOG("Wait Over");
 		return ENodeState::Success;
 	}
+
+	LOG("Waiting");
 	return ENodeState::Running;
 }
 
@@ -32,9 +34,9 @@ void RandomPosition::OnStop()
 
 ENodeState RandomPosition::OnUpdate()
 {
-	LOG_INFO();
 	if(blackboard == nullptr)
 	{
+		LOG("Get Random Position Failed : blackboard is nullptr");
 		return ENodeState::Failure;
 	}
 
@@ -43,6 +45,7 @@ ENodeState RandomPosition::OnUpdate()
 	moveToPosition.z = min.y + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (max.y - min.y)));
 	blackboard->SetData(EBlackboardKey::Position, moveToPosition);
 
+	LOG("Get Random Position");
 	return ENodeState::Success;
 }
 
@@ -56,18 +59,25 @@ void MoveToPosition::OnStop()
 
 ENodeState MoveToPosition::OnUpdate()
 {
-	LOG_INFO();
-
 	auto bt = tree.lock();
 	if (bt == nullptr)
+	{
+		LOG("MoveToPosition Failed : bt is nullptr");
 		return ENodeState::Failure;
+	}
+
 
 	auto ownerMonster = bt->owner.lock();
 	if (ownerMonster == nullptr)
+	{
+		LOG("MoveToPosition Failed : ownerMonster is nullptr");
 		return ENodeState::Failure;
+	}
+
 
 	if (blackboard == nullptr)
 	{
+		LOG("MoveToPosition Failed : blackboard is nullptr");
 		return ENodeState::Failure;
 	}
 
@@ -88,17 +98,25 @@ void AttackNode::OnStop()
 
 ENodeState AttackNode::OnUpdate()
 {
-	LOG_INFO();
 	auto bt = tree.lock();
 	if (bt == nullptr)
+	{
+		LOG("Attack Failed : bt is nullptr");
 		return ENodeState::Failure;
+	}
+
 
 	auto ownerMonster = bt->owner.lock();
 	if (ownerMonster == nullptr)
+	{
+		LOG("Attack Failed : ownerMonster is nullptr");
 		return ENodeState::Failure;
+	}
+
 
 	if(ownerMonster->isAttacking == false)
 	{
+		LOG("Attack Finished");
 		return ENodeState::Success;
 	}
 
@@ -116,9 +134,11 @@ ENodeState AttackNode::OnUpdate()
 			room->Broadcast(sendBuffer);
 		}
 
+		LOG("Attack Start");
 		ownerMonster->isAttacking = true;
 		return ENodeState::Running;
 	}
 
+	LOG("Attack Failed : target is nullptr");
 	return ENodeState::Failure;
 }

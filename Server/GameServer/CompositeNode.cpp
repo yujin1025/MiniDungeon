@@ -19,7 +19,6 @@ ENodeState SequencerNode::OnUpdate()
 {
 	for (int i = current; i < children.size(); i++)
 	{
-		LOG_INFO();
 		current = i;
 		auto child = children[i];
 
@@ -50,7 +49,6 @@ ENodeState SelectorNode::OnUpdate()
 {
 	for (int i = current; i < children.size(); i++)
 	{
-		LOG_INFO();
 		current = i;
 		auto child = children[i];
 
@@ -70,7 +68,6 @@ ENodeState SelectorNode::OnUpdate()
 
 void ParallelNode::OnStart()
 {
-	LOG_INFO();
 	childrenLeftToExcute.clear();
 	for(auto & child : children)
 	{

@@ -45,19 +45,9 @@ void APlayableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UMDNetworkManager* NetworkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-
-	if (NetworkManager)
-	{
-		const auto& playerInfoPtr = NetworkManager->PlayerInfos.Find(NetworkManager->PlayerID);
-		MD_LOG(LogMDNetwork, Log, TEXT("This NetManager PlayerID : %d"), NetworkManager->PlayerID);
-		if (playerInfoPtr)
-		{
-			ObjectID = (*playerInfoPtr)->object_info().object_id(); // ObjectID 설정
-		}
-	}
-
 	FVector Location = GetActorLocation();
+
+	DestInfo->set_object_id(ObjectID);
 	DestInfo->set_x(Location.X);
 	DestInfo->set_y(Location.Y);
 	DestInfo->set_z(Location.Z);

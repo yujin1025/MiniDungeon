@@ -20,7 +20,6 @@ void ServiceNode::OnStop()
 
 ENodeState ServiceNode::OnUpdate()
 {
-    LOG_INFO();
     float currentTime = static_cast<float>(GetTickCount64()) / 1000.0f;
 
     // Check if the update interval has passed
@@ -39,44 +38,53 @@ ENodeState ServiceNode::OnUpdate()
 
 void DetectionService::OnUpdateService()
 {
-    LOG_INFO();
+
     auto bt = tree.lock();
-    if(bt == nullptr)
+    if (bt == nullptr)
+    {
+        LOG("DetectionService : BehaviourTree is nullptr");
 		return;
+    }
 
     auto ownerMonster = bt->owner.lock();
     if (ownerMonster == nullptr)
-		return;
-
-    auto target = ownerMonster->TargetPlayer.load();
-    if (target == nullptr)
     {
-        auto currentRoom = ownerMonster->room.load().lock();
-        if (currentRoom == nullptr)
-			return;
-
-        auto players = currentRoom->_players;
-        if (players.empty())
-        {
-            ownerMonster->TargetPlayer.store(nullptr);
-			return;
-        }
-        else
-        {
-            float minDistance = FLT_MAX;
-            PlayerRef closestPlayer = nullptr;
-
-            for (auto player : players)
-            {
-                float distance = ownerMonster->DistanceTo(player.second->GetPosInfo());
-                if (distance < detectRange && distance < minDistance)
-                {
-                    minDistance = distance;
-                    closestPlayer = player.second;
-                }
-            }
-
-            ownerMonster->TargetPlayer.store(closestPlayer);
-        }
+        LOG("DetectionService : ownerMonster is nullptr");
+        return;
     }
+
+
+    auto currentRoom = ownerMonster->room.load().lock();
+    if (currentRoom == nullptr)
+    {
+        LOG("DetectionService : currentRoom is nullptr");
+        return;
+    }
+
+    auto players = currentRoom->_players;
+    if (players.empty())
+    {
+        LOG("DetectionService : No players in the room");
+        ownerMonster->TargetPlayer.store(nullptr);
+		return;
+    }
+    else
+    {
+        float minDistance = FLT_MAX;
+        PlayerRef closestPlayer = nullptr;
+
+        for (auto player : players)
+        {
+            float distance = ownerMonster->DistanceTo(player.second->GetPosInfo());
+            if (distance < detectRange && distance < minDistance)
+            {
+                LOG("DetectionService : Changed Target");
+                minDistance = distance;
+                closestPlayer = player.second;
+            }
+        }
+
+        ownerMonster->TargetPlayer.store(closestPlayer);
+    }
+
 }

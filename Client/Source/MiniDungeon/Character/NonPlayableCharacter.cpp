@@ -18,16 +18,9 @@ void ANonPlayableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-	if(networkManager->isHost)
-	{
-		MD_LOG(LogMDNetwork, Log, TEXT("This is Host"));
-	}
-	else
-	{
-		MD_LOG(LogMDNetwork, Log, TEXT("This is Not Host"));
-	}
 
 	FVector Location = GetActorLocation();
+	DestInfo->set_object_id(ObjectID);
 	DestInfo->set_x(Location.X);
 	DestInfo->set_y(Location.Y);
 	DestInfo->set_z(Location.Z);

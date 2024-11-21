@@ -45,7 +45,6 @@ vector<shared_ptr<Node>> BehaviourTree::GetChildren(const shared_ptr<Node>& pare
 
 void BehaviourTree::Traverse(const shared_ptr<Node>& node, const function<void(const shared_ptr<Node>&)>& visitor)
 {
-	LOG_INFO();
 	if (node)
 	{
 		visitor(node);
@@ -73,7 +72,6 @@ Node::~Node()
 
 ENodeState Node::Update()
 {
-	LOG_INFO();
 	if (!started)
 	{
 		OnStart();
@@ -104,7 +102,6 @@ void Node::Abort()
 					node->OnStop();
 				}
 			}
-			LOG_INFO();
 		});
 }
 

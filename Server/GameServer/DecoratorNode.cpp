@@ -62,7 +62,7 @@ void RootNode::OnStop()
 
 ENodeState RootNode::OnUpdate()
 {
-    LOG_INFO();
+    LOG("RootNode OnUpdate");
     if(child != nullptr)
 	{
 		return child->Update();
@@ -81,18 +81,26 @@ void HasTargetDecorator::OnStop()
 
 ENodeState HasTargetDecorator::OnUpdate()
 {
-    LOG_INFO();
     auto bt = tree.lock();
     if (bt == nullptr)
+    {
+        LOG("HasTargetDecorator bt is nullptr");
         return ENodeState::Failure;
+    }
+
 
     auto ownerMonster = bt->owner.lock();
     if (ownerMonster == nullptr)
+    {
+        LOG("HasTargetDecorator ownerMonster is nullptr");
         return ENodeState::Failure;
+    }
+
 
     auto target = ownerMonster->TargetPlayer.load();
     if (target == nullptr)
     {
+        LOG("HasTargetDecorator target is nullptr");
         return ENodeState::Failure;
     }
     else
@@ -101,8 +109,14 @@ ENodeState HasTargetDecorator::OnUpdate()
         moveToPosition.x = target->GetPosInfo().x();
         moveToPosition.y = target->GetPosInfo().y();
         moveToPosition.z = target->GetPosInfo().z();
-        if(child == nullptr)
+
+        blackboard->SetData(EBlackboardKey::Position, moveToPosition);
+
+        if (child == nullptr)
+        {
+            LOG("HasTargetDecorator child is nullptr");
 			return ENodeState::Failure;
+        }
 
         return child->Update();
     }
@@ -118,26 +132,34 @@ void NoTargetDecorator::OnStop()
 
 ENodeState NoTargetDecorator::OnUpdate()
 {
-    LOG_INFO();
-
     auto bt = tree.lock();
     if (bt == nullptr)
+    {
+        LOG("NoTargetDecorator bt is nullptr");
         return ENodeState::Failure;
+    }
+
 
     auto ownerMonster = bt->owner.lock();
     if (ownerMonster == nullptr)
-        return ENodeState::Failure;
+    {
+		LOG("NoTargetDecorator ownerMonster is nullptr");
+		return ENodeState::Failure;
+    }
 
     auto target = ownerMonster->TargetPlayer.load();
     if (target == nullptr)
     {
-        if(child == nullptr)
+        if (child == nullptr)
+        {
+            LOG("NoTargetDecorator child is nullptr");
             return ENodeState::Failure;
-
+        }
         return child->Update();
     }
     else
     {
+        LOG("monster Has Target");
         return ENodeState::Failure;
     }
 }
@@ -154,30 +176,44 @@ void CanAttackDecorator::OnStop()
 
 ENodeState CanAttackDecorator::OnUpdate()
 {
-    LOG_INFO();
     auto bt = tree.lock();
     if (bt == nullptr)
+    {
+        LOG("CanAttackDecorator bt is nullptr");
         return ENodeState::Failure;
+    }
+
 
     auto ownerMonster = bt->owner.lock();
     if (ownerMonster == nullptr)
+    {
+        LOG("CanAttackDecorator ownerMonster is nullptr");
         return ENodeState::Failure;
+    }
+
 
     auto target = ownerMonster->TargetPlayer.load();
     if (target == nullptr)
+    {
+        LOG("CanAttackDecorator target is nullptr");
         return ENodeState::Failure;
+    }
 
     // 공격 범위 확인
     float distance = ownerMonster->DistanceTo(target->GetPosInfo());
     if (distance <= AttackRange)
     {
         // 조건 충족: 하위 노드 실행
-        if(child == nullptr)
+        if (child == nullptr)
+        {
+            LOG("CanAttackDecorator child is nullptr");
 			return ENodeState::Failure;
+        }
 
         return child->Update();
     }
 
+    LOG("Target is out of range");
     return ENodeState::Failure; // 조건 불충족
 }
 
@@ -191,18 +227,28 @@ void CanNotAttackDecorator::OnStop()
 
 ENodeState CanNotAttackDecorator::OnUpdate()
 {
-    LOG_INFO();
     auto bt = tree.lock();
     if (bt == nullptr)
+    {
+        LOG("CanNotAttackDecorator bt is nullptr");
         return ENodeState::Failure;
+    }
+
 
     auto ownerMonster = bt->owner.lock();
     if (ownerMonster == nullptr)
+    {
+        LOG("CanNotAttackDecorator ownerMonster is nullptr");
         return ENodeState::Failure;
+    }
+
 
     auto target = ownerMonster->TargetPlayer.load();
     if (target == nullptr)
+    {
+        LOG("CanNotAttackDecorator target is nullptr");
         return ENodeState::Failure;
+    }
 
     // 공격 범위 확인
     float distance = ownerMonster->DistanceTo(target->GetPosInfo());
@@ -210,12 +256,14 @@ ENodeState CanNotAttackDecorator::OnUpdate()
     {
         if (blackboard == nullptr)
         {
+            LOG("CanNotAttackDecorator blackboard is nullptr");
             return ENodeState::Failure;
         }
         blackboard->SetData(EBlackboardKey::Position, Vector3(target->GetPosInfo().x(), target->GetPosInfo().y(), target->GetPosInfo().z()));
 
         if (child == nullptr)
         {
+            LOG("CanNotAttackDecorator child is nullptr");
             return ENodeState::Failure;
         }
 
@@ -223,5 +271,6 @@ ENodeState CanNotAttackDecorator::OnUpdate()
         return child->Update();
     }
 
+    LOG("Target is in range");
     return ENodeState::Failure; // 조건 불충족
 }

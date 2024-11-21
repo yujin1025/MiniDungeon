@@ -363,14 +363,14 @@ void Room::HandleMoveMonster(const Protocol::PosInfo& info)
 	// 최신 위치 정보로 업데이트
 	monster->SetPosInfo(info);
 
-	// 이동 사실을 알린다 (본인 포함? 빼고?)
-	Protocol::STC_MOVE movePkt;
-	Protocol::PosInfo* posInfo = new Protocol::PosInfo();
-	posInfo->CopyFrom(info);
-	movePkt.set_allocated_info(posInfo);
+	//// 이동 사실을 알린다
+	//Protocol::STC_MOVE movePkt;
+	//Protocol::PosInfo* posInfo = new Protocol::PosInfo();
+	//posInfo->CopyFrom(info);
+	//movePkt.set_allocated_info(posInfo);
 
-	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
-	Broadcast(sendBuffer);
+	//SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
+	//Broadcast(sendBuffer);
 }
 
 void Room::HandleAttack(Protocol::CTS_ATTACK pkt)
