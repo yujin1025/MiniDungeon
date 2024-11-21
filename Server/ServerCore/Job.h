@@ -14,17 +14,26 @@ public:
 	{
 	}
 
-	template<typename T, typename Ret, typename... Args>
-	Job(shared_ptr<T> owner, Ret(T::* memFunc)(Args...), Args... args)
-	{
-		_callback = [owner, memFunc, args...]()
-		{
-			(owner.get()->*memFunc)(args...);
-		};
-	}
+	//template<typename T, typename Ret, typename... Args>
+	//Job(shared_ptr<T> owner, Ret(T::* memFunc)(Args...), Args... args)
+	//{
+	//	_callback = [owner, memFunc, args...]()
+	//	{
+	//		(owner.get()->*memFunc)(args...);
+	//	};
+	//}
 
-	template<typename T, typename Ret, typename... Args>
-	Job(shared_ptr<T> owner, Ret(T::* memFunc)(Args&...), Args&... args)
+	//template<typename T, typename Ret, typename... Args>
+	//Job(shared_ptr<T> owner, Ret(T::* memFunc)(Args&...), Args&... args)
+	//{
+	//	_callback = [owner, memFunc, args...]()
+	//		{
+	//			(owner.get()->*memFunc)(args...);
+	//		};
+	//}
+
+	template<typename T, typename Ret, typename... MemFuncArgs, typename... CallArgs>
+	Job(shared_ptr<T> owner, Ret(T::* memFunc)(MemFuncArgs...), CallArgs&&... args)
 	{
 		_callback = [owner, memFunc, args...]()
 			{

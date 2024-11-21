@@ -21,7 +21,7 @@ bool Lobby::EnterLobby(PlayerRef player)
 	Protocol::STC_ENTER_LOBBY enterLobbyPkt;
 
 	// 이미 로비에 존재한다면 문제
-	if(_players.find(player->GetPlayerInfo()->player_id()) != _players.end())
+	if(_players.find(player->GetPlayerInfo().player_id()) != _players.end())
 	{
 		enterLobbyPkt.set_success(false);
 
@@ -42,7 +42,7 @@ bool Lobby::EnterLobby(PlayerRef player)
 	{
 		enterLobbyPkt.set_success(true);
 		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
-		playerInfo->CopyFrom(*player->GetPlayerInfo());
+		playerInfo->CopyFrom(player->GetPlayerInfo());
 
 		enterLobbyPkt.set_allocated_player(playerInfo);
 
@@ -63,7 +63,7 @@ bool Lobby::EnterLobby(PlayerRef player)
 
 bool Lobby::LeaveLobby(PlayerRef player)
 {
-	if (_players.find(player->GetPlayerInfo()->player_id()) == _players.end())
+	if (_players.find(player->GetPlayerInfo().player_id()) == _players.end())
 	{
 		return false;
 	}
@@ -73,12 +73,12 @@ bool Lobby::LeaveLobby(PlayerRef player)
 
 bool Lobby::AddPlayer(PlayerRef player)
 {
-	if (_players.find(player->GetPlayerInfo()->player_id()) != _players.end())
+	if (_players.find(player->GetPlayerInfo().player_id()) != _players.end())
 	{
 		return false;
 	}
 
-	_players.insert(make_pair(player->GetPlayerInfo()->player_id(), player));
+	_players.insert(make_pair(player->GetPlayerInfo().player_id(), player));
 	player->lobby.store(static_pointer_cast<Lobby>(shared_from_this()));
 
 	return true;
@@ -91,12 +91,12 @@ bool Lobby::RemovePlayer(uint64 playerID)
 
 bool Lobby::RemovePlayer(PlayerRef player)
 {
-	if (_players.find(player->GetPlayerInfo()->player_id()) == _players.end())
+	if (_players.find(player->GetPlayerInfo().player_id()) == _players.end())
 	{
 		return false;
 	}
 
-	_players.erase(player->GetPlayerInfo()->player_id());
+	_players.erase(player->GetPlayerInfo().player_id());
 
 	return true;
 }
@@ -237,7 +237,7 @@ bool Lobby::JoinRoom(uint64 playerId, uint64 roomId)
 		joinRoomPkt.set_success(true);
 
 		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
-		playerInfo->CopyFrom(*_players[playerId]->GetPlayerInfo());
+		playerInfo->CopyFrom(_players[playerId]->GetPlayerInfo());
 		joinRoomPkt.set_allocated_player(playerInfo);
 
 		Protocol::RoomInfo* roomInfo = new Protocol::RoomInfo();

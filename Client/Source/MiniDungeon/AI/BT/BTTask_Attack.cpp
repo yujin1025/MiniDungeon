@@ -3,6 +3,7 @@
 
 #include "BTTask_Attack.h"
 #include "../../Character/MDCharacter.h"
+#include <MDNetworkManager.h>
 
 UBTTask_Attack::UBTTask_Attack()
 {
@@ -21,7 +22,16 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	if (Character->IsSatisfiedAttack(AttackType) == false)
 		return EBTNodeResult::Failed;
 
-	Character->UseSkill(AttackType);
+	auto networdManager = Character->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+
+	if (IsValid(networdManager))
+	{
+		Protocol::CTS_MONSTER_ATTACK monstAttackPkt;
+		monstAttackPkt.set_monster_id(Character->GetObjectID());
+		// TODO : Send Attack Info to Server
+	}
+
+	//Character->UseSkill(AttackType);
 	bIsProcessing = true;
 	Character->OnUseSkillDelegate.AddLambda([this](EAttackType AttackType) -> void
 	{

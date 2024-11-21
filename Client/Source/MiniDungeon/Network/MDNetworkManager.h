@@ -28,7 +28,6 @@ public:
 	void DisconnectFromServer();
 
 	UFUNCTION(BlueprintCallable)
-
 	void HandleRecvPackets();
 
 	void SendPacket(SendBufferRef sendBuffer);
@@ -50,17 +49,19 @@ public:
 	void HandleChangeCharacter(const Protocol::STC_CHANGE_CHARACTER& changeCharacterPkt);
 	void HandleLeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoomPkt);
 
-	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, const Protocol::PlayerType charactertype, bool isMine);
-	void HandleSpawn(const Protocol::PlayerInfo& playerInfo, bool isMine);
-	void HandleSpawn(const Protocol::STC_ENTER_GAME& enterGamePkt);
-	void HandleSpawn(const Protocol::STC_SPAWN& spawnPkt);
+	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, const Protocol::PlayerType charactertype, TArray<AActor*> spawns, bool isMine);
+	void HandleSpawn(const Protocol::PlayerInfo& playerInfo, TArray<AActor*> spawns, bool isMine);
+	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, FVector spawnLocation = FVector::ZeroVector);
 
 	void HandleDespawn(uint64 objectId);
 	void HandleDespawn(const Protocol::STC_DESPAWN& despawnPkt);
 
 	void HandleMove(const Protocol::STC_MOVE& movePkt);
+	void HandleMovePlayer(class APlayableCharacter* player, const Protocol::PosInfo& posInfo);
+	void HandleMoveMonster(class ANonPlayableCharacter* monster, const Protocol::PosInfo& posInfo);
 
 	void HandleAttack(const Protocol::STC_ATTACK& AtkPkt);
+	void HandleMonsterAttack(uint64 obj_id);
 
 	void HandleSpawnMonster(const Protocol::STC_MONSTERINFO& InfoPkt);
 	void HandleMonsterInfo(const Protocol::STC_MONSTERINFO& infoPkt);
@@ -73,21 +74,41 @@ public:
 	TSharedPtr<class PacketSession> GameServerSession;
 
 public:
-	UPROPERTY()
+	/// <summary>
+	/// Key : ObjectID
+	/// Value : PlayerCharacter
+	/// </summary>
 	TMap<uint64,TObjectPtr<class APlayableCharacter>> Players;
 
-	TMap<uint64, TSharedPtr<Protocol::PlayerInfo>> PlayerInfos;
+	/// <summary>
+	/// Key : PlayerID
+	/// Value : PlayerInfo
+	/// </summary>
+	TMap<uint64, Protocol::PlayerInfo*> PlayerInfos;
+	void AddPlayerInfo(uint64 player_id, const Protocol::PlayerInfo& info);
 
-	UPROPERTY()
 	TObjectPtr<class APlayableCharacter> MyPlayer;
-	UPROPERTY()
+
 	uint64 PlayerID;
 
-	Protocol::PosInfo* PlayerInfo;
-	const Protocol::PosInfo* GetPlayerInfo() { return PlayerInfo; }
+	Protocol::PosInfo* PosInfo;
+	const Protocol::PosInfo* GetPosInfo() { return PosInfo; }
 
-	UPROPERTY()
+	/// <summary>
+	/// Key : ObjectID
+	/// Value : MonsterInfo
+	/// </summary>
+	TMap<uint64, Protocol::MonsterInfo*> MonsterInfos;
+	void AddMonsterInfo(uint64 object_id, const Protocol::MonsterInfo& info);
+	/// <summary>
+	/// Key : ObjectID
+	/// Value : MonsterCharacter
+	/// </summary>
 	TMap<uint64, TObjectPtr<class ANonPlayableCharacter>> Monsters;
+
+	bool isHost = false;
+
+	uint64 RoomID;
 };
 
 template<typename T>

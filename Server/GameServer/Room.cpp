@@ -25,7 +25,8 @@ Room::~Room()
 {
 	_players.clear();
 	_objects.clear();
-	_spawnPoints.clear();
+	_spawnPoints.clear(); 
+	ClearJobs();
 
 	info->Clear();
 	info = nullptr;
@@ -91,18 +92,18 @@ bool Room::EnterRoom(PlayerRef player, bool isHost)
 		joinRoomPkt.set_allocated_room_info(roomInfo);
 
 		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
-		playerInfo->CopyFrom(*player->GetPlayerInfo());
+		playerInfo->CopyFrom(player->GetPlayerInfo());
 		joinRoomPkt.set_allocated_player(playerInfo);
 
 		// �濡 ������ ����� �濡 �ִ� �ٸ� �÷��̾�鿡�� �˸���
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(joinRoomPkt);
-		Broadcast(sendBuffer, player->GetObjectInfo()->object_id());
+		Broadcast(sendBuffer, player->GetObjectInfo().object_id());
 	}
 
 	return success;
 }
 
-bool Room::LeaveRoom(PlayerRef player)
+bool Room::LeaveRoom(PlayerRef player, bool isExitGame)
 {
 	bool success = RemovePlayer(player);
 
@@ -113,7 +114,7 @@ bool Room::LeaveRoom(PlayerRef player)
 	roomInfo->CopyFrom(*info);
 	leaveRoomPkt.set_allocated_room_info(roomInfo);
 
-	leaveRoomPkt.set_player_id(player->GetPlayerInfo()->player_id());
+	leaveRoomPkt.set_player_id(player->GetPlayerInfo().player_id());
 
 	for (const auto& room : _lobby.lock()->GetRooms())
 	{
@@ -127,14 +128,17 @@ bool Room::LeaveRoom(PlayerRef player)
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(leaveRoomPkt);
 
-	// 퇴장 사실을 퇴장하는 플레이어에게 알린다
-	player->GetSession()->Send(sendBuffer);
+	if (isExitGame == false)
+	{
+		// 퇴장 사실을 퇴장하는 플레이어에게 알린다
+		player->GetSession()->Send(sendBuffer);
 
-	// ���� ����� Room�� �ִ� ��� �÷��̾�� �˸���.
-	Broadcast(sendBuffer, player->GetObjectInfo()->object_id());
+		// ���� ����� Room�� �ִ� ��� �÷��̾�� �˸���.
+		Broadcast(sendBuffer, player->GetObjectInfo().object_id());
 
-	// ���� ����� Lobby�� �ִ� ��� �÷��̾�Ե� �˸���.
-	_lobby.lock()->Broadcast(sendBuffer, player->GetPlayerInfo()->player_id());
+		// ���� ����� Lobby�� �ִ� ��� �÷��̾�Ե� �˸���.
+		_lobby.lock()->Broadcast(sendBuffer, player->GetPlayerInfo().player_id());
+	}
 
 	if (_players.empty())
 	{
@@ -154,6 +158,8 @@ bool Room::ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType charac
 		return false;
 	}
 
+	_players[playerIndex]->SetPlayerType(characterType);
+
 	// 캐릭터 변경 사실을 알린다.
 	changeCharacterPkt.set_success(true);
 	changeCharacterPkt.set_player_id(playerIndex);
@@ -161,7 +167,7 @@ bool Room::ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType charac
 	changeCharacterPkt.set_roomindex(_roomIndex);
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(changeCharacterPkt);
-	Broadcast(sendBuffer, _players[playerIndex]->GetObjectInfo()->object_id());
+	Broadcast(sendBuffer, _players[playerIndex]->GetObjectInfo().object_id());
 
 	return true;
 }
@@ -244,9 +250,7 @@ bool Room::HandleLeavePlayer(uint64 playerindex)
 
 void Room::HandleStartGame()
 {
-	SpawnMonster();
-	RoomRef sharedDoAsync = GetRoomRef();
-	sharedDoAsync->DoAsync(&Room::UpdateTick);
+	//GetRoomRef()->DoAsync(&Room::UpdateTick);
 
 	Protocol::STC_ENTER_GAME enterGamePkt;
 	enterGamePkt.set_success(true);
@@ -258,9 +262,9 @@ void Room::HandleStartGame()
 		Protocol::ObjectInfo* objectInfo = new Protocol::ObjectInfo();
 		Protocol::PosInfo* posInfo = new Protocol::PosInfo();
 
-		playerInfo->CopyFrom(*player.second->GetPlayerInfo());
-		objectInfo->CopyFrom(*player.second->GetObjectInfo());
-		posInfo->CopyFrom(*player.second->GetPosInfo());
+		playerInfo->CopyFrom(player.second->GetPlayerInfo());
+		objectInfo->CopyFrom(player.second->GetObjectInfo());
+		posInfo->CopyFrom(player.second->GetPosInfo());
 
 		posInfo->set_x(_spawnPoints[index].x);
 		posInfo->set_y(_spawnPoints[index].y);
@@ -271,6 +275,21 @@ void Room::HandleStartGame()
 		playerInfo->set_allocated_object_info(objectInfo);
 
 		enterGamePkt.add_players()->CopyFrom(*playerInfo);
+	}
+
+	SpawnMonsters();
+
+	for (auto& monster : _monsters)
+	{
+		Protocol::MonsterInfo* monsterInfo = new Protocol::MonsterInfo();
+		Protocol::ObjectInfo* objectInfo = new Protocol::ObjectInfo();
+		Protocol::PosInfo* posInfo = new Protocol::PosInfo();
+
+		monsterInfo->CopyFrom(monster.second->GetMonsterInfo());
+		objectInfo->CopyFrom(monster.second->GetObjectInfo());
+		posInfo->CopyFrom(monster.second->GetPosInfo());
+
+		enterGamePkt.add_monsters()->CopyFrom(*monsterInfo);
 	}
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
@@ -311,19 +330,47 @@ void Room::HandleMove(const Protocol::PosInfo& posInfo)
 	// 적용
 	PlayerRef player = dynamic_pointer_cast<Player>(_objects[objectId]);
 	if (!player)
+	{
+		HandleMoveMonster(posInfo);
+	}
+	else
+	{
+		// 최신 위치 정보로 업데이트
+		player->SetPosInfo(posInfo);
+
+		// 이동 사실을 알린다 (본인 포함? 빼고?)
+		Protocol::STC_MOVE movePkt;
+		Protocol::PosInfo* info = new Protocol::PosInfo();
+		info->CopyFrom(player->GetPosInfo());
+		movePkt.set_allocated_info(info);
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
+		BroadcastToPlayer(sendBuffer, objectId);
+	}
+}
+
+void Room::HandleMoveMonster(const Protocol::PosInfo& info)
+{
+	const uint64 objectId = info.object_id();
+	if (_objects.find(objectId) == _objects.end())
+		return;
+
+	// 적용
+	MonsterRef monster = dynamic_pointer_cast<Monster>(_objects[objectId]);
+	if (!monster)
 		return;
 
 	// 최신 위치 정보로 업데이트
-	player->posInfo->CopyFrom(posInfo);
+	monster->SetPosInfo(info);
 
 	// 이동 사실을 알린다 (본인 포함? 빼고?)
 	Protocol::STC_MOVE movePkt;
-	Protocol::PosInfo* info = new Protocol::PosInfo();
-	info->CopyFrom(*player->posInfo);
-	movePkt.set_allocated_info(info);
+	Protocol::PosInfo* posInfo = new Protocol::PosInfo();
+	posInfo->CopyFrom(info);
+	movePkt.set_allocated_info(posInfo);
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
-	BroadcastToPlayer(sendBuffer, objectId);
+	Broadcast(sendBuffer);
 }
 
 void Room::HandleAttack(Protocol::CTS_ATTACK pkt)
@@ -353,14 +400,10 @@ void Room::UpdateTick()
 
 	// TODO : 몬스터 이동, 공격
 
-	for(auto& monster : _objects)
+	for(auto& monster : _monsters)
 	{
-		MonsterRef mon = dynamic_pointer_cast<Monster>(monster.second);
-		if (mon)
-		{
-			mon->CalcDist();
-			mon->CanAttack();
-		}
+		monster.second->CalcDist();
+		monster.second->CanAttack();
 	}
 
 	DoTimer(100, &Room::UpdateTick);
@@ -375,45 +418,47 @@ void Room::ReleaseThisRoom()
 {
 	auto self = GetRoomRef();
 	_lobby.lock()->RemoveRoom(self);
+	ClearJobs();
 }
 
-void Room::SpawnMonster()
+void Room::SpawnMonsters()
 {
-	// 보스 생성
-	MonsterRef monster = ObjectUtils::CreateMonster(); 
+	for (int i = 0; i < 4; i++)
+	{
+		MonsterRef monster = ObjectUtils::CreateMonster();
 
-	// 보스를 방에 추가
-	if (AddObject(monster))
+		AddMonster(monster);
+	}
+}
+
+void Room::SpawnMonster(const Protocol::PosInfo& pos_Info)
+{
+	MonsterRef monster = ObjectUtils::CreateMonster();
+
+	if (AddMonster(monster, pos_Info))
 	{
 		Protocol::STC_SPAWN spawnPkt;
-		Protocol::STC_MONSTERINFO monsterInfoPkt;
-		Protocol::STC_MONSTERMOVE monsterMovePkt;
 
-		Protocol::ObjectInfo* monsterInfo = spawnPkt.add_players();
-		monsterInfo->CopyFrom(*monster->objectInfo);
+		Protocol::ObjectInfo* objInfo = new Protocol::ObjectInfo();
+		objInfo->CopyFrom(monster->GetObjectInfo());
 
-		Protocol::PosInfo* posInfo = monsterInfo->mutable_pos_info();
-		posInfo->CopyFrom(*monster->posInfo);
+		Protocol::PosInfo* posInfo = new Protocol::PosInfo();
+		posInfo->CopyFrom(pos_Info);
+
+		objInfo->set_allocated_pos_info(posInfo);
+
+		spawnPkt.set_allocated_object_info(objInfo);
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
 		Broadcast(sendBuffer);
+	}
+}
 
-		if (auto boss = dynamic_pointer_cast<Monster>(monster))
-		{
-			Protocol::PosInfo* info = monsterMovePkt.mutable_info();
-			auto dest = boss->GetDestination();
-			info->set_x(boss->posInfo->x());
-			info->set_y(boss->posInfo->y());
-			info->set_z(boss->posInfo->z());
-
-			monsterInfoPkt.set_allocated_info(boss->monsterInfo);
-		}
-
-		SendBufferRef sendBuffer2 = ServerPacketHandler::MakeSendBuffer(monsterInfoPkt);
-		Broadcast(sendBuffer2);
-
-		SendBufferRef sendBuffer3 = ServerPacketHandler::MakeSendBuffer(monsterMovePkt);
-		Broadcast(sendBuffer3);
+void Room::Spawn(const Protocol::CreatureType creatureType, const Protocol::PosInfo& info)
+{
+	if (creatureType == Protocol::CreatureType::CREATURE_TYPE_MONSTER)
+	{
+		SpawnMonster(info);
 	}
 }
 
@@ -438,11 +483,6 @@ bool Room::RemoveObject(uint64 objectId)
 	if (_objects.find(objectId) == _objects.end())
 		return false;
 
-	ObjectRef object = _objects[objectId];
-	PlayerRef player = dynamic_pointer_cast<Player>(object);
-	if (player)
-		player->room.store(weak_ptr<Room>());
-
 	_objects.erase(objectId);
 
 	return true;
@@ -451,25 +491,31 @@ bool Room::RemoveObject(uint64 objectId)
 bool Room::AddPlayer(PlayerRef player)
 {
 	// Room에 있다면 문제가 있다.
-	if (_players.find(player->GetPlayerInfo()->player_id()) != _players.end())
+	if (_players.find(player->GetPlayerInfo().player_id()) != _players.end())
 	{
 		return false;
 	}
-	player->SetObjectID(ObjectUtils::GetNewObjectID());
 
-	_players.insert(make_pair(player->GetPlayerInfo()->player_id(), player));
-	_objects.insert(make_pair(player->GetObjectInfo()->object_id(), player));
+	Protocol::ObjectInfo objectInfo = Protocol::ObjectInfo();
+	objectInfo.CopyFrom(player->GetObjectInfo());
+	objectInfo.set_object_id(ObjectUtils::GetNewObjectID());
+	objectInfo.mutable_pos_info()->set_object_id(objectInfo.object_id());
+
+	player->SetObjectInfo(objectInfo);
+
+	_players.insert(make_pair(player->GetPlayerInfo().player_id(), player));
+	_objects.insert(make_pair(player->GetObjectInfo().object_id(), player));
 	player->room.store(GetRoomRef());
 
 	info->set_current_player_count(_players.size());
-	info->add_players()->CopyFrom(*player->GetPlayerInfo());
+	info->add_players()->CopyFrom(player->GetPlayerInfo());
 
 	return true;
 }
 
 bool Room::RemovePlayer(PlayerRef player)
 {
-	uint64 playerIndex = player->GetPlayerInfo()->player_id();
+	uint64 playerIndex = player->GetPlayerInfo().player_id();
 	// 플레이어가 Room에 없으면 문제가 있다.
 	if (_players.find(playerIndex) == _players.end())
 	{
@@ -488,7 +534,7 @@ bool Room::RemovePlayer(PlayerRef player)
 		{ 
 			// ���ο� ȣ��Ʈ ����
 			Protocol::PlayerInfo* newHost = new Protocol::PlayerInfo();
-			newHost->CopyFrom(*(next(originHost)->second->GetPlayerInfo()));
+			newHost->CopyFrom((next(originHost)->second->GetPlayerInfo()));
 			info->set_allocated_host(newHost);
 		}
 	}
@@ -498,9 +544,53 @@ bool Room::RemovePlayer(PlayerRef player)
 
 	for (const auto& player : _players)
 	{
-		info->add_players()->CopyFrom(*(player.second->GetPlayerInfo()));
+		info->add_players()->CopyFrom((player.second->GetPlayerInfo()));
 	}
 
+	return true;
+}
+
+bool Room::AddMonster(MonsterRef monster, const Protocol::PosInfo& pos_Info)
+{
+	if (_monsters.size() >= 4)
+	{
+		return false;
+	}
+
+	if(_monsters.find(monster->GetObjectInfo().object_id()) != _monsters.end())
+	{
+		return false;
+	}
+
+	Protocol::ObjectInfo objectInfo = Protocol::ObjectInfo();
+	objectInfo.CopyFrom(monster->GetObjectInfo());
+	objectInfo.set_object_id(ObjectUtils::GetNewObjectID());
+
+	Protocol::PosInfo posInfo = Protocol::PosInfo();
+	posInfo.CopyFrom(pos_Info);
+	posInfo.set_object_id(objectInfo.object_id());
+	objectInfo.mutable_pos_info()->CopyFrom(posInfo);
+
+	monster->SetObjectInfo(objectInfo);
+
+	_monsters.insert(make_pair(monster->GetObjectInfo().object_id(), monster));
+	_objects.insert(make_pair(monster->GetObjectInfo().object_id(), monster));
+
+	monster->room.store(GetRoomRef());
+
+	return true;
+}
+
+bool Room::RemoveMonster(uint64 monsterId)
+{
+	if(_monsters.find(monsterId) == _monsters.end())
+	{
+		return false;
+	}
+
+	_monsters.erase(monsterId);
+	_objects.erase(monsterId);
+	
 	return true;
 }
 
@@ -512,7 +602,7 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 		if (player == nullptr)
 			continue;
 
-		if (player->GetObjectInfo()->object_id() == exceptId)
+		if (player->GetObjectInfo().object_id() == exceptId)
 			continue;
 
 		if (GameSessionRef session = player->session.lock())
@@ -524,7 +614,7 @@ void Room::BroadcastToPlayer(SendBufferRef sendBuffer, uint64 exceptId)
 {
 	for (auto& player : _players)
 	{
-		if (player.second->GetObjectInfo()->object_id() == exceptId)
+		if (player.second->GetObjectInfo().object_id() == exceptId)
 			continue;
 
 		if (GameSessionRef session = player.second->GetSession())

@@ -277,6 +277,7 @@ void UMDNetworkManager::HandleCreateRoom(const Protocol::STC_CREATE_ROOM& create
 	{
 		if (pc->GetPlayerInfo()->player_id() == createRoomPkt.room_info().host().player_id())
 		{
+			isHost = true;
 			pc->CreateRoom(createRoomPkt.room_info(), true);
 		}
 		else
@@ -284,6 +285,8 @@ void UMDNetworkManager::HandleCreateRoom(const Protocol::STC_CREATE_ROOM& create
 			pc->CreateRoom(createRoomPkt.room_info(), false);
 		}
 	}
+
+	RoomID = createRoomPkt.room_info().room_id();
 }
 
 void UMDNetworkManager::HandleJoinRoom(const Protocol::STC_JOIN_ROOM& joinRoomPkt)
@@ -312,6 +315,8 @@ void UMDNetworkManager::HandleJoinRoom(const Protocol::STC_JOIN_ROOM& joinRoomPk
 			pc->JoinRoom(joinRoomPkt.room_info(), false);
 		}
 	}
+
+	RoomID = joinRoomPkt.room_info().room_id();
 }
 
 void UMDNetworkManager::HandleChangeCharacter(const Protocol::STC_CHANGE_CHARACTER& changeCharacterPkt)
@@ -353,12 +358,21 @@ void UMDNetworkManager::HandleLeaveRoom(const Protocol::STC_LEAVE_ROOM& leaveRoo
 
 	if (IsValid(pc))
 	{
+		if(leaveRoomPkt.room_info().host().player_id() == pc->GetPlayerInfo()->player_id())
+		{
+			isHost = true;
+		}
+		else
+		{
+			isHost = false;
+			RoomID = 0;
+		}
+
 		pc->LeaveRoom(leaveRoomPkt);
 	}
-
 }
 
-void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, const Protocol::PlayerType charactertype, bool isMine)
+void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, const Protocol::PlayerType charactertype, TArray<AActor*> spawns, bool isMine)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)
 	{
@@ -378,17 +392,17 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 		return;
 	}
 
-	FVector spawnLocation(objectInfo.pos_info().x(), objectInfo.pos_info().y(), objectInfo.pos_info().z());
+	FVector spawnLocation = spawns[objectId % 4]->GetActorLocation();
 
-	if (!isMine)
-	{
-		spawnLocation += FVector(15, 0, 0); 
-	}
+	//if (!isMine)
+	//{
+	//	spawnLocation += FVector(15, 0, 0); 
+	//}
 
 	if (isMine)
 	{
 		AMDPlayerController* pc = Cast<AMDPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
-		APlayableCharacter* player = Cast<APlayableCharacter>(pc->GetPawn());
+		APlayableCharacter* player = nullptr;
 		AMDGameMode* gameMode = Cast<AMDGameMode>(GetWorld()->GetAuthGameMode());
 
 		if (true)
@@ -407,8 +421,13 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 
 			if (IsValid(pc))
 			{
+				pc->GetPawn()->Destroy();
 				pc->OnPossess(player);
 				MD_LOG(LogMDNetwork, Log, TEXT("Possess To Character"));
+			}
+			else
+			{
+				MD_LOG(LogMDNetwork, Log, TEXT("PlayerController is not valid"));
 			}
 
 			if(IsValid(gameMode))
@@ -439,32 +458,41 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 	}
 }
 
-void UMDNetworkManager::HandleSpawn(const Protocol::PlayerInfo& playerInfo, bool isMine)
+void UMDNetworkManager::HandleSpawn(const Protocol::PlayerInfo& playerInfo, TArray<AActor*> spawns, bool isMine)
 {
-	HandleSpawn(playerInfo.object_info(), playerInfo.player_type(), isMine);
-}
-
-void UMDNetworkManager::HandleSpawn(const Protocol::STC_ENTER_GAME& enterGamePkt)
-{
-	for (auto& player : enterGamePkt.players())
+	auto pc = Cast<AMDPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	if(IsValid(pc) && isMine)
 	{
-		if(player.player_id() == PlayerID)
-		{
-			HandleSpawn(player, true);
-		}
-		else
-		{
-			HandleSpawn(player, false);
-		}
+		pc->SetPlayerInfo(playerInfo);
 	}
+
+	HandleSpawn(playerInfo.object_info(), playerInfo.player_type(), spawns, isMine);
 }
 
-void UMDNetworkManager::HandleSpawn(const Protocol::STC_SPAWN& spawnPkt)
+void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, FVector spawnLocation)
 {
-	//for(auto& player : spawnPkt.players())
-	//{
-	//	HandleSpawn(player, player  false);
-	//}
+	if(Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	auto* world = GetWorld();
+	if(world == nullptr)
+	{
+		return;
+	}
+
+	// 중복 처리 체크
+	const uint64 objectId = objectInfo.object_id();
+	if(Monsters.Find(objectId) != nullptr)
+	{
+		return;
+	}
+
+	ANonPlayableCharacter* monster = Cast<ANonPlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->KhaimeraClass, &spawnLocation));
+	monster->SetObjectID(objectId);
+	Monsters.Add(objectId, monster);
+	MD_LOG(LogMDNetwork, Log, TEXT("Spawn Monster"));
 }
 
 void UMDNetworkManager::HandleDespawn(uint64 objectId)
@@ -513,23 +541,41 @@ void UMDNetworkManager::HandleMove(const Protocol::STC_MOVE& movePkt)
 	//이동하려는 플레이어 식별
 	const uint64 objectId = movePkt.info().object_id();
 
-	TObjectPtr<APlayableCharacter>* findActor = Players.Find(objectId);
-	if(findActor == nullptr)
+	if(Players.Contains(objectId))
 	{
+		HandleMovePlayer(*Players.Find(objectId), movePkt.info());
 		return;
 	}
 
-	APlayableCharacter* player = (*findActor);
-	if(player->IsMyPlayer())
+	if(Monsters.Contains(objectId))
+	{
+		HandleMoveMonster(*Monsters.Find(objectId), movePkt.info());
+		return;
+	}
+	
+}
+
+void UMDNetworkManager::HandleMovePlayer(APlayableCharacter* player, const Protocol::PosInfo& posInfo)
+{
+	if (player->IsMyPlayer())
 	{
 		return;
 	}
 
 	//이동 정보 가져와서 업데이트 
-	const Protocol::PosInfo& info = movePkt.info();
-	player->SetPlayerInfo(info);
-	player->SetDestInfo(info);
-	MD_LOG(LogMDNetwork, Log, TEXT("PlayerID: %llu"), info.object_id());
+	player->SetPosInfo(posInfo);
+	player->SetDestInfo(posInfo);
+}
+
+void UMDNetworkManager::HandleMoveMonster(ANonPlayableCharacter* monster, const Protocol::PosInfo& posInfo)
+{
+	if(isHost)
+	{
+		return;
+	}
+
+	monster->SetPosInfo(posInfo);
+	monster->SetDestInfo(posInfo);
 }
 
 void UMDNetworkManager::HandleAttack(const Protocol::STC_ATTACK& AtkPkt)
@@ -551,6 +597,23 @@ void UMDNetworkManager::HandleAttack(const Protocol::STC_ATTACK& AtkPkt)
 
 	const Protocol::AttackInfo& Info = AtkPkt.info();
 	player->Other_Attack(Info);
+}
+
+void UMDNetworkManager::HandleMonsterAttack(uint64 obj_id)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	TObjectPtr<ANonPlayableCharacter>* MonsterPtr = Monsters.Find(obj_id);
+	if (MonsterPtr == nullptr)
+		return;
+
+	ANonPlayableCharacter* Monster = *MonsterPtr;
+	Monster->UseSkill(EAttackType::QSkillAttack);
 }
 
 void UMDNetworkManager::HandleSpawnMonster(const Protocol::STC_MONSTERINFO& InfoPkt)
@@ -611,6 +674,16 @@ void UMDNetworkManager::HandleMonsterInfo(const Protocol::STC_MONSTERINFO& infoP
 			AIController->SetBlackboardValues(Monster->IsFindPlayer, Monster->TargetPlayer, Monster->TargetPlayer->GetActorLocation(), Monster->Speed, Info.calcdist());
 		}
 	}
+}
+
+void UMDNetworkManager::AddPlayerInfo(uint64 player_id, const Protocol::PlayerInfo& info)
+{
+	PlayerInfos.Add(player_id, new Protocol::PlayerInfo(info));
+}
+
+void UMDNetworkManager::AddMonsterInfo(uint64 object_id, const Protocol::MonsterInfo& info)
+{
+	MonsterInfos.Add(object_id, new Protocol::MonsterInfo(info));
 }
 
 

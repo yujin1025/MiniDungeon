@@ -10,11 +10,11 @@ public:
 
 	void CalcDist();
 	void CanAttack();
-	float DistanceTo(const Protocol::PosInfo* targetPos);
+	float DistanceTo(const Protocol::PosInfo& targetPos);
 	Vector3 GetDestination() { return Vector3{ 0,0,0 }; }
 
 	Protocol::CreatureType creatureType = Protocol::CreatureType::CREATURE_TYPE_MONSTER;
-	Protocol::MonsterInfo* monsterInfo;
+	
 
 	const Vector3 SpawnVec{ 3390.f, 640.f, 178.f };
 	const float SpawnYaw = 180.f;
@@ -32,6 +32,19 @@ public:
 	bool IsDead;
 	bool IsFindPlayer;
 	 
-	ObjectRef TargetPlayer; //보스가 추적하는 플레이어 객체
+	atomic<weak_ptr<Player>> TargetPlayer; //보스가 추적하는 플레이어 객체
+
+private:
+	Protocol::MonsterInfo* monsterInfo;
+
+public:
+	const Protocol::MonsterInfo GetMonsterInfo() { return *monsterInfo; }
+	void SetMonsterInfo(const Protocol::MonsterInfo& monst_info) { this->monsterInfo->CopyFrom(monst_info); }
+
+	const Protocol::ObjectInfo& GetObjectInfo() { return monsterInfo->object_info(); }
+	void SetObjectInfo(const Protocol::ObjectInfo& obj_Info);
+
+	const Protocol::PosInfo GetPosInfo() { return GetObjectInfo().pos_info(); }
+	void SetPosInfo(const Protocol::PosInfo& pos_Info);
 };
 

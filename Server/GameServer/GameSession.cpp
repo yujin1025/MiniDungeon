@@ -28,7 +28,7 @@ void GameSession::OnDisconnected()
     // Step 3: Room에서 LeaveRoom 호출
     if (currentRoom)
     {
-        currentRoom->LeaveRoom(currentPlayer);
+        currentRoom->DoAsync(&Room::LeaveRoom, currentPlayer, true);
     }
 
     // Step 4: Player에서 Lobby 접근
@@ -38,7 +38,7 @@ void GameSession::OnDisconnected()
     // Step 5: Lobby에서 LeaveLobby 호출
     if (currentLobby)
 	{
-		currentLobby->LeaveLobby(currentPlayer);
+        currentLobby->DoAsync(&Lobby::LeaveLobby, currentPlayer);
 	}
 
     // Step 6: GameSessionManager에서 Remove 호출

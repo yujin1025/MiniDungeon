@@ -66,6 +66,9 @@ extern CTS_CHECK_DUPLICATEDefaultTypeInternal _CTS_CHECK_DUPLICATE_default_insta
 class CTS_CREATE_ROOM;
 struct CTS_CREATE_ROOMDefaultTypeInternal;
 extern CTS_CREATE_ROOMDefaultTypeInternal _CTS_CREATE_ROOM_default_instance_;
+class CTS_DETECT;
+struct CTS_DETECTDefaultTypeInternal;
+extern CTS_DETECTDefaultTypeInternal _CTS_DETECT_default_instance_;
 class CTS_EMAIL_VERIFICATION;
 struct CTS_EMAIL_VERIFICATIONDefaultTypeInternal;
 extern CTS_EMAIL_VERIFICATIONDefaultTypeInternal _CTS_EMAIL_VERIFICATION_default_instance_;
@@ -93,12 +96,18 @@ extern CTS_MONSTERINFODefaultTypeInternal _CTS_MONSTERINFO_default_instance_;
 class CTS_MONSTERMOVE;
 struct CTS_MONSTERMOVEDefaultTypeInternal;
 extern CTS_MONSTERMOVEDefaultTypeInternal _CTS_MONSTERMOVE_default_instance_;
+class CTS_MONSTER_ATTACK;
+struct CTS_MONSTER_ATTACKDefaultTypeInternal;
+extern CTS_MONSTER_ATTACKDefaultTypeInternal _CTS_MONSTER_ATTACK_default_instance_;
 class CTS_MOVE;
 struct CTS_MOVEDefaultTypeInternal;
 extern CTS_MOVEDefaultTypeInternal _CTS_MOVE_default_instance_;
 class CTS_REGISTER;
 struct CTS_REGISTERDefaultTypeInternal;
 extern CTS_REGISTERDefaultTypeInternal _CTS_REGISTER_default_instance_;
+class CTS_SPAWN;
+struct CTS_SPAWNDefaultTypeInternal;
+extern CTS_SPAWNDefaultTypeInternal _CTS_SPAWN_default_instance_;
 class CTS_STANDARD_MONSTER;
 struct CTS_STANDARD_MONSTERDefaultTypeInternal;
 extern CTS_STANDARD_MONSTERDefaultTypeInternal _CTS_STANDARD_MONSTER_default_instance_;
@@ -123,6 +132,9 @@ extern STC_CREATE_ROOMDefaultTypeInternal _STC_CREATE_ROOM_default_instance_;
 class STC_DESPAWN;
 struct STC_DESPAWNDefaultTypeInternal;
 extern STC_DESPAWNDefaultTypeInternal _STC_DESPAWN_default_instance_;
+class STC_DETECT;
+struct STC_DETECTDefaultTypeInternal;
+extern STC_DETECTDefaultTypeInternal _STC_DETECT_default_instance_;
 class STC_EMAIL_VERIFICATION;
 struct STC_EMAIL_VERIFICATIONDefaultTypeInternal;
 extern STC_EMAIL_VERIFICATIONDefaultTypeInternal _STC_EMAIL_VERIFICATION_default_instance_;
@@ -150,6 +162,9 @@ extern STC_MONSTERINFODefaultTypeInternal _STC_MONSTERINFO_default_instance_;
 class STC_MONSTERMOVE;
 struct STC_MONSTERMOVEDefaultTypeInternal;
 extern STC_MONSTERMOVEDefaultTypeInternal _STC_MONSTERMOVE_default_instance_;
+class STC_MONSTER_ATTACK;
+struct STC_MONSTER_ATTACKDefaultTypeInternal;
+extern STC_MONSTER_ATTACKDefaultTypeInternal _STC_MONSTER_ATTACK_default_instance_;
 class STC_MOVE;
 struct STC_MOVEDefaultTypeInternal;
 extern STC_MOVEDefaultTypeInternal _STC_MOVE_default_instance_;
@@ -170,6 +185,7 @@ template<> ::Protocol::CTS_CHANGE_CHARACTER* Arena::CreateMaybeMessage<::Protoco
 template<> ::Protocol::CTS_CHAT* Arena::CreateMaybeMessage<::Protocol::CTS_CHAT>(Arena*);
 template<> ::Protocol::CTS_CHECK_DUPLICATE* Arena::CreateMaybeMessage<::Protocol::CTS_CHECK_DUPLICATE>(Arena*);
 template<> ::Protocol::CTS_CREATE_ROOM* Arena::CreateMaybeMessage<::Protocol::CTS_CREATE_ROOM>(Arena*);
+template<> ::Protocol::CTS_DETECT* Arena::CreateMaybeMessage<::Protocol::CTS_DETECT>(Arena*);
 template<> ::Protocol::CTS_EMAIL_VERIFICATION* Arena::CreateMaybeMessage<::Protocol::CTS_EMAIL_VERIFICATION>(Arena*);
 template<> ::Protocol::CTS_ENTER_GAME* Arena::CreateMaybeMessage<::Protocol::CTS_ENTER_GAME>(Arena*);
 template<> ::Protocol::CTS_ENTER_LOBBY* Arena::CreateMaybeMessage<::Protocol::CTS_ENTER_LOBBY>(Arena*);
@@ -179,8 +195,10 @@ template<> ::Protocol::CTS_LEAVE_ROOM* Arena::CreateMaybeMessage<::Protocol::CTS
 template<> ::Protocol::CTS_LOGIN* Arena::CreateMaybeMessage<::Protocol::CTS_LOGIN>(Arena*);
 template<> ::Protocol::CTS_MONSTERINFO* Arena::CreateMaybeMessage<::Protocol::CTS_MONSTERINFO>(Arena*);
 template<> ::Protocol::CTS_MONSTERMOVE* Arena::CreateMaybeMessage<::Protocol::CTS_MONSTERMOVE>(Arena*);
+template<> ::Protocol::CTS_MONSTER_ATTACK* Arena::CreateMaybeMessage<::Protocol::CTS_MONSTER_ATTACK>(Arena*);
 template<> ::Protocol::CTS_MOVE* Arena::CreateMaybeMessage<::Protocol::CTS_MOVE>(Arena*);
 template<> ::Protocol::CTS_REGISTER* Arena::CreateMaybeMessage<::Protocol::CTS_REGISTER>(Arena*);
+template<> ::Protocol::CTS_SPAWN* Arena::CreateMaybeMessage<::Protocol::CTS_SPAWN>(Arena*);
 template<> ::Protocol::CTS_STANDARD_MONSTER* Arena::CreateMaybeMessage<::Protocol::CTS_STANDARD_MONSTER>(Arena*);
 template<> ::Protocol::STC_ATTACK* Arena::CreateMaybeMessage<::Protocol::STC_ATTACK>(Arena*);
 template<> ::Protocol::STC_AUTH* Arena::CreateMaybeMessage<::Protocol::STC_AUTH>(Arena*);
@@ -189,6 +207,7 @@ template<> ::Protocol::STC_CHAT* Arena::CreateMaybeMessage<::Protocol::STC_CHAT>
 template<> ::Protocol::STC_CHECK_DUPLICATE* Arena::CreateMaybeMessage<::Protocol::STC_CHECK_DUPLICATE>(Arena*);
 template<> ::Protocol::STC_CREATE_ROOM* Arena::CreateMaybeMessage<::Protocol::STC_CREATE_ROOM>(Arena*);
 template<> ::Protocol::STC_DESPAWN* Arena::CreateMaybeMessage<::Protocol::STC_DESPAWN>(Arena*);
+template<> ::Protocol::STC_DETECT* Arena::CreateMaybeMessage<::Protocol::STC_DETECT>(Arena*);
 template<> ::Protocol::STC_EMAIL_VERIFICATION* Arena::CreateMaybeMessage<::Protocol::STC_EMAIL_VERIFICATION>(Arena*);
 template<> ::Protocol::STC_ENTER_GAME* Arena::CreateMaybeMessage<::Protocol::STC_ENTER_GAME>(Arena*);
 template<> ::Protocol::STC_ENTER_LOBBY* Arena::CreateMaybeMessage<::Protocol::STC_ENTER_LOBBY>(Arena*);
@@ -198,6 +217,7 @@ template<> ::Protocol::STC_LEAVE_ROOM* Arena::CreateMaybeMessage<::Protocol::STC
 template<> ::Protocol::STC_LOGIN* Arena::CreateMaybeMessage<::Protocol::STC_LOGIN>(Arena*);
 template<> ::Protocol::STC_MONSTERINFO* Arena::CreateMaybeMessage<::Protocol::STC_MONSTERINFO>(Arena*);
 template<> ::Protocol::STC_MONSTERMOVE* Arena::CreateMaybeMessage<::Protocol::STC_MONSTERMOVE>(Arena*);
+template<> ::Protocol::STC_MONSTER_ATTACK* Arena::CreateMaybeMessage<::Protocol::STC_MONSTER_ATTACK>(Arena*);
 template<> ::Protocol::STC_MOVE* Arena::CreateMaybeMessage<::Protocol::STC_MOVE>(Arena*);
 template<> ::Protocol::STC_REGISTER* Arena::CreateMaybeMessage<::Protocol::STC_REGISTER>(Arena*);
 template<> ::Protocol::STC_SPAWN* Arena::CreateMaybeMessage<::Protocol::STC_SPAWN>(Arena*);
@@ -3817,6 +3837,7 @@ class STC_ENTER_GAME final :
 
   enum : int {
     kPlayersFieldNumber = 2,
+    kMonstersFieldNumber = 3,
     kSuccessFieldNumber = 1,
   };
   // repeated .Protocol.PlayerInfo players = 2;
@@ -3837,6 +3858,24 @@ class STC_ENTER_GAME final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >&
       players() const;
 
+  // repeated .Protocol.MonsterInfo monsters = 3;
+  int monsters_size() const;
+  private:
+  int _internal_monsters_size() const;
+  public:
+  void clear_monsters();
+  ::Protocol::MonsterInfo* mutable_monsters(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::MonsterInfo >*
+      mutable_monsters();
+  private:
+  const ::Protocol::MonsterInfo& _internal_monsters(int index) const;
+  ::Protocol::MonsterInfo* _internal_add_monsters();
+  public:
+  const ::Protocol::MonsterInfo& monsters(int index) const;
+  ::Protocol::MonsterInfo* add_monsters();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::MonsterInfo >&
+      monsters() const;
+
   // bool success = 1;
   void clear_success();
   bool success() const;
@@ -3855,6 +3894,7 @@ class STC_ENTER_GAME final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo > players_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::MonsterInfo > monsters_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -4099,6 +4139,185 @@ class STC_LEAVE_GAME final :
 };
 // -------------------------------------------------------------------
 
+class CTS_SPAWN final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.CTS_SPAWN) */ {
+ public:
+  inline CTS_SPAWN() : CTS_SPAWN(nullptr) {}
+  ~CTS_SPAWN() override;
+  explicit PROTOBUF_CONSTEXPR CTS_SPAWN(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CTS_SPAWN(const CTS_SPAWN& from);
+  CTS_SPAWN(CTS_SPAWN&& from) noexcept
+    : CTS_SPAWN() {
+    *this = ::std::move(from);
+  }
+
+  inline CTS_SPAWN& operator=(const CTS_SPAWN& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CTS_SPAWN& operator=(CTS_SPAWN&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CTS_SPAWN& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CTS_SPAWN* internal_default_instance() {
+    return reinterpret_cast<const CTS_SPAWN*>(
+               &_CTS_SPAWN_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    24;
+
+  friend void swap(CTS_SPAWN& a, CTS_SPAWN& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CTS_SPAWN* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CTS_SPAWN* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CTS_SPAWN* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CTS_SPAWN>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CTS_SPAWN& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CTS_SPAWN& from) {
+    CTS_SPAWN::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CTS_SPAWN* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.CTS_SPAWN";
+  }
+  protected:
+  explicit CTS_SPAWN(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kPosInfoFieldNumber = 3,
+    kRoomIdFieldNumber = 1,
+    kCreatureTypeFieldNumber = 2,
+  };
+  // .Protocol.PosInfo pos_info = 3;
+  bool has_pos_info() const;
+  private:
+  bool _internal_has_pos_info() const;
+  public:
+  void clear_pos_info();
+  const ::Protocol::PosInfo& pos_info() const;
+  PROTOBUF_NODISCARD ::Protocol::PosInfo* release_pos_info();
+  ::Protocol::PosInfo* mutable_pos_info();
+  void set_allocated_pos_info(::Protocol::PosInfo* pos_info);
+  private:
+  const ::Protocol::PosInfo& _internal_pos_info() const;
+  ::Protocol::PosInfo* _internal_mutable_pos_info();
+  public:
+  void unsafe_arena_set_allocated_pos_info(
+      ::Protocol::PosInfo* pos_info);
+  ::Protocol::PosInfo* unsafe_arena_release_pos_info();
+
+  // uint64 room_id = 1;
+  void clear_room_id();
+  uint64_t room_id() const;
+  void set_room_id(uint64_t value);
+  private:
+  uint64_t _internal_room_id() const;
+  void _internal_set_room_id(uint64_t value);
+  public:
+
+  // .Protocol.CreatureType creature_type = 2;
+  void clear_creature_type();
+  ::Protocol::CreatureType creature_type() const;
+  void set_creature_type(::Protocol::CreatureType value);
+  private:
+  ::Protocol::CreatureType _internal_creature_type() const;
+  void _internal_set_creature_type(::Protocol::CreatureType value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.CTS_SPAWN)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::Protocol::PosInfo* pos_info_;
+    uint64_t room_id_;
+    int creature_type_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
 class STC_SPAWN final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.STC_SPAWN) */ {
  public:
@@ -4147,7 +4366,7 @@ class STC_SPAWN final :
                &_STC_SPAWN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    24;
+    25;
 
   friend void swap(STC_SPAWN& a, STC_SPAWN& b) {
     a.Swap(&b);
@@ -4220,25 +4439,25 @@ class STC_SPAWN final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPlayersFieldNumber = 1,
+    kObjectInfoFieldNumber = 1,
   };
-  // repeated .Protocol.ObjectInfo players = 1;
-  int players_size() const;
+  // .Protocol.ObjectInfo object_info = 1;
+  bool has_object_info() const;
   private:
-  int _internal_players_size() const;
+  bool _internal_has_object_info() const;
   public:
-  void clear_players();
-  ::Protocol::ObjectInfo* mutable_players(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
-      mutable_players();
+  void clear_object_info();
+  const ::Protocol::ObjectInfo& object_info() const;
+  PROTOBUF_NODISCARD ::Protocol::ObjectInfo* release_object_info();
+  ::Protocol::ObjectInfo* mutable_object_info();
+  void set_allocated_object_info(::Protocol::ObjectInfo* object_info);
   private:
-  const ::Protocol::ObjectInfo& _internal_players(int index) const;
-  ::Protocol::ObjectInfo* _internal_add_players();
+  const ::Protocol::ObjectInfo& _internal_object_info() const;
+  ::Protocol::ObjectInfo* _internal_mutable_object_info();
   public:
-  const ::Protocol::ObjectInfo& players(int index) const;
-  ::Protocol::ObjectInfo* add_players();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
-      players() const;
+  void unsafe_arena_set_allocated_object_info(
+      ::Protocol::ObjectInfo* object_info);
+  ::Protocol::ObjectInfo* unsafe_arena_release_object_info();
 
   // @@protoc_insertion_point(class_scope:Protocol.STC_SPAWN)
  private:
@@ -4248,7 +4467,7 @@ class STC_SPAWN final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo > players_;
+    ::Protocol::ObjectInfo* object_info_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -4304,7 +4523,7 @@ class STC_DESPAWN final :
                &_STC_DESPAWN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    25;
+    26;
 
   friend void swap(STC_DESPAWN& a, STC_DESPAWN& b) {
     a.Swap(&b);
@@ -4466,7 +4685,7 @@ class CTS_MOVE final :
                &_CTS_MOVE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    26;
+    27;
 
   friend void swap(CTS_MOVE& a, CTS_MOVE& b) {
     a.Swap(&b);
@@ -4623,7 +4842,7 @@ class STC_MOVE final :
                &_STC_MOVE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    27;
+    28;
 
   friend void swap(STC_MOVE& a, STC_MOVE& b) {
     a.Swap(&b);
@@ -4732,6 +4951,642 @@ class STC_MOVE final :
 };
 // -------------------------------------------------------------------
 
+class CTS_DETECT final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.CTS_DETECT) */ {
+ public:
+  inline CTS_DETECT() : CTS_DETECT(nullptr) {}
+  ~CTS_DETECT() override;
+  explicit PROTOBUF_CONSTEXPR CTS_DETECT(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CTS_DETECT(const CTS_DETECT& from);
+  CTS_DETECT(CTS_DETECT&& from) noexcept
+    : CTS_DETECT() {
+    *this = ::std::move(from);
+  }
+
+  inline CTS_DETECT& operator=(const CTS_DETECT& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CTS_DETECT& operator=(CTS_DETECT&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CTS_DETECT& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CTS_DETECT* internal_default_instance() {
+    return reinterpret_cast<const CTS_DETECT*>(
+               &_CTS_DETECT_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    29;
+
+  friend void swap(CTS_DETECT& a, CTS_DETECT& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CTS_DETECT* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CTS_DETECT* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CTS_DETECT* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CTS_DETECT>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CTS_DETECT& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CTS_DETECT& from) {
+    CTS_DETECT::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CTS_DETECT* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.CTS_DETECT";
+  }
+  protected:
+  explicit CTS_DETECT(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDetectObjectIdFieldNumber = 1,
+    kTargetObjectIdFieldNumber = 2,
+  };
+  // uint64 detect_object_id = 1;
+  void clear_detect_object_id();
+  uint64_t detect_object_id() const;
+  void set_detect_object_id(uint64_t value);
+  private:
+  uint64_t _internal_detect_object_id() const;
+  void _internal_set_detect_object_id(uint64_t value);
+  public:
+
+  // uint64 target_object_id = 2;
+  void clear_target_object_id();
+  uint64_t target_object_id() const;
+  void set_target_object_id(uint64_t value);
+  private:
+  uint64_t _internal_target_object_id() const;
+  void _internal_set_target_object_id(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.CTS_DETECT)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t detect_object_id_;
+    uint64_t target_object_id_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class STC_DETECT final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.STC_DETECT) */ {
+ public:
+  inline STC_DETECT() : STC_DETECT(nullptr) {}
+  ~STC_DETECT() override;
+  explicit PROTOBUF_CONSTEXPR STC_DETECT(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  STC_DETECT(const STC_DETECT& from);
+  STC_DETECT(STC_DETECT&& from) noexcept
+    : STC_DETECT() {
+    *this = ::std::move(from);
+  }
+
+  inline STC_DETECT& operator=(const STC_DETECT& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline STC_DETECT& operator=(STC_DETECT&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const STC_DETECT& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const STC_DETECT* internal_default_instance() {
+    return reinterpret_cast<const STC_DETECT*>(
+               &_STC_DETECT_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    30;
+
+  friend void swap(STC_DETECT& a, STC_DETECT& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(STC_DETECT* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(STC_DETECT* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  STC_DETECT* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<STC_DETECT>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const STC_DETECT& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const STC_DETECT& from) {
+    STC_DETECT::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(STC_DETECT* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.STC_DETECT";
+  }
+  protected:
+  explicit STC_DETECT(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kDetectObjectIdFieldNumber = 1,
+    kTargetObjectIdFieldNumber = 2,
+  };
+  // uint64 detect_object_id = 1;
+  void clear_detect_object_id();
+  uint64_t detect_object_id() const;
+  void set_detect_object_id(uint64_t value);
+  private:
+  uint64_t _internal_detect_object_id() const;
+  void _internal_set_detect_object_id(uint64_t value);
+  public:
+
+  // uint64 target_object_id = 2;
+  void clear_target_object_id();
+  uint64_t target_object_id() const;
+  void set_target_object_id(uint64_t value);
+  private:
+  uint64_t _internal_target_object_id() const;
+  void _internal_set_target_object_id(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.STC_DETECT)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t detect_object_id_;
+    uint64_t target_object_id_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CTS_MONSTER_ATTACK final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.CTS_MONSTER_ATTACK) */ {
+ public:
+  inline CTS_MONSTER_ATTACK() : CTS_MONSTER_ATTACK(nullptr) {}
+  ~CTS_MONSTER_ATTACK() override;
+  explicit PROTOBUF_CONSTEXPR CTS_MONSTER_ATTACK(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CTS_MONSTER_ATTACK(const CTS_MONSTER_ATTACK& from);
+  CTS_MONSTER_ATTACK(CTS_MONSTER_ATTACK&& from) noexcept
+    : CTS_MONSTER_ATTACK() {
+    *this = ::std::move(from);
+  }
+
+  inline CTS_MONSTER_ATTACK& operator=(const CTS_MONSTER_ATTACK& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CTS_MONSTER_ATTACK& operator=(CTS_MONSTER_ATTACK&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CTS_MONSTER_ATTACK& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CTS_MONSTER_ATTACK* internal_default_instance() {
+    return reinterpret_cast<const CTS_MONSTER_ATTACK*>(
+               &_CTS_MONSTER_ATTACK_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    31;
+
+  friend void swap(CTS_MONSTER_ATTACK& a, CTS_MONSTER_ATTACK& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CTS_MONSTER_ATTACK* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CTS_MONSTER_ATTACK* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CTS_MONSTER_ATTACK* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CTS_MONSTER_ATTACK>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CTS_MONSTER_ATTACK& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CTS_MONSTER_ATTACK& from) {
+    CTS_MONSTER_ATTACK::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CTS_MONSTER_ATTACK* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.CTS_MONSTER_ATTACK";
+  }
+  protected:
+  explicit CTS_MONSTER_ATTACK(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMonsterIdFieldNumber = 1,
+    kTargetIdFieldNumber = 2,
+  };
+  // uint64 monster_id = 1;
+  void clear_monster_id();
+  uint64_t monster_id() const;
+  void set_monster_id(uint64_t value);
+  private:
+  uint64_t _internal_monster_id() const;
+  void _internal_set_monster_id(uint64_t value);
+  public:
+
+  // uint64 target_id = 2;
+  void clear_target_id();
+  uint64_t target_id() const;
+  void set_target_id(uint64_t value);
+  private:
+  uint64_t _internal_target_id() const;
+  void _internal_set_target_id(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.CTS_MONSTER_ATTACK)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t monster_id_;
+    uint64_t target_id_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class STC_MONSTER_ATTACK final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.STC_MONSTER_ATTACK) */ {
+ public:
+  inline STC_MONSTER_ATTACK() : STC_MONSTER_ATTACK(nullptr) {}
+  ~STC_MONSTER_ATTACK() override;
+  explicit PROTOBUF_CONSTEXPR STC_MONSTER_ATTACK(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  STC_MONSTER_ATTACK(const STC_MONSTER_ATTACK& from);
+  STC_MONSTER_ATTACK(STC_MONSTER_ATTACK&& from) noexcept
+    : STC_MONSTER_ATTACK() {
+    *this = ::std::move(from);
+  }
+
+  inline STC_MONSTER_ATTACK& operator=(const STC_MONSTER_ATTACK& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline STC_MONSTER_ATTACK& operator=(STC_MONSTER_ATTACK&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const STC_MONSTER_ATTACK& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const STC_MONSTER_ATTACK* internal_default_instance() {
+    return reinterpret_cast<const STC_MONSTER_ATTACK*>(
+               &_STC_MONSTER_ATTACK_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    32;
+
+  friend void swap(STC_MONSTER_ATTACK& a, STC_MONSTER_ATTACK& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(STC_MONSTER_ATTACK* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(STC_MONSTER_ATTACK* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  STC_MONSTER_ATTACK* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<STC_MONSTER_ATTACK>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const STC_MONSTER_ATTACK& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const STC_MONSTER_ATTACK& from) {
+    STC_MONSTER_ATTACK::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(STC_MONSTER_ATTACK* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.STC_MONSTER_ATTACK";
+  }
+  protected:
+  explicit STC_MONSTER_ATTACK(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMonsterIdFieldNumber = 1,
+    kTargetIdFieldNumber = 2,
+  };
+  // uint64 monster_id = 1;
+  void clear_monster_id();
+  uint64_t monster_id() const;
+  void set_monster_id(uint64_t value);
+  private:
+  uint64_t _internal_monster_id() const;
+  void _internal_set_monster_id(uint64_t value);
+  public:
+
+  // uint64 target_id = 2;
+  void clear_target_id();
+  uint64_t target_id() const;
+  void set_target_id(uint64_t value);
+  private:
+  uint64_t _internal_target_id() const;
+  void _internal_set_target_id(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.STC_MONSTER_ATTACK)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t monster_id_;
+    uint64_t target_id_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
 class CTS_CHAT final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.CTS_CHAT) */ {
  public:
@@ -4780,7 +5635,7 @@ class CTS_CHAT final :
                &_CTS_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    28;
+    33;
 
   friend void swap(CTS_CHAT& a, CTS_CHAT& b) {
     a.Swap(&b);
@@ -4933,7 +5788,7 @@ class STC_CHAT final :
                &_STC_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    29;
+    34;
 
   friend void swap(STC_CHAT& a, STC_CHAT& b) {
     a.Swap(&b);
@@ -5097,7 +5952,7 @@ class CTS_ATTACK final :
                &_CTS_ATTACK_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    30;
+    35;
 
   friend void swap(CTS_ATTACK& a, CTS_ATTACK& b) {
     a.Swap(&b);
@@ -5254,7 +6109,7 @@ class STC_ATTACK final :
                &_STC_ATTACK_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    31;
+    36;
 
   friend void swap(STC_ATTACK& a, STC_ATTACK& b) {
     a.Swap(&b);
@@ -5411,7 +6266,7 @@ class CTS_MONSTERINFO final :
                &_CTS_MONSTERINFO_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    32;
+    37;
 
   friend void swap(CTS_MONSTERINFO& a, CTS_MONSTERINFO& b) {
     a.Swap(&b);
@@ -5568,7 +6423,7 @@ class STC_MONSTERINFO final :
                &_STC_MONSTERINFO_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    33;
+    38;
 
   friend void swap(STC_MONSTERINFO& a, STC_MONSTERINFO& b) {
     a.Swap(&b);
@@ -5725,7 +6580,7 @@ class CTS_MONSTERMOVE final :
                &_CTS_MONSTERMOVE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    34;
+    39;
 
   friend void swap(CTS_MONSTERMOVE& a, CTS_MONSTERMOVE& b) {
     a.Swap(&b);
@@ -5893,7 +6748,7 @@ class STC_MONSTERMOVE final :
                &_STC_MONSTERMOVE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    35;
+    40;
 
   friend void swap(STC_MONSTERMOVE& a, STC_MONSTERMOVE& b) {
     a.Swap(&b);
@@ -6061,7 +6916,7 @@ class CTS_STANDARD_MONSTER final :
                &_CTS_STANDARD_MONSTER_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    36;
+    41;
 
   friend void swap(CTS_STANDARD_MONSTER& a, CTS_STANDARD_MONSTER& b) {
     a.Swap(&b);
@@ -6220,7 +7075,7 @@ class STC_STANDARD_MONSTER final :
                &_STC_STANDARD_MONSTER_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    37;
+    42;
 
   friend void swap(STC_STANDARD_MONSTER& a, STC_STANDARD_MONSTER& b) {
     a.Swap(&b);
@@ -8240,6 +9095,43 @@ STC_ENTER_GAME::players() const {
   return _impl_.players_;
 }
 
+// repeated .Protocol.MonsterInfo monsters = 3;
+inline int STC_ENTER_GAME::_internal_monsters_size() const {
+  return _impl_.monsters_.size();
+}
+inline int STC_ENTER_GAME::monsters_size() const {
+  return _internal_monsters_size();
+}
+inline ::Protocol::MonsterInfo* STC_ENTER_GAME::mutable_monsters(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.STC_ENTER_GAME.monsters)
+  return _impl_.monsters_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::MonsterInfo >*
+STC_ENTER_GAME::mutable_monsters() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.STC_ENTER_GAME.monsters)
+  return &_impl_.monsters_;
+}
+inline const ::Protocol::MonsterInfo& STC_ENTER_GAME::_internal_monsters(int index) const {
+  return _impl_.monsters_.Get(index);
+}
+inline const ::Protocol::MonsterInfo& STC_ENTER_GAME::monsters(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_ENTER_GAME.monsters)
+  return _internal_monsters(index);
+}
+inline ::Protocol::MonsterInfo* STC_ENTER_GAME::_internal_add_monsters() {
+  return _impl_.monsters_.Add();
+}
+inline ::Protocol::MonsterInfo* STC_ENTER_GAME::add_monsters() {
+  ::Protocol::MonsterInfo* _add = _internal_add_monsters();
+  // @@protoc_insertion_point(field_add:Protocol.STC_ENTER_GAME.monsters)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::MonsterInfo >&
+STC_ENTER_GAME::monsters() const {
+  // @@protoc_insertion_point(field_list:Protocol.STC_ENTER_GAME.monsters)
+  return _impl_.monsters_;
+}
+
 // -------------------------------------------------------------------
 
 // CTS_LEAVE_GAME
@@ -8250,43 +9142,220 @@ STC_ENTER_GAME::players() const {
 
 // -------------------------------------------------------------------
 
+// CTS_SPAWN
+
+// uint64 room_id = 1;
+inline void CTS_SPAWN::clear_room_id() {
+  _impl_.room_id_ = uint64_t{0u};
+}
+inline uint64_t CTS_SPAWN::_internal_room_id() const {
+  return _impl_.room_id_;
+}
+inline uint64_t CTS_SPAWN::room_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_SPAWN.room_id)
+  return _internal_room_id();
+}
+inline void CTS_SPAWN::_internal_set_room_id(uint64_t value) {
+  
+  _impl_.room_id_ = value;
+}
+inline void CTS_SPAWN::set_room_id(uint64_t value) {
+  _internal_set_room_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.CTS_SPAWN.room_id)
+}
+
+// .Protocol.CreatureType creature_type = 2;
+inline void CTS_SPAWN::clear_creature_type() {
+  _impl_.creature_type_ = 0;
+}
+inline ::Protocol::CreatureType CTS_SPAWN::_internal_creature_type() const {
+  return static_cast< ::Protocol::CreatureType >(_impl_.creature_type_);
+}
+inline ::Protocol::CreatureType CTS_SPAWN::creature_type() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_SPAWN.creature_type)
+  return _internal_creature_type();
+}
+inline void CTS_SPAWN::_internal_set_creature_type(::Protocol::CreatureType value) {
+  
+  _impl_.creature_type_ = value;
+}
+inline void CTS_SPAWN::set_creature_type(::Protocol::CreatureType value) {
+  _internal_set_creature_type(value);
+  // @@protoc_insertion_point(field_set:Protocol.CTS_SPAWN.creature_type)
+}
+
+// .Protocol.PosInfo pos_info = 3;
+inline bool CTS_SPAWN::_internal_has_pos_info() const {
+  return this != internal_default_instance() && _impl_.pos_info_ != nullptr;
+}
+inline bool CTS_SPAWN::has_pos_info() const {
+  return _internal_has_pos_info();
+}
+inline const ::Protocol::PosInfo& CTS_SPAWN::_internal_pos_info() const {
+  const ::Protocol::PosInfo* p = _impl_.pos_info_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::PosInfo&>(
+      ::Protocol::_PosInfo_default_instance_);
+}
+inline const ::Protocol::PosInfo& CTS_SPAWN::pos_info() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_SPAWN.pos_info)
+  return _internal_pos_info();
+}
+inline void CTS_SPAWN::unsafe_arena_set_allocated_pos_info(
+    ::Protocol::PosInfo* pos_info) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.pos_info_);
+  }
+  _impl_.pos_info_ = pos_info;
+  if (pos_info) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.CTS_SPAWN.pos_info)
+}
+inline ::Protocol::PosInfo* CTS_SPAWN::release_pos_info() {
+  
+  ::Protocol::PosInfo* temp = _impl_.pos_info_;
+  _impl_.pos_info_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::PosInfo* CTS_SPAWN::unsafe_arena_release_pos_info() {
+  // @@protoc_insertion_point(field_release:Protocol.CTS_SPAWN.pos_info)
+  
+  ::Protocol::PosInfo* temp = _impl_.pos_info_;
+  _impl_.pos_info_ = nullptr;
+  return temp;
+}
+inline ::Protocol::PosInfo* CTS_SPAWN::_internal_mutable_pos_info() {
+  
+  if (_impl_.pos_info_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::PosInfo>(GetArenaForAllocation());
+    _impl_.pos_info_ = p;
+  }
+  return _impl_.pos_info_;
+}
+inline ::Protocol::PosInfo* CTS_SPAWN::mutable_pos_info() {
+  ::Protocol::PosInfo* _msg = _internal_mutable_pos_info();
+  // @@protoc_insertion_point(field_mutable:Protocol.CTS_SPAWN.pos_info)
+  return _msg;
+}
+inline void CTS_SPAWN::set_allocated_pos_info(::Protocol::PosInfo* pos_info) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.pos_info_);
+  }
+  if (pos_info) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(pos_info));
+    if (message_arena != submessage_arena) {
+      pos_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, pos_info, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.pos_info_ = pos_info;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.CTS_SPAWN.pos_info)
+}
+
+// -------------------------------------------------------------------
+
 // STC_SPAWN
 
-// repeated .Protocol.ObjectInfo players = 1;
-inline int STC_SPAWN::_internal_players_size() const {
-  return _impl_.players_.size();
+// .Protocol.ObjectInfo object_info = 1;
+inline bool STC_SPAWN::_internal_has_object_info() const {
+  return this != internal_default_instance() && _impl_.object_info_ != nullptr;
 }
-inline int STC_SPAWN::players_size() const {
-  return _internal_players_size();
+inline bool STC_SPAWN::has_object_info() const {
+  return _internal_has_object_info();
 }
-inline ::Protocol::ObjectInfo* STC_SPAWN::mutable_players(int index) {
-  // @@protoc_insertion_point(field_mutable:Protocol.STC_SPAWN.players)
-  return _impl_.players_.Mutable(index);
+inline const ::Protocol::ObjectInfo& STC_SPAWN::_internal_object_info() const {
+  const ::Protocol::ObjectInfo* p = _impl_.object_info_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::ObjectInfo&>(
+      ::Protocol::_ObjectInfo_default_instance_);
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
-STC_SPAWN::mutable_players() {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.STC_SPAWN.players)
-  return &_impl_.players_;
+inline const ::Protocol::ObjectInfo& STC_SPAWN::object_info() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_SPAWN.object_info)
+  return _internal_object_info();
 }
-inline const ::Protocol::ObjectInfo& STC_SPAWN::_internal_players(int index) const {
-  return _impl_.players_.Get(index);
+inline void STC_SPAWN::unsafe_arena_set_allocated_object_info(
+    ::Protocol::ObjectInfo* object_info) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.object_info_);
+  }
+  _impl_.object_info_ = object_info;
+  if (object_info) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.STC_SPAWN.object_info)
 }
-inline const ::Protocol::ObjectInfo& STC_SPAWN::players(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.STC_SPAWN.players)
-  return _internal_players(index);
+inline ::Protocol::ObjectInfo* STC_SPAWN::release_object_info() {
+  
+  ::Protocol::ObjectInfo* temp = _impl_.object_info_;
+  _impl_.object_info_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
 }
-inline ::Protocol::ObjectInfo* STC_SPAWN::_internal_add_players() {
-  return _impl_.players_.Add();
+inline ::Protocol::ObjectInfo* STC_SPAWN::unsafe_arena_release_object_info() {
+  // @@protoc_insertion_point(field_release:Protocol.STC_SPAWN.object_info)
+  
+  ::Protocol::ObjectInfo* temp = _impl_.object_info_;
+  _impl_.object_info_ = nullptr;
+  return temp;
 }
-inline ::Protocol::ObjectInfo* STC_SPAWN::add_players() {
-  ::Protocol::ObjectInfo* _add = _internal_add_players();
-  // @@protoc_insertion_point(field_add:Protocol.STC_SPAWN.players)
-  return _add;
+inline ::Protocol::ObjectInfo* STC_SPAWN::_internal_mutable_object_info() {
+  
+  if (_impl_.object_info_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::ObjectInfo>(GetArenaForAllocation());
+    _impl_.object_info_ = p;
+  }
+  return _impl_.object_info_;
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
-STC_SPAWN::players() const {
-  // @@protoc_insertion_point(field_list:Protocol.STC_SPAWN.players)
-  return _impl_.players_;
+inline ::Protocol::ObjectInfo* STC_SPAWN::mutable_object_info() {
+  ::Protocol::ObjectInfo* _msg = _internal_mutable_object_info();
+  // @@protoc_insertion_point(field_mutable:Protocol.STC_SPAWN.object_info)
+  return _msg;
+}
+inline void STC_SPAWN::set_allocated_object_info(::Protocol::ObjectInfo* object_info) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.object_info_);
+  }
+  if (object_info) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(object_info));
+    if (message_arena != submessage_arena) {
+      object_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, object_info, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.object_info_ = object_info;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.STC_SPAWN.object_info)
 }
 
 // -------------------------------------------------------------------
@@ -8516,6 +9585,182 @@ inline void STC_MOVE::set_allocated_info(::Protocol::PosInfo* info) {
   }
   _impl_.info_ = info;
   // @@protoc_insertion_point(field_set_allocated:Protocol.STC_MOVE.info)
+}
+
+// -------------------------------------------------------------------
+
+// CTS_DETECT
+
+// uint64 detect_object_id = 1;
+inline void CTS_DETECT::clear_detect_object_id() {
+  _impl_.detect_object_id_ = uint64_t{0u};
+}
+inline uint64_t CTS_DETECT::_internal_detect_object_id() const {
+  return _impl_.detect_object_id_;
+}
+inline uint64_t CTS_DETECT::detect_object_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_DETECT.detect_object_id)
+  return _internal_detect_object_id();
+}
+inline void CTS_DETECT::_internal_set_detect_object_id(uint64_t value) {
+  
+  _impl_.detect_object_id_ = value;
+}
+inline void CTS_DETECT::set_detect_object_id(uint64_t value) {
+  _internal_set_detect_object_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.CTS_DETECT.detect_object_id)
+}
+
+// uint64 target_object_id = 2;
+inline void CTS_DETECT::clear_target_object_id() {
+  _impl_.target_object_id_ = uint64_t{0u};
+}
+inline uint64_t CTS_DETECT::_internal_target_object_id() const {
+  return _impl_.target_object_id_;
+}
+inline uint64_t CTS_DETECT::target_object_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_DETECT.target_object_id)
+  return _internal_target_object_id();
+}
+inline void CTS_DETECT::_internal_set_target_object_id(uint64_t value) {
+  
+  _impl_.target_object_id_ = value;
+}
+inline void CTS_DETECT::set_target_object_id(uint64_t value) {
+  _internal_set_target_object_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.CTS_DETECT.target_object_id)
+}
+
+// -------------------------------------------------------------------
+
+// STC_DETECT
+
+// uint64 detect_object_id = 1;
+inline void STC_DETECT::clear_detect_object_id() {
+  _impl_.detect_object_id_ = uint64_t{0u};
+}
+inline uint64_t STC_DETECT::_internal_detect_object_id() const {
+  return _impl_.detect_object_id_;
+}
+inline uint64_t STC_DETECT::detect_object_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_DETECT.detect_object_id)
+  return _internal_detect_object_id();
+}
+inline void STC_DETECT::_internal_set_detect_object_id(uint64_t value) {
+  
+  _impl_.detect_object_id_ = value;
+}
+inline void STC_DETECT::set_detect_object_id(uint64_t value) {
+  _internal_set_detect_object_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.STC_DETECT.detect_object_id)
+}
+
+// uint64 target_object_id = 2;
+inline void STC_DETECT::clear_target_object_id() {
+  _impl_.target_object_id_ = uint64_t{0u};
+}
+inline uint64_t STC_DETECT::_internal_target_object_id() const {
+  return _impl_.target_object_id_;
+}
+inline uint64_t STC_DETECT::target_object_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_DETECT.target_object_id)
+  return _internal_target_object_id();
+}
+inline void STC_DETECT::_internal_set_target_object_id(uint64_t value) {
+  
+  _impl_.target_object_id_ = value;
+}
+inline void STC_DETECT::set_target_object_id(uint64_t value) {
+  _internal_set_target_object_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.STC_DETECT.target_object_id)
+}
+
+// -------------------------------------------------------------------
+
+// CTS_MONSTER_ATTACK
+
+// uint64 monster_id = 1;
+inline void CTS_MONSTER_ATTACK::clear_monster_id() {
+  _impl_.monster_id_ = uint64_t{0u};
+}
+inline uint64_t CTS_MONSTER_ATTACK::_internal_monster_id() const {
+  return _impl_.monster_id_;
+}
+inline uint64_t CTS_MONSTER_ATTACK::monster_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_MONSTER_ATTACK.monster_id)
+  return _internal_monster_id();
+}
+inline void CTS_MONSTER_ATTACK::_internal_set_monster_id(uint64_t value) {
+  
+  _impl_.monster_id_ = value;
+}
+inline void CTS_MONSTER_ATTACK::set_monster_id(uint64_t value) {
+  _internal_set_monster_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.CTS_MONSTER_ATTACK.monster_id)
+}
+
+// uint64 target_id = 2;
+inline void CTS_MONSTER_ATTACK::clear_target_id() {
+  _impl_.target_id_ = uint64_t{0u};
+}
+inline uint64_t CTS_MONSTER_ATTACK::_internal_target_id() const {
+  return _impl_.target_id_;
+}
+inline uint64_t CTS_MONSTER_ATTACK::target_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_MONSTER_ATTACK.target_id)
+  return _internal_target_id();
+}
+inline void CTS_MONSTER_ATTACK::_internal_set_target_id(uint64_t value) {
+  
+  _impl_.target_id_ = value;
+}
+inline void CTS_MONSTER_ATTACK::set_target_id(uint64_t value) {
+  _internal_set_target_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.CTS_MONSTER_ATTACK.target_id)
+}
+
+// -------------------------------------------------------------------
+
+// STC_MONSTER_ATTACK
+
+// uint64 monster_id = 1;
+inline void STC_MONSTER_ATTACK::clear_monster_id() {
+  _impl_.monster_id_ = uint64_t{0u};
+}
+inline uint64_t STC_MONSTER_ATTACK::_internal_monster_id() const {
+  return _impl_.monster_id_;
+}
+inline uint64_t STC_MONSTER_ATTACK::monster_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_MONSTER_ATTACK.monster_id)
+  return _internal_monster_id();
+}
+inline void STC_MONSTER_ATTACK::_internal_set_monster_id(uint64_t value) {
+  
+  _impl_.monster_id_ = value;
+}
+inline void STC_MONSTER_ATTACK::set_monster_id(uint64_t value) {
+  _internal_set_monster_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.STC_MONSTER_ATTACK.monster_id)
+}
+
+// uint64 target_id = 2;
+inline void STC_MONSTER_ATTACK::clear_target_id() {
+  _impl_.target_id_ = uint64_t{0u};
+}
+inline uint64_t STC_MONSTER_ATTACK::_internal_target_id() const {
+  return _impl_.target_id_;
+}
+inline uint64_t STC_MONSTER_ATTACK::target_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_MONSTER_ATTACK.target_id)
+  return _internal_target_id();
+}
+inline void STC_MONSTER_ATTACK::_internal_set_target_id(uint64_t value) {
+  
+  _impl_.target_id_ = value;
+}
+inline void STC_MONSTER_ATTACK::set_target_id(uint64_t value) {
+  _internal_set_target_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.STC_MONSTER_ATTACK.target_id)
 }
 
 // -------------------------------------------------------------------
@@ -9311,6 +10556,16 @@ inline void STC_STANDARD_MONSTER::set_object_id(uint64_t value) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

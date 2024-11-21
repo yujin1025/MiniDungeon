@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "MDCharacter.h"
-#include "Protocol.pb.h"
 #include "PlayableCharacter.generated.h"
 
 class UInputMappingContext;
@@ -81,8 +80,6 @@ private:
 	//void OnShiftEnd(const FInputActionValue& Value);
 
 protected:
-	const float MOVE_PACKET_SEND_DELAY = 0.2f;
-	float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
 	// Cache
 	FVector2D DesiredInput;
@@ -92,24 +89,7 @@ protected:
 	// Dirty Flag Test
 	FVector2D LastDesiredInput;
 
-	FVector TargetLocation;
-
 public:
-	Protocol::MoveState GetMoveState() { return PosInfo->state(); }
-	void SetMoveState(Protocol::MoveState State);
-	void SetPlayerInfo(const Protocol::PosInfo& Info);
-	void SetDestInfo(const Protocol::PosInfo& Info);
 	void Other_Attack(const Protocol::AttackInfo& Info);
 	void PlayAttackMontage(EAttackType AttackType);
-
-protected:
-	class Protocol::PosInfo* PosInfo; // 현재 위치
-	class Protocol::PosInfo* DestInfo; // 목적지
-
-	UPROPERTY(Replicated)
-	uint64 playerID;
-
-public:
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	TObjectPtr<class UMDNetworkManager> Player;
 };

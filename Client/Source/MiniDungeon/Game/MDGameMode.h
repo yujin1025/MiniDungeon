@@ -52,6 +52,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	void SpawnEnemy();
 protected:
 	virtual void PostInitializeComponents() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
@@ -80,7 +82,13 @@ private:
 	UPROPERTY()
 	UMDWidget* ingameWindowWidget;
 
+	UPROPERTY()
+	TSet<AActor*> SpawnedActors;
+
 public:
 	FCharacterStatData* GetCharacterStat(ECharacterType type);
 
+private:
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class ALevelScriptActor> CurrentLevelScriptActor;
 };

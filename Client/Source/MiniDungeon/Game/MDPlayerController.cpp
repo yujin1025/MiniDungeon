@@ -6,6 +6,19 @@
 #include "../Character/MDCharacter.h"
 #include <Character/PlayableCharacter.h>
 
+AMDPlayerController::AMDPlayerController()
+{
+    PlayerInfo = new Protocol::PlayerInfo();
+}
+
+void AMDPlayerController::BeginDestroy()
+{
+    Super::BeginDestroy();
+
+    delete PlayerInfo;
+    PlayerInfo = nullptr;
+}
+
 void AMDPlayerController::BeginPlay()
 {
     MD_LOG(LogMDNetwork, Log, TEXT("Begin"));
@@ -35,6 +48,11 @@ void AMDPlayerController::OnPossess(APawn* aPawn)
 void AMDPlayerController::OnPossessCharacter(AMDCharacter* aCharacter)
 {
     this->OwnerCharacter = aCharacter;
+}
+
+void AMDPlayerController::SetPlayerInfo(const Protocol::PlayerInfo& info)
+{
+    PlayerInfo->CopyFrom(info);
 }
 
 AMDPlayerState* AMDPlayerController::GetState()

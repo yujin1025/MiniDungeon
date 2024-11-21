@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MDCharacter.h"
+#include "Protocol.pb.h"
 #include "NonPlayableCharacter.generated.h"
 
 /**
@@ -33,5 +34,9 @@ public:
 	bool IsFindPlayer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster Stats")
-	APlayableCharacter* TargetPlayer;
+	TObjectPtr<class APlayableCharacter> TargetPlayer;
+
+protected:
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 };

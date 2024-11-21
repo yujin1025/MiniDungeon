@@ -5,6 +5,7 @@
 #include "../MDAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "NavigationSystem.h"
+#include <MDNetworkManager.h>
 
 UBTTask_FindPatrolPos::UBTTask_FindPatrolPos()
 {
@@ -28,5 +29,12 @@ EBTNodeResult::Type UBTTask_FindPatrolPos::ExecuteTask(UBehaviorTreeComponent& O
 		return EBTNodeResult::Failed;
 
 	BlackBoard->SetValueAsVector(AMDAIController::PatrolPosKey, NextPatrol.Location);
+
+	auto networdManager = GetAIController(OwnerComp)->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if(IsValid(networdManager))
+	{
+		// TODO : Send NextPatrol.Location Info to Server
+	}
+
 	return EBTNodeResult::Succeeded;
 }

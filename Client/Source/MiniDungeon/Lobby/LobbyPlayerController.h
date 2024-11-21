@@ -16,7 +16,7 @@ class MINIDUNGEON_API ALobbyPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	ALobbyPlayerController();
-	~ALobbyPlayerController();
+	virtual void BeginDestroy() override;
 protected:
 	virtual void BeginPlay() override;
 

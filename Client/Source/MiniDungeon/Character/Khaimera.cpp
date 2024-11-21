@@ -3,6 +3,9 @@
 
 #include "Khaimera.h"
 #include "../AI/MDAIController.h"
+#include <MDNetworkManager.h>
+#include <Game/MDPlayerController.h>
+#include <Kismet/GameplayStatics.h>
 
 AKhaimera::AKhaimera()
 {
@@ -19,9 +22,17 @@ void AKhaimera::BeginPlay()
         AMDAIController* AIController = Cast<AMDAIController>(GetController());
         if (!AIController)
         {
-            AIController = GetWorld()->SpawnActor<AMDAIController>(AIControllerClass);
-            AIController->Possess(this);
-            MD_LOG(LogMDNetwork, Log, TEXT("Poss"));
+            auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+            auto pc = Cast<AMDPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+            if(IsValid(networkManager))
+			{
+                //if (networkManager->isHost)
+                //{
+                //    AIController = GetWorld()->SpawnActor<AMDAIController>(AIControllerClass);
+                //    AIController->Possess(this);
+                //    MD_LOG(LogMDNetwork, Log, TEXT("Possess"));
+                //}
+			}
         }
     }
 }
