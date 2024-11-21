@@ -45,7 +45,6 @@
     <ClCompile Include="Utils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectUtils.cpp" />
     <ClCompile Include="Player.cpp">
       <Filter>Game\Object</Filter>
     </ClCompile>
@@ -79,6 +78,7 @@
     <ClCompile Include="AuthManager.cpp">
       <Filter>Auth</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -96,7 +96,6 @@
     <ClInclude Include="Utils.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectUtils.h" />
     <ClInclude Include="Player.h">
       <Filter>Game\Object</Filter>
     </ClInclude>
@@ -130,6 +129,7 @@
     <ClInclude Include="AuthManager.h">
       <Filter>Auth</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\Protobuf\bin\Enum.proto">

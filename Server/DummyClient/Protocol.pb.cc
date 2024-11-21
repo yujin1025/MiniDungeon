@@ -318,6 +318,7 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORIT
 PROTOBUF_CONSTEXPR STC_ENTER_GAME::STC_ENTER_GAME(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.players_)*/{}
+  , /*decltype(_impl_.monsters_)*/{}
   , /*decltype(_impl_.success_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct STC_ENTER_GAMEDefaultTypeInternal {
@@ -792,6 +793,7 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::STC_ENTER_GAME, _impl_.success_),
   PROTOBUF_FIELD_OFFSET(::Protocol::STC_ENTER_GAME, _impl_.players_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::STC_ENTER_GAME, _impl_.monsters_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::CTS_LEAVE_GAME, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -972,27 +974,27 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 151, -1, -1, sizeof(::Protocol::STC_LEAVE_ROOM)},
   { 161, -1, -1, sizeof(::Protocol::CTS_ENTER_GAME)},
   { 168, -1, -1, sizeof(::Protocol::STC_ENTER_GAME)},
-  { 176, -1, -1, sizeof(::Protocol::CTS_LEAVE_GAME)},
-  { 182, -1, -1, sizeof(::Protocol::STC_LEAVE_GAME)},
-  { 188, -1, -1, sizeof(::Protocol::CTS_SPAWN)},
-  { 197, -1, -1, sizeof(::Protocol::STC_SPAWN)},
-  { 204, -1, -1, sizeof(::Protocol::STC_DESPAWN)},
-  { 211, -1, -1, sizeof(::Protocol::CTS_MOVE)},
-  { 218, -1, -1, sizeof(::Protocol::STC_MOVE)},
-  { 225, -1, -1, sizeof(::Protocol::CTS_DETECT)},
-  { 233, -1, -1, sizeof(::Protocol::STC_DETECT)},
-  { 241, -1, -1, sizeof(::Protocol::CTS_MONSTER_ATTACK)},
-  { 249, -1, -1, sizeof(::Protocol::STC_MONSTER_ATTACK)},
-  { 257, -1, -1, sizeof(::Protocol::CTS_CHAT)},
-  { 264, -1, -1, sizeof(::Protocol::STC_CHAT)},
-  { 272, -1, -1, sizeof(::Protocol::CTS_ATTACK)},
-  { 279, -1, -1, sizeof(::Protocol::STC_ATTACK)},
-  { 286, -1, -1, sizeof(::Protocol::CTS_MONSTERINFO)},
-  { 293, -1, -1, sizeof(::Protocol::STC_MONSTERINFO)},
-  { 300, -1, -1, sizeof(::Protocol::CTS_MONSTERMOVE)},
-  { 308, -1, -1, sizeof(::Protocol::STC_MONSTERMOVE)},
-  { 316, -1, -1, sizeof(::Protocol::CTS_STANDARD_MONSTER)},
-  { 324, -1, -1, sizeof(::Protocol::STC_STANDARD_MONSTER)},
+  { 177, -1, -1, sizeof(::Protocol::CTS_LEAVE_GAME)},
+  { 183, -1, -1, sizeof(::Protocol::STC_LEAVE_GAME)},
+  { 189, -1, -1, sizeof(::Protocol::CTS_SPAWN)},
+  { 198, -1, -1, sizeof(::Protocol::STC_SPAWN)},
+  { 205, -1, -1, sizeof(::Protocol::STC_DESPAWN)},
+  { 212, -1, -1, sizeof(::Protocol::CTS_MOVE)},
+  { 219, -1, -1, sizeof(::Protocol::STC_MOVE)},
+  { 226, -1, -1, sizeof(::Protocol::CTS_DETECT)},
+  { 234, -1, -1, sizeof(::Protocol::STC_DETECT)},
+  { 242, -1, -1, sizeof(::Protocol::CTS_MONSTER_ATTACK)},
+  { 250, -1, -1, sizeof(::Protocol::STC_MONSTER_ATTACK)},
+  { 258, -1, -1, sizeof(::Protocol::CTS_CHAT)},
+  { 265, -1, -1, sizeof(::Protocol::STC_CHAT)},
+  { 273, -1, -1, sizeof(::Protocol::CTS_ATTACK)},
+  { 280, -1, -1, sizeof(::Protocol::STC_ATTACK)},
+  { 287, -1, -1, sizeof(::Protocol::CTS_MONSTERINFO)},
+  { 294, -1, -1, sizeof(::Protocol::STC_MONSTERINFO)},
+  { 301, -1, -1, sizeof(::Protocol::CTS_MONSTERMOVE)},
+  { 309, -1, -1, sizeof(::Protocol::STC_MONSTERMOVE)},
+  { 317, -1, -1, sizeof(::Protocol::CTS_STANDARD_MONSTER)},
+  { 325, -1, -1, sizeof(::Protocol::STC_STANDARD_MONSTER)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -1077,39 +1079,40 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "OOM\022\017\n\007success\030\001 \001(\010\022%\n\troom_info\030\002 \001(\0132"
   "\022.Protocol.RoomInfo\022\021\n\tplayer_id\030\003 \001(\004\022!"
   "\n\005rooms\030\004 \003(\0132\022.Protocol.RoomInfo\"!\n\016CTS"
-  "_ENTER_GAME\022\017\n\007room_id\030\001 \001(\004\"H\n\016STC_ENTE"
+  "_ENTER_GAME\022\017\n\007room_id\030\001 \001(\004\"q\n\016STC_ENTE"
   "R_GAME\022\017\n\007success\030\001 \001(\010\022%\n\007players\030\002 \003(\013"
-  "2\024.Protocol.PlayerInfo\"\020\n\016CTS_LEAVE_GAME"
-  "\"\020\n\016STC_LEAVE_GAME\"p\n\tCTS_SPAWN\022\017\n\007room_"
-  "id\030\001 \001(\004\022-\n\rcreature_type\030\002 \001(\0162\026.Protoc"
-  "ol.CreatureType\022#\n\010pos_info\030\003 \001(\0132\021.Prot"
-  "ocol.PosInfo\"6\n\tSTC_SPAWN\022)\n\013object_info"
-  "\030\001 \001(\0132\024.Protocol.ObjectInfo\"!\n\013STC_DESP"
-  "AWN\022\022\n\nobject_ids\030\001 \003(\004\"+\n\010CTS_MOVE\022\037\n\004i"
-  "nfo\030\001 \001(\0132\021.Protocol.PosInfo\"+\n\010STC_MOVE"
-  "\022\037\n\004info\030\001 \001(\0132\021.Protocol.PosInfo\"@\n\nCTS"
-  "_DETECT\022\030\n\020detect_object_id\030\001 \001(\004\022\030\n\020tar"
-  "get_object_id\030\002 \001(\004\"@\n\nSTC_DETECT\022\030\n\020det"
-  "ect_object_id\030\001 \001(\004\022\030\n\020target_object_id\030"
-  "\002 \001(\004\";\n\022CTS_MONSTER_ATTACK\022\022\n\nmonster_i"
-  "d\030\001 \001(\004\022\021\n\ttarget_id\030\002 \001(\004\";\n\022STC_MONSTE"
-  "R_ATTACK\022\022\n\nmonster_id\030\001 \001(\004\022\021\n\ttarget_i"
-  "d\030\002 \001(\004\"\027\n\010CTS_CHAT\022\013\n\003msg\030\001 \001(\t\")\n\010STC_"
-  "CHAT\022\020\n\010playerId\030\001 \001(\004\022\013\n\003msg\030\002 \001(\t\"0\n\nC"
-  "TS_ATTACK\022\"\n\004info\030\001 \001(\0132\024.Protocol.Attac"
-  "kInfo\"0\n\nSTC_ATTACK\022\"\n\004info\030\001 \001(\0132\024.Prot"
-  "ocol.AttackInfo\"6\n\017CTS_MONSTERINFO\022#\n\004in"
-  "fo\030\001 \001(\0132\025.Protocol.MonsterInfo\"6\n\017STC_M"
-  "ONSTERINFO\022#\n\004info\030\001 \001(\0132\025.Protocol.Mons"
-  "terInfo\"X\n\017CTS_MONSTERMOVE\022$\n\004type\030\001 \001(\016"
-  "2\026.Protocol.CreatureType\022\037\n\004info\030\002 \001(\0132\021"
-  ".Protocol.PosInfo\"X\n\017STC_MONSTERMOVE\022$\n\004"
-  "type\030\001 \001(\0162\026.Protocol.CreatureType\022\037\n\004in"
-  "fo\030\002 \001(\0132\021.Protocol.PosInfo\"=\n\024CTS_STAND"
-  "ARD_MONSTER\022\022\n\nisstandard\030\001 \001(\010\022\021\n\tobjec"
-  "t_id\030\002 \001(\004\"=\n\024STC_STANDARD_MONSTER\022\022\n\nis"
-  "standard\030\001 \001(\010\022\021\n\tobject_id\030\002 \001(\004b\006proto"
-  "3"
+  "2\024.Protocol.PlayerInfo\022\'\n\010monsters\030\003 \003(\013"
+  "2\025.Protocol.MonsterInfo\"\020\n\016CTS_LEAVE_GAM"
+  "E\"\020\n\016STC_LEAVE_GAME\"p\n\tCTS_SPAWN\022\017\n\007room"
+  "_id\030\001 \001(\004\022-\n\rcreature_type\030\002 \001(\0162\026.Proto"
+  "col.CreatureType\022#\n\010pos_info\030\003 \001(\0132\021.Pro"
+  "tocol.PosInfo\"6\n\tSTC_SPAWN\022)\n\013object_inf"
+  "o\030\001 \001(\0132\024.Protocol.ObjectInfo\"!\n\013STC_DES"
+  "PAWN\022\022\n\nobject_ids\030\001 \003(\004\"+\n\010CTS_MOVE\022\037\n\004"
+  "info\030\001 \001(\0132\021.Protocol.PosInfo\"+\n\010STC_MOV"
+  "E\022\037\n\004info\030\001 \001(\0132\021.Protocol.PosInfo\"@\n\nCT"
+  "S_DETECT\022\030\n\020detect_object_id\030\001 \001(\004\022\030\n\020ta"
+  "rget_object_id\030\002 \001(\004\"@\n\nSTC_DETECT\022\030\n\020de"
+  "tect_object_id\030\001 \001(\004\022\030\n\020target_object_id"
+  "\030\002 \001(\004\";\n\022CTS_MONSTER_ATTACK\022\022\n\nmonster_"
+  "id\030\001 \001(\004\022\021\n\ttarget_id\030\002 \001(\004\";\n\022STC_MONST"
+  "ER_ATTACK\022\022\n\nmonster_id\030\001 \001(\004\022\021\n\ttarget_"
+  "id\030\002 \001(\004\"\027\n\010CTS_CHAT\022\013\n\003msg\030\001 \001(\t\")\n\010STC"
+  "_CHAT\022\020\n\010playerId\030\001 \001(\004\022\013\n\003msg\030\002 \001(\t\"0\n\n"
+  "CTS_ATTACK\022\"\n\004info\030\001 \001(\0132\024.Protocol.Atta"
+  "ckInfo\"0\n\nSTC_ATTACK\022\"\n\004info\030\001 \001(\0132\024.Pro"
+  "tocol.AttackInfo\"6\n\017CTS_MONSTERINFO\022#\n\004i"
+  "nfo\030\001 \001(\0132\025.Protocol.MonsterInfo\"6\n\017STC_"
+  "MONSTERINFO\022#\n\004info\030\001 \001(\0132\025.Protocol.Mon"
+  "sterInfo\"X\n\017CTS_MONSTERMOVE\022$\n\004type\030\001 \001("
+  "\0162\026.Protocol.CreatureType\022\037\n\004info\030\002 \001(\0132"
+  "\021.Protocol.PosInfo\"X\n\017STC_MONSTERMOVE\022$\n"
+  "\004type\030\001 \001(\0162\026.Protocol.CreatureType\022\037\n\004i"
+  "nfo\030\002 \001(\0132\021.Protocol.PosInfo\"=\n\024CTS_STAN"
+  "DARD_MONSTER\022\022\n\nisstandard\030\001 \001(\010\022\021\n\tobje"
+  "ct_id\030\002 \001(\004\"=\n\024STC_STANDARD_MONSTER\022\022\n\ni"
+  "sstandard\030\001 \001(\010\022\021\n\tobject_id\030\002 \001(\004b\006prot"
+  "o3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -1117,7 +1120,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 2681, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 2722, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 43,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -5936,6 +5939,9 @@ class STC_ENTER_GAME::_Internal {
 void STC_ENTER_GAME::clear_players() {
   _impl_.players_.Clear();
 }
+void STC_ENTER_GAME::clear_monsters() {
+  _impl_.monsters_.Clear();
+}
 STC_ENTER_GAME::STC_ENTER_GAME(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
@@ -5947,6 +5953,7 @@ STC_ENTER_GAME::STC_ENTER_GAME(const STC_ENTER_GAME& from)
   STC_ENTER_GAME* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.players_){from._impl_.players_}
+    , decltype(_impl_.monsters_){from._impl_.monsters_}
     , decltype(_impl_.success_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
@@ -5961,6 +5968,7 @@ inline void STC_ENTER_GAME::SharedCtor(
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.players_){arena}
+    , decltype(_impl_.monsters_){arena}
     , decltype(_impl_.success_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
@@ -5978,6 +5986,7 @@ STC_ENTER_GAME::~STC_ENTER_GAME() {
 inline void STC_ENTER_GAME::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.players_.~RepeatedPtrField();
+  _impl_.monsters_.~RepeatedPtrField();
 }
 
 void STC_ENTER_GAME::SetCachedSize(int size) const {
@@ -5991,6 +6000,7 @@ void STC_ENTER_GAME::Clear() {
   (void) cached_has_bits;
 
   _impl_.players_.Clear();
+  _impl_.monsters_.Clear();
   _impl_.success_ = false;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -6019,6 +6029,19 @@ const char* STC_ENTER_GAME::_InternalParse(const char* ptr, ::_pbi::ParseContext
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .Protocol.MonsterInfo monsters = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_monsters(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
         } else
           goto handle_unusual;
         continue;
@@ -6065,6 +6088,14 @@ uint8_t* STC_ENTER_GAME::_InternalSerialize(
         InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
   }
 
+  // repeated .Protocol.MonsterInfo monsters = 3;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_monsters_size()); i < n; i++) {
+    const auto& repfield = this->_internal_monsters(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(3, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -6084,6 +6115,13 @@ size_t STC_ENTER_GAME::ByteSizeLong() const {
   // repeated .Protocol.PlayerInfo players = 2;
   total_size += 1UL * this->_internal_players_size();
   for (const auto& msg : this->_impl_.players_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated .Protocol.MonsterInfo monsters = 3;
+  total_size += 1UL * this->_internal_monsters_size();
+  for (const auto& msg : this->_impl_.monsters_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
@@ -6112,6 +6150,7 @@ void STC_ENTER_GAME::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const :
   (void) cached_has_bits;
 
   _this->_impl_.players_.MergeFrom(from._impl_.players_);
+  _this->_impl_.monsters_.MergeFrom(from._impl_.monsters_);
   if (from._internal_success() != 0) {
     _this->_internal_set_success(from._internal_success());
   }
@@ -6133,6 +6172,7 @@ void STC_ENTER_GAME::InternalSwap(STC_ENTER_GAME* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   _impl_.players_.InternalSwap(&other->_impl_.players_);
+  _impl_.monsters_.InternalSwap(&other->_impl_.monsters_);
   swap(_impl_.success_, other->_impl_.success_);
 }
 

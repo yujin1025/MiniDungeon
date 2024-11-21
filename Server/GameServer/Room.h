@@ -40,6 +40,8 @@ public:
 
 	void ReleaseThisRoom();
 
+	void SpawnMonsters();
+
 	void SpawnMonster(const Protocol::PosInfo& pos_Info);
 
 	void Spawn(const Protocol::CreatureType creatureType, const Protocol::PosInfo &info);
@@ -56,7 +58,7 @@ private:
 	bool AddPlayer(PlayerRef player);
 	bool RemovePlayer(PlayerRef player);
 
-	bool AddMonster(MonsterRef monster, const Protocol::PosInfo& pos_Info);
+	bool AddMonster(MonsterRef monster, const Protocol::PosInfo& pos_Info = Protocol::PosInfo::default_instance());
 	bool RemoveMonster(uint64 monsterId);
 public:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);

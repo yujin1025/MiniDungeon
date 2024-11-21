@@ -51,7 +51,7 @@ public:
 
 	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, const Protocol::PlayerType charactertype, TArray<AActor*> spawns, bool isMine);
 	void HandleSpawn(const Protocol::PlayerInfo& playerInfo, TArray<AActor*> spawns, bool isMine);
-	void HandleSpawn(const Protocol::ObjectInfo& objectInfo);
+	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, FVector spawnLocation = FVector::ZeroVector);
 
 	void HandleDespawn(uint64 objectId);
 	void HandleDespawn(const Protocol::STC_DESPAWN& despawnPkt);
@@ -68,7 +68,7 @@ public:
 
 public:
 	class FSocket* Socket;
-	FString IpAddress = TEXT("43.202.241.72");
+	FString IpAddress = TEXT("127.0.0.1");
 	int16 Port = 7777;
 
 	TSharedPtr<class PacketSession> GameServerSession;
@@ -92,8 +92,14 @@ public:
 	uint64 PlayerID;
 
 	Protocol::PosInfo* PosInfo;
-	const Protocol::PosInfo* GetPlayerInfo() { return PosInfo; }
+	const Protocol::PosInfo* GetPosInfo() { return PosInfo; }
 
+	/// <summary>
+	/// Key : ObjectID
+	/// Value : MonsterInfo
+	/// </summary>
+	TMap<uint64, Protocol::MonsterInfo*> MonsterInfos;
+	void AddMonsterInfo(uint64 object_id, const Protocol::MonsterInfo& info);
 	/// <summary>
 	/// Key : ObjectID
 	/// Value : MonsterCharacter

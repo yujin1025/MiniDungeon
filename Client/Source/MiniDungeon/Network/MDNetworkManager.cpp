@@ -469,7 +469,7 @@ void UMDNetworkManager::HandleSpawn(const Protocol::PlayerInfo& playerInfo, TArr
 	HandleSpawn(playerInfo.object_info(), playerInfo.player_type(), spawns, isMine);
 }
 
-void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo)
+void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, FVector spawnLocation)
 {
 	if(Socket == nullptr || GameServerSession == nullptr)
 	{
@@ -489,7 +489,6 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo)
 		return;
 	}
 
-	FVector spawnLocation = FVector(objectInfo.pos_info().x(), objectInfo.pos_info().y(), objectInfo.pos_info().z());
 	ANonPlayableCharacter* monster = Cast<ANonPlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->KhaimeraClass, &spawnLocation));
 	monster->SetObjectID(objectId);
 	Monsters.Add(objectId, monster);
@@ -680,6 +679,11 @@ void UMDNetworkManager::HandleMonsterInfo(const Protocol::STC_MONSTERINFO& infoP
 void UMDNetworkManager::AddPlayerInfo(uint64 player_id, const Protocol::PlayerInfo& info)
 {
 	PlayerInfos.Add(player_id, new Protocol::PlayerInfo(info));
+}
+
+void UMDNetworkManager::AddMonsterInfo(uint64 object_id, const Protocol::MonsterInfo& info)
+{
+	MonsterInfos.Add(object_id, new Protocol::MonsterInfo(info));
 }
 
 
