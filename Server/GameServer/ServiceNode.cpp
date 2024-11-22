@@ -66,6 +66,7 @@ void DetectionService::OnUpdateService()
     {
         LOG("DetectionService : No players in the room");
         ownerMonster->TargetPlayer.store(nullptr);
+        blackboard->SetData(EBlackboardKey::Target, 0);
 		return;
     }
     else
@@ -78,13 +79,32 @@ void DetectionService::OnUpdateService()
             float distance = ownerMonster->DistanceTo(player.second->GetPosInfo());
             if (distance < detectRange && distance < minDistance)
             {
-                LOG("DetectionService : Changed Target");
+
                 minDistance = distance;
                 closestPlayer = player.second;
             }
         }
 
-        ownerMonster->TargetPlayer.store(closestPlayer);
+        shared_ptr<Player> expected = ownerMonster->TargetPlayer.load();
+        uint64 target_id = 0;
+        if (ownerMonster->TargetPlayer.compare_exchange_strong(expected, closestPlayer))
+        {
+            if (closestPlayer != nullptr)
+            {
+                target_id = closestPlayer->GetObjectInfo().object_id();
+            }
+
+            blackboard->SetData(EBlackboardKey::Target, target_id);
+            LOG("DetectionService : id %d", target_id);
+        }
+        else
+        {
+            if(expected != nullptr)
+				target_id = expected->GetObjectInfo().object_id();
+
+            blackboard->SetData(EBlackboardKey::Target, target_id);
+            LOG("DetectionService : id %d", target_id);
+        }
     }
 
 }

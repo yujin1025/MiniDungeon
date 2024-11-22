@@ -33,8 +33,8 @@ protected:
 	virtual ENodeState OnUpdate() override;
 
 public:
-	Vector2 min = { -10, -10 };
-	Vector2 max = { 10, 10 };
+	Vector2 min = { -600, -600 };
+	Vector2 max = { 600, 600 };
 };
 
 class MoveToPosition : public ActionNode
@@ -46,6 +46,18 @@ protected:
 	virtual void OnStart() override;
 	virtual void OnStop() override;
 	virtual ENodeState OnUpdate() override;
+};
+
+class MoveToPlayer : public ActionNode
+{
+public:
+	MoveToPlayer(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : ActionNode(_tree, _blackboard) {};
+
+protected:
+	virtual void OnStart() override;
+	virtual void OnStop() override;
+	virtual ENodeState OnUpdate() override;
+
 };
 
 class AttackNode : public ActionNode

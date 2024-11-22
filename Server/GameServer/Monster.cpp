@@ -54,7 +54,7 @@ void Monster::Init()
     auto canNotAttackDeco = make_shared<CanNotAttackDecorator>(behaviourTree, blackboard);
     selector2->children.push_back(canNotAttackDeco);
 
-    auto moveToPlayerNode = make_shared<MoveToPosition>(behaviourTree, blackboard);
+    auto moveToPlayerNode = make_shared<MoveToPlayer>(behaviourTree, blackboard);
     canNotAttackDeco->child = moveToPlayerNode;
 
     auto noTaragetDeco = make_shared<NoTargetDecorator>(behaviourTree, blackboard);
@@ -147,8 +147,6 @@ void Monster::CanAttack()
 float Monster::DistanceTo(const Protocol::PosInfo& targetPos)
 {
     // 보스 위치 (posInfo)와 타겟 플레이어 위치 (targetPos) 간의 거리 계산
-    LOGF("Monster x : %f, y : %f, z : %f", GetPosInfo().x(), GetPosInfo().y(), GetPosInfo().z());
-    LOGF("Player x : %f, y : %f, z : %f", targetPos.x(), targetPos.y(), targetPos.z());
     float dx = GetPosInfo().x() - targetPos.x();
     float dy = GetPosInfo().y() - targetPos.y();
 

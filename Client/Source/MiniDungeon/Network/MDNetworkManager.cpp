@@ -555,7 +555,7 @@ void UMDNetworkManager::HandleMove(const Protocol::STC_MOVE& movePkt)
 
 	if(Monsters.Contains(objectId))
 	{
-		HandleMoveMonster(*Monsters.Find(objectId), movePkt.info());
+		HandleMoveMonster(*Monsters.Find(objectId), movePkt.info(), movePkt.target_object_id());
 		return;
 	}
 	
@@ -573,13 +573,23 @@ void UMDNetworkManager::HandleMovePlayer(APlayableCharacter* player, const Proto
 	player->SetDestInfo(posInfo);
 }
 
-void UMDNetworkManager::HandleMoveMonster(ANonPlayableCharacter* monster, const Protocol::PosInfo& posInfo)
+void UMDNetworkManager::HandleMoveMonster(ANonPlayableCharacter* monster, const Protocol::PosInfo& posInfo, uint64 target_object_id)
 {
 	// TODO : Monster AI MOVE
 	auto aiController = Cast<AMDAIController>(monster->GetController());
 	if(aiController)
 	{
-		aiController->CustomMoveTo(FVector(posInfo.x(), posInfo.y(), posInfo.z()));
+		if(target_object_id == 0)
+			aiController->CustomMoveToLocation(FVector(posInfo.x(), posInfo.y(), posInfo.z()));
+		else
+		{
+			TObjectPtr<APlayableCharacter>* findPlayer = Players.Find(target_object_id);
+			if (findPlayer)
+			{
+				APlayableCharacter* player = *findPlayer;
+				aiController->CustomMoveToActor(player);
+			}
+		}
 	}
 }
 

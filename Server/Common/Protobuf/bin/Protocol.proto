@@ -172,6 +172,7 @@ message CTS_MOVE
 message STC_MOVE
 {
 	PosInfo info = 1;
+	uint64 target_object_id = 2;
 }
 
 message CTS_DETECT

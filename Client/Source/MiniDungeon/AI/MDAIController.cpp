@@ -98,14 +98,38 @@ void AMDAIController::SetBlackboardValues(bool isFindPlayer, APlayableCharacter*
 	//}
 }
 
-FPathFollowingRequestResult AMDAIController::CustomMoveTo(const FVector& Destination, float AcceptanceRadius)
+FPathFollowingRequestResult AMDAIController::CustomMoveToLocation(const FVector& Destination, float AcceptanceRadius)
 {
+	auto ower = Cast<ANonPlayableCharacter>(GetPawn());
+	if (ower == nullptr)
+		return FPathFollowingRequestResult();
+
+	ower->SetMoveState(Protocol::MOVE_STATE_RUN);
+
 	FAIMoveRequest moveRequest;
 	moveRequest.SetGoalLocation(Destination);
 	moveRequest.SetAcceptanceRadius(AcceptanceRadius);
+	
 
 	FNavPathSharedPtr Path;
 	return MoveTo(moveRequest, &Path); // 기본 MoveTo 함수 호출
+}
+
+FPathFollowingRequestResult AMDAIController::CustomMoveToActor(AActor* DestinationActor, float AcceptanceRadius)
+{
+	auto ower = Cast<ANonPlayableCharacter>(GetPawn());
+	if (ower == nullptr)
+		return FPathFollowingRequestResult();
+
+	ower->SetMoveState(Protocol::MOVE_STATE_RUN);
+
+	FAIMoveRequest moveRequest;
+	moveRequest.SetGoalActor(DestinationActor);
+	moveRequest.SetAcceptanceRadius(AcceptanceRadius);
+
+	FNavPathSharedPtr Path;
+
+	return MoveTo(moveRequest, &Path); // 기본 MoveToActor 함수 호출
 }
 
 void AMDAIController::OnMoveCompletedHandler(FAIRequestID RequestID, const FPathFollowingResult& Result)

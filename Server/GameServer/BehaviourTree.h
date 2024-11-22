@@ -62,7 +62,7 @@ public:
 		switch (key)
 		{
 		case EBlackboardKey::Target:
-			return nullptr;  // Target은 포인터 타입으로 기본값 nullptr.
+			return 0;  // Target은 uint64_t 타입 기본값.
 		case EBlackboardKey::Position:
 			return Vector3{ 0.0f, 0.0f, 0.0f };  // Vector3 타입 기본값.
 		default:

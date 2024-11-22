@@ -69,7 +69,7 @@ int main()
 		NetAddress(L"127.0.0.1", 7777),
 		make_shared<IocpCore>(),
 		[=]() { return make_shared<GameSession>(); }, // TODO : SessionManager 등
-		100);
+		10);
 #else
 	// 로컬 아닌 경우
 	ServerServiceRef service = make_shared<ServerService>(

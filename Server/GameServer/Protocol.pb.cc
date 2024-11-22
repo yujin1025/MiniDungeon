@@ -410,6 +410,7 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORIT
 PROTOBUF_CONSTEXPR STC_MOVE::STC_MOVE(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.info_)*/nullptr
+  , /*decltype(_impl_.target_object_id_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct STC_MOVEDefaultTypeInternal {
   PROTOBUF_CONSTEXPR STC_MOVEDefaultTypeInternal()
@@ -843,6 +844,7 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::STC_MOVE, _impl_.info_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::STC_MOVE, _impl_.target_object_id_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::CTS_DETECT, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -981,20 +983,20 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 205, -1, -1, sizeof(::Protocol::STC_DESPAWN)},
   { 212, -1, -1, sizeof(::Protocol::CTS_MOVE)},
   { 219, -1, -1, sizeof(::Protocol::STC_MOVE)},
-  { 226, -1, -1, sizeof(::Protocol::CTS_DETECT)},
-  { 234, -1, -1, sizeof(::Protocol::STC_DETECT)},
-  { 242, -1, -1, sizeof(::Protocol::CTS_MONSTER_ATTACK)},
-  { 250, -1, -1, sizeof(::Protocol::STC_MONSTER_ATTACK)},
-  { 258, -1, -1, sizeof(::Protocol::CTS_CHAT)},
-  { 265, -1, -1, sizeof(::Protocol::STC_CHAT)},
-  { 273, -1, -1, sizeof(::Protocol::CTS_ATTACK)},
-  { 280, -1, -1, sizeof(::Protocol::STC_ATTACK)},
-  { 287, -1, -1, sizeof(::Protocol::CTS_MONSTERINFO)},
-  { 294, -1, -1, sizeof(::Protocol::STC_MONSTERINFO)},
-  { 301, -1, -1, sizeof(::Protocol::CTS_MONSTERMOVE)},
-  { 309, -1, -1, sizeof(::Protocol::STC_MONSTERMOVE)},
-  { 317, -1, -1, sizeof(::Protocol::CTS_STANDARD_MONSTER)},
-  { 325, -1, -1, sizeof(::Protocol::STC_STANDARD_MONSTER)},
+  { 227, -1, -1, sizeof(::Protocol::CTS_DETECT)},
+  { 235, -1, -1, sizeof(::Protocol::STC_DETECT)},
+  { 243, -1, -1, sizeof(::Protocol::CTS_MONSTER_ATTACK)},
+  { 251, -1, -1, sizeof(::Protocol::STC_MONSTER_ATTACK)},
+  { 259, -1, -1, sizeof(::Protocol::CTS_CHAT)},
+  { 266, -1, -1, sizeof(::Protocol::STC_CHAT)},
+  { 274, -1, -1, sizeof(::Protocol::CTS_ATTACK)},
+  { 281, -1, -1, sizeof(::Protocol::STC_ATTACK)},
+  { 288, -1, -1, sizeof(::Protocol::CTS_MONSTERINFO)},
+  { 295, -1, -1, sizeof(::Protocol::STC_MONSTERINFO)},
+  { 302, -1, -1, sizeof(::Protocol::CTS_MONSTERMOVE)},
+  { 310, -1, -1, sizeof(::Protocol::STC_MONSTERMOVE)},
+  { 318, -1, -1, sizeof(::Protocol::CTS_STANDARD_MONSTER)},
+  { 326, -1, -1, sizeof(::Protocol::STC_STANDARD_MONSTER)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -1089,30 +1091,30 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "tocol.PosInfo\"6\n\tSTC_SPAWN\022)\n\013object_inf"
   "o\030\001 \001(\0132\024.Protocol.ObjectInfo\"!\n\013STC_DES"
   "PAWN\022\022\n\nobject_ids\030\001 \003(\004\"+\n\010CTS_MOVE\022\037\n\004"
-  "info\030\001 \001(\0132\021.Protocol.PosInfo\"+\n\010STC_MOV"
-  "E\022\037\n\004info\030\001 \001(\0132\021.Protocol.PosInfo\"@\n\nCT"
-  "S_DETECT\022\030\n\020detect_object_id\030\001 \001(\004\022\030\n\020ta"
-  "rget_object_id\030\002 \001(\004\"@\n\nSTC_DETECT\022\030\n\020de"
+  "info\030\001 \001(\0132\021.Protocol.PosInfo\"E\n\010STC_MOV"
+  "E\022\037\n\004info\030\001 \001(\0132\021.Protocol.PosInfo\022\030\n\020ta"
+  "rget_object_id\030\002 \001(\004\"@\n\nCTS_DETECT\022\030\n\020de"
   "tect_object_id\030\001 \001(\004\022\030\n\020target_object_id"
-  "\030\002 \001(\004\";\n\022CTS_MONSTER_ATTACK\022\022\n\nmonster_"
-  "id\030\001 \001(\004\022\021\n\ttarget_id\030\002 \001(\004\";\n\022STC_MONST"
-  "ER_ATTACK\022\022\n\nmonster_id\030\001 \001(\004\022\021\n\ttarget_"
-  "id\030\002 \001(\004\"\027\n\010CTS_CHAT\022\013\n\003msg\030\001 \001(\t\")\n\010STC"
-  "_CHAT\022\020\n\010playerId\030\001 \001(\004\022\013\n\003msg\030\002 \001(\t\"0\n\n"
-  "CTS_ATTACK\022\"\n\004info\030\001 \001(\0132\024.Protocol.Atta"
-  "ckInfo\"0\n\nSTC_ATTACK\022\"\n\004info\030\001 \001(\0132\024.Pro"
-  "tocol.AttackInfo\"6\n\017CTS_MONSTERINFO\022#\n\004i"
-  "nfo\030\001 \001(\0132\025.Protocol.MonsterInfo\"6\n\017STC_"
-  "MONSTERINFO\022#\n\004info\030\001 \001(\0132\025.Protocol.Mon"
-  "sterInfo\"X\n\017CTS_MONSTERMOVE\022$\n\004type\030\001 \001("
-  "\0162\026.Protocol.CreatureType\022\037\n\004info\030\002 \001(\0132"
-  "\021.Protocol.PosInfo\"X\n\017STC_MONSTERMOVE\022$\n"
-  "\004type\030\001 \001(\0162\026.Protocol.CreatureType\022\037\n\004i"
-  "nfo\030\002 \001(\0132\021.Protocol.PosInfo\"=\n\024CTS_STAN"
-  "DARD_MONSTER\022\022\n\nisstandard\030\001 \001(\010\022\021\n\tobje"
-  "ct_id\030\002 \001(\004\"=\n\024STC_STANDARD_MONSTER\022\022\n\ni"
-  "sstandard\030\001 \001(\010\022\021\n\tobject_id\030\002 \001(\004b\006prot"
-  "o3"
+  "\030\002 \001(\004\"@\n\nSTC_DETECT\022\030\n\020detect_object_id"
+  "\030\001 \001(\004\022\030\n\020target_object_id\030\002 \001(\004\";\n\022CTS_"
+  "MONSTER_ATTACK\022\022\n\nmonster_id\030\001 \001(\004\022\021\n\tta"
+  "rget_id\030\002 \001(\004\";\n\022STC_MONSTER_ATTACK\022\022\n\nm"
+  "onster_id\030\001 \001(\004\022\021\n\ttarget_id\030\002 \001(\004\"\027\n\010CT"
+  "S_CHAT\022\013\n\003msg\030\001 \001(\t\")\n\010STC_CHAT\022\020\n\010playe"
+  "rId\030\001 \001(\004\022\013\n\003msg\030\002 \001(\t\"0\n\nCTS_ATTACK\022\"\n\004"
+  "info\030\001 \001(\0132\024.Protocol.AttackInfo\"0\n\nSTC_"
+  "ATTACK\022\"\n\004info\030\001 \001(\0132\024.Protocol.AttackIn"
+  "fo\"6\n\017CTS_MONSTERINFO\022#\n\004info\030\001 \001(\0132\025.Pr"
+  "otocol.MonsterInfo\"6\n\017STC_MONSTERINFO\022#\n"
+  "\004info\030\001 \001(\0132\025.Protocol.MonsterInfo\"X\n\017CT"
+  "S_MONSTERMOVE\022$\n\004type\030\001 \001(\0162\026.Protocol.C"
+  "reatureType\022\037\n\004info\030\002 \001(\0132\021.Protocol.Pos"
+  "Info\"X\n\017STC_MONSTERMOVE\022$\n\004type\030\001 \001(\0162\026."
+  "Protocol.CreatureType\022\037\n\004info\030\002 \001(\0132\021.Pr"
+  "otocol.PosInfo\"=\n\024CTS_STANDARD_MONSTER\022\022"
+  "\n\nisstandard\030\001 \001(\010\022\021\n\tobject_id\030\002 \001(\004\"=\n"
+  "\024STC_STANDARD_MONSTER\022\022\n\nisstandard\030\001 \001("
+  "\010\022\021\n\tobject_id\030\002 \001(\004b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -1120,7 +1122,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 2722, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 2748, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 43,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -7142,12 +7144,14 @@ STC_MOVE::STC_MOVE(const STC_MOVE& from)
   STC_MOVE* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.info_){nullptr}
+    , decltype(_impl_.target_object_id_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   if (from._internal_has_info()) {
     _this->_impl_.info_ = new ::Protocol::PosInfo(*from._impl_.info_);
   }
+  _this->_impl_.target_object_id_ = from._impl_.target_object_id_;
   // @@protoc_insertion_point(copy_constructor:Protocol.STC_MOVE)
 }
 
@@ -7157,6 +7161,7 @@ inline void STC_MOVE::SharedCtor(
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.info_){nullptr}
+    , decltype(_impl_.target_object_id_){uint64_t{0u}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -7189,6 +7194,7 @@ void STC_MOVE::Clear() {
     delete _impl_.info_;
   }
   _impl_.info_ = nullptr;
+  _impl_.target_object_id_ = uint64_t{0u};
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -7202,6 +7208,14 @@ const char* STC_MOVE::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx)
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
           ptr = ctx->ParseMessage(_internal_mutable_info(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 target_object_id = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _impl_.target_object_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -7242,6 +7256,12 @@ uint8_t* STC_MOVE::_InternalSerialize(
         _Internal::info(this).GetCachedSize(), target, stream);
   }
 
+  // uint64 target_object_id = 2;
+  if (this->_internal_target_object_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_target_object_id(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -7263,6 +7283,11 @@ size_t STC_MOVE::ByteSizeLong() const {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
         *_impl_.info_);
+  }
+
+  // uint64 target_object_id = 2;
+  if (this->_internal_target_object_id() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_target_object_id());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -7287,6 +7312,9 @@ void STC_MOVE::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTO
     _this->_internal_mutable_info()->::Protocol::PosInfo::MergeFrom(
         from._internal_info());
   }
+  if (from._internal_target_object_id() != 0) {
+    _this->_internal_set_target_object_id(from._internal_target_object_id());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -7304,7 +7332,12 @@ bool STC_MOVE::IsInitialized() const {
 void STC_MOVE::InternalSwap(STC_MOVE* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_.info_, other->_impl_.info_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(STC_MOVE, _impl_.target_object_id_)
+      + sizeof(STC_MOVE::_impl_.target_object_id_)
+      - PROTOBUF_FIELD_OFFSET(STC_MOVE, _impl_.info_)>(
+          reinterpret_cast<char*>(&_impl_.info_),
+          reinterpret_cast<char*>(&other->_impl_.info_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata STC_MOVE::GetMetadata() const {

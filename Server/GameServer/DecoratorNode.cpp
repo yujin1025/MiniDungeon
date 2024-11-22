@@ -87,7 +87,6 @@ ENodeState HasTargetDecorator::OnUpdate()
         return ENodeState::Failure;
     }
 
-
     auto ownerMonster = bt->owner.lock();
     if (ownerMonster == nullptr)
     {
@@ -99,17 +98,14 @@ ENodeState HasTargetDecorator::OnUpdate()
     auto target = ownerMonster->TargetPlayer.load();
     if (target == nullptr)
     {
+        blackboard->SetData(EBlackboardKey::Target, 0);
         LOG("HasTargetDecorator target is nullptr");
         return ENodeState::Failure;
     }
     else
     {
-        Vector3 moveToPosition = any_cast<Vector3>(blackboard->GetData(EBlackboardKey::Position));
-        moveToPosition.x = target->GetPosInfo().x();
-        moveToPosition.y = target->GetPosInfo().y();
-        moveToPosition.z = target->GetPosInfo().z();
-
-        blackboard->SetData(EBlackboardKey::Position, moveToPosition);
+        uint64 target_id = target->GetObjectInfo().object_id();
+        blackboard->SetData(EBlackboardKey::Target, target_id);
 
         if (child == nullptr)
         {
@@ -148,6 +144,7 @@ ENodeState NoTargetDecorator::OnUpdate()
     auto target = ownerMonster->TargetPlayer.load();
     if (target == nullptr)
     {
+        blackboard->SetData(EBlackboardKey::Target, 0);
         if (child == nullptr)
         {
             LOG("NoTargetDecorator child is nullptr");
@@ -158,6 +155,8 @@ ENodeState NoTargetDecorator::OnUpdate()
     else
     {
         LOG("monster Has Target");
+        uint64 target_id = target->GetObjectInfo().object_id();
+        blackboard->SetData(EBlackboardKey::Target, target_id);
         return ENodeState::Failure;
     }
 }
@@ -193,12 +192,16 @@ ENodeState CanAttackDecorator::OnUpdate()
     auto target = ownerMonster->TargetPlayer.load();
     if (target == nullptr)
     {
+        blackboard->SetData(EBlackboardKey::Target, 0);
         LOG("CanAttackDecorator target is nullptr");
         return ENodeState::Failure;
     }
 
     // 공격 범위 확인
-    float distance = ownerMonster->DistanceTo(target->GetPosInfo());
+    auto targetPosInfo = target->GetPosInfo();
+    blackboard->SetData(EBlackboardKey::Target, targetPosInfo.object_id());
+
+    float distance = ownerMonster->DistanceTo(targetPosInfo);
     if (distance <= AttackRange)
     {
         // 조건 충족: 하위 노드 실행
@@ -207,7 +210,6 @@ ENodeState CanAttackDecorator::OnUpdate()
             LOG("CanAttackDecorator child is nullptr");
 			return ENodeState::Failure;
         }
-
         return child->Update();
     }
 
@@ -244,11 +246,13 @@ ENodeState CanNotAttackDecorator::OnUpdate()
     auto target = ownerMonster->TargetPlayer.load();
     if (target == nullptr)
     {
+        blackboard->SetData(EBlackboardKey::Target, 0);
         LOG("CanNotAttackDecorator target is nullptr");
         return ENodeState::Failure;
     }
 
     auto targetPosInfo = target->GetPosInfo();
+    blackboard->SetData(EBlackboardKey::Target, targetPosInfo.object_id());
     // 공격 범위 확인
     float distance = ownerMonster->DistanceTo(targetPosInfo);
     if (distance > AttackRange)
@@ -258,7 +262,6 @@ ENodeState CanNotAttackDecorator::OnUpdate()
             LOG("CanNotAttackDecorator blackboard is nullptr");
             return ENodeState::Failure;
         }
-        blackboard->SetData(EBlackboardKey::Position, Vector3(targetPosInfo.x(), targetPosInfo.y(), targetPosInfo.z()));
 
         if (child == nullptr)
         {

@@ -16,7 +16,7 @@ protected:
 
 protected:
 	float lastUpdateTime = 0.0f;
-	float updateInterval = 0.2f;
+	float updateInterval = 0.5f;
 
 public:
 	shared_ptr<Node> child;
@@ -31,5 +31,5 @@ protected:
 	virtual void OnUpdateService() override;
 
 private:
-	float detectRange = 600.0f;
+	float detectRange = 1000.0f;
 };

@@ -82,7 +82,6 @@ void MoveToPosition::OnStart()
 		return;
 	}
 
-
 	auto ownerMonster = bt->owner.lock();
 	if (ownerMonster == nullptr)
 	{
@@ -104,7 +103,6 @@ void MoveToPosition::OnStart()
 		return;
 	}
 
-
 	Protocol::STC_MOVE pkt;
 	Protocol::PosInfo* posinfo = new Protocol::PosInfo();
 
@@ -118,6 +116,7 @@ void MoveToPosition::OnStart()
 	posinfo->set_yaw(ownerMonster->GetPosInfo().yaw());
 
 	pkt.set_allocated_info(posinfo);
+	pkt.set_target_object_id(0);
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 	auto room = ownerMonster->room.load().lock();
@@ -160,6 +159,88 @@ ENodeState MoveToPosition::OnUpdate()
 
 	return ENodeState::Running;
 }
+
+
+void MoveToPlayer::OnStart()
+{
+	auto bt = tree.lock();
+	if (bt == nullptr)
+	{
+		LOG("MoveToPlayer Failed : bt is nullptr");
+		return;
+	}
+
+	auto ownerMonster = bt->owner.lock();
+	if (ownerMonster == nullptr)
+	{
+		LOG("MoveToPlayer Failed : ownerMonster is nullptr");
+		return;
+	}
+
+	if (blackboard == nullptr)
+	{
+		LOG("MoveToPlayer Failed : blackboard is nullptr");
+		return;
+	}
+
+	uint64 target_id = any_cast<uint64>(blackboard->GetData(EBlackboardKey::Target));
+
+	if (target_id == 0)
+	{
+		LOG("MoveToPlayer Failed : There is no target");
+		return;
+	}
+
+	Protocol::STC_MOVE pkt;
+	Protocol::PosInfo* posinfo = new Protocol::PosInfo();
+	ownerMonster->SetMovementState(Protocol::MOVE_STATE_RUN);
+
+	posinfo->set_object_id(ownerMonster->GetObjectInfo().object_id());
+	pkt.set_allocated_info(posinfo);
+	pkt.set_target_object_id(target_id);
+
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+	auto room = ownerMonster->room.load().lock();
+	if (room)
+	{
+		room->Broadcast(sendBuffer);
+	}
+}
+
+void MoveToPlayer::OnStop()
+{
+}
+
+ENodeState MoveToPlayer::OnUpdate()
+{
+	auto bt = tree.lock();
+	if (bt == nullptr)
+	{
+		LOG("MoveToPosition Failed : bt is nullptr");
+		return ENodeState::Failure;
+	}
+
+	auto ownerMonster = bt->owner.lock();
+	if (ownerMonster == nullptr)
+	{
+		LOG("MoveToPosition Failed : ownerMonster is nullptr");
+		return ENodeState::Failure;
+	}
+
+	if (ownerMonster->GetPosInfo().state() != Protocol::MOVE_STATE_RUN)
+	{
+		return ENodeState::Success;
+	}
+
+	if (blackboard == nullptr)
+	{
+		LOG("MoveToPosition Failed : blackboard is nullptr");
+		return ENodeState::Failure;
+	}
+
+	return ENodeState::Running;
+}
+
 
 void AttackNode::OnStart()
 {

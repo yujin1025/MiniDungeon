@@ -4916,6 +4916,7 @@ class STC_MOVE final :
 
   enum : int {
     kInfoFieldNumber = 1,
+    kTargetObjectIdFieldNumber = 2,
   };
   // .Protocol.PosInfo info = 1;
   bool has_info() const;
@@ -4935,6 +4936,15 @@ class STC_MOVE final :
       ::Protocol::PosInfo* info);
   ::Protocol::PosInfo* unsafe_arena_release_info();
 
+  // uint64 target_object_id = 2;
+  void clear_target_object_id();
+  uint64_t target_object_id() const;
+  void set_target_object_id(uint64_t value);
+  private:
+  uint64_t _internal_target_object_id() const;
+  void _internal_set_target_object_id(uint64_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.STC_MOVE)
  private:
   class _Internal;
@@ -4944,6 +4954,7 @@ class STC_MOVE final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::Protocol::PosInfo* info_;
+    uint64_t target_object_id_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -9585,6 +9596,26 @@ inline void STC_MOVE::set_allocated_info(::Protocol::PosInfo* info) {
   }
   _impl_.info_ = info;
   // @@protoc_insertion_point(field_set_allocated:Protocol.STC_MOVE.info)
+}
+
+// uint64 target_object_id = 2;
+inline void STC_MOVE::clear_target_object_id() {
+  _impl_.target_object_id_ = uint64_t{0u};
+}
+inline uint64_t STC_MOVE::_internal_target_object_id() const {
+  return _impl_.target_object_id_;
+}
+inline uint64_t STC_MOVE::target_object_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_MOVE.target_object_id)
+  return _internal_target_object_id();
+}
+inline void STC_MOVE::_internal_set_target_object_id(uint64_t value) {
+  
+  _impl_.target_object_id_ = value;
+}
+inline void STC_MOVE::set_target_object_id(uint64_t value) {
+  _internal_set_target_object_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.STC_MOVE.target_object_id)
 }
 
 // -------------------------------------------------------------------

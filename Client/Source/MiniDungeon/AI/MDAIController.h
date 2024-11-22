@@ -37,7 +37,9 @@ public:
 
 public:
 	// 이동 명령을 실행하는 함수
-	FPathFollowingRequestResult CustomMoveTo(const FVector& Destination, float AcceptanceRadius = 50.0f);
+	FPathFollowingRequestResult CustomMoveToLocation(const FVector& Destination, float AcceptanceRadius = 50.0f);
+
+	FPathFollowingRequestResult CustomMoveToActor(AActor* DestinationActor, float AcceptanceRadius = 50.0f);
 
 	void OnMoveCompletedHandler(FAIRequestID RequestID, const FPathFollowingResult& Result);
 
