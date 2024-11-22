@@ -62,7 +62,6 @@ void RootNode::OnStop()
 
 ENodeState RootNode::OnUpdate()
 {
-    LOG("RootNode OnUpdate");
     if(child != nullptr)
 	{
 		return child->Update();
@@ -138,7 +137,6 @@ ENodeState NoTargetDecorator::OnUpdate()
         LOG("NoTargetDecorator bt is nullptr");
         return ENodeState::Failure;
     }
-
 
     auto ownerMonster = bt->owner.lock();
     if (ownerMonster == nullptr)
@@ -250,8 +248,9 @@ ENodeState CanNotAttackDecorator::OnUpdate()
         return ENodeState::Failure;
     }
 
+    auto targetPosInfo = target->GetPosInfo();
     // 공격 범위 확인
-    float distance = ownerMonster->DistanceTo(target->GetPosInfo());
+    float distance = ownerMonster->DistanceTo(targetPosInfo);
     if (distance > AttackRange)
     {
         if (blackboard == nullptr)
@@ -259,7 +258,7 @@ ENodeState CanNotAttackDecorator::OnUpdate()
             LOG("CanNotAttackDecorator blackboard is nullptr");
             return ENodeState::Failure;
         }
-        blackboard->SetData(EBlackboardKey::Position, Vector3(target->GetPosInfo().x(), target->GetPosInfo().y(), target->GetPosInfo().z()));
+        blackboard->SetData(EBlackboardKey::Position, Vector3(targetPosInfo.x(), targetPosInfo.y(), targetPosInfo.z()));
 
         if (child == nullptr)
         {

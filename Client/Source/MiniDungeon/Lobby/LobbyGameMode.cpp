@@ -22,5 +22,6 @@ void ALobbyGameMode::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-	networkManager->HandleRecvPackets();
+	if (networkManager != nullptr)
+		networkManager->HandleRecvPackets();
 }

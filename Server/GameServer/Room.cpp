@@ -250,8 +250,6 @@ bool Room::HandleLeavePlayer(uint64 playerindex)
 
 void Room::HandleStartGame()
 {
-	GetRoomRef()->DoAsync(&Room::UpdateTick);
-
 	Protocol::STC_ENTER_GAME enterGamePkt;
 	enterGamePkt.set_success(true);
 
@@ -294,6 +292,8 @@ void Room::HandleStartGame()
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
 	Broadcast(sendBuffer);
+
+	GetRoomRef()->DoAsync(&Room::UpdateTick);
 }
 
 //void Room::HandleMove(Protocol::CTS_MOVE pkt)
@@ -345,7 +345,7 @@ void Room::HandleMove(const Protocol::PosInfo& posInfo)
 		movePkt.set_allocated_info(info);
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
-		BroadcastToPlayer(sendBuffer, objectId);
+		Broadcast(sendBuffer, objectId);
 	}
 }
 
@@ -404,8 +404,6 @@ void Room::UpdateTick()
 		//monster.second->CanAttack();
 		monster.second->UpdateBehaviourTree();
 	}
-
-	DoTimer(500, &Room::UpdateTick);
 }
 
 RoomRef Room::GetRoomRef()

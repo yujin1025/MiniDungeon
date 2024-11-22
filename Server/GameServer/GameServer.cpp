@@ -98,19 +98,7 @@ int main()
 			DoAuthManagerJob();
 		});
 
-	// Main Thread
-	//DoWorkerJob(service);
-
-	//GRoom->DoAsync(&Room::UpdateTick);
-
-	while (true)
-	{
-		//Protocol::S_CHAT pkt;
-		//pkt.set_msg("HelloWorld");
-		//auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
-
-		//GSessionManager.Broadcast(sendBuffer);
-	}
+	GLobby->DoAsync(&Lobby::UpdateTick);
 
 	LOG("Joining all threads");
 	GThreadManager->Join();

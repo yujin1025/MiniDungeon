@@ -52,8 +52,6 @@ public:
 
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	void SpawnEnemy();
 protected:
 	virtual void PostInitializeComponents() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;

@@ -575,13 +575,12 @@ void UMDNetworkManager::HandleMovePlayer(APlayableCharacter* player, const Proto
 
 void UMDNetworkManager::HandleMoveMonster(ANonPlayableCharacter* monster, const Protocol::PosInfo& posInfo)
 {
-	if(isHost)
+	// TODO : Monster AI MOVE
+	auto aiController = Cast<AMDAIController>(monster->GetController());
+	if(aiController)
 	{
-		return;
+		aiController->CustomMoveTo(FVector(posInfo.x(), posInfo.y(), posInfo.z()));
 	}
-
-	monster->SetPosInfo(posInfo);
-	monster->SetDestInfo(posInfo);
 }
 
 void UMDNetworkManager::HandleAttack(const Protocol::STC_ATTACK& AtkPkt)
@@ -619,7 +618,7 @@ void UMDNetworkManager::HandleMonsterAttack(uint64 obj_id)
 		return;
 
 	ANonPlayableCharacter* Monster = *MonsterPtr;
-	Monster->UseSkill(EAttackType::QSkillAttack);
+	Monster->Attack();
 }
 
 void UMDNetworkManager::HandleSpawnMonster(const Protocol::STC_MONSTERINFO& InfoPkt)

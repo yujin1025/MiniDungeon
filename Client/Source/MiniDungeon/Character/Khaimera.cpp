@@ -22,17 +22,9 @@ void AKhaimera::BeginPlay()
         AMDAIController* AIController = Cast<AMDAIController>(GetController());
         if (!AIController)
         {
-            auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-            auto pc = Cast<AMDPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
-            if(IsValid(networkManager))
-			{
-                //if (networkManager->isHost)
-                //{
-                //    AIController = GetWorld()->SpawnActor<AMDAIController>(AIControllerClass);
-                //    AIController->Possess(this);
-                //    MD_LOG(LogMDNetwork, Log, TEXT("Possess"));
-                //}
-			}
+            AIController = GetWorld()->SpawnActor<AMDAIController>(AIControllerClass);
+            AIController->Possess(this);
+            MD_LOG(LogMDNetwork, Log, TEXT("Possess"));
         }
     }
 }

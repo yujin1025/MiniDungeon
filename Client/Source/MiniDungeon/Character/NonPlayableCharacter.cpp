@@ -6,12 +6,24 @@
 #include <MDNetworkManager.h>
 #include <Kismet/GameplayStatics.h>
 #include <Game/MDPlayerController.h>
+#include "Component/AttackComponent.h"
 
 ANonPlayableCharacter::ANonPlayableCharacter()
 {
 	AIControllerClass = AMDAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	//AutoPossessPlayer = EAutoReceiveInput::Disabled; //빙의하지 않음
+}
+
+bool ANonPlayableCharacter::Attack()
+{
+	if (IsDead)
+		return false;
+
+	ActionComponentMap[EAttackType::QSkillAttack]->PlayAttackMontage();
+	CurrentActionCoolTimeMap[EAttackType::QSkillAttack] = CurrentDeltaTime + ActionCoolTimeMap[EAttackType::QSkillAttack];
+
+	return true;
 }
 
 void ANonPlayableCharacter::BeginPlay()

@@ -32,12 +32,35 @@ struct Vector3
 	float x = 0.0f;
 	float y = 0.0f;
 	float z = 0.0f;
+
+	// == 연산자 오버로딩
+	bool operator==(const Vector3& other) const 
+	{
+		return x == other.x && y == other.y && z == other.z;
+	}
+
+	// != 연산자 오버로딩 (선택 사항)
+	bool operator!=(const Vector3& other) const 
+	{
+		return !(*this == other);
+	}
 };
 
 struct Vector2
 {
 	float x = 0.0f;
 	float y = 0.0f;
+
+	bool operator==(const Vector2& other) const 
+	{
+		return x == other.x && y == other.y;
+	}
+
+	// != 연산자 오버로딩 (선택 사항)
+	bool operator!=(const Vector2& other) const 
+	{
+		return !(*this == other);
+	}
 };
 
 //template<typename T>

@@ -157,6 +157,7 @@ float Monster::DistanceTo(const Protocol::PosInfo& targetPos)
 
 void Monster::SetObjectInfo(const Protocol::ObjectInfo& obj_Info)
 {
+    WRITE_LOCK;
 	Protocol::ObjectInfo* obj_info = new Protocol::ObjectInfo();
 	obj_info->CopyFrom(obj_Info);
 
@@ -166,15 +167,31 @@ void Monster::SetObjectInfo(const Protocol::ObjectInfo& obj_Info)
 
 void Monster::SetPosInfo(const Protocol::PosInfo& pos_Info)
 {
+    WRITE_LOCK;
     Protocol::PosInfo* pos_info = new Protocol::PosInfo();
 	pos_info->CopyFrom(pos_Info);
 
 	Protocol::ObjectInfo* obj_info = new Protocol::ObjectInfo();
-	obj_info->CopyFrom(monsterInfo->object_info());
+	obj_info->CopyFrom(*objectInfo);
 	obj_info->set_allocated_pos_info(pos_info);
 
 	monsterInfo->set_allocated_object_info(obj_info);
     objectInfo->CopyFrom(monsterInfo->object_info());
+}
+
+void Monster::SetMovementState(Protocol::MoveState state)
+{
+    WRITE_LOCK;
+	Protocol::PosInfo* pos_info = new Protocol::PosInfo();
+	pos_info->CopyFrom(objectInfo->pos_info());
+	pos_info->set_state(state);
+
+	Protocol::ObjectInfo* obj_info = new Protocol::ObjectInfo();
+	obj_info->CopyFrom(*objectInfo);
+	obj_info->set_allocated_pos_info(pos_info);
+
+	monsterInfo->set_allocated_object_info(obj_info);
+	objectInfo->CopyFrom(monsterInfo->object_info());
 }
 
 void Monster::UpdateBehaviourTree()
