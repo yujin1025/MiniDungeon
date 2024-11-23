@@ -34,5 +34,10 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Health")
 	float GetCurrentHealth() const { return CurrentHealth; }
+
+	float GetMaxHealth() const { return MaxHealth; }
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	class UWidgetComponent* HPBarWidget;
 		
 };

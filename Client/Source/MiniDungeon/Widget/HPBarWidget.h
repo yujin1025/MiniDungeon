@@ -7,6 +7,7 @@
 #include "HPBarWidget.generated.h"
 
 class UProgressBar;
+class UHealthComponent;
 /**
  * 
  */
@@ -19,10 +20,14 @@ private:
 	UPROPERTY()
 	UProgressBar* ProgressBar;
 
+	UPROPERTY()
+	UHealthComponent* HealthComponent;
+
 protected:
 	virtual void NativeConstruct() override;
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void SetHP(int id, float HP);
+	void UpdateHealthBar(); 
+
+	void SetHealthComponent(UHealthComponent* NewHealthComponent);  
 };

@@ -13,6 +13,7 @@ enum class ESpawnType : uint8
 	Grux,
 };
 
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnMonsterHPChangedDelegate, int, float)
 /**
  * 
  */
@@ -51,15 +52,17 @@ private:
 	TSubclassOf<class AMDCharacter> GruxClass;
 
 private:
-	TMap<int, float> MonsterHealthMap;
 	int MaxFieldKhaimeraCount = 3;
 	int CurrentSpawnKhaimeraPositionIndex = 0;
 
 public:
 	void OnChangedHealth(int ObjectID, float CurrentHealth);
+	FOnMonsterHPChangedDelegate OnMonsterHPChanged;
 
+	TMap<int, float> MonsterHealthMap;
 	TMap<int, float> GetMonsterHealthMap() const { return MonsterHealthMap; }
-	void SetMonsterHealthMap(int objectID, float currentHealth) { MonsterHealthMap[objectID] = currentHealth; }
+	void SetMonsterHealthMap(int objectID, float currentHealth);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;

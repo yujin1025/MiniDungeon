@@ -6,7 +6,8 @@
 #include "../Game/MDGameMode.h"
 #include "../Game/MDGameState.h"
 #include "../Game/MDPlayerState.h"
-#include <MDNetworkManager.cpp>
+#include "Components/WidgetComponent.h"
+#include "../Widget/HPBarWidget.h"
 
 UHealthComponent::UHealthComponent()
 {
@@ -29,7 +30,7 @@ void UHealthComponent::BeginPlay()
 	if (GameMode == nullptr)
 		return;
 
-	auto* Data = GameMode->GetCharacterStat(ECharacterType::Aurora);
+	auto* Data = GameMode->GetCharacterStat(CharacterType);
 	if (Data == nullptr)
 		return;
 
@@ -63,13 +64,23 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 
 	if (Character->IsPlayer()) 
 	{
-		//GameMode->MyPlayerState->OnChangePlayerHealth(Character->CharacterId, CurrentHealth);
+		GameMode->MyPlayerState->OnChangePlayerHealth(Character->CharacterId, CurrentHealth);
 		UE_LOG(LogTemp, Warning, TEXT("Player Number : (%d) Current Health: %f"), Character->CharacterId, CurrentHealth);
 	}
 	else
 	{
-		//GameMode->MyGameState->OnChangedHealth(Character->CharacterId, CurrentHealth);
+		GameMode->MyGameState->OnChangedHealth(Character->CharacterId, CurrentHealth);
 		UE_LOG(LogTemp, Warning, TEXT("Non Player Number : (%d) Current Health: %f"), Character->CharacterId, CurrentHealth);
+
+		HPBarWidget = Character->FindComponentByClass<UWidgetComponent>();
+		if (HPBarWidget)
+		{
+			UHPBarWidget* HPWidget = Cast<UHPBarWidget>(HPBarWidget->GetWidget());
+			if (HPWidget)
+			{
+				HPWidget->UpdateHealthBar();
+			}
+		}
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Character %d: CurrentHealth is now %f"), Character->CharacterId, CurrentHealth);

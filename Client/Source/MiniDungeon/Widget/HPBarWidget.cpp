@@ -5,35 +5,27 @@
 #include "Components/ProgressBar.h"
 #include "../Game/MDGameInstance.h"
 #include <Kismet/GameplayStatics.h>
-#include "../Game/MDGameMode.h"
-#include "../Game/MDPlayerState.h"
+#include "../Component/HealthComponent.h"
+#include "../Character/MDCharacter.h"
+
 
 void UHPBarWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	ProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HPBar")));
+}
 
-	AMDGameMode* GameMode = Cast<AMDGameMode>(GetWorld()->GetAuthGameMode());
-	if (GameMode == nullptr)
-		return;
-
-	/*GameMode->MyPlayerState->OnPlayerHPChanged.AddLambda([&](int id, float amount) -> void
-		{
-			float PercentValue = amount / 100.0f;
-			ProgressBar->SetPercent(PercentValue);
-		});*/
-
-	if (IsValid(GameMode->MyPlayerState))
+void UHPBarWidget::UpdateHealthBar()
+{
+	if (ProgressBar && HealthComponent)
 	{
-		GameMode->MyPlayerState->OnPlayerHPChanged.AddUObject(this, &UHPBarWidget::SetHP);
+		float HealthPercent = HealthComponent->GetCurrentHealth() / HealthComponent->GetMaxHealth();
+		ProgressBar->SetPercent(HealthPercent);
 	}
 }
 
-void UHPBarWidget::SetHP(int id, float HP)
+void UHPBarWidget::SetHealthComponent(UHealthComponent* NewHealthComponent)
 {
-	if (ProgressBar == nullptr)
-		return;
-
-	float PercentValue = HP / 100.0f;
-	ProgressBar->SetPercent(PercentValue);
+	HealthComponent = NewHealthComponent;
 }
+

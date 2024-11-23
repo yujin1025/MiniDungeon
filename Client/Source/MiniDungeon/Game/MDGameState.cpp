@@ -17,15 +17,12 @@ void AMDGameState::OnChangedHealth(int ObjectID, float CurrentHealth)
 		return;
 
 	MonsterHealthMap[ObjectID] = CurrentHealth;
-	/*
-	if (Amount <= 0.0f)
-	{
-		AActor* Actor = GetOwner();
-		if (Actor)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Monster Destroyed!"));
-		}
-	}*/
+	OnMonsterHPChanged.Broadcast(ObjectID, CurrentHealth);
+}
+
+void AMDGameState::SetMonsterHealthMap(int objectID, float currentHealth)
+{
+	MonsterHealthMap.Add(objectID, currentHealth);
 }
 
 void AMDGameState::BeginPlay()
