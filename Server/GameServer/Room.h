@@ -83,5 +83,3 @@ public:
 
 	void SetLobby(LobbyRef lobby) { this->_lobby = lobby; }
 };
-
-extern RoomRef GRoom;

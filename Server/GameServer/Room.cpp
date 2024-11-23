@@ -6,8 +6,6 @@
 #include "ObjectUtils.h"
 #include "Lobby.h"
 
-RoomRef GRoom = make_shared<Room>();
-
 Room::Room()
 {
 	_roomIndex = 0;
@@ -132,13 +130,13 @@ bool Room::LeaveRoom(PlayerRef player, bool isExitGame)
 	{
 		// 퇴장 사실을 퇴장하는 플레이어에게 알린다
 		player->GetSession()->Send(sendBuffer);
-
-		// ���� ����� Room�� �ִ� ��� �÷��̾�� �˸���.
-		Broadcast(sendBuffer, player->GetObjectInfo().object_id());
-
-		// ���� ����� Lobby�� �ִ� ��� �÷��̾�Ե� �˸���.
-		_lobby.lock()->Broadcast(sendBuffer, player->GetPlayerInfo().player_id());
 	}
+
+	// ���� ����� Room�� �ִ� ��� �÷��̾�� �˸���.
+	Broadcast(sendBuffer, player->GetObjectInfo().object_id());
+
+	// ���� ����� Lobby�� �ִ� ��� �÷��̾�Ե� �˸���.
+	_lobby.lock()->Broadcast(sendBuffer, player->GetPlayerInfo().player_id());
 
 	if (_players.empty())
 	{
@@ -456,6 +454,10 @@ void Room::ReleaseThisRoom()
 {
 	auto self = GetRoomRef();
 	_lobby.lock()->RemoveRoom(self);
+
+	_players.clear();
+	_objects.clear();
+	_monsters.clear();
 	ClearJobs();
 }
 

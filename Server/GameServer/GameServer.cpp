@@ -100,6 +100,11 @@ int main()
 
 	GLobby->DoAsync(&Lobby::UpdateTick);
 
+	while (true)
+	{
+
+	}
+
 	LOG("Joining all threads");
 	GThreadManager->Join();
 	LOG("Main function ended");
