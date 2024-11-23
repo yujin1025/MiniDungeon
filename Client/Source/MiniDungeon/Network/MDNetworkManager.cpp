@@ -27,6 +27,13 @@ void UMDNetworkManager::Initialize(FSubsystemCollectionBase& Collection)
 	ConnectToServer();
 }
 
+void UMDNetworkManager::Deinitialize()
+{
+	Super::Deinitialize();
+
+	DisconnectFromServer();
+}
+
 void UMDNetworkManager::ConnectToServer()
 {
 	Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"), false);

@@ -436,6 +436,11 @@ void Room::SetRoomIndex(uint64 roomIndex)
 void Room::UpdateTick()
 {
 	// TODO : 몬스터 이동, 공격
+	if(_players.empty())
+	{
+		ReleaseThisRoom();
+		return;
+	}
 
 	for(auto& monster : _monsters)
 	{
