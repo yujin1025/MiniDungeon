@@ -549,14 +549,20 @@ void UMDNetworkManager::HandleMove(const Protocol::STC_MOVE& movePkt)
 
 	if(Players.Contains(objectId))
 	{
-		HandleMovePlayer(*Players.Find(objectId), movePkt.info());
-		return;
+		if (IsValid(Players[objectId]))
+		{
+			HandleMovePlayer(*Players.Find(objectId), movePkt.info());
+			return;
+		}
 	}
 
 	if(Monsters.Contains(objectId))
 	{
-		HandleMoveMonster(*Monsters.Find(objectId), movePkt.info(), movePkt.target_object_id());
-		return;
+		if (IsValid(Monsters[objectId]))
+		{
+			HandleMoveMonster(*Monsters.Find(objectId), movePkt.info(), movePkt.target_object_id());
+			return;
+		}
 	}
 	
 }

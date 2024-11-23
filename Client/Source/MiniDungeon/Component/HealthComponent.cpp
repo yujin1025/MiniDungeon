@@ -6,6 +6,7 @@
 #include "../Game/MDGameMode.h"
 #include "../Game/MDGameState.h"
 #include "../Game/MDPlayerState.h"
+#include <MDNetworkManager.cpp>
 
 UHealthComponent::UHealthComponent()
 {
