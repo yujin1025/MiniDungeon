@@ -317,6 +317,13 @@ bool Handle_STC_MONSTER_ATTACK(PacketSessionRef& session, Protocol::STC_MONSTER_
 	}
 	return true;
 }
+
+bool Handle_STC_ATTACKED(PacketSessionRef& session, Protocol::STC_ATTACKED& pkt)
+{
+	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
+	return true;
+}
 //
 bool Handle_STC_CHAT(PacketSessionRef& session, Protocol::STC_CHAT& pkt)
 {

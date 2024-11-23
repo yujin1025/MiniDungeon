@@ -400,6 +400,11 @@ bool Handle_CTS_MONSTER_ATTACK(PacketSessionRef& session, Protocol::CTS_MONSTER_
 	return true;
 }
 
+bool Handle_CTS_ATTACKED(PacketSessionRef& session, Protocol::CTS_ATTACKED& pkt)
+{
+	return true;
+}
+
 bool Handle_CTS_ATTACK(PacketSessionRef& session, Protocol::CTS_ATTACK& pkt)
 {
 	auto gameSession = static_pointer_cast<GameSession>(session);

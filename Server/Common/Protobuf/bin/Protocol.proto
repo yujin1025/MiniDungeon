@@ -199,6 +199,18 @@ message STC_MONSTER_ATTACK
 	uint64 target_id = 2;
 }
 
+message CTS_ATTACKED
+{
+	uint64 object_id = 1;
+	float object_current_hp = 2;
+}
+
+message STC_ATTACKED
+{
+	uint64 object_id = 1;
+	float object_current_hp = 2;
+}
+
 message CTS_CHAT
 {
 	string msg = 1;

@@ -46,16 +46,18 @@ enum : uint16
 	PKT_STC_DETECT = 1030,
 	PKT_CTS_MONSTER_ATTACK = 1031,
 	PKT_STC_MONSTER_ATTACK = 1032,
-	PKT_CTS_CHAT = 1033,
-	PKT_STC_CHAT = 1034,
-	PKT_CTS_ATTACK = 1035,
-	PKT_STC_ATTACK = 1036,
-	PKT_CTS_MONSTERINFO = 1037,
-	PKT_STC_MONSTERINFO = 1038,
-	PKT_CTS_MONSTERMOVE = 1039,
-	PKT_STC_MONSTERMOVE = 1040,
-	PKT_CTS_STANDARD_MONSTER = 1041,
-	PKT_STC_STANDARD_MONSTER = 1042,
+	PKT_CTS_ATTACKED = 1033,
+	PKT_STC_ATTACKED = 1034,
+	PKT_CTS_CHAT = 1035,
+	PKT_STC_CHAT = 1036,
+	PKT_CTS_ATTACK = 1037,
+	PKT_STC_ATTACK = 1038,
+	PKT_CTS_MONSTERINFO = 1039,
+	PKT_STC_MONSTERINFO = 1040,
+	PKT_CTS_MONSTERMOVE = 1041,
+	PKT_STC_MONSTERMOVE = 1042,
+	PKT_CTS_STANDARD_MONSTER = 1043,
+	PKT_STC_STANDARD_MONSTER = 1044,
 };
 
 // Custom Handlers
@@ -76,6 +78,7 @@ bool Handle_CTS_SPAWN(PacketSessionRef& session, Protocol::CTS_SPAWN& pkt);
 bool Handle_CTS_MOVE(PacketSessionRef& session, Protocol::CTS_MOVE& pkt);
 bool Handle_CTS_DETECT(PacketSessionRef& session, Protocol::CTS_DETECT& pkt);
 bool Handle_CTS_MONSTER_ATTACK(PacketSessionRef& session, Protocol::CTS_MONSTER_ATTACK& pkt);
+bool Handle_CTS_ATTACKED(PacketSessionRef& session, Protocol::CTS_ATTACKED& pkt);
 bool Handle_CTS_CHAT(PacketSessionRef& session, Protocol::CTS_CHAT& pkt);
 bool Handle_CTS_ATTACK(PacketSessionRef& session, Protocol::CTS_ATTACK& pkt);
 bool Handle_CTS_MONSTERINFO(PacketSessionRef& session, Protocol::CTS_MONSTERINFO& pkt);
@@ -105,6 +108,7 @@ public:
 		GPacketHandler[PKT_CTS_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_MOVE>(Handle_CTS_MOVE, session, buffer, len); };
 		GPacketHandler[PKT_CTS_DETECT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_DETECT>(Handle_CTS_DETECT, session, buffer, len); };
 		GPacketHandler[PKT_CTS_MONSTER_ATTACK] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_MONSTER_ATTACK>(Handle_CTS_MONSTER_ATTACK, session, buffer, len); };
+		GPacketHandler[PKT_CTS_ATTACKED] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_ATTACKED>(Handle_CTS_ATTACKED, session, buffer, len); };
 		GPacketHandler[PKT_CTS_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_CHAT>(Handle_CTS_CHAT, session, buffer, len); };
 		GPacketHandler[PKT_CTS_ATTACK] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_ATTACK>(Handle_CTS_ATTACK, session, buffer, len); };
 		GPacketHandler[PKT_CTS_MONSTERINFO] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CTS_MONSTERINFO>(Handle_CTS_MONSTERINFO, session, buffer, len); };
@@ -134,6 +138,7 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::STC_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_STC_MOVE); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_DETECT& pkt) { return MakeSendBuffer(pkt, PKT_STC_DETECT); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_MONSTER_ATTACK& pkt) { return MakeSendBuffer(pkt, PKT_STC_MONSTER_ATTACK); }
+	static SendBufferRef MakeSendBuffer(Protocol::STC_ATTACKED& pkt) { return MakeSendBuffer(pkt, PKT_STC_ATTACKED); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_STC_CHAT); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_ATTACK& pkt) { return MakeSendBuffer(pkt, PKT_STC_ATTACK); }
 	static SendBufferRef MakeSendBuffer(Protocol::STC_MONSTERINFO& pkt) { return MakeSendBuffer(pkt, PKT_STC_MONSTERINFO); }
