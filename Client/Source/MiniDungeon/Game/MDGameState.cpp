@@ -30,44 +30,46 @@ void AMDGameState::OnChangedHealth(int ObjectID, float CurrentHealth)
 
 void AMDGameState::BeginPlay()
 {
+	MD_LOG(LogMDNetwork, Log, TEXT("Begin"));
 	Super::BeginPlay();
+	MD_LOG(LogMDNetwork, Log, TEXT("End"));
 
 	//Spawn(ESpawnType::Grux);
 
 	CurrentKhaimeraCharacterId = StartKhaimeraCharacterId;
 
-	for (int i = 0; i < MaxFieldKhaimeraCount; i++)
-	{
-		Spawn(ESpawnType::Khaimera);
-	}
+	//for (int i = 0; i < MaxFieldKhaimeraCount; i++)
+	//{
+	//	Spawn(ESpawnType::Khaimera);
+	//}
 }
 
 void AMDGameState::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	int FieldKhaimeraCount = 0;
+	//int FieldKhaimeraCount = 0;
 
-	for (auto& Pair : MonsterHealthMap)
-	{
-		// ¼¾Æ¼³ÚÀÌ¸é
-		if (Pair.Key >= StartKhaimeraCharacterId)
-		{
-			if (Pair.Value > 0)
-			{
-				FieldKhaimeraCount++;
-			}
-		}
-	}
+	//for (auto& Pair : MonsterHealthMap)
+	//{
+	//	// ¼¾Æ¼³ÚÀÌ¸é
+	//	if (Pair.Key >= StartKhaimeraCharacterId)
+	//	{
+	//		if (Pair.Value > 0)
+	//		{
+	//			FieldKhaimeraCount++;
+	//		}
+	//	}
+	//}
 
-	if (FieldKhaimeraCount < MaxFieldKhaimeraCount)
-	{
-		int NumToSpawn = MaxFieldKhaimeraCount - FieldKhaimeraCount;
-		for (int i = 0; i < NumToSpawn; i++)
-		{
-			Spawn(ESpawnType::Khaimera);
-		}
-	}
+	//if (FieldKhaimeraCount < MaxFieldKhaimeraCount)
+	//{
+	//	int NumToSpawn = MaxFieldKhaimeraCount - FieldKhaimeraCount;
+	//	for (int i = 0; i < NumToSpawn; i++)
+	//	{
+	//		Spawn(ESpawnType::Khaimera);
+	//	}
+	//}
 }
 
 int AMDGameState::GetDeadKhaimeraCount()

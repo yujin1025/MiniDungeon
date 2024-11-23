@@ -58,6 +58,8 @@ private:
 public:
 	void OnChangedHealth(int ObjectID, float CurrentHealth);
 
+	TMap<int, float> GetMonsterHealthMap() const { return MonsterHealthMap; }
+	void SetMonsterHealthMap(int objectID, float currentHealth) { MonsterHealthMap[objectID] = currentHealth; }
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
