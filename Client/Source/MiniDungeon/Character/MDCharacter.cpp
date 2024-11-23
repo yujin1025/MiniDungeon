@@ -278,7 +278,7 @@ bool AMDCharacter::IsPlayer()
 	}
 }
 
-FVector AMDCharacter::GetLookVector(AMDCharacter*& Target) const
+FVector AMDCharacter::GetLookVector(const AMDCharacter* Target) const
 {
 	return Target->GetActorLocation() - GetActorLocation();
 }
@@ -306,9 +306,9 @@ FVector AMDCharacter::GetTargetPosition(ECollisionChannel Channel, float RayCast
 	return FVector::ZeroVector;
 }
 
-void AMDCharacter::RotateToTarget(AMDCharacter*& Target, float RotationSpeed)
+void AMDCharacter::RotateToTarget(const AMDCharacter* Target, float RotationSpeed)
 {
-	if (Target == nullptr)
+	if (IsValid(Target))
 		return;
 
 	FVector LookVector = GetLookVector(Target);
