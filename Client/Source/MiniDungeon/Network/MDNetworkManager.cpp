@@ -73,12 +73,12 @@ void UMDNetworkManager::DisconnectFromServer()
 	Protocol::CTS_LEAVE_GAME leavePkt;
 	SendPacket(leavePkt);
 
-	//if(Socket)
-	//{
-	//	ISocketSubsystem* socketSubsystem = ISocketSubsystem::Get();
-	//	socketSubsystem->DestroySocket(Socket);
-	//	Socket = nullptr;
-	//}
+	if(Socket)
+	{
+		ISocketSubsystem* socketSubsystem = ISocketSubsystem::Get();
+		socketSubsystem->DestroySocket(Socket);
+		Socket = nullptr;
+	}
 }
 
 void UMDNetworkManager::HandleRecvPackets()
@@ -394,11 +394,6 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 
 	FVector spawnLocation = spawns[objectId % 4]->GetActorLocation();
 
-	//if (!isMine)
-	//{
-	//	spawnLocation += FVector(15, 0, 0); 
-	//}
-
 	if (isMine)
 	{
 		AMDPlayerController* pc = Cast<AMDPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
@@ -437,6 +432,7 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 
 			MyPlayer = player;
 			Players.Add(objectInfo.object_id(), player);
+			player->SetObjectID(objectInfo.object_id());
 		}
 	}
 	else
@@ -492,7 +488,17 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, FVec
 	ANonPlayableCharacter* monster = Cast<ANonPlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->KhaimeraClass, &spawnLocation));
 	monster->SetObjectID(objectId);
 	Monsters.Add(objectId, monster);
-	MD_LOG(LogMDNetwork, Log, TEXT("Spawn Monster"));
+
+	Protocol::CTS_MOVE movePkt;
+	Protocol::PosInfo* info = new Protocol::PosInfo();
+	info->set_object_id(objectId);
+	info->set_x(spawnLocation.X);
+	info->set_y(spawnLocation.Y);
+	info->set_z(spawnLocation.Z);
+	info->set_yaw(0);
+
+	movePkt.set_allocated_info(info);
+	SendPacket(ClientPacketHandler::MakeSendBuffer(movePkt));
 }
 
 void UMDNetworkManager::HandleDespawn(uint64 objectId)
@@ -549,7 +555,7 @@ void UMDNetworkManager::HandleMove(const Protocol::STC_MOVE& movePkt)
 
 	if(Monsters.Contains(objectId))
 	{
-		HandleMoveMonster(*Monsters.Find(objectId), movePkt.info());
+		HandleMoveMonster(*Monsters.Find(objectId), movePkt.info(), movePkt.target_object_id());
 		return;
 	}
 	
@@ -567,15 +573,24 @@ void UMDNetworkManager::HandleMovePlayer(APlayableCharacter* player, const Proto
 	player->SetDestInfo(posInfo);
 }
 
-void UMDNetworkManager::HandleMoveMonster(ANonPlayableCharacter* monster, const Protocol::PosInfo& posInfo)
+void UMDNetworkManager::HandleMoveMonster(ANonPlayableCharacter* monster, const Protocol::PosInfo& posInfo, uint64 target_object_id)
 {
-	if(isHost)
+	// TODO : Monster AI MOVE
+	auto aiController = Cast<AMDAIController>(monster->GetController());
+	if(aiController)
 	{
-		return;
+		if(target_object_id == 0)
+			aiController->CustomMoveToLocation(FVector(posInfo.x(), posInfo.y(), posInfo.z()));
+		else
+		{
+			TObjectPtr<APlayableCharacter>* findPlayer = Players.Find(target_object_id);
+			if (findPlayer)
+			{
+				APlayableCharacter* player = *findPlayer;
+				aiController->CustomMoveToActor(player);
+			}
+		}
 	}
-
-	monster->SetPosInfo(posInfo);
-	monster->SetDestInfo(posInfo);
 }
 
 void UMDNetworkManager::HandleAttack(const Protocol::STC_ATTACK& AtkPkt)
@@ -613,7 +628,7 @@ void UMDNetworkManager::HandleMonsterAttack(uint64 obj_id)
 		return;
 
 	ANonPlayableCharacter* Monster = *MonsterPtr;
-	Monster->UseSkill(EAttackType::QSkillAttack);
+	Monster->Attack();
 }
 
 void UMDNetworkManager::HandleSpawnMonster(const Protocol::STC_MONSTERINFO& InfoPkt)

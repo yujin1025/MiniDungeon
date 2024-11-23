@@ -36,6 +36,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster Stats")
 	TObjectPtr<class APlayableCharacter> TargetPlayer;
 
+	UFUNCTION()
+	bool Attack();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;

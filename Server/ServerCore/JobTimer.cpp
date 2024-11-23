@@ -6,6 +6,10 @@
 	JobTimer
 ---------------*/
 
+/// <summary>
+/// tickAfter ms 후에 실행할 작업을 예약한다.
+/// </summary>
+/// <param name="tickAfter"> : ms 단위</param>
 void JobTimer::Reserve(uint64 tickAfter, weak_ptr<JobQueue> owner, JobRef job)
 {
 	const uint64 executeTick = ::GetTickCount64() + tickAfter;

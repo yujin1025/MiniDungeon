@@ -48,7 +48,7 @@ bool SocketUtils::BindWindowsFunction(SOCKET socket, GUID guid, LPVOID* fn)
 
 	if (!result)
 	{
-		LOG("Failed to bind Windows function with error: " << WSAGetLastError());
+		LOG("Failed to bind Windows function with error: %d" << WSAGetLastError());
 	}
 	else
 	{

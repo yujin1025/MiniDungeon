@@ -58,7 +58,7 @@ public:
 
 	void HandleMove(const Protocol::STC_MOVE& movePkt);
 	void HandleMovePlayer(class APlayableCharacter* player, const Protocol::PosInfo& posInfo);
-	void HandleMoveMonster(class ANonPlayableCharacter* monster, const Protocol::PosInfo& posInfo);
+	void HandleMoveMonster(class ANonPlayableCharacter* monster, const Protocol::PosInfo& posInfo, uint64 target_object_id = 0);
 
 	void HandleAttack(const Protocol::STC_ATTACK& AtkPkt);
 	void HandleMonsterAttack(uint64 obj_id);
@@ -68,6 +68,7 @@ public:
 
 public:
 	class FSocket* Socket;
+	//FString IpAddress = TEXT("43.202.241.72");
 	FString IpAddress = TEXT("127.0.0.1");
 	int16 Port = 7777;
 

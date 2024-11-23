@@ -25,6 +25,9 @@
     <Filter Include="Auth">
       <UniqueIdentifier>{9492e4e7-a861-4d2d-ba46-a0e4b1560aa5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BT">
+      <UniqueIdentifier>{efa0bd10-975f-4234-9cdb-200fcc4d42b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -45,6 +48,7 @@
     <ClCompile Include="Utils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectUtils.cpp" />
     <ClCompile Include="Player.cpp">
       <Filter>Game\Object</Filter>
     </ClCompile>
@@ -78,7 +82,21 @@
     <ClCompile Include="AuthManager.cpp">
       <Filter>Auth</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectUtils.cpp" />
+    <ClCompile Include="ServiceNode.cpp">
+      <Filter>BT</Filter>
+    </ClCompile>
+    <ClCompile Include="DecoratorNode.cpp">
+      <Filter>BT</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositeNode.cpp">
+      <Filter>BT</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviourTree.cpp">
+      <Filter>BT</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionNode.cpp">
+      <Filter>BT</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -96,6 +114,7 @@
     <ClInclude Include="Utils.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectUtils.h" />
     <ClInclude Include="Player.h">
       <Filter>Game\Object</Filter>
     </ClInclude>
@@ -129,7 +148,21 @@
     <ClInclude Include="AuthManager.h">
       <Filter>Auth</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectUtils.h" />
+    <ClInclude Include="ServiceNode.h">
+      <Filter>BT</Filter>
+    </ClInclude>
+    <ClInclude Include="DecoratorNode.h">
+      <Filter>BT</Filter>
+    </ClInclude>
+    <ClInclude Include="CompositeNode.h">
+      <Filter>BT</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviourTree.h">
+      <Filter>BT</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionNode.h">
+      <Filter>BT</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\Protobuf\bin\Enum.proto">

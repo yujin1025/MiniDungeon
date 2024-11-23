@@ -284,6 +284,8 @@ void Lobby::UpdateTick()
 	{
 		room.second->UpdateTick();
 	}
+
+	DoTimer(200, &Lobby::UpdateTick);
 }
 
 

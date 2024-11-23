@@ -66,7 +66,7 @@ public:
 	EAttackType ProgressingAttackType = EAttackType::Max;
 	//FOnAttackEndDelegate OnAttackEnd;
 
-private:
+protected:
 	float CurrentDeltaTime = 0.0f;
 
 public:

@@ -13,15 +13,15 @@ public:
 public:
 	GameSessionRef GetSession() const { return session.lock(); }
 
-	const Protocol::PlayerInfo& GetPlayerInfo() { return *playerInfo; }
-	void SetPlayerInfo(const Protocol::PlayerInfo& playerInfo) { this->playerInfo->CopyFrom(playerInfo); }
-	void SetPlayerID(int64 playerID) { playerInfo->set_player_id(playerID); }
-	void SetPlayerType(Protocol::PlayerType playerType) { playerInfo->set_player_type(playerType); }
+	const Protocol::PlayerInfo& GetPlayerInfo() { READ_LOCK; return *playerInfo; }
+	void SetPlayerInfo(const Protocol::PlayerInfo& playerInfo) { WRITE_LOCK; this->playerInfo->CopyFrom(playerInfo); }
+	void SetPlayerID(int64 playerID) { WRITE_LOCK; playerInfo->set_player_id(playerID); }
+	void SetPlayerType(Protocol::PlayerType playerType) { WRITE_LOCK; playerInfo->set_player_type(playerType); }
 
-	const Protocol::ObjectInfo& GetObjectInfo() { return playerInfo->object_info(); }
+	const Protocol::ObjectInfo& GetObjectInfo() { READ_LOCK; return playerInfo->object_info(); }
 	void SetObjectInfo(const Protocol::ObjectInfo& obj_Info);
 
-	const Protocol::PosInfo& GetPosInfo() { return GetObjectInfo().pos_info(); }
+	const Protocol::PosInfo& GetPosInfo() { READ_LOCK; return objectInfo->pos_info(); }
 	void SetPosInfo(const Protocol::PosInfo& pos_Info);
 
 protected:
@@ -30,5 +30,8 @@ protected:
 public:
 	atomic<weak_ptr<Lobby>> lobby;
 	weak_ptr<GameSession> session;
+
+private:
+	USE_LOCK;
 };
 

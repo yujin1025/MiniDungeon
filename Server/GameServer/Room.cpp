@@ -250,8 +250,6 @@ bool Room::HandleLeavePlayer(uint64 playerindex)
 
 void Room::HandleStartGame()
 {
-	//GetRoomRef()->DoAsync(&Room::UpdateTick);
-
 	Protocol::STC_ENTER_GAME enterGamePkt;
 	enterGamePkt.set_success(true);
 
@@ -294,6 +292,8 @@ void Room::HandleStartGame()
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
 	Broadcast(sendBuffer);
+
+	GetRoomRef()->DoAsync(&Room::UpdateTick);
 }
 
 //void Room::HandleMove(Protocol::CTS_MOVE pkt)
@@ -345,7 +345,7 @@ void Room::HandleMove(const Protocol::PosInfo& posInfo)
 		movePkt.set_allocated_info(info);
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
-		BroadcastToPlayer(sendBuffer, objectId);
+		Broadcast(sendBuffer, objectId);
 	}
 }
 
@@ -363,14 +363,14 @@ void Room::HandleMoveMonster(const Protocol::PosInfo& info)
 	// 최신 위치 정보로 업데이트
 	monster->SetPosInfo(info);
 
-	// 이동 사실을 알린다 (본인 포함? 빼고?)
-	Protocol::STC_MOVE movePkt;
-	Protocol::PosInfo* posInfo = new Protocol::PosInfo();
-	posInfo->CopyFrom(info);
-	movePkt.set_allocated_info(posInfo);
+	//// 이동 사실을 알린다
+	//Protocol::STC_MOVE movePkt;
+	//Protocol::PosInfo* posInfo = new Protocol::PosInfo();
+	//posInfo->CopyFrom(info);
+	//movePkt.set_allocated_info(posInfo);
 
-	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
-	Broadcast(sendBuffer);
+	//SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
+	//Broadcast(sendBuffer);
 }
 
 void Room::HandleAttack(Protocol::CTS_ATTACK pkt)
@@ -396,17 +396,14 @@ void Room::SetRoomIndex(uint64 roomIndex)
 
 void Room::UpdateTick()
 {
-	cout << "Update Room" << endl;
-
 	// TODO : 몬스터 이동, 공격
 
 	for(auto& monster : _monsters)
 	{
-		monster.second->CalcDist();
-		monster.second->CanAttack();
+		//monster.second->CalcDist();
+		//monster.second->CanAttack();
+		monster.second->UpdateBehaviourTree();
 	}
-
-	DoTimer(100, &Room::UpdateTick);
 }
 
 RoomRef Room::GetRoomRef()
@@ -577,6 +574,8 @@ bool Room::AddMonster(MonsterRef monster, const Protocol::PosInfo& pos_Info)
 	_objects.insert(make_pair(monster->GetObjectInfo().object_id(), monster));
 
 	monster->room.store(GetRoomRef());
+
+	monster->Init();
 
 	return true;
 }

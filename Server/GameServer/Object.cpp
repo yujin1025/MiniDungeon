@@ -3,7 +3,6 @@
 
 Object::Object()
 {
-	LOG("Object Constructor");
 	objectInfo = new Protocol::ObjectInfo();
 	Protocol::PosInfo* posInfo = new Protocol::PosInfo();
 	objectInfo->set_allocated_pos_info(posInfo);

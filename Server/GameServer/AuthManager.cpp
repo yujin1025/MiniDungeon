@@ -109,7 +109,7 @@ bool AuthManager::AddAuthWaiter(const string& email)
 
 bool AuthManager::CheckAuthWaiter(const string& email, const string& authNum)
 {
-	WRITE_LOCK;
+    WRITE_LOCK;
 	auto authUser = _authWaiters.find(email);
 	if (authUser != _authWaiters.end())
 	{

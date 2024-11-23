@@ -69,7 +69,7 @@ int main()
 		NetAddress(L"127.0.0.1", 7777),
 		make_shared<IocpCore>(),
 		[=]() { return make_shared<GameSession>(); }, // TODO : SessionManager 등
-		100);
+		10);
 #else
 	// 로컬 아닌 경우
 	ServerServiceRef service = make_shared<ServerService>(
@@ -98,19 +98,7 @@ int main()
 			DoAuthManagerJob();
 		});
 
-	// Main Thread
-	//DoWorkerJob(service);
-
-	//GRoom->DoAsync(&Room::UpdateTick);
-
-	while (true)
-	{
-		//Protocol::S_CHAT pkt;
-		//pkt.set_msg("HelloWorld");
-		//auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
-
-		//GSessionManager.Broadcast(sendBuffer);
-	}
+	GLobby->DoAsync(&Lobby::UpdateTick);
 
 	LOG("Joining all threads");
 	GThreadManager->Join();
