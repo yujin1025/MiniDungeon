@@ -76,10 +76,12 @@ void DetectionService::OnUpdateService()
 
         for (auto player : players)
         {
+            if(player.second->GetHp() <= 0)
+				continue;
+
             float distance = ownerMonster->DistanceTo(player.second->GetPosInfo());
             if (distance < detectRange && distance < minDistance)
             {
-
                 minDistance = distance;
                 closestPlayer = player.second;
             }

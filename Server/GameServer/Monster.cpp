@@ -16,6 +16,8 @@ Monster::Monster()
 
     monsterInfo->set_allocated_object_info(obj_info);
     monsterInfo->set_monster_hp(MaxHp);
+
+    _hp = MaxHp;
 }
 
 Monster::~Monster()

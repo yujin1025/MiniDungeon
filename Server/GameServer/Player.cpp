@@ -10,6 +10,8 @@ Player::Player()
 	obj_info->CopyFrom(*objectInfo);
 	
 	playerInfo->set_allocated_object_info(obj_info);
+
+	_hp = 100;
 }
 
 Player::~Player()
