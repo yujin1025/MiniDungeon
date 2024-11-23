@@ -79,13 +79,6 @@ void UMDNetworkManager::DisconnectFromServer()
 
 	Protocol::CTS_LEAVE_GAME leavePkt;
 	SendPacket(leavePkt);
-
-	if(Socket)
-	{
-		ISocketSubsystem* socketSubsystem = ISocketSubsystem::Get();
-		socketSubsystem->DestroySocket(Socket);
-		Socket = nullptr;
-	}
 }
 
 void UMDNetworkManager::HandleRecvPackets()

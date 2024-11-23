@@ -5,6 +5,7 @@
 #include "Monster.h"
 #include "ObjectUtils.h"
 #include "Lobby.h"
+#include "GameSessionManager.h"
 
 Room::Room()
 {
@@ -103,7 +104,7 @@ bool Room::EnterRoom(PlayerRef player, bool isHost)
 
 bool Room::LeaveRoom(PlayerRef player, bool isExitGame)
 {
-	bool success = RemovePlayer(player);
+	bool success = RemovePlayer(player, isExitGame);
 
 	Protocol::STC_LEAVE_ROOM leaveRoomPkt;
 	leaveRoomPkt.set_success(success);
@@ -143,6 +144,8 @@ bool Room::LeaveRoom(PlayerRef player, bool isExitGame)
 		ReleaseThisRoom();
 	}
 
+	GSessionManager.Remove(player->GetSession());
+
 	return success;
 }
 
@@ -180,13 +183,13 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 	return EnterRoom(player, true);
 }
 
-bool Room::HandleLeavePlayer(uint64 playerindex)
+bool Room::HandleLeavePlayer(uint64 playerindex, bool isExitGame)
 {
 	auto& leavedPlayer = _players[playerindex];
 	
 	if (leavedPlayer != nullptr)
 	{
-		return LeaveRoom(leavedPlayer);
+		return LeaveRoom(leavedPlayer, isExitGame);
 	}
 
 	return true;
@@ -558,7 +561,7 @@ bool Room::AddPlayer(PlayerRef player)
 	return true;
 }
 
-bool Room::RemovePlayer(PlayerRef player)
+bool Room::RemovePlayer(PlayerRef player, bool isExitGame)
 {
 	uint64 playerIndex = player->GetPlayerInfo().player_id();
 	// 플레이어가 Room에 없으면 문제가 있다.
@@ -567,7 +570,11 @@ bool Room::RemovePlayer(PlayerRef player)
 		return false;
 	}
 	
-	_lobby.lock()->AddPlayer(player);
+	if(isExitGame == false)
+	{
+		_lobby.lock()->AddPlayer(player);
+	}
+
 	info->clear_players();
 
 	if (info->host().player_id() == playerIndex)

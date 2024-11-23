@@ -154,16 +154,12 @@ bool Handle_CTS_REGISTER(PacketSessionRef& session, Protocol::CTS_REGISTER& pkt)
 	}
 	else
 	{
-		wstring convertToWStringHashPW = Utils::sha256(pkt.pw());
-		wcout << convertToWStringHashPW << endl;
-		/*DBBind<3, 0> dbBind(*dbConnection, L"INSERT INTO MDDB.AccountInfo(ID, Password, e_mail) VALUES (?, ?, ?)");
+		DBBind<3, 0> dbBind(*dbConnection, L"INSERT INTO MDDB.AccountInfo(ID, Password, e_mail) VALUES (?, ?, ?)");
 
 		wstring convertToWStringID = Utils::stringToWString(pkt.id());
 		dbBind.BindParam(0, convertToWStringID);
 
-		///wstring convertToWStringPW = Utils::stringToWString(pkt.pw());
 		wstring convertToWStringHashPW = Utils::sha256(pkt.pw());
-		wcout << convertToWStringHashPW << endl;
 		dbBind.BindParam(1, convertToWStringHashPW);
 
 		wstring convertToWStringEmail = Utils::stringToWString(pkt.email());
@@ -172,12 +168,12 @@ bool Handle_CTS_REGISTER(PacketSessionRef& session, Protocol::CTS_REGISTER& pkt)
 		ASSERT_CRASH(dbBind.Execute());
 		GDBConnectionPool->Push(dbConnection);
 
-		registerPkt.set_success(true);*/
+		registerPkt.set_success(true);
 	}
 
 	GDBConnectionPool->Push(dbConnection);
 
-	//SEND_PACKET(registerPkt);
+	SEND_PACKET(registerPkt);
 
 	return true;
 }
@@ -298,7 +294,7 @@ bool Handle_CTS_LEAVE_ROOM(PacketSessionRef& session, Protocol::CTS_LEAVE_ROOM& 
 		return false;
 	}
 
-	GLobby->GetRooms()[pkt.roomindex()]->DoAsync(&Room::HandleLeavePlayer, pkt.player_id());
+	GLobby->GetRooms()[pkt.roomindex()]->DoAsync(&Room::HandleLeavePlayer, pkt.player_id(), false);
 	return true;
 }
 
@@ -338,15 +334,15 @@ bool Handle_CTS_LEAVE_GAME(PacketSessionRef& session, Protocol::CTS_LEAVE_GAME& 
 {
 	auto gameSession = static_pointer_cast<GameSession>(session);
 
-	//PlayerRef player = gameSession->player.load();
-	//if (player == nullptr)
-	//	return false;
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
 
-	//RoomRef room = player->room.load().lock();
-	//if (room == nullptr)
-	//	return false;
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
 
-	//room->HandleLeavePlayer(player);
+	room->DoAsync(&Room::HandleLeavePlayer, player->GetPlayerInfo().player_id(), true);
 
 	return true;
 }
@@ -364,7 +360,6 @@ bool Handle_CTS_MOVE(PacketSessionRef& session, Protocol::CTS_MOVE& pkt)
 		return false;
 
 	room->DoAsync(&Room::HandleMove, pkt.info());
-	//room->HandleMove(pkt);
 
 	return true;
 }
@@ -380,8 +375,6 @@ bool Handle_CTS_DETECT(PacketSessionRef& session, Protocol::CTS_DETECT& pkt)
 	RoomRef room = player->room.load().lock();
 	if (room == nullptr)
 		return false;
-
-	//room->HandleDetect(pkt);
 
 	return true;
 }
@@ -420,6 +413,8 @@ bool Handle_CTS_ATTACKED(PacketSessionRef& session, Protocol::CTS_ATTACKED& pkt)
 		return false;
 
 	room->DoAsync(&Room::HandleAttacked, pkt);
+
+	return true;
 }
 
 bool Handle_CTS_ATTACK(PacketSessionRef& session, Protocol::CTS_ATTACK& pkt)

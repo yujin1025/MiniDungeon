@@ -18,7 +18,7 @@ public:
 	bool ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType);
 
 	bool HandleEnterPlayer(PlayerRef player);
-	bool HandleLeavePlayer(uint64 playerIndex);
+	bool HandleLeavePlayer(uint64 playerIndex, bool isExitGame = false);
 	void HandleStartGame();
 
 	bool HandleChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType);
@@ -54,7 +54,7 @@ private:
 	bool RemoveObject(uint64 objectId);
 
 	bool AddPlayer(PlayerRef player);
-	bool RemovePlayer(PlayerRef player);
+	bool RemovePlayer(PlayerRef player, bool isExitGame = false);
 
 	bool AddMonster(MonsterRef monster, const Protocol::PosInfo& pos_Info = Protocol::PosInfo::default_instance());
 	bool RemoveMonster(uint64 monsterId);
