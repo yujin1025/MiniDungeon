@@ -13,6 +13,7 @@
 #include "DBBind.h"
 #include "AuthManager.h"
 
+
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -153,13 +154,17 @@ bool Handle_CTS_REGISTER(PacketSessionRef& session, Protocol::CTS_REGISTER& pkt)
 	}
 	else
 	{
-		DBBind<3, 0> dbBind(*dbConnection, L"INSERT INTO MDDB.AccountInfo(ID, Password, e_mail) VALUES (?, ?, ?)");
+		wstring convertToWStringHashPW = Utils::sha256(pkt.pw());
+		wcout << convertToWStringHashPW << endl;
+		/*DBBind<3, 0> dbBind(*dbConnection, L"INSERT INTO MDDB.AccountInfo(ID, Password, e_mail) VALUES (?, ?, ?)");
 
 		wstring convertToWStringID = Utils::stringToWString(pkt.id());
 		dbBind.BindParam(0, convertToWStringID);
 
-		wstring convertToWStringPW = Utils::stringToWString(pkt.pw());
-		dbBind.BindParam(1, convertToWStringPW);
+		///wstring convertToWStringPW = Utils::stringToWString(pkt.pw());
+		wstring convertToWStringHashPW = Utils::sha256(pkt.pw());
+		wcout << convertToWStringHashPW << endl;
+		dbBind.BindParam(1, convertToWStringHashPW);
 
 		wstring convertToWStringEmail = Utils::stringToWString(pkt.email());
 		dbBind.BindParam(2, convertToWStringEmail);
@@ -167,10 +172,12 @@ bool Handle_CTS_REGISTER(PacketSessionRef& session, Protocol::CTS_REGISTER& pkt)
 		ASSERT_CRASH(dbBind.Execute());
 		GDBConnectionPool->Push(dbConnection);
 
-		registerPkt.set_success(true);
+		registerPkt.set_success(true);*/
 	}
 
-	SEND_PACKET(registerPkt);
+	GDBConnectionPool->Push(dbConnection);
+
+	//SEND_PACKET(registerPkt);
 
 	return true;
 }

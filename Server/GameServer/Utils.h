@@ -2,6 +2,11 @@
 #include <random>
 #include <string>
 #include <cwchar>
+#include <OpenSSL/sha.h>
+#include <OpenSSL/evp.h>
+#include <OpenSSL/rand.h>
+#include <iomanip>
+#include <sstream>
 
 class Utils
 {
@@ -57,6 +62,43 @@ public:
 		mbstowcs_s(&convertedChars, wstr, wcharCount, str.c_str(), _TRUNCATE);
 
 		return wstr; // 변환된 WCHAR* 반환
+	}	
+
+	static wstring sha256(const std::string& str)
+	{
+		EVP_MD_CTX* context = EVP_MD_CTX_new();
+		if (context == nullptr) {
+			throw std::runtime_error("Failed to create EVP_MD_CTX");
+		}
+
+		// SHA-256 알고리즘을 사용하여 해시를 계산
+		if (EVP_DigestInit_ex(context, EVP_sha256(), nullptr) != 1) {
+			EVP_MD_CTX_free(context);
+			throw std::runtime_error("EVP_DigestInit_ex failed");
+		}
+
+		if (EVP_DigestUpdate(context, str.c_str(), str.size()) != 1) {
+			EVP_MD_CTX_free(context);
+			throw std::runtime_error("EVP_DigestUpdate failed");
+		}
+
+		unsigned char hash[EVP_MAX_MD_SIZE]; // 해시 값을 저장할 배열
+		unsigned int lengthOfHash = 0;
+
+		if (EVP_DigestFinal_ex(context, hash, &lengthOfHash) != 1) {
+			EVP_MD_CTX_free(context);
+			throw std::runtime_error("EVP_DigestFinal_ex failed");
+		}
+
+		EVP_MD_CTX_free(context); // 컨텍스트 해제
+
+		// 해시 값을 16진수 문자열로 변환
+		std::ostringstream oss;
+		for (unsigned int i = 0; i < lengthOfHash; ++i) {
+			oss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
+		}
+
+		return Utils::stringToWString(oss.str());
 	}
 };
 
