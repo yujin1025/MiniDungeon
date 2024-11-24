@@ -27,7 +27,7 @@ public:
 
 	void HandleMoveMonster(const Protocol::PosInfo &info);
 
-	void HandleAttack(Protocol::CTS_ATTACK pkt);
+	void HandleAttack(const Protocol::CTS_ATTACK& pkt);
 
 	void HandleAttacked(uint64 player_object_id, const Protocol::CTS_ATTACKED& pkt);
 

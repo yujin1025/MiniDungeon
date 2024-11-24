@@ -32,21 +32,6 @@ AMDCharacter::AMDCharacter()
 		CurrentActionCoolTimeMap.Add(AttackType, 0.0f);
 	}
 
-	switch (CharacterType)
-	{
-	case ECharacterType::Aurora:
-		CharacterId = 0;
-		break;
-	case ECharacterType::Drongo:
-		CharacterId = 1;
-		break;
-	case ECharacterType::Khaimera:
-		CharacterId = 2;
-		break;
-	case ECharacterType::Grux:
-		CharacterId = 3;
-		break;
-	}
 
 	PosInfo = new Protocol::PosInfo();
 	DestInfo = new Protocol::PosInfo();
@@ -97,6 +82,22 @@ void AMDCharacter::BeginPlay()
 {
 	MD_LOG(LogMDNetwork, Log, TEXT("Super Begin"));
 	Super::BeginPlay();
+
+	switch (CharacterType)
+	{
+	case ECharacterType::Aurora:
+		CharacterId = 0;
+		break;
+	case ECharacterType::Drongo:
+		CharacterId = 1;
+		break;
+	case ECharacterType::Khaimera:
+		CharacterId = 2;
+		break;
+	case ECharacterType::Grux:
+		CharacterId = 3;
+		break;
+	}
 	MD_LOG(LogMDNetwork, Log, TEXT("Super End"));
 }
 
@@ -140,7 +141,7 @@ void AMDCharacter::SendAttackPacket(EAttackType AttackType)
 {
 	// 공격 정보를 설정
 	Protocol::AttackInfo attackInfo;
-	attackInfo.set_object_id(ObjectID);
+	attackInfo.set_attack_object_id(ObjectID);
 
 	float damage = 0.0f;
 	switch (AttackType)

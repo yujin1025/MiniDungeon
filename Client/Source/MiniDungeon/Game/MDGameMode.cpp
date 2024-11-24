@@ -85,6 +85,8 @@ void AMDGameMode::StartPlay()
 			uint64 object_id = (monsterInfo.Value)->object_info().object_id();
 			FVector spawnLocation = ingameLevelScriptActor->GetEnemySpawns()[object_id % 4]->GetActorLocation();
 			networkManager->HandleSpawn((monsterInfo.Value)->object_info(), spawnLocation);
+
+			GetGameState<AMDGameState>()->AddMonsterHealth(object_id, (monsterInfo.Value)->monster_hp());
 		}
 	}
 

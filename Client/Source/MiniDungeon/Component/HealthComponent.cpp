@@ -62,15 +62,6 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 	if (Character == nullptr)
 		return;
 
-	auto networkManager = GetWorld()->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-	if (networkManager)
-	{
-		Protocol::CTS_ATTACKED attackedPkt;
-		attackedPkt.set_object_id(Character->GetObjectID());
-		attackedPkt.set_object_current_hp(CurrentHealth);
-		networkManager->SendPacket(attackedPkt);
-	}
-
 	if (Character->IsPlayer()) 
 	{
 		GameMode->MyPlayerState->OnChangePlayerHealth(Character->CharacterId, CurrentHealth);

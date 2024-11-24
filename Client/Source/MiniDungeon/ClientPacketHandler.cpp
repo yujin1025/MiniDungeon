@@ -313,7 +313,7 @@ bool Handle_STC_MONSTER_ATTACK(PacketSessionRef& session, Protocol::STC_MONSTER_
 
 	if (gameNetwork != nullptr)
 	{
-		gameNetwork->HandleMonsterAttack(pkt.monster_id(), pkt.target_id());
+		gameNetwork->HandleMonsterAttack(pkt);
 	}
 	return true;
 }
@@ -321,6 +321,11 @@ bool Handle_STC_MONSTER_ATTACK(PacketSessionRef& session, Protocol::STC_MONSTER_
 bool Handle_STC_ATTACKED(PacketSessionRef& session, Protocol::STC_ATTACKED& pkt)
 {
 	UMDNetworkManager* gameNetwork = GetWorldNetwork(session);
+
+	if(gameNetwork != nullptr)
+	{
+		gameNetwork->HandleAttacked(pkt);
+	}
 
 	return true;
 }

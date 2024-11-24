@@ -72,7 +72,7 @@ protected:
 
 private:
 	float startTime;
-	float duration = 1;
-	float hitRange = 150.f;
-	float damage = 10;
+	float duration = 1.f;
+	float hitRange = 200.f;
+	float damage = 5.f;
 };

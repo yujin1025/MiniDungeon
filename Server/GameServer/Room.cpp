@@ -355,30 +355,25 @@ void Room::HandleMoveMonster(const Protocol::PosInfo& info)
 
 	// 최신 위치 정보로 업데이트
 	monster->SetPosInfo(info);
-
-	//// 이동 사실을 알린다
-	//Protocol::STC_MOVE movePkt;
-	//Protocol::PosInfo* posInfo = new Protocol::PosInfo();
-	//posInfo->CopyFrom(info);
-	//movePkt.set_allocated_info(posInfo);
-
-	//SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
-	//Broadcast(sendBuffer);
 }
 
-void Room::HandleAttack(Protocol::CTS_ATTACK pkt)
+void Room::HandleAttack(const Protocol::CTS_ATTACK& pkt)
 {
-	const uint64 objectId = pkt.info().object_id();
+	const uint64 objectId = pkt.info().attack_object_id();
 	if (_objects.find(objectId) == _objects.end())
 		return;
 
-	Protocol::STC_ATTACK atkPkt;
-	Protocol::AttackInfo* info = new Protocol::AttackInfo();
-	info->CopyFrom(pkt.info());
-	atkPkt.set_allocated_info(info);
+	if (PlayerRef player = dynamic_pointer_cast<Player>(_objects[objectId]))
+	{
+		player->Attack(pkt.info());
+		//Protocol::STC_ATTACK atkPkt;
+		//Protocol::AttackInfo* info = new Protocol::AttackInfo();
+		//info->CopyFrom(pkt.info());
+		//atkPkt.set_allocated_info(info);
 
-	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(atkPkt);
-	Broadcast(sendBuffer);
+		//SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(atkPkt);
+		//Broadcast(sendBuffer);
+	}
 }
 
 void Room::HandleAttacked(uint64 player_object_id, const Protocol::CTS_ATTACKED& pkt)
@@ -396,8 +391,10 @@ void Room::HandleAttacked(uint64 player_object_id, const Protocol::CTS_ATTACKED&
 		dynamic_pointer_cast<Creature>(_objects[objectId])->SetHp(pkt.object_current_hp());
 
 		Protocol::STC_ATTACKED attackedPkt;
-		attackedPkt.set_object_id(objectId);
-		attackedPkt.set_object_current_hp(pkt.object_current_hp());
+		attackedPkt.set_attacking_object_id(0);
+		Protocol::AttackedInfo* attackedInfo = attackedPkt.add_attacked_infos();
+		attackedInfo->set_attacked_object_id(objectId);
+		attackedInfo->set_attacked_obejct_current_hp(pkt.object_current_hp());
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(attackedPkt);
 		Broadcast(sendBuffer, player_object_id);

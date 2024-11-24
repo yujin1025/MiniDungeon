@@ -49,6 +49,9 @@ namespace Protocol {
 class AttackInfo;
 struct AttackInfoDefaultTypeInternal;
 extern AttackInfoDefaultTypeInternal _AttackInfo_default_instance_;
+class AttackedInfo;
+struct AttackedInfoDefaultTypeInternal;
+extern AttackedInfoDefaultTypeInternal _AttackedInfo_default_instance_;
 class MonsterInfo;
 struct MonsterInfoDefaultTypeInternal;
 extern MonsterInfoDefaultTypeInternal _MonsterInfo_default_instance_;
@@ -67,6 +70,7 @@ extern RoomInfoDefaultTypeInternal _RoomInfo_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::AttackInfo* Arena::CreateMaybeMessage<::Protocol::AttackInfo>(Arena*);
+template<> ::Protocol::AttackedInfo* Arena::CreateMaybeMessage<::Protocol::AttackedInfo>(Arena*);
 template<> ::Protocol::MonsterInfo* Arena::CreateMaybeMessage<::Protocol::MonsterInfo>(Arena*);
 template<> ::Protocol::ObjectInfo* Arena::CreateMaybeMessage<::Protocol::ObjectInfo>(Arena*);
 template<> ::Protocol::PlayerInfo* Arena::CreateMaybeMessage<::Protocol::PlayerInfo>(Arena*);
@@ -1017,18 +1021,20 @@ class AttackInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kObjectIdFieldNumber = 1,
+    kAttackObjectIdFieldNumber = 1,
     kAttackTypeFieldNumber = 3,
     kDamageFieldNumber = 2,
-    kIshitFieldNumber = 4,
+    kDistanceFieldNumber = 4,
+    kDegreeFieldNumber = 5,
+    kIshitFieldNumber = 6,
   };
-  // uint64 object_id = 1;
-  void clear_object_id();
-  uint64_t object_id() const;
-  void set_object_id(uint64_t value);
+  // uint64 attack_object_id = 1;
+  void clear_attack_object_id();
+  uint64_t attack_object_id() const;
+  void set_attack_object_id(uint64_t value);
   private:
-  uint64_t _internal_object_id() const;
-  void _internal_set_object_id(uint64_t value);
+  uint64_t _internal_attack_object_id() const;
+  void _internal_set_attack_object_id(uint64_t value);
   public:
 
   // uint64 attack_type = 3;
@@ -1049,7 +1055,25 @@ class AttackInfo final :
   void _internal_set_damage(float value);
   public:
 
-  // bool ishit = 4;
+  // float distance = 4;
+  void clear_distance();
+  float distance() const;
+  void set_distance(float value);
+  private:
+  float _internal_distance() const;
+  void _internal_set_distance(float value);
+  public:
+
+  // float degree = 5;
+  void clear_degree();
+  float degree() const;
+  void set_degree(float value);
+  private:
+  float _internal_degree() const;
+  void _internal_set_degree(float value);
+  public:
+
+  // bool ishit = 6;
   void clear_ishit();
   bool ishit() const;
   void set_ishit(bool value);
@@ -1066,10 +1090,171 @@ class AttackInfo final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    uint64_t object_id_;
+    uint64_t attack_object_id_;
     uint64_t attack_type_;
     float damage_;
+    float distance_;
+    float degree_;
     bool ishit_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Struct_2eproto;
+};
+// -------------------------------------------------------------------
+
+class AttackedInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.AttackedInfo) */ {
+ public:
+  inline AttackedInfo() : AttackedInfo(nullptr) {}
+  ~AttackedInfo() override;
+  explicit PROTOBUF_CONSTEXPR AttackedInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  AttackedInfo(const AttackedInfo& from);
+  AttackedInfo(AttackedInfo&& from) noexcept
+    : AttackedInfo() {
+    *this = ::std::move(from);
+  }
+
+  inline AttackedInfo& operator=(const AttackedInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline AttackedInfo& operator=(AttackedInfo&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const AttackedInfo& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const AttackedInfo* internal_default_instance() {
+    return reinterpret_cast<const AttackedInfo*>(
+               &_AttackedInfo_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  friend void swap(AttackedInfo& a, AttackedInfo& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(AttackedInfo* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(AttackedInfo* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  AttackedInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<AttackedInfo>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const AttackedInfo& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const AttackedInfo& from) {
+    AttackedInfo::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(AttackedInfo* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.AttackedInfo";
+  }
+  protected:
+  explicit AttackedInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kAttackedObjectIdFieldNumber = 1,
+    kAttackedObejctCurrentHpFieldNumber = 2,
+  };
+  // uint64 attacked_object_id = 1;
+  void clear_attacked_object_id();
+  uint64_t attacked_object_id() const;
+  void set_attacked_object_id(uint64_t value);
+  private:
+  uint64_t _internal_attacked_object_id() const;
+  void _internal_set_attacked_object_id(uint64_t value);
+  public:
+
+  // float attacked_obejct_current_hp = 2;
+  void clear_attacked_obejct_current_hp();
+  float attacked_obejct_current_hp() const;
+  void set_attacked_obejct_current_hp(float value);
+  private:
+  float _internal_attacked_obejct_current_hp() const;
+  void _internal_set_attacked_obejct_current_hp(float value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.AttackedInfo)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t attacked_object_id_;
+    float attacked_obejct_current_hp_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1125,7 +1310,7 @@ class MonsterInfo final :
                &_MonsterInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    6;
 
   friend void swap(MonsterInfo& a, MonsterInfo& b) {
     a.Swap(&b);
@@ -2065,24 +2250,24 @@ RoomInfo::players() const {
 
 // AttackInfo
 
-// uint64 object_id = 1;
-inline void AttackInfo::clear_object_id() {
-  _impl_.object_id_ = uint64_t{0u};
+// uint64 attack_object_id = 1;
+inline void AttackInfo::clear_attack_object_id() {
+  _impl_.attack_object_id_ = uint64_t{0u};
 }
-inline uint64_t AttackInfo::_internal_object_id() const {
-  return _impl_.object_id_;
+inline uint64_t AttackInfo::_internal_attack_object_id() const {
+  return _impl_.attack_object_id_;
 }
-inline uint64_t AttackInfo::object_id() const {
-  // @@protoc_insertion_point(field_get:Protocol.AttackInfo.object_id)
-  return _internal_object_id();
+inline uint64_t AttackInfo::attack_object_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.AttackInfo.attack_object_id)
+  return _internal_attack_object_id();
 }
-inline void AttackInfo::_internal_set_object_id(uint64_t value) {
+inline void AttackInfo::_internal_set_attack_object_id(uint64_t value) {
   
-  _impl_.object_id_ = value;
+  _impl_.attack_object_id_ = value;
 }
-inline void AttackInfo::set_object_id(uint64_t value) {
-  _internal_set_object_id(value);
-  // @@protoc_insertion_point(field_set:Protocol.AttackInfo.object_id)
+inline void AttackInfo::set_attack_object_id(uint64_t value) {
+  _internal_set_attack_object_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.AttackInfo.attack_object_id)
 }
 
 // float damage = 2;
@@ -2125,7 +2310,47 @@ inline void AttackInfo::set_attack_type(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.AttackInfo.attack_type)
 }
 
-// bool ishit = 4;
+// float distance = 4;
+inline void AttackInfo::clear_distance() {
+  _impl_.distance_ = 0;
+}
+inline float AttackInfo::_internal_distance() const {
+  return _impl_.distance_;
+}
+inline float AttackInfo::distance() const {
+  // @@protoc_insertion_point(field_get:Protocol.AttackInfo.distance)
+  return _internal_distance();
+}
+inline void AttackInfo::_internal_set_distance(float value) {
+  
+  _impl_.distance_ = value;
+}
+inline void AttackInfo::set_distance(float value) {
+  _internal_set_distance(value);
+  // @@protoc_insertion_point(field_set:Protocol.AttackInfo.distance)
+}
+
+// float degree = 5;
+inline void AttackInfo::clear_degree() {
+  _impl_.degree_ = 0;
+}
+inline float AttackInfo::_internal_degree() const {
+  return _impl_.degree_;
+}
+inline float AttackInfo::degree() const {
+  // @@protoc_insertion_point(field_get:Protocol.AttackInfo.degree)
+  return _internal_degree();
+}
+inline void AttackInfo::_internal_set_degree(float value) {
+  
+  _impl_.degree_ = value;
+}
+inline void AttackInfo::set_degree(float value) {
+  _internal_set_degree(value);
+  // @@protoc_insertion_point(field_set:Protocol.AttackInfo.degree)
+}
+
+// bool ishit = 6;
 inline void AttackInfo::clear_ishit() {
   _impl_.ishit_ = false;
 }
@@ -2143,6 +2368,50 @@ inline void AttackInfo::_internal_set_ishit(bool value) {
 inline void AttackInfo::set_ishit(bool value) {
   _internal_set_ishit(value);
   // @@protoc_insertion_point(field_set:Protocol.AttackInfo.ishit)
+}
+
+// -------------------------------------------------------------------
+
+// AttackedInfo
+
+// uint64 attacked_object_id = 1;
+inline void AttackedInfo::clear_attacked_object_id() {
+  _impl_.attacked_object_id_ = uint64_t{0u};
+}
+inline uint64_t AttackedInfo::_internal_attacked_object_id() const {
+  return _impl_.attacked_object_id_;
+}
+inline uint64_t AttackedInfo::attacked_object_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.AttackedInfo.attacked_object_id)
+  return _internal_attacked_object_id();
+}
+inline void AttackedInfo::_internal_set_attacked_object_id(uint64_t value) {
+  
+  _impl_.attacked_object_id_ = value;
+}
+inline void AttackedInfo::set_attacked_object_id(uint64_t value) {
+  _internal_set_attacked_object_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.AttackedInfo.attacked_object_id)
+}
+
+// float attacked_obejct_current_hp = 2;
+inline void AttackedInfo::clear_attacked_obejct_current_hp() {
+  _impl_.attacked_obejct_current_hp_ = 0;
+}
+inline float AttackedInfo::_internal_attacked_obejct_current_hp() const {
+  return _impl_.attacked_obejct_current_hp_;
+}
+inline float AttackedInfo::attacked_obejct_current_hp() const {
+  // @@protoc_insertion_point(field_get:Protocol.AttackedInfo.attacked_obejct_current_hp)
+  return _internal_attacked_obejct_current_hp();
+}
+inline void AttackedInfo::_internal_set_attacked_obejct_current_hp(float value) {
+  
+  _impl_.attacked_obejct_current_hp_ = value;
+}
+inline void AttackedInfo::set_attacked_obejct_current_hp(float value) {
+  _internal_set_attacked_obejct_current_hp(value);
+  // @@protoc_insertion_point(field_set:Protocol.AttackedInfo.attacked_obejct_current_hp)
 }
 
 // -------------------------------------------------------------------
@@ -2452,6 +2721,8 @@ inline void MonsterInfo::set_allocated_object_info(::Protocol::ObjectInfo* objec
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

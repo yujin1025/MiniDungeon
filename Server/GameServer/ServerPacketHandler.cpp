@@ -478,9 +478,7 @@ bool Handle_CTS_ATTACK(PacketSessionRef& session, Protocol::CTS_ATTACK& pkt)
 	if (room == nullptr)
 		return false;
 
-	//room->DoAsync(&Room::HandleAttack, pkt.info());
 	room->DoAsync(&Room::HandleAttack, pkt);
-	//room->HandleAttack(pkt);
 
 	return true;
 }

@@ -19,7 +19,7 @@ void UAnimNotifyAttackState::TryAttack(USkeletalMeshComponent* MeshComp)
 	AMDCharacter* MyCharacter = Cast<AMDCharacter>(MeshComp->GetOwner());
 	AMDCharacter* TargetCharacter = nullptr;
 
-	if (TryGetOverlapTarget(MyCharacter, TargetCharacter))
+	/*if (TryGetOverlapTarget(MyCharacter, TargetCharacter))
 	{
 		UHealthComponent* DamagedHealthComponent = TargetCharacter->FindComponentByClass<UHealthComponent>();
 
@@ -28,7 +28,7 @@ void UAnimNotifyAttackState::TryAttack(USkeletalMeshComponent* MeshComp)
 			DamagedHealthComponent->ChangeHealth(MyCharacter, -DamageAmount);
 			CurrentAttackCount++;
 		}
-	}
+	}*/
 }
 
 void UAnimNotifyAttackState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)

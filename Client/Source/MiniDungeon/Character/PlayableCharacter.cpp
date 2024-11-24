@@ -38,7 +38,16 @@ APlayableCharacter::APlayableCharacter()
 
 bool APlayableCharacter::IsMyPlayer() const
 {
-	return IsLocallyControlled();
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if (networkManager)
+	{
+		if (networkManager->PlayerInfos.Contains(networkManager->PlayerID))
+		{
+			return networkManager->PlayerInfos[networkManager->PlayerID]->object_info().object_id() == ObjectID;
+		}
+	}
+
+	return false;
 }
 
 void APlayableCharacter::BeginPlay()
