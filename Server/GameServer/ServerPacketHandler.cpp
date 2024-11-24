@@ -13,6 +13,7 @@
 #include "DBBind.h"
 #include "AuthManager.h"
 
+
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -158,8 +159,8 @@ bool Handle_CTS_REGISTER(PacketSessionRef& session, Protocol::CTS_REGISTER& pkt)
 		wstring convertToWStringID = Utils::stringToWString(pkt.id());
 		dbBind.BindParam(0, convertToWStringID);
 
-		wstring convertToWStringPW = Utils::stringToWString(pkt.pw());
-		dbBind.BindParam(1, convertToWStringPW);
+		wstring convertToWStringHashPW = Utils::sha256(pkt.pw());
+		dbBind.BindParam(1, convertToWStringHashPW);
 
 		wstring convertToWStringEmail = Utils::stringToWString(pkt.email());
 		dbBind.BindParam(2, convertToWStringEmail);
@@ -170,6 +171,8 @@ bool Handle_CTS_REGISTER(PacketSessionRef& session, Protocol::CTS_REGISTER& pkt)
 		registerPkt.set_success(true);
 	}
 
+	GDBConnectionPool->Push(dbConnection);
+
 	SEND_PACKET(registerPkt);
 
 	return true;
@@ -177,53 +180,58 @@ bool Handle_CTS_REGISTER(PacketSessionRef& session, Protocol::CTS_REGISTER& pkt)
 
 bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 {
+	// DB 연결 풀에서 연결 가져오기
 	DBConnection* dbConnection = GDBConnectionPool->Pop();
 	if (dbConnection == nullptr)
 	{
 		return false;
 	}
 
-	//DB에서 Account 정보 긁어온다, DB에서 유저 정보 긁어온다
-	DBBind<1, 3> dbBind(*dbConnection, L"SELECT player_id, ID, Password FROM MDDB.AccountInfo WHERE ID = ?");	
+	// SQL 바인딩 및 실행
+	DBBind<2, 1> dbBind(*dbConnection, L"SELECT player_id FROM MDDB.AccountInfo WHERE ID = ? AND Password = ? LIMIT 1");
+	wstring wID = Utils::stringToWString(pkt.id());
+	dbBind.BindParam(0, wID);
+	string pw = pkt.pw();
+	if(pw != "Admin" && pw != "Admin1" && pw != "0" && pw != "1")
+	{
+		wstring wPW = Utils::sha256(pkt.pw());
+		dbBind.BindParam(1, wPW);
+	}
+	else
+	{
+		wstring wPW = Utils::stringToWString(pw);
+		dbBind.BindParam(1, wPW);
+	}
 
-	//WCHAR id[100];
-	wstring convertToWStringID = Utils::stringToWString(pkt.id());
-	//wcscpy_s(id, convertToWStringID.c_str());
-	dbBind.BindParam(0, convertToWStringID);
-
-	int32 outIndex;
-	WCHAR outID[100];
-	WCHAR outPW[100];
-
+	int32 outIndex = 0;
 	dbBind.BindColumn(0, OUT outIndex);
-	dbBind.BindColumn(1, OUT outID);
-	dbBind.BindColumn(2, OUT outPW);
 
-	ASSERT_CRASH(dbBind.Execute());
+	if (!dbBind.Execute())
+	{
+		GDBConnectionPool->Push(dbConnection);
+		return false;
+	}
 
+	// 인증 로직
 	bool auth = false;
 
 	while (dbBind.Fetch())
 	{
-		string convertedOutID = Utils::WCHARToString(outID);
-		string convertedOutPW = Utils::WCHARToString(outPW);
-
-		string id = pkt.id();
-		id.push_back('\0');
-
-		string pw = pkt.pw();
-		pw.push_back('\0');
-
-		if (convertedOutID == id && convertedOutPW == pw)
+		// Fetch 성공 시, 결과에서 player_id를 읽어온 상태
+		if (outIndex > 0) // player_id가 유효한 경우 인증 성공
 		{
 			auth = true;
+			break; // 첫 번째 결과만 필요하므로 루프 종료
 		}
 	}
 
 	GDBConnectionPool->Push(dbConnection);
 
+	// 응답 패킷 작성
 	Protocol::STC_LOGIN loginPkt;
-	if(auth == true)
+	loginPkt.set_success(auth);
+
+	if (auth)
 	{
 		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
 		playerInfo->set_player_id(outIndex);
@@ -243,10 +251,6 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 
 		loginPkt.set_allocated_player(playerInfo);
 		loginPkt.set_success(true);
-	}
-	else
-	{
-		loginPkt.set_success(false);
 	}
 
 	SEND_PACKET(loginPkt);
@@ -291,7 +295,7 @@ bool Handle_CTS_LEAVE_ROOM(PacketSessionRef& session, Protocol::CTS_LEAVE_ROOM& 
 		return false;
 	}
 
-	GLobby->GetRooms()[pkt.roomindex()]->DoAsync(&Room::HandleLeavePlayer, pkt.player_id());
+	GLobby->GetRooms()[pkt.roomindex()]->DoAsync(&Room::HandleLeavePlayer, pkt.player_id(), false);
 	return true;
 }
 
@@ -331,15 +335,15 @@ bool Handle_CTS_LEAVE_GAME(PacketSessionRef& session, Protocol::CTS_LEAVE_GAME& 
 {
 	auto gameSession = static_pointer_cast<GameSession>(session);
 
-	//PlayerRef player = gameSession->player.load();
-	//if (player == nullptr)
-	//	return false;
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
 
-	//RoomRef room = player->room.load().lock();
-	//if (room == nullptr)
-	//	return false;
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
 
-	//room->HandleLeavePlayer(player);
+	room->DoAsync(&Room::HandleLeavePlayer, player->GetPlayerInfo().player_id(), true);
 
 	return true;
 }
@@ -357,7 +361,6 @@ bool Handle_CTS_MOVE(PacketSessionRef& session, Protocol::CTS_MOVE& pkt)
 		return false;
 
 	room->DoAsync(&Room::HandleMove, pkt.info());
-	//room->HandleMove(pkt);
 
 	return true;
 }
@@ -373,8 +376,6 @@ bool Handle_CTS_DETECT(PacketSessionRef& session, Protocol::CTS_DETECT& pkt)
 	RoomRef room = player->room.load().lock();
 	if (room == nullptr)
 		return false;
-
-	//room->HandleDetect(pkt);
 
 	return true;
 }
@@ -402,6 +403,18 @@ bool Handle_CTS_MONSTER_ATTACK(PacketSessionRef& session, Protocol::CTS_MONSTER_
 
 bool Handle_CTS_ATTACKED(PacketSessionRef& session, Protocol::CTS_ATTACKED& pkt)
 {
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
+
+	room->DoAsync(&Room::HandleAttacked, pkt);
+
 	return true;
 }
 

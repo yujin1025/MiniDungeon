@@ -261,6 +261,27 @@ void AttackNode::OnStart()
 	auto target = ownerMonster->TargetPlayer.load();
 	if (target)
 	{
+		auto& monsterposInfo = ownerMonster->GetPosInfo();
+		auto& targetPosInfo = target->GetPosInfo();
+		float distance = ownerMonster->DistanceTo(targetPosInfo);
+
+		if (distance <= hitRange)
+		{
+			Vector3 toTarget = Vector3(targetPosInfo.x() - monsterposInfo.x(), targetPosInfo.y() - monsterposInfo.y(), targetPosInfo.z() - monsterposInfo.z()).Normalize();
+			Vector3 forward = Vector3::CalculateForwardVector(monsterposInfo.yaw());
+
+			// Dot Product를 사용하여 각도를 계산
+			float dotProduct = Vector3::DotProduct(toTarget, forward);
+			float clampedDot = clamp(dotProduct, -1.0f, 1.0f);
+			float AngleDegrees = RadiansToDegrees(acos(clampedDot));
+
+			// 30도 안에 있는지 확인
+			if (AngleDegrees <= 30.0f)
+			{
+				// 대상이 30도 이내에 있음
+			}
+		}
+
 		Protocol::STC_MONSTER_ATTACK pkt;
 
 		ownerMonster->SetMovementState(Protocol::MOVE_STATE_SKILL);

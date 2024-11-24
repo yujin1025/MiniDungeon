@@ -113,13 +113,23 @@ bool AuthManager::CheckAuthWaiter(const string& email, const string& authNum)
 	auto authUser = _authWaiters.find(email);
 	if (authUser != _authWaiters.end())
 	{
-		if (authUser->second.authNo == stoi(authNum))
-		{
-            // TODO : 인증 성공 처리
-			_authWaiters.erase(authUser);
-
-            return true;
-		}
+        try 
+        {
+            int value = stoi(authNum);
+            if(authUser->second.authNo == value)
+            {
+				_authWaiters.erase(authUser);
+				return true;
+			}
+        }
+        catch (const invalid_argument& e) 
+        {
+            cout << "authNum is not int" << endl;
+        }
+        catch (const out_of_range& e) 
+        {
+            cout << "authNum is too large for int" << endl;
+        }
 	}
 
 	return false;

@@ -85,6 +85,12 @@ bool RecvWorker::ReceivePacket(TArray<uint8>& outPacket)
 
 bool RecvWorker::ReceiveDesiredBytes(uint8* results, int32 size)
 {
+	if (Socket == nullptr)
+	{
+		// Socket이 nullptr인 경우 적절한 처리
+		return false;
+	}
+
 	uint32 pendingDataSize;
 	if(Socket->HasPendingData(pendingDataSize) == false || pendingDataSize <= 0)
 		return false;
@@ -167,6 +173,13 @@ bool SendWorker::SendDesiredBytes(const uint8* buffer, int32 size)
 	while (size > 0)
 	{
 		int32 bytesSent = 0;
+
+		if (Socket == nullptr)
+		{
+			// Socket이 nullptr인 경우 적절한 처리
+			return false;
+		}
+
 		if(Socket->Send(buffer, size, OUT bytesSent) == false)
 			return false;
 

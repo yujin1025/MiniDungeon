@@ -27,6 +27,13 @@ void UMDNetworkManager::Initialize(FSubsystemCollectionBase& Collection)
 	ConnectToServer();
 }
 
+void UMDNetworkManager::Deinitialize()
+{
+	Super::Deinitialize();
+
+	DisconnectFromServer();
+}
+
 void UMDNetworkManager::ConnectToServer()
 {
 	Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"), false);
@@ -72,13 +79,6 @@ void UMDNetworkManager::DisconnectFromServer()
 
 	Protocol::CTS_LEAVE_GAME leavePkt;
 	SendPacket(leavePkt);
-
-	if(Socket)
-	{
-		ISocketSubsystem* socketSubsystem = ISocketSubsystem::Get();
-		socketSubsystem->DestroySocket(Socket);
-		Socket = nullptr;
-	}
 }
 
 void UMDNetworkManager::HandleRecvPackets()
@@ -514,13 +514,19 @@ void UMDNetworkManager::HandleDespawn(uint64 objectId)
 		return;
 	}
 
-	/*APlayableCharacter** findActor = Players.Find(objectId);
-	if(findActor == nullptr)
+	// TODO : DESPAWN 처리
+
+	auto findCharacter = Players.Find(objectId);
+	if(findCharacter)
 	{
-		return;
+		world->DestroyActor(*findCharacter);
 	}
 
-	world->DestroyActor(*findActor);*/
+	auto findMonster = Monsters.Find(objectId);
+	if(findMonster)
+	{
+		world->DestroyActor(*findMonster);
+	}
 }
 
 void UMDNetworkManager::HandleDespawn(const Protocol::STC_DESPAWN& despawnPkt)
@@ -620,7 +626,7 @@ void UMDNetworkManager::HandleAttack(const Protocol::STC_ATTACK& AtkPkt)
 	player->Other_Attack(Info);
 }
 
-void UMDNetworkManager::HandleMonsterAttack(uint64 obj_id)
+void UMDNetworkManager::HandleMonsterAttack(uint64 attacking_obj_id, uint64 attacked_obj_id)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)
 		return;
@@ -629,11 +635,17 @@ void UMDNetworkManager::HandleMonsterAttack(uint64 obj_id)
 	if (World == nullptr)
 		return;
 
-	TObjectPtr<ANonPlayableCharacter>* MonsterPtr = Monsters.Find(obj_id);
-	if (MonsterPtr == nullptr)
+	ANonPlayableCharacter* Monster = Monsters.Find(attacking_obj_id)->Get();
+	if (Monster == nullptr)
 		return;
 
-	ANonPlayableCharacter* Monster = *MonsterPtr;
+	APlayableCharacter* Player = Players.Find(attacked_obj_id)->Get();
+
+	if(Player != nullptr)
+	{
+		Monster->RotateToTarget(Player, 2.0f);
+	}
+
 	Monster->Attack();
 }
 

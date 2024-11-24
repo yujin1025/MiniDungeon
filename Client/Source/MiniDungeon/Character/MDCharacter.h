@@ -90,10 +90,10 @@ public:
 
 public:
 	bool IsPlayer();
-	FVector GetLookVector(AMDCharacter*& Target) const;
+	FVector GetLookVector(const AMDCharacter* Target) const;
 
 	virtual FVector GetTargetPosition(ECollisionChannel Channel, float RayCastDistance, OUT bool& IsFoundTarget);
-	void RotateToTarget(AMDCharacter*& Target, float RotationSpeed);
+	void RotateToTarget(const AMDCharacter* Target, float RotationSpeed);
 	void SetRotation(FRotator Rotation, float RotationSpeed);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Id, meta = (AllowPrivateAccess = "true"))

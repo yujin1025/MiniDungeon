@@ -313,7 +313,7 @@ bool Handle_STC_MONSTER_ATTACK(PacketSessionRef& session, Protocol::STC_MONSTER_
 
 	if (gameNetwork != nullptr)
 	{
-		gameNetwork->HandleMonsterAttack(pkt.monster_id());
+		gameNetwork->HandleMonsterAttack(pkt.monster_id(), pkt.target_id());
 	}
 	return true;
 }

@@ -18,7 +18,7 @@ public:
 	bool ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType);
 
 	bool HandleEnterPlayer(PlayerRef player);
-	bool HandleLeavePlayer(uint64 playerIndex);
+	bool HandleLeavePlayer(uint64 playerIndex, bool isExitGame = false);
 	void HandleStartGame();
 
 	bool HandleChangeCharacter(uint64 playerIndex, const Protocol::PlayerType characterType);
@@ -28,6 +28,10 @@ public:
 	void HandleMoveMonster(const Protocol::PosInfo &info);
 
 	void HandleAttack(Protocol::CTS_ATTACK pkt);
+
+	void HandleAttacked(const Protocol::CTS_ATTACKED& pkt);
+
+	void HandleDead(uint64 objectId);
 
 	uint64 GetRoomIndex() const { return _roomIndex; }
 	void SetRoomIndex(uint64 roomIndex);
@@ -50,7 +54,7 @@ private:
 	bool RemoveObject(uint64 objectId);
 
 	bool AddPlayer(PlayerRef player);
-	bool RemovePlayer(PlayerRef player);
+	bool RemovePlayer(PlayerRef player, bool isExitGame = false);
 
 	bool AddMonster(MonsterRef monster, const Protocol::PosInfo& pos_Info = Protocol::PosInfo::default_instance());
 	bool RemoveMonster(uint64 monsterId);
@@ -66,9 +70,6 @@ public:
 	weak_ptr<class Lobby> _lobby;
 	uint64 _roomIndex = 0;
 
-private:
-	unordered_map<uint64, Vector3> _spawnPoints;
-
 protected:
 	Protocol::RoomInfo* info;
 
@@ -79,5 +80,3 @@ public:
 
 	void SetLobby(LobbyRef lobby) { this->_lobby = lobby; }
 };
-
-extern RoomRef GRoom;

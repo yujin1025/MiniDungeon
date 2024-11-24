@@ -5,27 +5,18 @@
 #include "Monster.h"
 #include "ObjectUtils.h"
 #include "Lobby.h"
-
-RoomRef GRoom = make_shared<Room>();
+#include "GameSessionManager.h"
 
 Room::Room()
 {
 	_roomIndex = 0;
 	info = new Protocol::RoomInfo();
-
-	for (int i = 0; i < 4; i++)
-	{
-		Vector3 pos = { 940 + 50 * i, 400 + 50 * i, 120 };
-
-		_spawnPoints.insert(make_pair(i, pos));
-	}
 }
 
 Room::~Room()
 {
 	_players.clear();
 	_objects.clear();
-	_spawnPoints.clear(); 
 	ClearJobs();
 
 	info->Clear();
@@ -105,7 +96,7 @@ bool Room::EnterRoom(PlayerRef player, bool isHost)
 
 bool Room::LeaveRoom(PlayerRef player, bool isExitGame)
 {
-	bool success = RemovePlayer(player);
+	bool success = RemovePlayer(player, isExitGame);
 
 	Protocol::STC_LEAVE_ROOM leaveRoomPkt;
 	leaveRoomPkt.set_success(success);
@@ -132,18 +123,20 @@ bool Room::LeaveRoom(PlayerRef player, bool isExitGame)
 	{
 		// 퇴장 사실을 퇴장하는 플레이어에게 알린다
 		player->GetSession()->Send(sendBuffer);
-
-		// ���� ����� Room�� �ִ� ��� �÷��̾�� �˸���.
-		Broadcast(sendBuffer, player->GetObjectInfo().object_id());
-
-		// ���� ����� Lobby�� �ִ� ��� �÷��̾�Ե� �˸���.
-		_lobby.lock()->Broadcast(sendBuffer, player->GetPlayerInfo().player_id());
 	}
+
+	// ���� ����� Room�� �ִ� ��� �÷��̾�� �˸���.
+	Broadcast(sendBuffer, player->GetObjectInfo().object_id());
+
+	// ���� ����� Lobby�� �ִ� ��� �÷��̾�Ե� �˸���.
+	_lobby.lock()->Broadcast(sendBuffer, player->GetPlayerInfo().player_id());
 
 	if (_players.empty())
 	{
 		ReleaseThisRoom();
 	}
+
+	GSessionManager.Remove(player->GetSession());
 
 	return success;
 }
@@ -182,13 +175,13 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 	return EnterRoom(player, true);
 }
 
-bool Room::HandleLeavePlayer(uint64 playerindex)
+bool Room::HandleLeavePlayer(uint64 playerindex, bool isExitGame)
 {
 	auto& leavedPlayer = _players[playerindex];
 	
 	if (leavedPlayer != nullptr)
 	{
-		return LeaveRoom(leavedPlayer);
+		return LeaveRoom(leavedPlayer, isExitGame);
 	}
 
 	return true;
@@ -264,11 +257,6 @@ void Room::HandleStartGame()
 		objectInfo->CopyFrom(player.second->GetObjectInfo());
 		posInfo->CopyFrom(player.second->GetPosInfo());
 
-		posInfo->set_x(_spawnPoints[index].x);
-		posInfo->set_y(_spawnPoints[index].y);
-		posInfo->set_z(_spawnPoints[index].z);
-		index++;
-
 		objectInfo->set_allocated_pos_info(posInfo);
 		playerInfo->set_allocated_object_info(objectInfo);
 
@@ -335,6 +323,11 @@ void Room::HandleMove(const Protocol::PosInfo& posInfo)
 	}
 	else
 	{
+		if(player->GetHp() <= 0)
+		{
+			HandleDead(objectId);
+			return;
+		}
 		// 최신 위치 정보로 업데이트
 		player->SetPosInfo(posInfo);
 
@@ -388,6 +381,42 @@ void Room::HandleAttack(Protocol::CTS_ATTACK pkt)
 	Broadcast(sendBuffer);
 }
 
+void Room::HandleAttacked(const Protocol::CTS_ATTACKED& pkt)
+{
+	const uint64 objectId = pkt.object_id();
+	if (_objects.find(objectId) == _objects.end())
+		return;
+
+	if(pkt.object_current_hp() <= 0)
+	{
+		Protocol::STC_DESPAWN despawnPkt;
+		despawnPkt.add_object_ids(objectId);
+		Broadcast(ServerPacketHandler::MakeSendBuffer(despawnPkt));
+
+		HandleDead(objectId);
+	}
+	else
+	{
+		dynamic_pointer_cast<Creature>(_objects[objectId])->SetHp(pkt.object_current_hp());
+	}
+}
+
+void Room::HandleDead(uint64 object_id)
+{
+	const uint64 objectId = object_id;
+	if (_objects.find(objectId) == _objects.end())
+		return;
+
+	if (dynamic_pointer_cast<Player>(_objects[objectId]))
+	{
+		dynamic_pointer_cast<Player>(_objects[objectId])->SetHp(0);
+	}
+	else
+	{
+		RemoveMonster(objectId);
+	}
+}
+
 void Room::SetRoomIndex(uint64 roomIndex)
 {
 	_roomIndex = roomIndex;
@@ -397,6 +426,11 @@ void Room::SetRoomIndex(uint64 roomIndex)
 void Room::UpdateTick()
 {
 	// TODO : 몬스터 이동, 공격
+	if(_players.empty())
+	{
+		ReleaseThisRoom();
+		return;
+	}
 
 	for(auto& monster : _monsters)
 	{
@@ -415,6 +449,10 @@ void Room::ReleaseThisRoom()
 {
 	auto self = GetRoomRef();
 	_lobby.lock()->RemoveRoom(self);
+
+	_players.clear();
+	_objects.clear();
+	_monsters.clear();
 	ClearJobs();
 }
 
@@ -510,7 +548,7 @@ bool Room::AddPlayer(PlayerRef player)
 	return true;
 }
 
-bool Room::RemovePlayer(PlayerRef player)
+bool Room::RemovePlayer(PlayerRef player, bool isExitGame)
 {
 	uint64 playerIndex = player->GetPlayerInfo().player_id();
 	// 플레이어가 Room에 없으면 문제가 있다.
@@ -519,7 +557,11 @@ bool Room::RemovePlayer(PlayerRef player)
 		return false;
 	}
 	
-	_lobby.lock()->AddPlayer(player);
+	if(isExitGame == false)
+	{
+		_lobby.lock()->AddPlayer(player);
+	}
+
 	info->clear_players();
 
 	if (info->host().player_id() == playerIndex)
