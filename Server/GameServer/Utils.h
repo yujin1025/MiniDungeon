@@ -32,6 +32,25 @@ public:
 		}
 	}
 
+	static string WStringToString(const wstring& wstr)
+	{
+		string str;
+		str.reserve(wstr.size());
+		for (wchar_t wc : wstr)
+		{
+			if (wc <= 0x7F) // ASCII 범위 내라면 그대로 변환
+			{
+				str.push_back(static_cast<char>(wc));
+			}
+			else
+			{
+				// 범위를 벗어난 경우 예외 처리 필요
+				throw std::runtime_error("Non-ASCII character found in wstring.");
+			}
+		}
+		return str;
+	}
+
 	static std::string WCHARToString(const WCHAR* wstr) 
 	{
 		// 필요한 버퍼 크기를 계산

@@ -6,6 +6,7 @@ enum
 {
 	WVARCHAR_MAX = 4000,
 	BINARY_MAX = 8000,
+	VARCHAR_MAX = 8000,
 };
 
 class DBConnection
@@ -33,7 +34,9 @@ public:
 	bool BindParam(int32 paramIndex, int64* value, SQLLEN* index);
 	bool BindParam(int32 paramIndex, TIMESTAMP_STRUCT* value, SQLLEN* index);
 	bool BindParam(int32 paramIndex, const WCHAR* str, SQLLEN* index);
+	bool BindParam(int32 paramIndex, const CHAR* str, SQLLEN* index);
 	bool BindParam(int32 paramIndex, const std::wstring& str, SQLLEN* index);
+	bool BindParam(int32 paramIndex, const std::string& str, SQLLEN* index);
 	bool BindParam(int32 paramIndex, const BYTE* bin, int32 size, SQLLEN* index);
 
 
@@ -46,6 +49,7 @@ public:
 	bool BindColumn(int32 columnIndex, int64* value, SQLLEN* index);
 	bool BindColumn(int32 columnIndex, TIMESTAMP_STRUCT* value, SQLLEN* index);
 	bool BindColumn(int32 columnIndex, WCHAR* str, int32 size, SQLLEN* index);
+	bool BindColumn(int32 columnIndex, CHAR* str, int32 size, SQLLEN* index);
 	bool BindColumn(int32 columnIndex, BYTE* bin, int32 size, SQLLEN* index);
 
 private:

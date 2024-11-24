@@ -150,6 +150,21 @@ bool DBConnection::BindParam(int32 paramIndex, const WCHAR* str, SQLLEN* index)
 		return BindParam(paramIndex, SQL_C_WCHAR, SQL_WVARCHAR, size, (SQLPOINTER)str, index);
 }
 
+bool DBConnection::BindParam(int32 paramIndex, const CHAR* str, SQLLEN* index)
+{
+	// 문자열 크기를 계산 (NULL 포함)
+	SQLULEN size = static_cast<SQLULEN>(::strlen(str) + 1);
+
+	// SQL_NTS (Null-Terminated String) 설정
+	*index = SQL_NTS;
+
+	// 문자열 크기에 따라 적합한 SQL 타입 선택
+	if (size > VARCHAR_MAX)
+		return BindParam(paramIndex, SQL_C_CHAR, SQL_LONGVARCHAR, size, (SQLPOINTER)str, index);
+	else
+		return BindParam(paramIndex, SQL_C_CHAR, SQL_VARCHAR, size, (SQLPOINTER)str, index);
+}
+
 bool DBConnection::BindParam(int32 paramIndex, const std::wstring& str, SQLLEN* index)
 {
 	// std::wstring에서 const WCHAR*로 변환
@@ -163,6 +178,20 @@ bool DBConnection::BindParam(int32 paramIndex, const std::wstring& str, SQLLEN* 
 		return BindParam(paramIndex, SQL_C_WCHAR, SQL_WLONGVARCHAR, size, (SQLPOINTER)wstr, index);
 	else
 		return BindParam(paramIndex, SQL_C_WCHAR, SQL_WVARCHAR, size, (SQLPOINTER)wstr, index);
+}
+
+bool DBConnection::BindParam(int32 paramIndex, const std::string& str, SQLLEN* index)
+{
+	// std::string에서 const CHAR*로 변환
+	const CHAR* cstr = str.c_str();
+
+	SQLULEN size = static_cast<SQLULEN>(::strlen(cstr) + 1); // NULL 포함 크기 계산
+	*index = SQL_NTS;
+
+	if (size > VARCHAR_MAX)
+		return BindParam(paramIndex, SQL_C_CHAR, SQL_LONGVARCHAR, size, (SQLPOINTER)cstr, index);
+	else
+		return BindParam(paramIndex, SQL_C_CHAR, SQL_VARCHAR, size, (SQLPOINTER)cstr, index);
 }
 
 bool DBConnection::BindParam(int32 paramIndex, const BYTE* bin, int32 size, SQLLEN* index)
@@ -224,6 +253,11 @@ bool DBConnection::BindColumn(int32 columnIndex, TIMESTAMP_STRUCT* value, SQLLEN
 bool DBConnection::BindColumn(int32 columnIndex, WCHAR* str, int32 size, SQLLEN* index)
 {
 	return BindColumn(columnIndex, SQL_C_WCHAR, size, str, index);
+}
+
+bool DBConnection::BindColumn(int32 columnIndex, CHAR* str, int32 size, SQLLEN* index)
+{
+	return BindColumn(columnIndex, SQL_C_CHAR, size, str, index);
 }
 
 bool DBConnection::BindColumn(int32 columnIndex, BYTE* bin, int32 size, SQLLEN* index)

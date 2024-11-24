@@ -70,9 +70,6 @@ public:
 	weak_ptr<class Lobby> _lobby;
 	uint64 _roomIndex = 0;
 
-private:
-	unordered_map<uint64, Vector3> _spawnPoints;
-
 protected:
 	Protocol::RoomInfo* info;
 

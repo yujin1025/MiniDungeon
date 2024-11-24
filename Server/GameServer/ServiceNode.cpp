@@ -97,7 +97,7 @@ void DetectionService::OnUpdateService()
             }
 
             blackboard->SetData(EBlackboardKey::Target, target_id);
-            LOG("DetectionService : id %d", target_id);
+            LOGF("DetectionService : id %lld", target_id);
         }
         else
         {
@@ -105,7 +105,7 @@ void DetectionService::OnUpdateService()
 				target_id = expected->GetObjectInfo().object_id();
 
             blackboard->SetData(EBlackboardKey::Target, target_id);
-            LOG("DetectionService : id %d", target_id);
+            LOGF("DetectionService : id %lld", target_id);
         }
     }
 

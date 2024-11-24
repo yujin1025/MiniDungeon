@@ -2,6 +2,8 @@
 
 #include <mutex>
 #include <atomic>
+#include <numbers>
+#include <cmath>
 
 using BYTE = unsigned char;
 using int8 = __int8;
@@ -12,6 +14,7 @@ using uint8 = unsigned __int8;
 using uint16 = unsigned __int16;
 using uint32 = unsigned __int32;
 using uint64 = unsigned __int64;
+constexpr double PI = 3.14159265358979323846;
 
 enum class ENodeState
 {
@@ -29,9 +32,11 @@ enum class EBlackboardKey
 
 struct Vector3
 {
-	float x = 0.0f;
-	float y = 0.0f;
-	float z = 0.0f;
+	float x, y, z;
+
+
+	Vector3(float x = 0.0f, float y = 0.0f, float z = 0.0f)
+		: x(x), y(y), z(z) {}
 
 	// == 연산자 오버로딩
 	bool operator==(const Vector3& other) const 
@@ -44,7 +49,42 @@ struct Vector3
 	{
 		return !(*this == other);
 	}
+
+	// 벡터의 크기 계산 (Euclidean Norm)
+	float Magnitude() const
+	{
+		return sqrt(x * x + y * y + z * z);
+	}
+
+	// 벡터 정규화
+	Vector3 Normalize() const
+	{
+		float magnitude = Magnitude();
+		if (magnitude == 0.0f)
+		{
+			return Vector3(0.0f, 0.0f, 0.0f);
+		}
+
+		return Vector3(x / magnitude, y / magnitude, z / magnitude);
+	}
+
+	// Dot Product (정적 메서드)
+	static float DotProduct(const Vector3& a, const Vector3& b)
+	{
+		return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+	}
+
+	static Vector3 CalculateForwardVector(float yawDegrees)
+	{
+		float yawRadians = yawDegrees * PI / 180.0f;
+		return Vector3(std::cos(yawRadians), std::sin(yawRadians), 0.0f).Normalize();
+	}
 };
+
+constexpr float RadiansToDegrees(float radians)
+{
+	return radians * (180.0f / PI);
+}
 
 struct Vector2
 {

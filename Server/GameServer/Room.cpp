@@ -11,20 +11,12 @@ Room::Room()
 {
 	_roomIndex = 0;
 	info = new Protocol::RoomInfo();
-
-	for (int i = 0; i < 4; i++)
-	{
-		Vector3 pos = { 940 + 50 * i, 400 + 50 * i, 120 };
-
-		_spawnPoints.insert(make_pair(i, pos));
-	}
 }
 
 Room::~Room()
 {
 	_players.clear();
 	_objects.clear();
-	_spawnPoints.clear(); 
 	ClearJobs();
 
 	info->Clear();
@@ -264,11 +256,6 @@ void Room::HandleStartGame()
 		playerInfo->CopyFrom(player.second->GetPlayerInfo());
 		objectInfo->CopyFrom(player.second->GetObjectInfo());
 		posInfo->CopyFrom(player.second->GetPosInfo());
-
-		posInfo->set_x(_spawnPoints[index].x);
-		posInfo->set_y(_spawnPoints[index].y);
-		posInfo->set_z(_spawnPoints[index].z);
-		index++;
 
 		objectInfo->set_allocated_pos_info(posInfo);
 		playerInfo->set_allocated_object_info(objectInfo);

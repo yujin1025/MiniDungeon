@@ -16,8 +16,8 @@
 #pragma comment(lib, "wldap32.lib")
 #pragma comment(lib, "crypt32.lib")
 #pragma comment(lib, "curl\\Release\\libcurl.lib")
-#pragma comment(lib, "OpenSSL\\Release\\libssl_static.lib")
-#pragma comment(lib, "OpenSSL\\Release\\libcrypto_static.lib")
+#pragma comment(lib, "OpenSSL\\Release\\libssl.lib")
+#pragma comment(lib, "OpenSSL\\Release\\libcrypto.lib")
 #endif
 
 #include "CorePch.h"
