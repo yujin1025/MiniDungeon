@@ -6,6 +6,9 @@
 #include "../Game/MDGameMode.h"
 #include "../Game/MDGameState.h"
 #include "../Game/MDPlayerState.h"
+#include "Components/WidgetComponent.h"
+#include "../Widget/HPBarWidget.h"
+#include "../Network/MDNetworkManager.h"
 
 UHealthComponent::UHealthComponent()
 {
@@ -28,7 +31,7 @@ void UHealthComponent::BeginPlay()
 	if (GameMode == nullptr)
 		return;
 
-	auto* Data = GameMode->GetCharacterStat(ECharacterType::Aurora);
+	auto* Data = GameMode->GetCharacterStat(CharacterType);
 	if (Data == nullptr)
 		return;
 
@@ -70,16 +73,13 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 
 	if (Character->IsPlayer()) 
 	{
-		//GameMode->MyPlayerState->OnChangePlayerHealth(Character->CharacterId, CurrentHealth);
+		GameMode->MyPlayerState->OnChangePlayerHealth(Character->CharacterId, CurrentHealth);
 		UE_LOG(LogTemp, Warning, TEXT("Player Number : (%d) Current Health: %f"), Character->CharacterId, CurrentHealth);
 	}
 	else
 	{
-		//GameMode->MyGameState->OnChangedHealth(Character->CharacterId, CurrentHealth);
+		GameMode->MyGameState->OnChangedHealth(Character->CharacterId, CurrentHealth);
 		UE_LOG(LogTemp, Warning, TEXT("Non Player Number : (%d) Current Health: %f"), Character->CharacterId, CurrentHealth);
-<<<<<<< Updated upstream
-=======
-
 		HPBarWidget = Character->FindComponentByClass<UWidgetComponent>();
 		if (HPBarWidget)
 		{
@@ -89,7 +89,20 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 				HPWidget->UpdateHealthBar();
 			}
 		}
->>>>>>> Stashed changes
+		/*
+		UMDNetworkManager* NetworkManager = GetWorld()->GetSubsystem<UMDNetworkManager>();
+		if (NetworkManager)
+		{
+			Protocol::CTS_MONSTERINFO MonsterInfoPkt;
+			Protocol::MonsterInfo* MonsterInfo = new Protocol::MonsterInfo;
+
+			uint64 MonsterId = Character->GetObjectID();
+			MonsterInfo->mutable_object_info()->set_object_id(MonsterId);
+			MonsterInfo->set_monster_hp(CurrentHealth);
+
+			MonsterInfoPkt.set_allocated_info(MonsterInfo);
+			NetworkManager->SendPacket(MonsterInfoPkt);
+		}*/
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Character %d: CurrentHealth is now %f"), Character->CharacterId, CurrentHealth);

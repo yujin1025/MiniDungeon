@@ -36,6 +36,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster Stats")
 	TObjectPtr<class APlayableCharacter> TargetPlayer;
 
+	UPROPERTY(VisibleAnywhere, Category = "UI")
+	class UWidgetComponent* HPBarWidget;
+
 	UFUNCTION()
 	bool Attack();
 

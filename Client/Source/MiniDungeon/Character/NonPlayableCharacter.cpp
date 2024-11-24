@@ -7,12 +7,17 @@
 #include <Kismet/GameplayStatics.h>
 #include <Game/MDPlayerController.h>
 #include "Component/AttackComponent.h"
+#include "Components/WidgetComponent.h"
+#include "../Widget/HPBarWidget.h"
 
 ANonPlayableCharacter::ANonPlayableCharacter()
 {
 	AIControllerClass = AMDAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	//AutoPossessPlayer = EAutoReceiveInput::Disabled; //빙의하지 않음
+
+	HPBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarWidget"));
+	HPBarWidget->SetupAttachment(RootComponent);
 }
 
 bool ANonPlayableCharacter::Attack()
@@ -40,6 +45,15 @@ void ANonPlayableCharacter::BeginPlay()
 
 	SetMoveState(Protocol::MOVE_STATE_IDLE);
 	TargetLocation = GetActorLocation();
+
+	if (HPBarWidget && HPBarWidget->GetWidget() != nullptr)
+	{
+		UHPBarWidget* HPWidget = Cast<UHPBarWidget>(HPBarWidget->GetWidget());
+		if (HPWidget)
+		{
+			HPWidget->SetHealthComponent(HealthComponent);
+		}
+	}
 }
 
 void ANonPlayableCharacter::Tick(float DeltaTime)

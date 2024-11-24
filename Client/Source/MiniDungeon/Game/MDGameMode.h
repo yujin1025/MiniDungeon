@@ -69,9 +69,11 @@ public:
 	UPROPERTY()
 	AMDPlayerState* MyPlayerState;
 
-private:
+public:
 	UPROPERTY(EditAnywhere, Category = Data)
 	class UDataTable* CharacterStatTable;
+
+	FCharacterStatData* GetCharacterStat(ECharacterType type);
 
 	//UI
 	UPROPERTY(EditDefaultsOnly, Category = UI)
@@ -82,9 +84,6 @@ private:
 
 	UPROPERTY()
 	TSet<AActor*> SpawnedActors;
-
-public:
-	FCharacterStatData* GetCharacterStat(ECharacterType type);
 
 private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn", meta = (AllowPrivateAccess = "true"))
