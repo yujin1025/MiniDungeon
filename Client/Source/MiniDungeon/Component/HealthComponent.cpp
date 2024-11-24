@@ -46,7 +46,6 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 {
-	
 	auto* GameMode = Cast<AMDGameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode == nullptr)
 		return;
@@ -60,6 +59,15 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 	if (Character == nullptr)
 		return;
 
+	auto networkManager = GetWorld()->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if (networkManager)
+	{
+		Protocol::CTS_ATTACKED attackedPkt;
+		attackedPkt.set_object_id(Character->GetObjectID());
+		attackedPkt.set_object_current_hp(CurrentHealth);
+		networkManager->SendPacket(attackedPkt);
+	}
+
 	if (Character->IsPlayer()) 
 	{
 		//GameMode->MyPlayerState->OnChangePlayerHealth(Character->CharacterId, CurrentHealth);
@@ -69,6 +77,19 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 	{
 		//GameMode->MyGameState->OnChangedHealth(Character->CharacterId, CurrentHealth);
 		UE_LOG(LogTemp, Warning, TEXT("Non Player Number : (%d) Current Health: %f"), Character->CharacterId, CurrentHealth);
+<<<<<<< Updated upstream
+=======
+
+		HPBarWidget = Character->FindComponentByClass<UWidgetComponent>();
+		if (HPBarWidget)
+		{
+			UHPBarWidget* HPWidget = Cast<UHPBarWidget>(HPBarWidget->GetWidget());
+			if (HPWidget)
+			{
+				HPWidget->UpdateHealthBar();
+			}
+		}
+>>>>>>> Stashed changes
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Character %d: CurrentHealth is now %f"), Character->CharacterId, CurrentHealth);
