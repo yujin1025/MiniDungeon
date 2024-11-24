@@ -325,7 +325,7 @@ void Room::HandleMove(const Protocol::PosInfo& posInfo)
 	{
 		if(player->GetHp() <= 0)
 		{
-			HandleDead(objectId);
+			HandleDead(player->GetObjectInfo().object_id(), objectId);
 			return;
 		}
 		// 최신 위치 정보로 업데이트
@@ -381,7 +381,7 @@ void Room::HandleAttack(Protocol::CTS_ATTACK pkt)
 	Broadcast(sendBuffer);
 }
 
-void Room::HandleAttacked(const Protocol::CTS_ATTACKED& pkt)
+void Room::HandleAttacked(uint64 player_object_id, const Protocol::CTS_ATTACKED& pkt)
 {
 	const uint64 objectId = pkt.object_id();
 	if (_objects.find(objectId) == _objects.end())
@@ -389,19 +389,22 @@ void Room::HandleAttacked(const Protocol::CTS_ATTACKED& pkt)
 
 	if(pkt.object_current_hp() <= 0)
 	{
-		Protocol::STC_DESPAWN despawnPkt;
-		despawnPkt.add_object_ids(objectId);
-		Broadcast(ServerPacketHandler::MakeSendBuffer(despawnPkt));
-
-		HandleDead(objectId);
+		HandleDead(player_object_id, objectId);
 	}
 	else
 	{
 		dynamic_pointer_cast<Creature>(_objects[objectId])->SetHp(pkt.object_current_hp());
+
+		Protocol::STC_ATTACKED attackedPkt;
+		attackedPkt.set_object_id(objectId);
+		attackedPkt.set_object_current_hp(pkt.object_current_hp());
+
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(attackedPkt);
+		Broadcast(sendBuffer, player_object_id);
 	}
 }
 
-void Room::HandleDead(uint64 object_id)
+void Room::HandleDead(uint64 player_object_id, uint64 object_id)
 {
 	const uint64 objectId = object_id;
 	if (_objects.find(objectId) == _objects.end())
@@ -415,6 +418,11 @@ void Room::HandleDead(uint64 object_id)
 	{
 		RemoveMonster(objectId);
 	}
+
+	Protocol::STC_DESPAWN despawnPkt;
+	despawnPkt.add_object_ids(objectId);
+
+	Broadcast(ServerPacketHandler::MakeSendBuffer(despawnPkt), player_object_id);
 }
 
 void Room::SetRoomIndex(uint64 roomIndex)
@@ -425,7 +433,6 @@ void Room::SetRoomIndex(uint64 roomIndex)
 
 void Room::UpdateTick()
 {
-	// TODO : 몬스터 이동, 공격
 	if(_players.empty())
 	{
 		ReleaseThisRoom();

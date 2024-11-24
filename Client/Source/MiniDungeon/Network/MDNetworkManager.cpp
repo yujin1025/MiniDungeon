@@ -519,13 +519,18 @@ void UMDNetworkManager::HandleDespawn(uint64 objectId)
 	auto findCharacter = Players.Find(objectId);
 	if(findCharacter)
 	{
+		Players.Remove(objectId);
 		world->DestroyActor(*findCharacter);
+		return;;
 	}
 
 	auto findMonster = Monsters.Find(objectId);
 	if(findMonster)
 	{
+		MonsterInfos.Remove(objectId);
+		Monsters.Remove(objectId);
 		world->DestroyActor(*findMonster);
+		return;
 	}
 }
 

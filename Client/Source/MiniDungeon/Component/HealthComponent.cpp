@@ -89,20 +89,6 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 				HPWidget->UpdateHealthBar();
 			}
 		}
-		/*
-		UMDNetworkManager* NetworkManager = GetWorld()->GetSubsystem<UMDNetworkManager>();
-		if (NetworkManager)
-		{
-			Protocol::CTS_MONSTERINFO MonsterInfoPkt;
-			Protocol::MonsterInfo* MonsterInfo = new Protocol::MonsterInfo;
-
-			uint64 MonsterId = Character->GetObjectID();
-			MonsterInfo->mutable_object_info()->set_object_id(MonsterId);
-			MonsterInfo->set_monster_hp(CurrentHealth);
-
-			MonsterInfoPkt.set_allocated_info(MonsterInfo);
-			NetworkManager->SendPacket(MonsterInfoPkt);
-		}*/
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Character %d: CurrentHealth is now %f"), Character->CharacterId, CurrentHealth);
