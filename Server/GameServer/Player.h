@@ -25,6 +25,7 @@ public:
 	void SetPosInfo(const Protocol::PosInfo& pos_Info);
 
 	void Attack(const Protocol::AttackInfo& attack_info);
+	void ProcessAttack(int32 skillType, float damage, float maxDistance, float maxAngle);
 protected:
 	Protocol::PlayerInfo* playerInfo;
 

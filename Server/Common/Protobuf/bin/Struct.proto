@@ -45,17 +45,17 @@ message RoomInfo
 message AttackInfo
 {
 	uint64 attack_object_id = 1;
-	float damage = 2;
-	uint64 attack_type = 3;
-	float distance = 4;
-	float degree = 5;
-	bool ishit = 6;
+	PlayerType player_type = 2;
+	float damage = 3;
+	uint64 attack_type = 4;
+	float distance = 5;
+	float degree = 6;
 }
 
 message AttackedInfo
 {
 	uint64 attacked_object_id = 1;
-	float attacked_obejct_current_hp = 2;
+	float attacked_object_current_hp = 2;
 }
 
 message MonsterInfo

@@ -678,7 +678,7 @@ void UMDNetworkManager::HandleAttacked(const Protocol::STC_ATTACKED& pkt)
 		{
 			if (Monsters.Contains(attacked_info.attacked_object_id()))
 			{
-				float damage = attacked_info.attacked_obejct_current_hp() - Monsters[attacked_info.attacked_object_id()]->HealthComponent->GetCurrentHealth();
+				float damage = attacked_info.attacked_object_current_hp() - Monsters[attacked_info.attacked_object_id()]->HealthComponent->GetCurrentHealth();
 				Monsters[attacked_info.attacked_object_id()]->HealthComponent->ChangeHealth(findActor, damage);
 			}
 		}

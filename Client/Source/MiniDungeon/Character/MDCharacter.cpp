@@ -139,9 +139,12 @@ void AMDCharacter::Look(const FVector2D Value)
 
 void AMDCharacter::SendAttackPacket(EAttackType AttackType)
 {
-	// 공격 정보를 설정
-	Protocol::AttackInfo attackInfo;
-	attackInfo.set_attack_object_id(ObjectID);
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if(networkManager == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NetworkManager is nullptr in SendAttackPacket()"));
+		return;
+	}
 
 	float damage = 0.0f;
 	switch (AttackType)
@@ -157,19 +160,23 @@ void AMDCharacter::SendAttackPacket(EAttackType AttackType)
 		break;
 	}
 
-	attackInfo.set_damage(damage); // 데미지 설정
-	attackInfo.set_attack_type(static_cast<uint64>(AttackType)); // 공격 타입 설정
+	Protocol::AttackInfo attackInfo;
+	if (networkManager->PlayerInfos.Contains(networkManager->PlayerID))
+	{
+		attackInfo.set_attack_object_id(ObjectID);
+		attackInfo.set_player_type(networkManager->PlayerInfos[networkManager->PlayerID]->player_type());
 
-	// 패킷을 생성
-	Protocol::CTS_ATTACK attackPkt;
-	*attackPkt.mutable_info() = attackInfo;
+		attackInfo.set_damage(damage); // 데미지 설정
+		attackInfo.set_attack_type(static_cast<uint64>(AttackType)); // 공격 타입 설정
 
-	// SendBufferRef로 직렬화
-	SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(attackPkt);
+		// 패킷을 생성
+		Protocol::CTS_ATTACK attackPkt;
+		*attackPkt.mutable_info() = attackInfo;
 
-	// 네트워크 매니저를 통해 패킷 전송
-	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-	if (networkManager) {
+		// SendBufferRef로 직렬화
+		SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(attackPkt);
+
+		// 네트워크 매니저를 통해 패킷 전송
 		networkManager->SendPacket(sendBuffer);
 	}
 }

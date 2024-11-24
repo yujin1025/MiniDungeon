@@ -366,13 +366,6 @@ void Room::HandleAttack(const Protocol::CTS_ATTACK& pkt)
 	if (PlayerRef player = dynamic_pointer_cast<Player>(_objects[objectId]))
 	{
 		player->Attack(pkt.info());
-		//Protocol::STC_ATTACK atkPkt;
-		//Protocol::AttackInfo* info = new Protocol::AttackInfo();
-		//info->CopyFrom(pkt.info());
-		//atkPkt.set_allocated_info(info);
-
-		//SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(atkPkt);
-		//Broadcast(sendBuffer);
 	}
 }
 
@@ -394,7 +387,7 @@ void Room::HandleAttacked(uint64 player_object_id, const Protocol::CTS_ATTACKED&
 		attackedPkt.set_attacking_object_id(0);
 		Protocol::AttackedInfo* attackedInfo = attackedPkt.add_attacked_infos();
 		attackedInfo->set_attacked_object_id(objectId);
-		attackedInfo->set_attacked_obejct_current_hp(pkt.object_current_hp());
+		//attackedInfo->set_attacked_obejct_current_hp(pkt.object_current_hp());
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(attackedPkt);
 		Broadcast(sendBuffer, player_object_id);

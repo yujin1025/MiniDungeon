@@ -1022,11 +1022,11 @@ class AttackInfo final :
 
   enum : int {
     kAttackObjectIdFieldNumber = 1,
-    kAttackTypeFieldNumber = 3,
-    kDamageFieldNumber = 2,
-    kDistanceFieldNumber = 4,
-    kDegreeFieldNumber = 5,
-    kIshitFieldNumber = 6,
+    kPlayerTypeFieldNumber = 2,
+    kDamageFieldNumber = 3,
+    kAttackTypeFieldNumber = 4,
+    kDistanceFieldNumber = 5,
+    kDegreeFieldNumber = 6,
   };
   // uint64 attack_object_id = 1;
   void clear_attack_object_id();
@@ -1037,16 +1037,16 @@ class AttackInfo final :
   void _internal_set_attack_object_id(uint64_t value);
   public:
 
-  // uint64 attack_type = 3;
-  void clear_attack_type();
-  uint64_t attack_type() const;
-  void set_attack_type(uint64_t value);
+  // .Protocol.PlayerType player_type = 2;
+  void clear_player_type();
+  ::Protocol::PlayerType player_type() const;
+  void set_player_type(::Protocol::PlayerType value);
   private:
-  uint64_t _internal_attack_type() const;
-  void _internal_set_attack_type(uint64_t value);
+  ::Protocol::PlayerType _internal_player_type() const;
+  void _internal_set_player_type(::Protocol::PlayerType value);
   public:
 
-  // float damage = 2;
+  // float damage = 3;
   void clear_damage();
   float damage() const;
   void set_damage(float value);
@@ -1055,7 +1055,16 @@ class AttackInfo final :
   void _internal_set_damage(float value);
   public:
 
-  // float distance = 4;
+  // uint64 attack_type = 4;
+  void clear_attack_type();
+  uint64_t attack_type() const;
+  void set_attack_type(uint64_t value);
+  private:
+  uint64_t _internal_attack_type() const;
+  void _internal_set_attack_type(uint64_t value);
+  public:
+
+  // float distance = 5;
   void clear_distance();
   float distance() const;
   void set_distance(float value);
@@ -1064,22 +1073,13 @@ class AttackInfo final :
   void _internal_set_distance(float value);
   public:
 
-  // float degree = 5;
+  // float degree = 6;
   void clear_degree();
   float degree() const;
   void set_degree(float value);
   private:
   float _internal_degree() const;
   void _internal_set_degree(float value);
-  public:
-
-  // bool ishit = 6;
-  void clear_ishit();
-  bool ishit() const;
-  void set_ishit(bool value);
-  private:
-  bool _internal_ishit() const;
-  void _internal_set_ishit(bool value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.AttackInfo)
@@ -1091,11 +1091,11 @@ class AttackInfo final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     uint64_t attack_object_id_;
-    uint64_t attack_type_;
+    int player_type_;
     float damage_;
+    uint64_t attack_type_;
     float distance_;
     float degree_;
-    bool ishit_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1225,7 +1225,7 @@ class AttackedInfo final :
 
   enum : int {
     kAttackedObjectIdFieldNumber = 1,
-    kAttackedObejctCurrentHpFieldNumber = 2,
+    kAttackedObjectCurrentHpFieldNumber = 2,
   };
   // uint64 attacked_object_id = 1;
   void clear_attacked_object_id();
@@ -1236,13 +1236,13 @@ class AttackedInfo final :
   void _internal_set_attacked_object_id(uint64_t value);
   public:
 
-  // float attacked_obejct_current_hp = 2;
-  void clear_attacked_obejct_current_hp();
-  float attacked_obejct_current_hp() const;
-  void set_attacked_obejct_current_hp(float value);
+  // float attacked_object_current_hp = 2;
+  void clear_attacked_object_current_hp();
+  float attacked_object_current_hp() const;
+  void set_attacked_object_current_hp(float value);
   private:
-  float _internal_attacked_obejct_current_hp() const;
-  void _internal_set_attacked_obejct_current_hp(float value);
+  float _internal_attacked_object_current_hp() const;
+  void _internal_set_attacked_object_current_hp(float value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.AttackedInfo)
@@ -1254,7 +1254,7 @@ class AttackedInfo final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     uint64_t attacked_object_id_;
-    float attacked_obejct_current_hp_;
+    float attacked_object_current_hp_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2270,7 +2270,27 @@ inline void AttackInfo::set_attack_object_id(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.AttackInfo.attack_object_id)
 }
 
-// float damage = 2;
+// .Protocol.PlayerType player_type = 2;
+inline void AttackInfo::clear_player_type() {
+  _impl_.player_type_ = 0;
+}
+inline ::Protocol::PlayerType AttackInfo::_internal_player_type() const {
+  return static_cast< ::Protocol::PlayerType >(_impl_.player_type_);
+}
+inline ::Protocol::PlayerType AttackInfo::player_type() const {
+  // @@protoc_insertion_point(field_get:Protocol.AttackInfo.player_type)
+  return _internal_player_type();
+}
+inline void AttackInfo::_internal_set_player_type(::Protocol::PlayerType value) {
+  
+  _impl_.player_type_ = value;
+}
+inline void AttackInfo::set_player_type(::Protocol::PlayerType value) {
+  _internal_set_player_type(value);
+  // @@protoc_insertion_point(field_set:Protocol.AttackInfo.player_type)
+}
+
+// float damage = 3;
 inline void AttackInfo::clear_damage() {
   _impl_.damage_ = 0;
 }
@@ -2290,7 +2310,7 @@ inline void AttackInfo::set_damage(float value) {
   // @@protoc_insertion_point(field_set:Protocol.AttackInfo.damage)
 }
 
-// uint64 attack_type = 3;
+// uint64 attack_type = 4;
 inline void AttackInfo::clear_attack_type() {
   _impl_.attack_type_ = uint64_t{0u};
 }
@@ -2310,7 +2330,7 @@ inline void AttackInfo::set_attack_type(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.AttackInfo.attack_type)
 }
 
-// float distance = 4;
+// float distance = 5;
 inline void AttackInfo::clear_distance() {
   _impl_.distance_ = 0;
 }
@@ -2330,7 +2350,7 @@ inline void AttackInfo::set_distance(float value) {
   // @@protoc_insertion_point(field_set:Protocol.AttackInfo.distance)
 }
 
-// float degree = 5;
+// float degree = 6;
 inline void AttackInfo::clear_degree() {
   _impl_.degree_ = 0;
 }
@@ -2348,26 +2368,6 @@ inline void AttackInfo::_internal_set_degree(float value) {
 inline void AttackInfo::set_degree(float value) {
   _internal_set_degree(value);
   // @@protoc_insertion_point(field_set:Protocol.AttackInfo.degree)
-}
-
-// bool ishit = 6;
-inline void AttackInfo::clear_ishit() {
-  _impl_.ishit_ = false;
-}
-inline bool AttackInfo::_internal_ishit() const {
-  return _impl_.ishit_;
-}
-inline bool AttackInfo::ishit() const {
-  // @@protoc_insertion_point(field_get:Protocol.AttackInfo.ishit)
-  return _internal_ishit();
-}
-inline void AttackInfo::_internal_set_ishit(bool value) {
-  
-  _impl_.ishit_ = value;
-}
-inline void AttackInfo::set_ishit(bool value) {
-  _internal_set_ishit(value);
-  // @@protoc_insertion_point(field_set:Protocol.AttackInfo.ishit)
 }
 
 // -------------------------------------------------------------------
@@ -2394,24 +2394,24 @@ inline void AttackedInfo::set_attacked_object_id(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.AttackedInfo.attacked_object_id)
 }
 
-// float attacked_obejct_current_hp = 2;
-inline void AttackedInfo::clear_attacked_obejct_current_hp() {
-  _impl_.attacked_obejct_current_hp_ = 0;
+// float attacked_object_current_hp = 2;
+inline void AttackedInfo::clear_attacked_object_current_hp() {
+  _impl_.attacked_object_current_hp_ = 0;
 }
-inline float AttackedInfo::_internal_attacked_obejct_current_hp() const {
-  return _impl_.attacked_obejct_current_hp_;
+inline float AttackedInfo::_internal_attacked_object_current_hp() const {
+  return _impl_.attacked_object_current_hp_;
 }
-inline float AttackedInfo::attacked_obejct_current_hp() const {
-  // @@protoc_insertion_point(field_get:Protocol.AttackedInfo.attacked_obejct_current_hp)
-  return _internal_attacked_obejct_current_hp();
+inline float AttackedInfo::attacked_object_current_hp() const {
+  // @@protoc_insertion_point(field_get:Protocol.AttackedInfo.attacked_object_current_hp)
+  return _internal_attacked_object_current_hp();
 }
-inline void AttackedInfo::_internal_set_attacked_obejct_current_hp(float value) {
+inline void AttackedInfo::_internal_set_attacked_object_current_hp(float value) {
   
-  _impl_.attacked_obejct_current_hp_ = value;
+  _impl_.attacked_object_current_hp_ = value;
 }
-inline void AttackedInfo::set_attacked_obejct_current_hp(float value) {
-  _internal_set_attacked_obejct_current_hp(value);
-  // @@protoc_insertion_point(field_set:Protocol.AttackedInfo.attacked_obejct_current_hp)
+inline void AttackedInfo::set_attacked_object_current_hp(float value) {
+  _internal_set_attacked_object_current_hp(value);
+  // @@protoc_insertion_point(field_set:Protocol.AttackedInfo.attacked_object_current_hp)
 }
 
 // -------------------------------------------------------------------
