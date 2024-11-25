@@ -4,6 +4,9 @@
 #include "MDPlayerController.h"
 #include "MDPlayerState.h"
 #include "../Character/MDCharacter.h"
+#include "../Game/MDGameState.h"
+#include "../Game/MDGameMode.h"
+#include "../Widget/MDWidget.h"
 #include <Character/PlayableCharacter.h>
 
 AMDPlayerController::AMDPlayerController()
@@ -43,6 +46,56 @@ void AMDPlayerController::OnPossess(APawn* aPawn)
     {
         SetInputMode(FInputModeGameOnly());
     }
+}
+
+void AMDPlayerController::CheckGameState()
+{
+    if (bGameStateShown)
+        return;
+
+    AMDGameState* GameState = GetWorld()->GetGameState<AMDGameState>();
+    if (!GameState)
+        return;
+
+    AMDGameMode* GameMode = GetWorld()->GetAuthGameMode<AMDGameMode>();
+    if (!GameMode)
+        return;
+
+    if (GameState->IsDeadGrux() || GameMode->IsDeadPlayers())
+    {
+        if (GameState->IsDeadGrux())
+        {
+            if (ClearWidgetClass)
+            {
+                GameClearWidget = CreateWidget<UMDWidget>(GetWorld(), ClearWidgetClass);
+                if (GameClearWidget != nullptr)
+                {
+                    GameClearWidget->AddToViewport();
+                }
+            }
+        }
+        if (GameMode->IsDeadPlayers())
+        {
+            if (OverWidgetClass)
+            {
+                GameOverWidget = CreateWidget<UMDWidget>(GetWorld(), OverWidgetClass);
+                if (GameOverWidget != nullptr)
+                {
+                    GameOverWidget->AddToViewport();
+                }
+            }
+        }
+        SetPause(true);
+        bShowMouseCursor = true;
+        bGameStateShown = true;
+    }
+}
+
+void AMDPlayerController::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    CheckGameState();
 }
 
 void AMDPlayerController::OnPossessCharacter(AMDCharacter* aCharacter)

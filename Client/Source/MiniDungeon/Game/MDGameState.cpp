@@ -5,6 +5,9 @@
 #include "../Character/MDCharacter.h"
 #include "../Character/Khaimera.h"
 #include "../Character/Grux.h"
+#include "../Character/PlayableCharacter.h"
+#include "MDPlayerState.h"
+#include "MDPlayerController.h"
 
 AMDGameState::AMDGameState()
 {
@@ -90,8 +93,13 @@ int AMDGameState::GetDeadKhaimeraCount()
 
 bool AMDGameState::IsDeadGrux()
 {
-	return MonsterHealthMap[GruxCharacterId] <= 0.0f;
+	if (MonsterHealthMap.Contains(GruxCharacterId) && MonsterHealthMap[GruxCharacterId] <= 0.0f)
+	{
+		return true;
+	}
+	return false;
 }
+
 
 void AMDGameState::Spawn(ESpawnType SpawnType)
 {
