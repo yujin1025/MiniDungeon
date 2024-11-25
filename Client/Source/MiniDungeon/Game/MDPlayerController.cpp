@@ -61,7 +61,7 @@ void AMDPlayerController::CheckGameState()
     if (!GameMode)
         return;
 
-    if (GameState->IsDeadGrux() || GameMode->IsDeadPlayers())
+    /*if (GameState->IsDeadGrux() || GameMode->IsDeadPlayers())
     {
         if (GameState->IsDeadGrux())
         {
@@ -88,14 +88,14 @@ void AMDPlayerController::CheckGameState()
         SetPause(true);
         bShowMouseCursor = true;
         bGameStateShown = true;
-    }
+    }*/
 }
 
 void AMDPlayerController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    CheckGameState();
+    //CheckGameState();
 }
 
 void AMDPlayerController::OnPossessCharacter(AMDCharacter* aCharacter)

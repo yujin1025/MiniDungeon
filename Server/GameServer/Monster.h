@@ -21,8 +21,6 @@ public:
 
 	void Init();
 
-	void CalcDist();
-	void CanAttack();
 	float DistanceTo(const Protocol::PosInfo& targetPos);
 
 	Vector3 GetCurrentVector() 
@@ -39,7 +37,7 @@ public:
 	const float BossSight = 1500.f; //보스가 플레이어를 감지할 수 있는 범위
 	const float BossLoseSight = 2000.f; //보스가 플레이어를 놓치는 거리
 	const float BossSightAngle = 360.f; //보스가 감지할 수 있는 각도
-	const float MaxHp = 100.f;
+
 	const float Speed = 300.f;
 
 	float CurrentHp;
@@ -77,5 +75,6 @@ public:
 
 private:
 	USE_LOCK;
+	const float MaxHp = 200.f;
 };
 

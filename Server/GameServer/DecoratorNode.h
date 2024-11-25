@@ -87,6 +87,9 @@ protected:
 	virtual void OnStop() override;
 	virtual ENodeState OnUpdate() override;
 
+public:
+	void SetAttackRange(float range) { AttackRange = range; }
+
 private:
 	float AttackRange = 300.0f;
 };
@@ -101,6 +104,30 @@ protected:
 	virtual void OnStop() override;
 	virtual ENodeState OnUpdate() override;
 
+public:
+	void SetAttackRange(float range) { AttackRange = range; }
+
 private:
 	float AttackRange = 300.0f;
+};
+
+class CheckHealthDecorator : public DecoratorNode
+{
+public:
+	CheckHealthDecorator(shared_ptr<BehaviourTree> _tree, shared_ptr<Blackboard> _blackboard) : DecoratorNode(_tree, _blackboard) {}
+
+	void SetHealthRange(float min, float max)
+	{
+		minHealth = min;
+		maxHealth = max;
+	}
+
+protected:
+	virtual void OnStart() override;
+	virtual void OnStop() override;
+	virtual ENodeState OnUpdate() override;
+
+private:
+	float minHealth = 0.0f;
+	float maxHealth = 100.0f;
 };

@@ -214,6 +214,11 @@ message STC_ATTACKED
 	repeated AttackedInfo attacked_infos = 3;
 }
 
+message CTS_MONSTER_CLEARED
+{
+	bool isCleared = 1;
+}
+
 message CTS_CHAT
 {
 	string msg = 1;

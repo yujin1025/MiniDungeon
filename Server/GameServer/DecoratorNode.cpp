@@ -276,3 +276,68 @@ ENodeState CanNotAttackDecorator::OnUpdate()
     LOG("Target is in range");
     return ENodeState::Failure; // 조건 불충족
 }
+
+void CheckHealthDecorator::OnStart()
+{
+}
+
+void CheckHealthDecorator::OnStop()
+{
+}
+
+ENodeState CheckHealthDecorator::OnUpdate()
+{
+    auto bt = tree.lock();
+    if (bt == nullptr)
+    {
+        LOG("HasTargetDecorator bt is nullptr");
+        return ENodeState::Failure;
+    }
+
+    auto ownerMonster = bt->owner.lock();
+    if (ownerMonster == nullptr)
+    {
+        LOG("HasTargetDecorator ownerMonster is nullptr");
+        return ENodeState::Failure;
+    }
+
+    auto target = ownerMonster->TargetPlayer.load();
+    if (target == nullptr)
+    {
+        blackboard->SetData(EBlackboardKey::Target, 0);
+        LOG("HasTargetDecorator target is nullptr");
+        return ENodeState::Failure;
+    }
+
+    auto targetPosInfo = target->GetPosInfo();
+    blackboard->SetData(EBlackboardKey::Target, targetPosInfo.object_id());
+
+    // 체력 확인
+    float currentHealth = ownerMonster->GetHp();
+
+    if(currentHealth <= 0)
+	{
+		return ENodeState::Failure;
+	}
+
+    if (minHealth <= currentHealth && currentHealth <= maxHealth)
+    {
+        if (blackboard == nullptr)
+        {
+            LOG("CheckHealthDecorator blackboard is nullptr");
+            return ENodeState::Failure;
+        }
+
+        if (child == nullptr)
+        {
+            LOG("CheckHealthDecorator child is nullptr");
+            return ENodeState::Failure;
+        }
+
+        // 조건 충족: 하위 노드 실행
+        return child->Update();
+    }
+
+    LOG("Health is out of range");
+    return ENodeState::Failure; // 조건 불충족
+}

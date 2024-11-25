@@ -274,7 +274,7 @@ void AttackNode::OnStart()
 
 		if (distance <= hitRange)
 		{
-			Vector3 toTarget = Vector3(targetPosInfo.x() - monsterposInfo.x(), targetPosInfo.y() - monsterposInfo.y(), targetPosInfo.z() - monsterposInfo.z()).Normalize();
+			Vector3 toTarget = Vector3(targetPosInfo.x() - monsterposInfo.x(), targetPosInfo.y() - monsterposInfo.y(), 0).Normalize();
 			Vector3 forward = Vector3::CalculateForwardVector(monsterposInfo.yaw());
 
 			// Dot Product를 사용하여 각도를 계산
@@ -283,7 +283,7 @@ void AttackNode::OnStart()
 			float AngleDegrees = RadiansToDegrees(acos(clampedDot));
 
 			// 30도 안에 있는지 확인
-			if (AngleDegrees <= 30.0f)
+			if (AngleDegrees <= hitAngle)
 			{
 				target->SetHp(target->GetHp() - damage);
 			}

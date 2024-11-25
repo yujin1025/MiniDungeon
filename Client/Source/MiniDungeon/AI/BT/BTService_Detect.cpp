@@ -88,10 +88,10 @@ void UBTService_Detect::SetDetectedTarget(UBehaviorTreeComponent& OwnerComp, AMD
 
 	// TODO : Send TargetCharacter Info to Server
 
-	BlackBoard->SetValueAsObject(AMDAIController::TargetObjectKey, TargetCharacter);
+	//BlackBoard->SetValueAsObject(AMDAIController::TargetObjectKey, TargetCharacter);
 
-	if (TargetCharacter != nullptr)
-	{
-		BlackBoard->SetValueAsVector(AMDAIController::PatrolPosKey, TargetCharacter->GetActorLocation());
-	}
+	//if (TargetCharacter != nullptr)
+	//{
+	//	BlackBoard->SetValueAsVector(AMDAIController::PatrolPosKey, TargetCharacter->GetActorLocation());
+	//}
 }

@@ -16,7 +16,7 @@ public:
 	const Protocol::PlayerInfo& GetPlayerInfo() const { READ_LOCK; return *playerInfo; }
 	void SetPlayerInfo(const Protocol::PlayerInfo& playerInfo) { WRITE_LOCK; this->playerInfo->CopyFrom(playerInfo); }
 	void SetPlayerID(int64 playerID) { WRITE_LOCK; playerInfo->set_player_id(playerID); }
-	void SetPlayerType(Protocol::PlayerType playerType) { WRITE_LOCK; playerInfo->set_player_type(playerType); }
+	void SetPlayerType(Protocol::PlayerType playerType);
 
 	const Protocol::ObjectInfo& GetObjectInfo() const { READ_LOCK; return playerInfo->object_info(); }
 	void SetObjectInfo(const Protocol::ObjectInfo& obj_Info);

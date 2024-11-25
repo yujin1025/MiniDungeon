@@ -69,8 +69,6 @@ public:
 	UPROPERTY()
 	AMDPlayerState* MyPlayerState;
 
-	TArray<AMDPlayerState*> Players;
-
 	bool IsDeadPlayers() const;
 
 public:
@@ -86,9 +84,21 @@ public:
 	UPROPERTY()
 	UMDWidget* ingameWindowWidget;
 
-	UPROPERTY()
-	TSet<AActor*> SpawnedActors;
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<class UMDWidget> DefeatWidgetClass;
 
+	UPROPERTY()
+	UMDWidget* DefeatWidget;
+
+	void ShowDefeatWidget();
+
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<class UMDWidget> VictoryWidgetClass;
+
+	UPROPERTY()
+	UMDWidget* VictoryWidget;
+
+	void ShowVictoryWidget();
 private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class ALevelScriptActor> CurrentLevelScriptActor;

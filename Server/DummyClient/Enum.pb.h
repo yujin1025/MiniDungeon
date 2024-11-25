@@ -78,7 +78,8 @@ enum CreatureType : int {
   CREATURE_TYPE_NONE = 0,
   CREATURE_TYPE_PLAYER = 1,
   CREATURE_TYPE_MONSTER = 2,
-  CREATURE_TYPE_NPC = 3,
+  CREATURE_TYPE_BOSS = 3,
+  CREATURE_TYPE_NPC = 4,
   CreatureType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   CreatureType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };

@@ -6,6 +6,7 @@
 #include "ObjectUtils.h"
 #include "Lobby.h"
 #include "GameSessionManager.h"
+#include "Boss.h"
 
 Room::Room()
 {
@@ -187,60 +188,6 @@ bool Room::HandleLeavePlayer(uint64 playerindex, bool isExitGame)
 	return true;
 }
 
-//bool Room::EnterRoom(ObjectRef object)
-//{
-//	bool success = AddObject(object);
-//
-//	// 랜덤 위치
-//
-//	// 입장 사실을 신입 플레이어에게 알린다
-//	if (auto player = dynamic_pointer_cast<Player>(object))
-//	{
-//		//Protocol::STC_ENTER_GAME enterGamePkt;
-//		//enterGamePkt.set_success(success);
-//
-//		Protocol::ObjectInfo* playerInfo = new Protocol::ObjectInfo();
-//		//playerInfo->CopyFrom(*object->objectInfo);
-//		//enterGamePkt.set_allocated_player(playerInfo);
-//
-//		///SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
-//		//if (auto session = player->session.lock())
-//		//	session->Send(sendBuffer);
-//	}
-//
-//	// 입장 사실을 다른 플레이어에게 알린다
-//	{
-//		Protocol::STC_SPAWN spawnPkt;
-//
-//		Protocol::ObjectInfo* objectInfo = spawnPkt.add_players();
-//		//objectInfo->CopyFrom(*object->objectInfo);
-//
-//		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
-//		//Broadcast(sendBuffer, object->objectInfo->object_id());
-//	}
-//
-//	// 기존 입장한 플레이어 목록을 신입 플레이어한테 전송해준다
-//	if (auto player = dynamic_pointer_cast<Player>(object))
-//	{
-//		Protocol::STC_SPAWN spawnPkt;
-//
-//		for (auto& item : _objects)
-//		{
-//			if (item.second->IsPlayer() == false)
-//				continue;
-//
-//			Protocol::ObjectInfo* playerInfo = spawnPkt.add_players();
-//			//playerInfo->CopyFrom(*item.second->objectInfo);
-//		}
-//
-//		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
-//		//if (auto session = player->session.lock())
-//		//	session->Send(sendBuffer);
-//	}
-//
-//	return success;
-//}
-
 void Room::HandleStartGame()
 {
 	Protocol::STC_ENTER_GAME enterGamePkt;
@@ -280,34 +227,14 @@ void Room::HandleStartGame()
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
 	Broadcast(sendBuffer);
-
-	GetRoomRef()->DoAsync(&Room::UpdateTick);
 }
 
-//void Room::HandleMove(Protocol::CTS_MOVE pkt)
-//{
-//	const uint64 objectId = pkt.info().object_id();
-//	if (_objects.find(objectId) == _objects.end())
-//		return;
-//
-//	// 적용
-//	PlayerRef player = dynamic_pointer_cast<Player>(_objects[objectId]);
-//	if (!player)
-//		return;
-//
-//	// 최신 위치 정보로 업데이트
-//	player->posInfo->CopyFrom(pkt.info());
-//
-//	// 이동 사실을 알린다 (본인 포함? 빼고?)
-//	Protocol::STC_MOVE movePkt;
-//	Protocol::PosInfo* info = new Protocol::PosInfo();
-//	info->CopyFrom(*player->posInfo);
-//	movePkt.set_allocated_info(info);
-//
-//	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
-//	BroadcastToPlayer(sendBuffer, objectId);
-//	//Broadcast(sendBuffer);
-//}
+void Room::HandleMonsterCleared()
+{
+	BossRef boss = ObjectUtils::CreateBoss();
+
+	AddBoss(boss);
+}
 
 void Room::HandleMove(const Protocol::PosInfo& posInfo)
 {
@@ -406,6 +333,7 @@ void Room::HandleAttacked(uint64 player_object_id, const Protocol::CTS_ATTACKED&
 		Broadcast(sendBuffer, player_object_id);
 	}
 }
+
 
 void Room::HandleDead(uint64 player_object_id, uint64 object_id)
 {
@@ -628,6 +556,31 @@ bool Room::AddMonster(MonsterRef monster, const Protocol::PosInfo& pos_Info)
 	monster->room.store(GetRoomRef());
 
 	monster->Init();
+
+	return true;
+}
+
+bool Room::AddBoss(BossRef boss, const Protocol::PosInfo& pos_Info)
+{
+	if(_boss != nullptr)
+	{
+		return false;
+	}
+	
+	Protocol::ObjectInfo objectInfo = Protocol::ObjectInfo();
+	objectInfo.CopyFrom(boss->GetObjectInfo());
+	objectInfo.set_object_id(ObjectUtils::GetNewObjectID());
+
+	Protocol::PosInfo posInfo = Protocol::PosInfo();
+	posInfo.CopyFrom(pos_Info);
+	posInfo.set_object_id(objectInfo.object_id());
+	objectInfo.mutable_pos_info()->CopyFrom(posInfo);
+
+	boss->SetObjectInfo(objectInfo);
+
+	_boss = boss;
+
+	boss->room.store(GetRoomRef());
 
 	return true;
 }

@@ -14,123 +14,14 @@ AMDGameState::AMDGameState()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void AMDGameState::OnChangedHealth(int ObjectID, float CurrentHealth)
-{
-	if (MonsterHealthMap.Contains(ObjectID) == false)
-		return;
-
-	MonsterHealthMap[ObjectID] = CurrentHealth;
-	OnMonsterHPChanged.Broadcast(ObjectID, CurrentHealth);
-}
-
-void AMDGameState::AddMonsterHealth(int objectID, float currentHealth)
-{
-	if(MonsterHealthMap.Contains(objectID) == false)
-		MonsterHealthMap.Add(objectID, currentHealth);
-}
-
 void AMDGameState::BeginPlay()
 {
 	MD_LOG(LogMDNetwork, Log, TEXT("Begin"));
 	Super::BeginPlay();
 	MD_LOG(LogMDNetwork, Log, TEXT("End"));
-
-	//Spawn(ESpawnType::Grux);
-
-	CurrentKhaimeraCharacterId = StartKhaimeraCharacterId;
-
-	//for (int i = 0; i < MaxFieldKhaimeraCount; i++)
-	//{
-	//	Spawn(ESpawnType::Khaimera);
-	//}
 }
 
 void AMDGameState::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//int FieldKhaimeraCount = 0;
-
-	//for (auto& Pair : MonsterHealthMap)
-	//{
-	//	// 센티넬이면
-	//	if (Pair.Key >= StartKhaimeraCharacterId)
-	//	{
-	//		if (Pair.Value > 0)
-	//		{
-	//			FieldKhaimeraCount++;
-	//		}
-	//	}
-	//}
-
-	//if (FieldKhaimeraCount < MaxFieldKhaimeraCount)
-	//{
-	//	int NumToSpawn = MaxFieldKhaimeraCount - FieldKhaimeraCount;
-	//	for (int i = 0; i < NumToSpawn; i++)
-	//	{
-	//		Spawn(ESpawnType::Khaimera);
-	//	}
-	//}
-}
-
-int AMDGameState::GetDeadKhaimeraCount()
-{
-	int DeadKhaimeraCount = 0;
-
-	for (auto& Pair : MonsterHealthMap)
-	{
-		// Khaimera이면
-		if (Pair.Key > -StartKhaimeraCharacterId)
-		{
-			if (Pair.Value <= 0)
-			{
-				DeadKhaimeraCount++;
-			}
-		}
-	}
-
-	return DeadKhaimeraCount;
-}
-
-bool AMDGameState::IsDeadGrux()
-{
-	if (MonsterHealthMap.Contains(GruxCharacterId) && MonsterHealthMap[GruxCharacterId] <= 0.0f)
-	{
-		return true;
-	}
-	return false;
-}
-
-
-void AMDGameState::Spawn(ESpawnType SpawnType)
-{
-	AMDCharacter* Character;
-
-	switch (SpawnType)
-	{
-	case ESpawnType::Khaimera:
-
-		if (KhaimeraSpawnPositions.Num() > CurrentSpawnKhaimeraPositionIndex)
-		{
-			Character = GetWorld()->SpawnActor<AKhaimera>(KhaimeraClass, KhaimeraSpawnPositions[CurrentSpawnKhaimeraPositionIndex], KhaimeraSpawnRotation);
-			Character->CharacterId = CurrentKhaimeraCharacterId;
-
-			CurrentSpawnKhaimeraPositionIndex++;
-			CurrentSpawnKhaimeraPositionIndex %= MaxFieldKhaimeraCount;
-
-			MonsterHealthMap.Add(CurrentKhaimeraCharacterId, 30.0f);
-			CurrentKhaimeraCharacterId++;
-		}
-
-		break;
-
-
-	case ESpawnType::Grux:
-		Character = GetWorld()->SpawnActor<AGrux>(GruxClass, GruxSpawnPosition, GruxSpawnRotation);
-		Character->CharacterId = GruxCharacterId;
-
-		MonsterHealthMap.Add(GruxCharacterId, 100.0f);
-
-		break;
-	}
 }

@@ -7,9 +7,9 @@ AMDPlayerState::AMDPlayerState()
 {
 }
 
-void AMDPlayerState::OnChangePlayerHealth(int objectId, float Amount)
+void AMDPlayerState::OnChangePlayerHealth(float Amount, float maxHP)
 {
-	OnPlayerHPChanged.Broadcast(objectId, Amount);
+	OnPlayerHPChanged.Broadcast(Amount, maxHP);
 
 	if (Amount <= 0.0f)
 	{

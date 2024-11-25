@@ -78,7 +78,7 @@ void APlayableCharacter::Tick(float DeltaTime)
 	PosInfo->set_x(Location.X);
 	PosInfo->set_y(Location.Y);
 	PosInfo->set_z(Location.Z);
-	PosInfo->set_yaw(GetControlRotation().Yaw);
+	PosInfo->set_yaw(GetActorRotation().Yaw);
 
 	// 로컬 플레이어의 경우, 자신의 이동 정보를 서버로 전송
 	if (IsMyPlayer())

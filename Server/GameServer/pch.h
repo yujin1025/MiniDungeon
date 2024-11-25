@@ -36,6 +36,7 @@ USING_SHARED_PTR(Creature);
 USING_SHARED_PTR(Object);
 USING_SHARED_PTR(Room);
 USING_SHARED_PTR(Lobby);
+USING_SHARED_PTR(Boss);
 
 #define SEND_PACKET(pkt)													\
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);	\

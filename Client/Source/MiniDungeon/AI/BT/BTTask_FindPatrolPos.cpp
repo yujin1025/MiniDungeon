@@ -28,7 +28,7 @@ EBTNodeResult::Type UBTTask_FindPatrolPos::ExecuteTask(UBehaviorTreeComponent& O
 	if (NavSystem->GetRandomPointInNavigableRadius(FVector::ZeroVector, FindTargetRadius, NextPatrol) == false)
 		return EBTNodeResult::Failed;
 
-	BlackBoard->SetValueAsVector(AMDAIController::PatrolPosKey, NextPatrol.Location);
+	//BlackBoard->SetValueAsVector(AMDAIController::PatrolPosKey, NextPatrol.Location);
 
 	auto networdManager = GetAIController(OwnerComp)->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
 	if(IsValid(networdManager))

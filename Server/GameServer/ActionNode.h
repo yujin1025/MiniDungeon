@@ -57,7 +57,6 @@ protected:
 	virtual void OnStart() override;
 	virtual void OnStop() override;
 	virtual ENodeState OnUpdate() override;
-
 };
 
 class AttackNode : public ActionNode
@@ -70,9 +69,13 @@ protected:
 	virtual void OnStop() override;
 	virtual ENodeState OnUpdate() override;
 
+public:
+	void SetDamage(float _damage) { damage = _damage; }
+	void SetHitRange(float _hitRange) { hitRange = _hitRange; }
+	void SetHitAngle(float _hitAngle) { hitAngle = _hitAngle; }
+
 private:
-	float startTime;
-	float duration = 1.f;
+	float damage = 20.f;
 	float hitRange = 200.f;
-	float damage = 5.f;
+	float hitAngle = 45.f;
 };

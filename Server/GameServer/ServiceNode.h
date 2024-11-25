@@ -30,6 +30,9 @@ public:
 protected:
 	virtual void OnUpdateService() override;
 
+public:
+	void SetDetectRange(float range) { detectRange = range; }
+
 private:
 	float detectRange = 1000.0f;
 };

@@ -11,22 +11,6 @@ bool UBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 {
 	Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
 
-	auto* MyCharacter = GetCharacter(OwnerComp);
-	if (MyCharacter == nullptr)
-		return false;
-
-	auto* BlackBoard = GetBlackboardComponent(OwnerComp);
-	if (BlackBoard == nullptr)
-		return false;
-
-	auto TargetObject = BlackBoard->GetValueAsObject(AMDAIController::TargetObjectKey);
-	if (TargetObject == nullptr)
-		return false;
-
-	auto* TargetCharacter = Cast<AMDCharacter>(TargetObject);
-	if (TargetCharacter == nullptr)
-		return false;
-
-	float distance = TargetCharacter->GetDistanceTo(MyCharacter);
-	return distance <= AttackDistance;
+	//return distance <= AttackDistance;
+	return false;
 }

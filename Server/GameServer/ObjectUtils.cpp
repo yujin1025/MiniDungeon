@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Monster.h"
 #include "GameSession.h"
+#include "Boss.h"
 
 atomic<uint64> ObjectUtils::s_idGenerator = 1;
 
@@ -18,7 +19,6 @@ PlayerRef ObjectUtils::CreatePlayer(GameSessionRef session)
 MonsterRef ObjectUtils::CreateMonster()
 {
 	MonsterRef monster = make_shared<Monster>();
-	monster->CurrentHp = monster->MaxHp;
 
 	return monster;
 }
@@ -26,4 +26,11 @@ MonsterRef ObjectUtils::CreateMonster()
 const uint64 ObjectUtils::GetNewObjectID()
 {
 	return s_idGenerator.fetch_add(1);
+}
+
+BossRef ObjectUtils::CreateBoss()
+{
+	BossRef boss = make_shared<Boss>();
+
+	return boss;
 }

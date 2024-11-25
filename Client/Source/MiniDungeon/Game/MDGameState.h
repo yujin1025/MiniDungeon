@@ -13,7 +13,7 @@ enum class ESpawnType : uint8
 	Grux,
 };
 
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnMonsterHPChangedDelegate, int, float)
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnMonsterHPChangedDelegate, int, float, float)
 /**
  * 
  */
@@ -26,51 +26,21 @@ public:
 	AMDGameState();
 
 private:
-	int GruxCharacterId = 0;
-
-	int StartKhaimeraCharacterId = 1;
-	int CurrentKhaimeraCharacterId = 1;
-
-private:
-	UPROPERTY(EditAnywhere)
-	TArray<FVector> KhaimeraSpawnPositions;
-
-	UPROPERTY(EditAnywhere)
-	FRotator KhaimeraSpawnRotation;
-
-	UPROPERTY(EditAnywhere)
-	FVector GruxSpawnPosition;
-
-	UPROPERTY(EditAnywhere)
-	FRotator GruxSpawnRotation;
-
-private:
 	UPROPERTY(EditAnywhere, Category = Character)
 	TSubclassOf<class AMDCharacter> KhaimeraClass;
 
 	UPROPERTY(EditAnywhere, Category = Character)
 	TSubclassOf<class AMDCharacter> GruxClass;
 
-private:
-	int MaxFieldKhaimeraCount = 3;
-	int CurrentSpawnKhaimeraPositionIndex = 0;
-
 public:
-	void OnChangedHealth(int ObjectID, float CurrentHealth);
+	void OnChangedHealth(int ObjectID, float CurrentHealth, float maxHP);
 	FOnMonsterHPChangedDelegate OnMonsterHPChanged;
 
-	TMap<int, float> MonsterHealthMap;
+	/*TMap<int, float> MonsterHealthMap;
 	TMap<int, float> GetMonsterHealthMap() const { return MonsterHealthMap; }
 	void AddMonsterHealth(int objectID, float currentHealth);
-
+	void RemoveMonsterHealth(int objectID) { MonsterHealthMap.Remove(objectID); }*/
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-
-public:
-	int GetDeadKhaimeraCount();
-	bool IsDeadGrux();
-
-private:
-	void Spawn(ESpawnType SpawnType);
 };

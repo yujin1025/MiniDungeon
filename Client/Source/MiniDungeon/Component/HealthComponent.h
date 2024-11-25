@@ -26,10 +26,6 @@ private:
 	float CurrentHealth;
 
 public:
-	FOnDamaged OnDamaged;
-
-public:
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void ChangeHealth(AMDCharacter* Attacker, float Amount);
 
 	UFUNCTION(BlueprintPure, Category = "Health")

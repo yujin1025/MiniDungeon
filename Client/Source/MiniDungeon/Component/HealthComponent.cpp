@@ -19,11 +19,11 @@ UHealthComponent::UHealthComponent()
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	AMDCharacter* Character = Cast<AMDCharacter>(GetOwner());
 	if (Character == nullptr)
 		return;
-	
+
 	ECharacterType CharacterType = Character->GetCharacterType();
 
 	auto* GameMode = Cast<AMDGameMode>(GetWorld()->GetAuthGameMode());
@@ -38,12 +38,6 @@ void UHealthComponent::BeginPlay()
 	CurrentHealth = MaxHealth;
 
 	UE_LOG(LogTemp, Warning, TEXT("Character %d: MaxHealth set to %f"), Character->CharacterId, Data->MaxHp);
-}
-
-
-void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
 void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
@@ -63,13 +57,11 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 
 	if (Character->IsPlayer()) 
 	{
-		GameMode->MyPlayerState->OnChangePlayerHealth(Character->CharacterId, CurrentHealth);
-		UE_LOG(LogTemp, Warning, TEXT("Player Number : (%d) Current Health: %f"), Character->CharacterId, CurrentHealth);
+		GameMode->MyPlayerState->OnChangePlayerHealth(CurrentHealth, MaxHealth);
 	}
 	else
 	{
-		GameMode->MyGameState->OnChangedHealth(Character->CharacterId, CurrentHealth);
-		UE_LOG(LogTemp, Warning, TEXT("Non Player Number : (%d) Current Health: %f"), Character->CharacterId, CurrentHealth);
+		GameMode->MyGameState->OnChangedHealth(Character->GetObjectID(), CurrentHealth, MaxHealth);
 		HPBarWidget = Character->FindComponentByClass<UWidgetComponent>();
 		if (HPBarWidget)
 		{
@@ -81,8 +73,6 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Character %d: CurrentHealth is now %f"), Character->CharacterId, CurrentHealth);
-
 	if (Amount < 0)
 	{
 		if (CurrentHealth <= 0)
@@ -93,7 +83,6 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 		{
 			Character->OnHit();
 		}
-		OnDamaged.Broadcast(Attacker, CurrentHealth);
 	}
 }
 

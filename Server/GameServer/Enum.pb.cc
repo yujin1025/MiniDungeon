@@ -32,19 +32,20 @@ const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "\n\nEnum.proto\022\010Protocol*m\n\nObjectType\022\024\n\020"
   "OBJECT_TYPE_NONE\020\000\022\030\n\024OBJECT_TYPE_CREATU"
   "RE\020\001\022\032\n\026OBJECT_TYPE_PROJECTILE\020\002\022\023\n\017OBJE"
-  "CT_TYPE_ENV\020\003*r\n\014CreatureType\022\026\n\022CREATUR"
-  "E_TYPE_NONE\020\000\022\030\n\024CREATURE_TYPE_PLAYER\020\001\022"
-  "\031\n\025CREATURE_TYPE_MONSTER\020\002\022\025\n\021CREATURE_T"
-  "YPE_NPC\020\003*R\n\nPlayerType\022\024\n\020PLAYER_TYPE_N"
-  "ONE\020\000\022\026\n\022PLAYER_TYPE_AURORA\020\001\022\026\n\022PLAYER_"
-  "TYPE_DRONGO\020\002*t\n\tMoveState\022\023\n\017MOVE_STATE"
-  "_NONE\020\000\022\023\n\017MOVE_STATE_IDLE\020\001\022\022\n\016MOVE_STA"
-  "TE_RUN\020\002\022\023\n\017MOVE_STATE_JUMP\020\003\022\024\n\020MOVE_ST"
-  "ATE_SKILL\020\004b\006proto3"
+  "CT_TYPE_ENV\020\003*\212\001\n\014CreatureType\022\026\n\022CREATU"
+  "RE_TYPE_NONE\020\000\022\030\n\024CREATURE_TYPE_PLAYER\020\001"
+  "\022\031\n\025CREATURE_TYPE_MONSTER\020\002\022\026\n\022CREATURE_"
+  "TYPE_BOSS\020\003\022\025\n\021CREATURE_TYPE_NPC\020\004*R\n\nPl"
+  "ayerType\022\024\n\020PLAYER_TYPE_NONE\020\000\022\026\n\022PLAYER"
+  "_TYPE_AURORA\020\001\022\026\n\022PLAYER_TYPE_DRONGO\020\002*t"
+  "\n\tMoveState\022\023\n\017MOVE_STATE_NONE\020\000\022\023\n\017MOVE"
+  "_STATE_IDLE\020\001\022\022\n\016MOVE_STATE_RUN\020\002\022\023\n\017MOV"
+  "E_STATE_JUMP\020\003\022\024\n\020MOVE_STATE_SKILL\020\004b\006pr"
+  "oto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 459, descriptor_table_protodef_Enum_2eproto,
+    false, false, 484, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -84,6 +85,7 @@ bool CreatureType_IsValid(int value) {
     case 1:
     case 2:
     case 3:
+    case 4:
       return true;
     default:
       return false;

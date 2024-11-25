@@ -110,6 +110,9 @@ public:
 	/// </summary>
 	TMap<uint64, TObjectPtr<class ANonPlayableCharacter>> Monsters;
 
+	TMap<uint64, Protocol::MonsterInfo*> BossInfos;
+	void AddBossInfo(uint64 object_id, const Protocol::MonsterInfo& info);
+
 	bool isHost = false;
 
 	uint64 RoomID;

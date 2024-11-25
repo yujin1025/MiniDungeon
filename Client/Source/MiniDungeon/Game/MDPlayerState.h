@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerState.h"
 #include "MDPlayerState.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHPChangedDelegate, int, float)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHPChangedDelegate, float, float)
 /**
  * 
  */
@@ -22,10 +22,12 @@ public:
 	FOnHPChangedDelegate OnPlayerHPChanged;
 
 public:
-	void OnChangePlayerHealth(int objectId, float Amount);
+	void OnChangePlayerHealth(float Amount, float maxHP);
 
 private:
 	float CurrentHP;
+
+	float MaxHP;
 	
 	// 레벨, HP, 목숨, 버프, 미니맵 위치 등이 저장됩니다.
 };

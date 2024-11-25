@@ -16,12 +16,12 @@ class MINIDUNGEON_API UHUDHealthWidget : public UMDWidget
 
 private:
 	UPROPERTY()
-	UProgressBar* ProgressBar;
+	class UProgressBar* ProgressBar;
 
 protected:
 	virtual void NativeConstruct() override;
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetHP(int id, float HP);
+	void SetHP(float currentHP, float HP);
 };

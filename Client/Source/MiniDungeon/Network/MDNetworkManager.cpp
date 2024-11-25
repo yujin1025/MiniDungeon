@@ -745,19 +745,45 @@ void UMDNetworkManager::HandleMonsterInfo(const Protocol::STC_MONSTERINFO& infoP
 		AMDAIController* AIController = Cast<AMDAIController>(Monster->AIControllerClass);
 		if (AIController)
 		{
-			AIController->SetBlackboardValues(Monster->IsFindPlayer, Monster->TargetPlayer, Monster->TargetPlayer->GetActorLocation(), Monster->Speed, Info.calcdist());
+			//AIController->SetBlackboardValues(Monster->IsFindPlayer, Monster->TargetPlayer, Monster->TargetPlayer->GetActorLocation(), Monster->Speed, Info.calcdist());
 		}
 	}
 }
 
 void UMDNetworkManager::AddPlayerInfo(uint64 player_id, const Protocol::PlayerInfo& info)
 {
-	PlayerInfos.Add(player_id, new Protocol::PlayerInfo(info));
+	if(PlayerInfos.Contains(player_id))
+	{
+		PlayerInfos[player_id] = new Protocol::PlayerInfo(info);
+	}
+	else
+	{
+		PlayerInfos.Add(player_id, new Protocol::PlayerInfo(info));
+	}
 }
 
 void UMDNetworkManager::AddMonsterInfo(uint64 object_id, const Protocol::MonsterInfo& info)
 {
-	MonsterInfos.Add(object_id, new Protocol::MonsterInfo(info));
+	if(MonsterInfos.Contains(object_id))
+	{
+		MonsterInfos[object_id] = new Protocol::MonsterInfo(info);
+	}
+	else
+	{
+		MonsterInfos.Add(object_id, new Protocol::MonsterInfo(info));
+	}
+}
+
+void UMDNetworkManager::AddBossInfo(uint64 object_id, const Protocol::MonsterInfo& info)
+{
+	if(BossInfos.Contains(object_id))
+	{
+		BossInfos[object_id] = new Protocol::MonsterInfo(info);
+	}
+	else
+	{
+		BossInfos.Add(object_id, new Protocol::MonsterInfo(info));
+	}
 }
 
 

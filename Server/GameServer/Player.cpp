@@ -13,13 +13,28 @@ Player::Player()
 	
 	playerInfo->set_allocated_object_info(obj_info);
 
-	_hp = 100;
+	_hp = 300;
 }
 
 Player::~Player()
 {
 	delete playerInfo;
 	playerInfo = nullptr;
+}
+
+void Player::SetPlayerType(Protocol::PlayerType playerType)
+{
+	WRITE_LOCK; 
+	playerInfo->set_player_type(playerType);
+	switch (playerType)
+	{
+	case Protocol::PLAYER_TYPE_AURORA:
+		_hp = 300;
+		break;
+	case Protocol::PLAYER_TYPE_DRONGO:
+		_hp = 200;
+		break;
+	}
 }
 
 void Player::SetObjectInfo(const Protocol::ObjectInfo& obj_Info)
@@ -93,10 +108,12 @@ void Player::ProcessAttack(Protocol::PlayerType playerType, int32 skillType, flo
 	attackedPkt.set_attacking_object_id(objectInfo->object_id());
 	attackedPkt.set_attacking_skill_type(skillType);
 
+	float closestDistance = FLT_MAX; // 가장 가까운 몬스터 거리
+	MonsterRef closestMonster;      // 가장 가까운 몬스터의 참조
 	for (auto& monster : currentRoom->_monsters)
 	{
-		auto& monsterposInfo = monster.second->GetPosInfo();
-		auto& currentPosInfo = objectInfo->pos_info();
+		const auto& monsterposInfo = monster.second->GetPosInfo();
+		const auto& currentPosInfo = objectInfo->pos_info();
 		float distance = monster.second->DistanceTo(currentPosInfo);
 
 		if (distance <= maxDistance)
@@ -110,25 +127,39 @@ void Player::ProcessAttack(Protocol::PlayerType playerType, int32 skillType, flo
 			float AngleDegrees = RadiansToDegrees(acos(clampedDot));
 
 			// 각도 조건 확인
-			if (abs(AngleDegrees) <= maxAngle)
+			if (AngleDegrees <= maxAngle)
 			{
-				float currentHp = monster.second->GetHp();
-				monster.second->SetHp(currentHp - damage);
-
-				Protocol::AttackedInfo* attackedInfo = attackedPkt.add_attacked_infos();
-				attackedInfo->set_attacked_object_id(monster.second->GetObjectInfo().object_id());
-				attackedInfo->set_attacked_object_current_hp(monster.second->GetHp());
-
-				if (playerType == Protocol::PLAYER_TYPE_DRONGO)
+				// SkillType이 0 또는 1일 경우 가장 가까운 몬스터만 타겟
+				if (playerType == Protocol::PLAYER_TYPE_DRONGO && (skillType == 0 || skillType == 1))
 				{
-					// Skill Type 0과 1은 가장 가까운 몬스터만 타겟
-					if (skillType == 0 || skillType == 1)
+					if (distance < closestDistance)
 					{
-						break; // 가장 가까운 몬스터를 타격한 뒤 종료
+						closestDistance = distance;
+						closestMonster = monster.second;
 					}
+				}
+				else
+				{
+					// SkillType이 0 또는 1이 아닌 경우 모든 몬스터 처리
+					float currentHp = monster.second->GetHp();
+					monster.second->SetHp(currentHp - damage);
+
+					Protocol::AttackedInfo* attackedInfo = attackedPkt.add_attacked_infos();
+					attackedInfo->set_attacked_object_id(monster.second->GetObjectInfo().object_id());
+					attackedInfo->set_attacked_object_current_hp(monster.second->GetHp());
 				}
 			}
 		}
+	}
+
+	if (closestMonster)
+	{
+		float currentHp = closestMonster->GetHp();
+		closestMonster->SetHp(currentHp - damage);
+
+		Protocol::AttackedInfo* attackedInfo = attackedPkt.add_attacked_infos();
+		attackedInfo->set_attacked_object_id(closestMonster->GetObjectInfo().object_id());
+		attackedInfo->set_attacked_object_current_hp(closestMonster->GetHp());
 	}
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(attackedPkt);

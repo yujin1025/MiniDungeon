@@ -102,6 +102,9 @@ extern CTS_MONSTERMOVEDefaultTypeInternal _CTS_MONSTERMOVE_default_instance_;
 class CTS_MONSTER_ATTACK;
 struct CTS_MONSTER_ATTACKDefaultTypeInternal;
 extern CTS_MONSTER_ATTACKDefaultTypeInternal _CTS_MONSTER_ATTACK_default_instance_;
+class CTS_MONSTER_CLEARED;
+struct CTS_MONSTER_CLEAREDDefaultTypeInternal;
+extern CTS_MONSTER_CLEAREDDefaultTypeInternal _CTS_MONSTER_CLEARED_default_instance_;
 class CTS_MOVE;
 struct CTS_MOVEDefaultTypeInternal;
 extern CTS_MOVEDefaultTypeInternal _CTS_MOVE_default_instance_;
@@ -203,6 +206,7 @@ template<> ::Protocol::CTS_LOGIN* Arena::CreateMaybeMessage<::Protocol::CTS_LOGI
 template<> ::Protocol::CTS_MONSTERINFO* Arena::CreateMaybeMessage<::Protocol::CTS_MONSTERINFO>(Arena*);
 template<> ::Protocol::CTS_MONSTERMOVE* Arena::CreateMaybeMessage<::Protocol::CTS_MONSTERMOVE>(Arena*);
 template<> ::Protocol::CTS_MONSTER_ATTACK* Arena::CreateMaybeMessage<::Protocol::CTS_MONSTER_ATTACK>(Arena*);
+template<> ::Protocol::CTS_MONSTER_CLEARED* Arena::CreateMaybeMessage<::Protocol::CTS_MONSTER_CLEARED>(Arena*);
 template<> ::Protocol::CTS_MOVE* Arena::CreateMaybeMessage<::Protocol::CTS_MOVE>(Arena*);
 template<> ::Protocol::CTS_REGISTER* Arena::CreateMaybeMessage<::Protocol::CTS_REGISTER>(Arena*);
 template<> ::Protocol::CTS_SPAWN* Arena::CreateMaybeMessage<::Protocol::CTS_SPAWN>(Arena*);
@@ -5966,6 +5970,154 @@ class STC_ATTACKED final :
 };
 // -------------------------------------------------------------------
 
+class CTS_MONSTER_CLEARED final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.CTS_MONSTER_CLEARED) */ {
+ public:
+  inline CTS_MONSTER_CLEARED() : CTS_MONSTER_CLEARED(nullptr) {}
+  ~CTS_MONSTER_CLEARED() override;
+  explicit PROTOBUF_CONSTEXPR CTS_MONSTER_CLEARED(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CTS_MONSTER_CLEARED(const CTS_MONSTER_CLEARED& from);
+  CTS_MONSTER_CLEARED(CTS_MONSTER_CLEARED&& from) noexcept
+    : CTS_MONSTER_CLEARED() {
+    *this = ::std::move(from);
+  }
+
+  inline CTS_MONSTER_CLEARED& operator=(const CTS_MONSTER_CLEARED& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CTS_MONSTER_CLEARED& operator=(CTS_MONSTER_CLEARED&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CTS_MONSTER_CLEARED& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CTS_MONSTER_CLEARED* internal_default_instance() {
+    return reinterpret_cast<const CTS_MONSTER_CLEARED*>(
+               &_CTS_MONSTER_CLEARED_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    35;
+
+  friend void swap(CTS_MONSTER_CLEARED& a, CTS_MONSTER_CLEARED& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CTS_MONSTER_CLEARED* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CTS_MONSTER_CLEARED* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CTS_MONSTER_CLEARED* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CTS_MONSTER_CLEARED>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CTS_MONSTER_CLEARED& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CTS_MONSTER_CLEARED& from) {
+    CTS_MONSTER_CLEARED::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CTS_MONSTER_CLEARED* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.CTS_MONSTER_CLEARED";
+  }
+  protected:
+  explicit CTS_MONSTER_CLEARED(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kIsClearedFieldNumber = 1,
+  };
+  // bool isCleared = 1;
+  void clear_iscleared();
+  bool iscleared() const;
+  void set_iscleared(bool value);
+  private:
+  bool _internal_iscleared() const;
+  void _internal_set_iscleared(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.CTS_MONSTER_CLEARED)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    bool iscleared_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
 class CTS_CHAT final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.CTS_CHAT) */ {
  public:
@@ -6014,7 +6166,7 @@ class CTS_CHAT final :
                &_CTS_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    35;
+    36;
 
   friend void swap(CTS_CHAT& a, CTS_CHAT& b) {
     a.Swap(&b);
@@ -6167,7 +6319,7 @@ class STC_CHAT final :
                &_STC_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    36;
+    37;
 
   friend void swap(STC_CHAT& a, STC_CHAT& b) {
     a.Swap(&b);
@@ -6331,7 +6483,7 @@ class CTS_ATTACK final :
                &_CTS_ATTACK_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    37;
+    38;
 
   friend void swap(CTS_ATTACK& a, CTS_ATTACK& b) {
     a.Swap(&b);
@@ -6488,7 +6640,7 @@ class STC_ATTACK final :
                &_STC_ATTACK_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    38;
+    39;
 
   friend void swap(STC_ATTACK& a, STC_ATTACK& b) {
     a.Swap(&b);
@@ -6645,7 +6797,7 @@ class CTS_MONSTERINFO final :
                &_CTS_MONSTERINFO_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    39;
+    40;
 
   friend void swap(CTS_MONSTERINFO& a, CTS_MONSTERINFO& b) {
     a.Swap(&b);
@@ -6802,7 +6954,7 @@ class STC_MONSTERINFO final :
                &_STC_MONSTERINFO_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    40;
+    41;
 
   friend void swap(STC_MONSTERINFO& a, STC_MONSTERINFO& b) {
     a.Swap(&b);
@@ -6959,7 +7111,7 @@ class CTS_MONSTERMOVE final :
                &_CTS_MONSTERMOVE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    41;
+    42;
 
   friend void swap(CTS_MONSTERMOVE& a, CTS_MONSTERMOVE& b) {
     a.Swap(&b);
@@ -7127,7 +7279,7 @@ class STC_MONSTERMOVE final :
                &_STC_MONSTERMOVE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    42;
+    43;
 
   friend void swap(STC_MONSTERMOVE& a, STC_MONSTERMOVE& b) {
     a.Swap(&b);
@@ -7295,7 +7447,7 @@ class CTS_STANDARD_MONSTER final :
                &_CTS_STANDARD_MONSTER_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    43;
+    44;
 
   friend void swap(CTS_STANDARD_MONSTER& a, CTS_STANDARD_MONSTER& b) {
     a.Swap(&b);
@@ -7454,7 +7606,7 @@ class STC_STANDARD_MONSTER final :
                &_STC_STANDARD_MONSTER_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    44;
+    45;
 
   friend void swap(STC_STANDARD_MONSTER& a, STC_STANDARD_MONSTER& b) {
     a.Swap(&b);
@@ -10329,6 +10481,30 @@ STC_ATTACKED::attacked_infos() const {
 
 // -------------------------------------------------------------------
 
+// CTS_MONSTER_CLEARED
+
+// bool isCleared = 1;
+inline void CTS_MONSTER_CLEARED::clear_iscleared() {
+  _impl_.iscleared_ = false;
+}
+inline bool CTS_MONSTER_CLEARED::_internal_iscleared() const {
+  return _impl_.iscleared_;
+}
+inline bool CTS_MONSTER_CLEARED::iscleared() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_MONSTER_CLEARED.isCleared)
+  return _internal_iscleared();
+}
+inline void CTS_MONSTER_CLEARED::_internal_set_iscleared(bool value) {
+  
+  _impl_.iscleared_ = value;
+}
+inline void CTS_MONSTER_CLEARED::set_iscleared(bool value) {
+  _internal_set_iscleared(value);
+  // @@protoc_insertion_point(field_set:Protocol.CTS_MONSTER_CLEARED.isCleared)
+}
+
+// -------------------------------------------------------------------
+
 // CTS_CHAT
 
 // string msg = 1;
@@ -11120,6 +11296,8 @@ inline void STC_STANDARD_MONSTER::set_object_id(uint64_t value) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

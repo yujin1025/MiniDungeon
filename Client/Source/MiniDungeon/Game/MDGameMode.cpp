@@ -28,6 +28,10 @@ void AMDGameMode::BeginPlay()
 	}
 
 	CurrentLevelScriptActor = GetWorld()->GetLevelScriptActor();
+
+	VictoryWidget = CreateWidget<UMDWidget>(GetWorld(), VictoryWidgetClass);
+
+	DefeatWidget = CreateWidget<UMDWidget>(GetWorld(), DefeatWidgetClass);
 }
 
 void AMDGameMode::PostInitializeComponents()
@@ -50,7 +54,7 @@ void AMDGameMode::PostLogin(APlayerController* NewPlayer)
 		auto* NewPlayerState = Cast<AMDPlayerState>(NewPlayer->PlayerState);
 		if (NewPlayerState)
 		{
-			Players.Add(NewPlayerState);
+			//Players.Add(NewPlayerState);
 		}
 	}
 }
@@ -96,8 +100,6 @@ void AMDGameMode::StartPlay()
 			uint64 object_id = (monsterInfo.Value)->object_info().object_id();
 			FVector spawnLocation = ingameLevelScriptActor->GetEnemySpawns()[object_id % 4]->GetActorLocation();
 			networkManager->HandleSpawn((monsterInfo.Value)->object_info(), spawnLocation);
-
-			GetGameState<AMDGameState>()->AddMonsterHealth(object_id, (monsterInfo.Value)->monster_hp());
 		}
 	}
 
@@ -116,17 +118,17 @@ void AMDGameMode::OnPostLogin(AController* NewPlayer)
 
 bool AMDGameMode::IsDeadPlayers() const
 {
-	for (AMDPlayerState* PlayerState : Players)
-	{
-		if (PlayerState)
-		{
-			APlayableCharacter* PlayerCharacter = Cast<APlayableCharacter>(PlayerState->GetPawn());
-			if (PlayerCharacter && PlayerCharacter->IsDead)
-			{
-				return true;
-			}
-		}
-	}
+	//for (AMDPlayerState* PlayerState : Players)
+	//{
+	//	if (PlayerState)
+	//	{
+	//		APlayableCharacter* PlayerCharacter = Cast<APlayableCharacter>(PlayerState->GetPawn());
+	//		if (PlayerCharacter && PlayerCharacter->IsDead)
+	//		{
+	//			return true;
+	//		}
+	//	}
+	//}
 	return false;
 }
 
@@ -136,4 +138,20 @@ FCharacterStatData* AMDGameMode::GetCharacterStat(ECharacterType type)
 	FName StringType = *FString::FromInt(IntType);
 
 	return CharacterStatTable->FindRow<FCharacterStatData>(StringType, TEXT(""));
+}
+
+void AMDGameMode::ShowDefeatWidget()
+{
+	if(DefeatWidget != nullptr)
+	{
+		DefeatWidget->AddToViewport();
+	}
+}
+
+void AMDGameMode::ShowVictoryWidget()
+{
+	if(VictoryWidget != nullptr)
+	{
+		VictoryWidget->AddToViewport();
+	}
 }

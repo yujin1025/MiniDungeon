@@ -33,6 +33,8 @@ public:
 
 	void HandleAttacked(uint64 player_object_id, const Protocol::CTS_ATTACKED& pkt);
 
+	void HandleMonsterCleared();
+
 	void HandleDead(uint64 player_object_id, uint64 objectId);
 
 	uint64 GetRoomIndex() const { return _roomIndex; }
@@ -59,6 +61,9 @@ private:
 	bool RemovePlayer(PlayerRef player, bool isExitGame = false);
 
 	bool AddMonster(MonsterRef monster, const Protocol::PosInfo& pos_Info = Protocol::PosInfo::default_instance());
+
+	bool AddBoss(BossRef boss, const Protocol::PosInfo& pos_Info = Protocol::PosInfo::default_instance());
+
 	bool RemoveMonster(uint64 monsterId);
 public:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
@@ -69,6 +74,7 @@ public:
 	unordered_map<uint64, PlayerRef> _players;
 	unordered_map<uint64, ObjectRef> _objects;
 	unordered_map<uint64, MonsterRef> _monsters;
+	BossRef _boss;
 	weak_ptr<class Lobby> _lobby;
 	uint64 _roomIndex = 0;
 

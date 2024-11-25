@@ -21,11 +21,11 @@ void UHUDHealthWidget::NativeConstruct()
 	}
 }
 
-void UHUDHealthWidget::SetHP(int id, float HP)
+void UHUDHealthWidget::SetHP(float currentHP, float MaxHP)
 {
 	if (ProgressBar == nullptr)
 		return;
 
-	float PercentValue = HP / 100.0f;
+	float PercentValue = currentHP / MaxHP;
 	ProgressBar->SetPercent(PercentValue);
 }

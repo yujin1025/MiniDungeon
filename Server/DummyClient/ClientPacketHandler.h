@@ -48,16 +48,17 @@ enum : uint16
 	PKT_STC_MONSTER_ATTACK = 1032,
 	PKT_CTS_ATTACKED = 1033,
 	PKT_STC_ATTACKED = 1034,
-	PKT_CTS_CHAT = 1035,
-	PKT_STC_CHAT = 1036,
-	PKT_CTS_ATTACK = 1037,
-	PKT_STC_ATTACK = 1038,
-	PKT_CTS_MONSTERINFO = 1039,
-	PKT_STC_MONSTERINFO = 1040,
-	PKT_CTS_MONSTERMOVE = 1041,
-	PKT_STC_MONSTERMOVE = 1042,
-	PKT_CTS_STANDARD_MONSTER = 1043,
-	PKT_STC_STANDARD_MONSTER = 1044,
+	PKT_CTS_MONSTER_CLEARED = 1035,
+	PKT_CTS_CHAT = 1036,
+	PKT_STC_CHAT = 1037,
+	PKT_CTS_ATTACK = 1038,
+	PKT_STC_ATTACK = 1039,
+	PKT_CTS_MONSTERINFO = 1040,
+	PKT_STC_MONSTERINFO = 1041,
+	PKT_CTS_MONSTERMOVE = 1042,
+	PKT_STC_MONSTERMOVE = 1043,
+	PKT_CTS_STANDARD_MONSTER = 1044,
+	PKT_STC_STANDARD_MONSTER = 1045,
 };
 
 // Custom Handlers
@@ -140,6 +141,7 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_DETECT& pkt) { return MakeSendBuffer(pkt, PKT_CTS_DETECT); }
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_MONSTER_ATTACK& pkt) { return MakeSendBuffer(pkt, PKT_CTS_MONSTER_ATTACK); }
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_ATTACKED& pkt) { return MakeSendBuffer(pkt, PKT_CTS_ATTACKED); }
+	static SendBufferRef MakeSendBuffer(Protocol::CTS_MONSTER_CLEARED& pkt) { return MakeSendBuffer(pkt, PKT_CTS_MONSTER_CLEARED); }
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_CTS_CHAT); }
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_ATTACK& pkt) { return MakeSendBuffer(pkt, PKT_CTS_ATTACK); }
 	static SendBufferRef MakeSendBuffer(Protocol::CTS_MONSTERINFO& pkt) { return MakeSendBuffer(pkt, PKT_CTS_MONSTERINFO); }

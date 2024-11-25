@@ -18,6 +18,7 @@ Monster::Monster()
     monsterInfo->set_monster_hp(MaxHp);
 
     _hp = MaxHp;
+    CurrentHp = MaxHp;
 }
 
 Monster::~Monster()
@@ -73,77 +74,6 @@ void Monster::Init()
 
     auto moveToPositionNode = make_shared<MoveToPosition>(behaviourTree, blackboard);
     sequencer1->children.push_back(moveToPositionNode);
-}
-
-void Monster::CalcDist()
-{
-    Protocol::STC_MONSTERINFO monsterInfoPkt;
-    Protocol::STC_STANDARD_MONSTER standardMonsterPkt;
-
-    auto _room = room.load().lock(); // Room 객체 가져오기
-
-    auto targetPlayer = TargetPlayer.load();
-    if (targetPlayer)
-    {
-        // 플레이어 감지
-        for (auto& pair : _room->_objects)
-        {
-            if (auto player = dynamic_pointer_cast<Player>(pair.second))
-            {
-                // 보스가 플레이어와의 거리를 계산하여 타겟 플레이어를 설정
-                float distance = DistanceTo(player->GetPosInfo());
-                if (distance < BossSight)
-                {
-                    TargetPlayer.store(player);
-                    IsFindPlayer = true;
-                    monsterInfo->set_isfindplayer(IsFindPlayer);
-
-                    standardMonsterPkt.set_object_id(player->GetObjectInfo().object_id());
-                    standardMonsterPkt.set_isstandard(true);
-
-                    // 어그로 플레이어에게 보스 정보 전송
-                    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(standardMonsterPkt);
-                    player->session.lock()->Send(sendBuffer);
-                }
-            }
-        }
-    }
-    else
-    {
-        if (_room->_objects.find(targetPlayer->GetObjectInfo().object_id()) == _room->_objects.end())
-        {
-            TargetPlayer.store(nullptr);
-            monsterInfo->set_isfindplayer(false);
-            monsterInfo->set_targetplayer_id(-1);
-            monsterInfo->set_calcdist(0.f);
-
-            Protocol::MonsterInfo* monsterInfo = new Protocol::MonsterInfo();
-            monsterInfo->CopyFrom(GetMonsterInfo());
-
-            monsterInfoPkt.set_allocated_info(monsterInfo);
-            SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(monsterInfoPkt);
-            _room->Broadcast(sendBuffer);
-            //monsterInfoPkt.release_info();
-
-            return;
-        }
-        
-        float distance = DistanceTo(TargetPlayer.load()->GetPosInfo());
-        CanAttack();
-
-        monsterInfo->set_targetplayer_id(TargetPlayer.load()->GetObjectInfo().object_id());
-        monsterInfo->set_monster_hp(CurrentHp);
-        monsterInfo->set_calcdist(distance);
-
-        monsterInfoPkt.set_allocated_info(monsterInfo);
-        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(monsterInfoPkt);
-        _room->Broadcast(sendBuffer);
-        //monsterInfoPkt.release_info();
-    }
-}
-
-void Monster::CanAttack()
-{
 }
 
 float Monster::DistanceTo(const Protocol::PosInfo& targetPos)

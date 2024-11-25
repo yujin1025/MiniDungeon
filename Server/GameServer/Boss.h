@@ -10,6 +10,8 @@ public:
 	void Init();
 
 private:
+	const float MaxHp = 400;
+private:
 	USE_LOCK;
 };
 
