@@ -18,4 +18,6 @@ protected:
 	virtual void OnUseQSkill() override;
 	virtual void OnUseESkill() override;
 	virtual void OnUseShiftSkill() override;
+
+	void Fire(float DamageAmount);
 };
