@@ -22,8 +22,8 @@ public:
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-protected:
-	virtual void OnUseQSkill() override;
-	virtual void OnUseESkill() override;
-	virtual void OnUseShiftSkill() override;
+public:
+	virtual void OnQSkill(const FInputActionValue& Value) override;
+	virtual void OnESkill(const FInputActionValue& Value) override;
+	virtual void OnShift(const FInputActionValue& Value) override;
 };

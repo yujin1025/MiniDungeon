@@ -57,9 +57,11 @@ public:
 
 // Attack Section
 public:
-	void SendAttackPacket(EAttackType AttackType);
+	void SendAttackPacket(Protocol::PlayerType playerType, EAttackType AttackType);
 
-	bool UseSkill(EAttackType AttackType);
+	float GetSkillDamage(Protocol::PlayerType playerType, EAttackType AttackType);
+
+	bool UseSkill(Protocol::PlayerType playerType, EAttackType AttackType);
 	void OnFinishedSkillMotion(EAttackType AttackType);
 
 	FOnUseSkill OnUseSkillDelegate;
@@ -71,10 +73,6 @@ protected:
 
 public:
 	virtual bool IsSatisfiedAttack(EAttackType AttackType);
-
-	virtual void OnUseQSkill() {}
-	virtual void OnUseESkill() {}
-	virtual void OnUseShiftSkill() {}
 
 	virtual void OnHit();
 	virtual void OnDie();
@@ -136,6 +134,12 @@ public:
 	void UpdateSmoothRotationWithInterp();
 
 	FTimerHandle SmoothRotationTimerHandle;
+
+	/// <summary>
+	/// Key : object id
+	/// Value : current hp
+	/// </summary>
+	TMap<uint64, float> AttackedObjectCurrentHp;
 
 protected:
 	float RotationSpeed = 0.f;

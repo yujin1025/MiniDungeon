@@ -48,23 +48,19 @@ void Player::SetPosInfo(const Protocol::PosInfo& pos_Info)
 
 void Player::Attack(const Protocol::AttackInfo& attack_info)
 {
-	if(attack_info.attack_type() < 0 || attack_info.attack_type() > 2)
-	{
-		return;
-	}
 
 	if (attack_info.player_type() == Protocol::PLAYER_TYPE_AURORA)
 	{
 		switch (attack_info.attack_type())
 		{
 		case 0:
-			ProcessAttack(attack_info.attack_type(), attack_info.damage(), 300.f, 30.f);
+			ProcessAttack(Protocol::PLAYER_TYPE_AURORA, attack_info.attack_type(), attack_info.damage(), 300.f, 30.f);
 			break;
 		case 1:
-			ProcessAttack(attack_info.attack_type(), attack_info.damage(), 500.f, 45.f);
+			ProcessAttack(Protocol::PLAYER_TYPE_AURORA, attack_info.attack_type(), attack_info.damage(), 500.f, 45.f);
 			break;
 		case 2:
-			ProcessAttack(attack_info.attack_type(), attack_info.damage(), 700.f, 60.f);
+			ProcessAttack(Protocol::PLAYER_TYPE_AURORA, attack_info.attack_type(), attack_info.damage(), 700.f, 60.f);
 			break;
 		}
 	}
@@ -73,19 +69,19 @@ void Player::Attack(const Protocol::AttackInfo& attack_info)
 		switch (attack_info.attack_type())
 		{
 		case 0:
-			ProcessAttack(attack_info.attack_type(), attack_info.damage(), 1000.f, 10.f);
+			ProcessAttack(Protocol::PLAYER_TYPE_DRONGO, attack_info.attack_type(), attack_info.damage(), 300.f, 50.f);
 			break;
 		case 1:
-			ProcessAttack(attack_info.attack_type(), attack_info.damage(), 1200.f, 30.f);
+			ProcessAttack(Protocol::PLAYER_TYPE_DRONGO, attack_info.attack_type(), attack_info.damage(), 1000.f, 50.f);
 			break;
 		case 2:
-			ProcessAttack(attack_info.attack_type(), attack_info.damage(), 700.f, 85.f);
+			ProcessAttack(Protocol::PLAYER_TYPE_DRONGO, attack_info.attack_type(), attack_info.damage(), 1500.f, 85.f);
 			break;
 		}
 	}
 }
 
-void Player::ProcessAttack(int32 skillType, float damage, float maxDistance, float maxAngle)
+void Player::ProcessAttack(Protocol::PlayerType playerType, int32 skillType, float damage, float maxDistance, float maxAngle)
 {
 	RoomRef currentRoom = room.load().lock();
 	if (!currentRoom)
@@ -123,10 +119,13 @@ void Player::ProcessAttack(int32 skillType, float damage, float maxDistance, flo
 				attackedInfo->set_attacked_object_id(monster.second->GetObjectInfo().object_id());
 				attackedInfo->set_attacked_object_current_hp(monster.second->GetHp());
 
-				// Skill Type 0과 1은 가장 가까운 몬스터만 타겟
-				if (skillType == 0 || skillType == 1)
+				if (playerType == Protocol::PLAYER_TYPE_DRONGO)
 				{
-					break; // 가장 가까운 몬스터를 타격한 뒤 종료
+					// Skill Type 0과 1은 가장 가까운 몬스터만 타겟
+					if (skillType == 0 || skillType == 1)
+					{
+						break; // 가장 가까운 몬스터를 타격한 뒤 종료
+					}
 				}
 			}
 		}

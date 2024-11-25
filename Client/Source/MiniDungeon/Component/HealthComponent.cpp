@@ -19,7 +19,6 @@ UHealthComponent::UHealthComponent()
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
 	
 	AMDCharacter* Character = Cast<AMDCharacter>(GetOwner());
 	if (Character == nullptr)

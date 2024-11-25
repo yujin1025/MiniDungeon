@@ -2,8 +2,6 @@
 
 
 #include "PlayableCharacter.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -11,11 +9,14 @@
 #include "InputMappingContext.h"
 #include "Protocol.pb.h"
 #include "Net/UnrealNetwork.h"
-#include "../Network/MDNetworkManager.h"
-#include "../Game/MDGameInstance.h"
+#include "Network/MDNetworkManager.h"
+#include "Game/MDGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "../Component/AttackComponent.h"
-#include "../Component/HealthComponent.h"
+#include "Component/AttackComponent.h"
+#include "Component/HealthComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+
 
 APlayableCharacter::APlayableCharacter()
 {
@@ -134,57 +135,6 @@ void APlayableCharacter::Tick(float DeltaTime)
 void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	if (IsMyPlayer() == true)
-	{
-		//Add Input Mapping Context
-		if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-		{
-			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-			{
-				Subsystem->AddMappingContext(DefaultMappingContext, 0);
-			}
-		}
-
-		// Set up action bindings
-		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-
-			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnMove);
-			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &APlayableCharacter::OnMove);
-			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnLook);
-
-			EnhancedInputComponent->BindAction(InputActionMap[EAttackType::QSkillAttack], ETriggerEvent::Triggered, this, &APlayableCharacter::OnQSkill);
-			EnhancedInputComponent->BindAction(InputActionMap[EAttackType::ESkillAttack], ETriggerEvent::Triggered, this, &APlayableCharacter::OnESkill);
-			EnhancedInputComponent->BindAction(InputActionMap[EAttackType::ShiftAttack], ETriggerEvent::Started, this, &APlayableCharacter::OnShift);
-			//EnhancedInputComponent->BindAction(InputActionMap[EAttackType::ShiftAttack], ETriggerEvent::Completed, this, &APlayableCharacter::OnShiftEnd);
-		}
-	}
-	else
-	{
-		if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-		{
-			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-			{
-				Subsystem->AddMappingContext(DefaultMappingContext, 0);
-			}
-		}
-
-		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
-		{
-			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnLook);
-		}
-
-		bUseControllerRotationYaw = false;   // 컨트롤러가 캐릭터 Yaw 회전 처리 안 함
-		bUseControllerRotationPitch = false; // 컨트롤러가 캐릭터 Pitch 회전 처리 안 함
-		bUseControllerRotationRoll = false;  // 컨트롤러가 캐릭터 Roll 회전 처리 안 함
-
-		// 카메라 붐 설정
-		CameraBoom->bUsePawnControlRotation = true; // 카메라 붐이 컨트롤러 회전을 따름
-
-		// 카메라 설정
-		FollowCamera->bUsePawnControlRotation = false; // 카메라는 붐의 회전을 따름
-	}
 }
 
 void APlayableCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -240,17 +190,17 @@ void APlayableCharacter::OnLook(const FInputActionValue& Value)
 
 void APlayableCharacter::OnQSkill(const FInputActionValue& Value)
 {
-	UseSkill(EAttackType::QSkillAttack);
+
 }
 
 void APlayableCharacter::OnESkill(const FInputActionValue& Value)
 {
-	UseSkill(EAttackType::ESkillAttack);
+
 }
 
 void APlayableCharacter::OnShift(const FInputActionValue& Value)
 {
-	UseSkill(EAttackType::ShiftAttack);
+
 }
 
 

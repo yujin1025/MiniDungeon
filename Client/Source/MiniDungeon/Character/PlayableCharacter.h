@@ -20,6 +20,7 @@ class MINIDUNGEON_API APlayableCharacter : public AMDCharacter
 {
 	GENERATED_BODY()
 
+protected:
 	// input
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TMap<EAttackType, UInputAction*> InputActionMap;
@@ -40,7 +41,6 @@ class MINIDUNGEON_API APlayableCharacter : public AMDCharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
-	
 public:
 	APlayableCharacter();
 
@@ -55,7 +55,7 @@ protected:
 	UPROPERTY(Replicated)
 	FRotator ReplicatedRotation;
 	
-private:
+protected:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
@@ -69,13 +69,14 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-private:
+public:
 	void OnMove(const FInputActionValue& Value);
 	void OnLook(const FInputActionValue& Value);
 
-	void OnQSkill(const FInputActionValue& Value);
-	void OnESkill(const FInputActionValue& Value);
-	void OnShift(const FInputActionValue& Value);
+public:
+	virtual void OnQSkill(const FInputActionValue& Value);
+	virtual void OnESkill(const FInputActionValue& Value);
+	virtual void OnShift(const FInputActionValue& Value);
 	//이게 필요한건지 고민중
 	//void OnShiftEnd(const FInputActionValue& Value);
 

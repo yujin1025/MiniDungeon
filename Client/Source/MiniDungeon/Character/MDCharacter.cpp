@@ -137,7 +137,7 @@ void AMDCharacter::Look(const FVector2D Value)
 	}
 }
 
-void AMDCharacter::SendAttackPacket(EAttackType AttackType)
+void AMDCharacter::SendAttackPacket(Protocol::PlayerType playerType, EAttackType AttackType)
 {
 	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
 	if(networkManager == nullptr)
@@ -146,17 +146,18 @@ void AMDCharacter::SendAttackPacket(EAttackType AttackType)
 		return;
 	}
 
-	float damage = 0.0f;
+	float damage = GetSkillDamage(playerType, AttackType);
+	uint64 attackType = 0;
 	switch (AttackType)
 	{
 	case EAttackType::QSkillAttack:
-		damage = 10.0f; 
+		attackType = 0;
 		break;
 	case EAttackType::ESkillAttack:
-		damage = 20.0f; 
+		attackType = 1;
 		break;
-	case EAttackType::ShiftAttack:
-		damage = 30.0f; 
+	case EAttackType::ShiftAttack: 
+		attackType = 2;
 		break;
 	}
 
@@ -164,10 +165,10 @@ void AMDCharacter::SendAttackPacket(EAttackType AttackType)
 	if (networkManager->PlayerInfos.Contains(networkManager->PlayerID))
 	{
 		attackInfo.set_attack_object_id(ObjectID);
-		attackInfo.set_player_type(networkManager->PlayerInfos[networkManager->PlayerID]->player_type());
+		attackInfo.set_player_type(playerType);
 
 		attackInfo.set_damage(damage); // 데미지 설정
-		attackInfo.set_attack_type(static_cast<uint64>(AttackType)); // 공격 타입 설정
+		attackInfo.set_attack_type(attackType); // 공격 타입 설정
 
 		// 패킷을 생성
 		Protocol::CTS_ATTACK attackPkt;
@@ -181,7 +182,37 @@ void AMDCharacter::SendAttackPacket(EAttackType AttackType)
 	}
 }
 
-bool AMDCharacter::UseSkill(EAttackType AttackType)
+float AMDCharacter::GetSkillDamage(Protocol::PlayerType playerType, EAttackType AttackType)
+{
+	if (playerType == Protocol::PLAYER_TYPE_AURORA)
+	{
+		switch (AttackType)
+		{
+			case EAttackType::QSkillAttack:
+				return 10.f;
+			case EAttackType::ESkillAttack:
+				return 20.f;
+			case EAttackType::ShiftAttack:
+				return 30.f;
+		}
+	}
+	else if (playerType == Protocol::PLAYER_TYPE_DRONGO)
+	{
+		switch (AttackType)
+		{
+			case EAttackType::QSkillAttack:
+				return 20.f;
+			case EAttackType::ESkillAttack:
+				return 40.f;
+			case EAttackType::ShiftAttack:
+				return 60.f;
+		}
+	}
+
+	return 0.f;
+}
+
+bool AMDCharacter::UseSkill(Protocol::PlayerType playerType, EAttackType AttackType)
 {
 	if (IsDead)
 		return false;
@@ -201,20 +232,7 @@ bool AMDCharacter::UseSkill(EAttackType AttackType)
 	ActionComponentMap[AttackType]->PlayAttackMontage();
 	CurrentActionCoolTimeMap[AttackType] = CurrentDeltaTime + ActionCoolTimeMap[AttackType];
 
-	SendAttackPacket(AttackType);
-
-	switch (AttackType)
-	{
-	case EAttackType::QSkillAttack:
-		OnUseQSkill();
-		break;
-	case EAttackType::ESkillAttack:
-		OnUseESkill();
-		break;
-	case EAttackType::ShiftAttack:
-		OnUseShiftSkill();
-		break;
-	}
+	SendAttackPacket(playerType, AttackType);
 
 	//OnAttackEnd.Broadcast();
 	ProgressingAttackType = AttackType;

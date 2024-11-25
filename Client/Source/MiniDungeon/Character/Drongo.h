@@ -13,11 +13,18 @@ UCLASS()
 class MINIDUNGEON_API ADrongo : public APlayableCharacter
 {
 	GENERATED_BODY()
-	
+public:
+	ADrongo();
+
+	virtual void BeginPlay() override;
+
 protected:
-	virtual void OnUseQSkill() override;
-	virtual void OnUseESkill() override;
-	virtual void OnUseShiftSkill() override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+public:
+	virtual void OnQSkill(const FInputActionValue& Value) override;
+	virtual void OnESkill(const FInputActionValue& Value) override;
+	virtual void OnShift(const FInputActionValue& Value) override;
 
 	void Fire(float DamageAmount);
 };

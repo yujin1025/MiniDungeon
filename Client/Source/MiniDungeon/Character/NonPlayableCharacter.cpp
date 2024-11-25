@@ -27,14 +27,15 @@ bool ANonPlayableCharacter::Attack(APlayableCharacter* Player, float hp)
 	if (IsDead)
 		return false;
 
+	if (IsValid(Player))
+	{
+		AttackedObjectCurrentHp.Empty();
+		AttackedObjectCurrentHp.Add(Player->GetObjectID(), hp);
+	}
+
 	//TODO : 공격 타입에 따라 애니메이션 실행
 	ActionComponentMap[EAttackType::QSkillAttack]->PlayAttackMontage();
 
-	if (IsValid(Player))
-	{
-		float damage = hp - Player->HealthComponent->GetCurrentHealth();
-		Player->HealthComponent->ChangeHealth(this, damage);
-	}
 	CurrentActionCoolTimeMap[EAttackType::QSkillAttack] = CurrentDeltaTime + ActionCoolTimeMap[EAttackType::QSkillAttack];
 
 	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();

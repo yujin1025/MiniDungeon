@@ -672,15 +672,18 @@ void UMDNetworkManager::HandleAttacked(const Protocol::STC_ATTACKED& pkt)
 	{
 		if (static_cast<EAttackType>(pkt.attacking_skill_type()) < EAttackType::Max && objectId != PlayerInfos[PlayerID]->object_info().object_id())
 		{
-			findActor->UseSkill(static_cast<EAttackType>(pkt.attacking_skill_type()));
+			findActor->UseSkill(PlayerInfos[PlayerID]->player_type(), static_cast<EAttackType>(pkt.attacking_skill_type()));
 		}
 
 		for (auto& attacked_info : pkt.attacked_infos())
 		{
+			TMap<uint64, float> attacked_object_infos;
 			if (Monsters.Contains(attacked_info.attacked_object_id()))
 			{
-				float damage = attacked_info.attacked_object_current_hp() - Monsters[attacked_info.attacked_object_id()]->HealthComponent->GetCurrentHealth();
-				Monsters[attacked_info.attacked_object_id()]->HealthComponent->ChangeHealth(findActor, damage);
+				attacked_object_infos.Add(attacked_info.attacked_object_id(), attacked_info.attacked_object_current_hp());
+				findActor->AttackedObjectCurrentHp = attacked_object_infos;
+				/*float damage = attacked_info.attacked_object_current_hp() - Monsters[attacked_info.attacked_object_id()]->HealthComponent->GetCurrentHealth();
+				Monsters[attacked_info.attacked_object_id()]->HealthComponent->ChangeHealth(findActor, damage);*/
 			}
 		}
 	}

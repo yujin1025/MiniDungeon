@@ -23,7 +23,7 @@ void UHitDeadComponent::PlayDeadMontage()
 		return;
 
 	APlayableCharacter* player = Cast<APlayableCharacter>(Character);
-	if (player->IsLocallyControlled())
+	if (player && player->IsLocallyControlled())
 	{
 		auto networkManager = player->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
 		if (networkManager)

@@ -6,6 +6,7 @@
 #include "../Character/MDCharacter.h"
 #include <Character/NonPlayableCharacter.h>
 #include "Network/MDNetworkManager.h"
+#include "Character/PlayableCharacter.h"
 
 
 UAnimNotifyAttackState::UAnimNotifyAttackState()
@@ -18,67 +19,71 @@ void UAnimNotifyAttackState::TryAttack(USkeletalMeshComponent* MeshComp)
 	if (CurrentAttackCount >= MaxAttackCount)
 		return;
 
-	AMDCharacter* MyCharacter = Cast<AMDCharacter>(MeshComp->GetOwner());
-	AMDCharacter* TargetCharacter = nullptr;
-
-	/*if (TryGetOverlapTarget(MyCharacter, TargetCharacter))
+	AMDCharacter* myCharacter = Cast<AMDCharacter>(MeshComp->GetOwner());
+	AMDCharacter* targetCharacter = nullptr;
+	
+	if (myCharacter)
 	{
-		UHealthComponent* DamagedHealthComponent = TargetCharacter->FindComponentByClass<UHealthComponent>();
+		auto networkManager = myCharacter->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
 
-		if (DamagedHealthComponent)
+		for (auto attackedObjectCurrentHp : myCharacter->AttackedObjectCurrentHp)
 		{
-			DamagedHealthComponent->ChangeHealth(MyCharacter, -DamageAmount);
-			CurrentAttackCount++;
+			if (networkManager)
+			{
+				if (networkManager->Monsters.Contains(attackedObjectCurrentHp.Key))
+				{
+					targetCharacter = Cast<AMDCharacter>(networkManager->Monsters[attackedObjectCurrentHp.Key]);
+					if (targetCharacter)
+					{
+						UHealthComponent* DamagedHealthComponent = targetCharacter->FindComponentByClass<UHealthComponent>();
+
+						if (DamagedHealthComponent)
+						{
+							float damage = attackedObjectCurrentHp.Value - networkManager->Monsters[attackedObjectCurrentHp.Key]->HealthComponent->GetCurrentHealth();
+							DamagedHealthComponent->ChangeHealth(myCharacter, damage);
+							CurrentAttackCount++;
+						}
+					}
+				}
+				else if(networkManager->Players.Contains(attackedObjectCurrentHp.Key))
+				{
+					targetCharacter = Cast<AMDCharacter>(networkManager->Players[attackedObjectCurrentHp.Key]);
+					if (targetCharacter)
+					{
+						UHealthComponent* DamagedHealthComponent = targetCharacter->FindComponentByClass<UHealthComponent>();
+
+						if (DamagedHealthComponent)
+						{
+							float damage = attackedObjectCurrentHp.Value - networkManager->Players[attackedObjectCurrentHp.Key]->HealthComponent->GetCurrentHealth();
+							DamagedHealthComponent->ChangeHealth(myCharacter, damage);
+							CurrentAttackCount++;
+						}
+					}
+				}
+			}
 		}
-	}*/
+	}
 }
 
 void UAnimNotifyAttackState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	CurrentAttackCount = 0;
+	AMDCharacter* MyCharacter = Cast<AMDCharacter>(MeshComp->GetOwner());
 	TryAttack(MeshComp);
 }
 
 void UAnimNotifyAttackState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
 {
-	TryAttack(MeshComp);
 }
 
 void UAnimNotifyAttackState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	CurrentAttackCount = 0;
-	ANonPlayableCharacter* monster = Cast<ANonPlayableCharacter>(MeshComp->GetOwner());
+	AMDCharacter* myCharacter = Cast<AMDCharacter>(MeshComp->GetOwner());
 
-	if (IsValid(monster))
+	if (myCharacter)
 	{
-		// TWeakObjectPtr로 monster를 약한 참조로 캡처
-		TWeakObjectPtr<ANonPlayableCharacter> weakMonster = monster;
-		FTimerHandle timerHandle;
-
-		weakMonster.Get()->GetWorld()->GetTimerManager().SetTimer(
-			timerHandle,
-			[weakMonster]()
-			{
-				if (weakMonster.IsValid())
-				{
-					ANonPlayableCharacter* monsterPtr = weakMonster.Get();
-
-					Protocol::CTS_MONSTER_ATTACK monsterAttackPkt;
-					monsterAttackPkt.set_monster_id(monsterPtr->GetObjectID());
-					monsterAttackPkt.set_monster_attack_type(static_cast<uint64>(EAttackType::QSkillAttack));
-
-					SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(monsterAttackPkt);
-
-					// 네트워크 매니저 가져오기
-					auto networkManager = monsterPtr->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-					if (IsValid(networkManager))
-					{
-						networkManager->SendPacket(sendBuffer);
-					}
-				}
-			},
-			1.0f, false
-		);
+		myCharacter->AttackedObjectCurrentHp.Empty();
 	}
 }
 
