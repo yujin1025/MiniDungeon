@@ -69,6 +69,10 @@ public:
 	UPROPERTY()
 	AMDPlayerState* MyPlayerState;
 
+	TArray<AMDPlayerState*> Players;
+
+	bool IsDeadPlayers() const;
+
 public:
 	UPROPERTY(EditAnywhere, Category = Data)
 	class UDataTable* CharacterStatTable;

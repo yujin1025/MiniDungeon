@@ -5,6 +5,8 @@
 #include "MDPlayerController.h"
 #include "MDGameState.h"
 #include "../Widget/MDWidget.h"
+#include "MDPlayerState.h"
+#include "../Character/PlayableCharacter.h"
 #include "Blueprint/UserWidget.h"
 #include "MDNetworkManager.h"
 #include "InGameLevelScriptActor.h"
@@ -42,6 +44,15 @@ void AMDGameMode::PostLogin(APlayerController* NewPlayer)
 	Super::PostLogin(NewPlayer);
 	MD_LOG(LogMDNetwork, Log, TEXT("End"));
 	OnPostLogin(Cast<AMDPlayerController>(NewPlayer));
+
+	if (NewPlayer)
+	{
+		auto* NewPlayerState = Cast<AMDPlayerState>(NewPlayer->PlayerState);
+		if (NewPlayerState)
+		{
+			Players.Add(NewPlayerState);
+		}
+	}
 }
 
 void AMDGameMode::Tick(float DeltaTime)
@@ -99,6 +110,22 @@ void AMDGameMode::OnPostLogin(AController* NewPlayer)
 	{
 		MyPlayerState = newPlayer->GetState();
 	}
+}
+
+bool AMDGameMode::IsDeadPlayers() const
+{
+	for (AMDPlayerState* PlayerState : Players)
+	{
+		if (PlayerState)
+		{
+			APlayableCharacter* PlayerCharacter = Cast<APlayableCharacter>(PlayerState->GetPawn());
+			if (PlayerCharacter && PlayerCharacter->IsDead)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 FCharacterStatData* AMDGameMode::GetCharacterStat(ECharacterType type)

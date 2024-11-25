@@ -24,6 +24,11 @@ public:
 	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
 	virtual void OnPossess(APawn* aPawn) override;
+	void CheckGameState();
+
+protected:
+	virtual void Tick(float DeltaTime) override;
+
 
 private:
 	void OnPossessCharacter(AMDCharacter* aCharacter);
@@ -31,10 +36,28 @@ private:
 
 	Protocol::PlayerInfo* PlayerInfo;
 
+	bool bGameStateShown = false;
+
 public:
 	const Protocol::PlayerInfo* GetPlayerInfo() { return PlayerInfo; }
 	void SetPlayerInfo(const Protocol::PlayerInfo& info);
+
 public:
 	AMDPlayerState* GetState();
 	AMDCharacter* GetCharacter();
+
+public:
+	UPROPERTY()
+	class UMDWidget* GameClearWidget;
+
+	UPROPERTY()
+	UMDWidget* GameOverWidget;
+
+private:
+	UPROPERTY(EditAnywhere, Category = UI)
+	TSubclassOf<UMDWidget> ClearWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = UI)
+	TSubclassOf<UMDWidget> OverWidgetClass;
+
 };
