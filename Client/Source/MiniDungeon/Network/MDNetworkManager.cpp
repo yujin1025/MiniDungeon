@@ -15,8 +15,8 @@
 #include "Lobby/LobbyPlayerController.h"
 #include <Lobby/RoomListViewItemData.h>
 #include "Game/MDPlayerController.h"
-#include "../Character/Khaimera.h"
-#include "../AI/MDAIController.h"
+#include "Character/Khaimera.h"
+#include "AI/MDAIController.h"
 #include <Game/MDGameMode.h>
 #include "Component/HealthComponent.h"
 
@@ -415,6 +415,10 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 				break;
 			}
 
+			player->SetObjectID(objectId);
+			MyPlayer = player;
+			Players.Add(objectId, player);
+
 			if (IsValid(pc))
 			{
 				pc->GetPawn()->Destroy();
@@ -430,10 +434,6 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 			{
 				gameMode->MyPlayerState = pc->GetState();
 			}
-
-			MyPlayer = player;
-			Players.Add(objectInfo.object_id(), player);
-			player->SetObjectID(objectInfo.object_id());
 		}
 	}
 	else
@@ -451,6 +451,7 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 			break;
 		}
 
+		player->SetObjectID(objectId);
 		Players.Add(objectInfo.object_id(), player);
 	}
 }
@@ -641,18 +642,18 @@ void UMDNetworkManager::HandleMonsterAttack(const Protocol::STC_MONSTER_ATTACK& 
 	if (World == nullptr)
 		return;
 
-	ANonPlayableCharacter* Monster = Monsters.Find(pkt.monster_id())->Get();
-	if (Monster == nullptr)
+	ANonPlayableCharacter* monster = Monsters.Find(pkt.monster_id())->Get();
+	if (monster == nullptr)
 		return;
 
-	APlayableCharacter* Player = Players.Find(pkt.target_id())->Get();
+	APlayableCharacter* player = Players.Find(pkt.target_id())->Get();
 
-	if(Player != nullptr)
+	if(player != nullptr)
 	{
-		Monster->RotateToTarget(Player, 2.0f);
+		monster->SetActorRotation(monster->GetTargetRotation(player->GetActorLocation()));
 	}
 
-	Monster->Attack(Player, pkt.target_current_hp());
+	monster->Attack(player, pkt.target_current_hp());
 }
 
 void UMDNetworkManager::HandleAttacked(const Protocol::STC_ATTACKED& pkt)

@@ -97,6 +97,9 @@
     <ClCompile Include="ActionNode.cpp">
       <Filter>BT</Filter>
     </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Game\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -162,6 +165,9 @@
     </ClInclude>
     <ClInclude Include="ActionNode.h">
       <Filter>BT</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>Game\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

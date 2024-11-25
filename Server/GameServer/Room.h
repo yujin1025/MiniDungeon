@@ -29,6 +29,8 @@ public:
 
 	void HandleAttack(const Protocol::CTS_ATTACK& pkt);
 
+	void HandleMonsterAttackFinished(uint64 monster_object_id);
+
 	void HandleAttacked(uint64 player_object_id, const Protocol::CTS_ATTACKED& pkt);
 
 	void HandleDead(uint64 player_object_id, uint64 objectId);

@@ -369,6 +369,19 @@ void Room::HandleAttack(const Protocol::CTS_ATTACK& pkt)
 	}
 }
 
+void Room::HandleMonsterAttackFinished(uint64 monster_object_id)
+{
+	if(_objects.find(monster_object_id) == _objects.end())
+		return;
+
+	MonsterRef monster = dynamic_pointer_cast<Monster>(_objects[monster_object_id]);
+
+	if(monster)
+	{
+		monster->SetMovementState(Protocol::MOVE_STATE_IDLE);
+	}
+}
+
 void Room::HandleAttacked(uint64 player_object_id, const Protocol::CTS_ATTACKED& pkt)
 {
 	const uint64 objectId = pkt.object_id();

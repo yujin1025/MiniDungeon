@@ -53,7 +53,7 @@ public:
 	atomic<shared_ptr<Player>> TargetPlayer; //보스가 추적하는 플레이어 객체
 	atomic<bool> isAttacking = false;
 
-private:
+protected:
 	Protocol::MonsterInfo* monsterInfo;
 
 public:
@@ -68,7 +68,7 @@ public:
 
 	void SetMovementState(Protocol::MoveState state);
 
-private:
+protected:
 	shared_ptr<BehaviourTree> behaviourTree;
 	shared_ptr<MonsterBlackboard> blackboard;
 

@@ -439,12 +439,8 @@ bool Handle_CTS_MONSTER_ATTACK(PacketSessionRef& session, Protocol::CTS_MONSTER_
 	RoomRef room = player->room.load().lock();
 	if (room == nullptr)
 		return false;
-
-	Protocol::STC_MONSTER_ATTACK monsterAttackPkt;
-	monsterAttackPkt.set_monster_id(pkt.monster_id());
-
-	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(monsterAttackPkt);
-	room->Broadcast(sendBuffer);
+	
+	room->DoAsync(&Room::HandleMonsterAttackFinished, pkt.monster_id());
 
 	return true;
 }

@@ -5411,8 +5411,6 @@ class CTS_MONSTER_ATTACK final :
   enum : int {
     kMonsterIdFieldNumber = 1,
     kMonsterAttackTypeFieldNumber = 2,
-    kTargetIdFieldNumber = 3,
-    kTargetCurrentHpFieldNumber = 4,
   };
   // uint64 monster_id = 1;
   void clear_monster_id();
@@ -5432,24 +5430,6 @@ class CTS_MONSTER_ATTACK final :
   void _internal_set_monster_attack_type(uint64_t value);
   public:
 
-  // uint64 target_id = 3;
-  void clear_target_id();
-  uint64_t target_id() const;
-  void set_target_id(uint64_t value);
-  private:
-  uint64_t _internal_target_id() const;
-  void _internal_set_target_id(uint64_t value);
-  public:
-
-  // float target_current_hp = 4;
-  void clear_target_current_hp();
-  float target_current_hp() const;
-  void set_target_current_hp(float value);
-  private:
-  float _internal_target_current_hp() const;
-  void _internal_set_target_current_hp(float value);
-  public:
-
   // @@protoc_insertion_point(class_scope:Protocol.CTS_MONSTER_ATTACK)
  private:
   class _Internal;
@@ -5460,8 +5440,6 @@ class CTS_MONSTER_ATTACK final :
   struct Impl_ {
     uint64_t monster_id_;
     uint64_t monster_attack_type_;
-    uint64_t target_id_;
-    float target_current_hp_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -10138,46 +10116,6 @@ inline void CTS_MONSTER_ATTACK::_internal_set_monster_attack_type(uint64_t value
 inline void CTS_MONSTER_ATTACK::set_monster_attack_type(uint64_t value) {
   _internal_set_monster_attack_type(value);
   // @@protoc_insertion_point(field_set:Protocol.CTS_MONSTER_ATTACK.monster_attack_type)
-}
-
-// uint64 target_id = 3;
-inline void CTS_MONSTER_ATTACK::clear_target_id() {
-  _impl_.target_id_ = uint64_t{0u};
-}
-inline uint64_t CTS_MONSTER_ATTACK::_internal_target_id() const {
-  return _impl_.target_id_;
-}
-inline uint64_t CTS_MONSTER_ATTACK::target_id() const {
-  // @@protoc_insertion_point(field_get:Protocol.CTS_MONSTER_ATTACK.target_id)
-  return _internal_target_id();
-}
-inline void CTS_MONSTER_ATTACK::_internal_set_target_id(uint64_t value) {
-  
-  _impl_.target_id_ = value;
-}
-inline void CTS_MONSTER_ATTACK::set_target_id(uint64_t value) {
-  _internal_set_target_id(value);
-  // @@protoc_insertion_point(field_set:Protocol.CTS_MONSTER_ATTACK.target_id)
-}
-
-// float target_current_hp = 4;
-inline void CTS_MONSTER_ATTACK::clear_target_current_hp() {
-  _impl_.target_current_hp_ = 0;
-}
-inline float CTS_MONSTER_ATTACK::_internal_target_current_hp() const {
-  return _impl_.target_current_hp_;
-}
-inline float CTS_MONSTER_ATTACK::target_current_hp() const {
-  // @@protoc_insertion_point(field_get:Protocol.CTS_MONSTER_ATTACK.target_current_hp)
-  return _internal_target_current_hp();
-}
-inline void CTS_MONSTER_ATTACK::_internal_set_target_current_hp(float value) {
-  
-  _impl_.target_current_hp_ = value;
-}
-inline void CTS_MONSTER_ATTACK::set_target_current_hp(float value) {
-  _internal_set_target_current_hp(value);
-  // @@protoc_insertion_point(field_set:Protocol.CTS_MONSTER_ATTACK.target_current_hp)
 }
 
 // -------------------------------------------------------------------

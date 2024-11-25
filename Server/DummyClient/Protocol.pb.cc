@@ -453,8 +453,6 @@ PROTOBUF_CONSTEXPR CTS_MONSTER_ATTACK::CTS_MONSTER_ATTACK(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.monster_id_)*/uint64_t{0u}
   , /*decltype(_impl_.monster_attack_type_)*/uint64_t{0u}
-  , /*decltype(_impl_.target_id_)*/uint64_t{0u}
-  , /*decltype(_impl_.target_current_hp_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct CTS_MONSTER_ATTACKDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CTS_MONSTER_ATTACKDefaultTypeInternal()
@@ -902,8 +900,6 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::CTS_MONSTER_ATTACK, _impl_.monster_id_),
   PROTOBUF_FIELD_OFFSET(::Protocol::CTS_MONSTER_ATTACK, _impl_.monster_attack_type_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::CTS_MONSTER_ATTACK, _impl_.target_id_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::CTS_MONSTER_ATTACK, _impl_.target_current_hp_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::STC_MONSTER_ATTACK, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -1040,19 +1036,19 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 227, -1, -1, sizeof(::Protocol::CTS_DETECT)},
   { 235, -1, -1, sizeof(::Protocol::STC_DETECT)},
   { 243, -1, -1, sizeof(::Protocol::CTS_MONSTER_ATTACK)},
-  { 253, -1, -1, sizeof(::Protocol::STC_MONSTER_ATTACK)},
-  { 263, -1, -1, sizeof(::Protocol::CTS_ATTACKED)},
-  { 271, -1, -1, sizeof(::Protocol::STC_ATTACKED)},
-  { 280, -1, -1, sizeof(::Protocol::CTS_CHAT)},
-  { 287, -1, -1, sizeof(::Protocol::STC_CHAT)},
-  { 295, -1, -1, sizeof(::Protocol::CTS_ATTACK)},
-  { 302, -1, -1, sizeof(::Protocol::STC_ATTACK)},
-  { 309, -1, -1, sizeof(::Protocol::CTS_MONSTERINFO)},
-  { 316, -1, -1, sizeof(::Protocol::STC_MONSTERINFO)},
-  { 323, -1, -1, sizeof(::Protocol::CTS_MONSTERMOVE)},
-  { 331, -1, -1, sizeof(::Protocol::STC_MONSTERMOVE)},
-  { 339, -1, -1, sizeof(::Protocol::CTS_STANDARD_MONSTER)},
-  { 347, -1, -1, sizeof(::Protocol::STC_STANDARD_MONSTER)},
+  { 251, -1, -1, sizeof(::Protocol::STC_MONSTER_ATTACK)},
+  { 261, -1, -1, sizeof(::Protocol::CTS_ATTACKED)},
+  { 269, -1, -1, sizeof(::Protocol::STC_ATTACKED)},
+  { 278, -1, -1, sizeof(::Protocol::CTS_CHAT)},
+  { 285, -1, -1, sizeof(::Protocol::STC_CHAT)},
+  { 293, -1, -1, sizeof(::Protocol::CTS_ATTACK)},
+  { 300, -1, -1, sizeof(::Protocol::STC_ATTACK)},
+  { 307, -1, -1, sizeof(::Protocol::CTS_MONSTERINFO)},
+  { 314, -1, -1, sizeof(::Protocol::STC_MONSTERINFO)},
+  { 321, -1, -1, sizeof(::Protocol::CTS_MONSTERMOVE)},
+  { 329, -1, -1, sizeof(::Protocol::STC_MONSTERMOVE)},
+  { 337, -1, -1, sizeof(::Protocol::CTS_STANDARD_MONSTER)},
+  { 345, -1, -1, sizeof(::Protocol::STC_STANDARD_MONSTER)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -1154,33 +1150,31 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "rget_object_id\030\002 \001(\004\"@\n\nCTS_DETECT\022\030\n\020de"
   "tect_object_id\030\001 \001(\004\022\030\n\020target_object_id"
   "\030\002 \001(\004\"@\n\nSTC_DETECT\022\030\n\020detect_object_id"
-  "\030\001 \001(\004\022\030\n\020target_object_id\030\002 \001(\004\"s\n\022CTS_"
+  "\030\001 \001(\004\022\030\n\020target_object_id\030\002 \001(\004\"E\n\022CTS_"
   "MONSTER_ATTACK\022\022\n\nmonster_id\030\001 \001(\004\022\033\n\023mo"
-  "nster_attack_type\030\002 \001(\004\022\021\n\ttarget_id\030\003 \001"
-  "(\004\022\031\n\021target_current_hp\030\004 \001(\002\"s\n\022STC_MON"
-  "STER_ATTACK\022\022\n\nmonster_id\030\001 \001(\004\022\033\n\023monst"
-  "er_attack_type\030\002 \001(\004\022\021\n\ttarget_id\030\003 \001(\004\022"
-  "\031\n\021target_current_hp\030\004 \001(\002\"<\n\014CTS_ATTACK"
-  "ED\022\021\n\tobject_id\030\001 \001(\004\022\031\n\021object_current_"
-  "hp\030\002 \001(\002\"y\n\014STC_ATTACKED\022\033\n\023attacking_ob"
-  "ject_id\030\001 \001(\004\022\034\n\024attacking_skill_type\030\002 "
-  "\001(\004\022.\n\016attacked_infos\030\003 \003(\0132\026.Protocol.A"
-  "ttackedInfo\"\027\n\010CTS_CHAT\022\013\n\003msg\030\001 \001(\t\")\n\010"
-  "STC_CHAT\022\020\n\010playerId\030\001 \001(\004\022\013\n\003msg\030\002 \001(\t\""
-  "0\n\nCTS_ATTACK\022\"\n\004info\030\001 \001(\0132\024.Protocol.A"
-  "ttackInfo\"0\n\nSTC_ATTACK\022\"\n\004info\030\001 \001(\0132\024."
-  "Protocol.AttackInfo\"6\n\017CTS_MONSTERINFO\022#"
-  "\n\004info\030\001 \001(\0132\025.Protocol.MonsterInfo\"6\n\017S"
-  "TC_MONSTERINFO\022#\n\004info\030\001 \001(\0132\025.Protocol."
-  "MonsterInfo\"X\n\017CTS_MONSTERMOVE\022$\n\004type\030\001"
-  " \001(\0162\026.Protocol.CreatureType\022\037\n\004info\030\002 \001"
-  "(\0132\021.Protocol.PosInfo\"X\n\017STC_MONSTERMOVE"
-  "\022$\n\004type\030\001 \001(\0162\026.Protocol.CreatureType\022\037"
-  "\n\004info\030\002 \001(\0132\021.Protocol.PosInfo\"=\n\024CTS_S"
-  "TANDARD_MONSTER\022\022\n\nisstandard\030\001 \001(\010\022\021\n\to"
-  "bject_id\030\002 \001(\004\"=\n\024STC_STANDARD_MONSTER\022\022"
-  "\n\nisstandard\030\001 \001(\010\022\021\n\tobject_id\030\002 \001(\004b\006p"
-  "roto3"
+  "nster_attack_type\030\002 \001(\004\"s\n\022STC_MONSTER_A"
+  "TTACK\022\022\n\nmonster_id\030\001 \001(\004\022\033\n\023monster_att"
+  "ack_type\030\002 \001(\004\022\021\n\ttarget_id\030\003 \001(\004\022\031\n\021tar"
+  "get_current_hp\030\004 \001(\002\"<\n\014CTS_ATTACKED\022\021\n\t"
+  "object_id\030\001 \001(\004\022\031\n\021object_current_hp\030\002 \001"
+  "(\002\"y\n\014STC_ATTACKED\022\033\n\023attacking_object_i"
+  "d\030\001 \001(\004\022\034\n\024attacking_skill_type\030\002 \001(\004\022.\n"
+  "\016attacked_infos\030\003 \003(\0132\026.Protocol.Attacke"
+  "dInfo\"\027\n\010CTS_CHAT\022\013\n\003msg\030\001 \001(\t\")\n\010STC_CH"
+  "AT\022\020\n\010playerId\030\001 \001(\004\022\013\n\003msg\030\002 \001(\t\"0\n\nCTS"
+  "_ATTACK\022\"\n\004info\030\001 \001(\0132\024.Protocol.AttackI"
+  "nfo\"0\n\nSTC_ATTACK\022\"\n\004info\030\001 \001(\0132\024.Protoc"
+  "ol.AttackInfo\"6\n\017CTS_MONSTERINFO\022#\n\004info"
+  "\030\001 \001(\0132\025.Protocol.MonsterInfo\"6\n\017STC_MON"
+  "STERINFO\022#\n\004info\030\001 \001(\0132\025.Protocol.Monste"
+  "rInfo\"X\n\017CTS_MONSTERMOVE\022$\n\004type\030\001 \001(\0162\026"
+  ".Protocol.CreatureType\022\037\n\004info\030\002 \001(\0132\021.P"
+  "rotocol.PosInfo\"X\n\017STC_MONSTERMOVE\022$\n\004ty"
+  "pe\030\001 \001(\0162\026.Protocol.CreatureType\022\037\n\004info"
+  "\030\002 \001(\0132\021.Protocol.PosInfo\"=\n\024CTS_STANDAR"
+  "D_MONSTER\022\022\n\nisstandard\030\001 \001(\010\022\021\n\tobject_"
+  "id\030\002 \001(\004\"=\n\024STC_STANDARD_MONSTER\022\022\n\nisst"
+  "andard\030\001 \001(\010\022\021\n\tobject_id\030\002 \001(\004b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -1188,7 +1182,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 3045, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 2999, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 45,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -7852,14 +7846,12 @@ CTS_MONSTER_ATTACK::CTS_MONSTER_ATTACK(const CTS_MONSTER_ATTACK& from)
   new (&_impl_) Impl_{
       decltype(_impl_.monster_id_){}
     , decltype(_impl_.monster_attack_type_){}
-    , decltype(_impl_.target_id_){}
-    , decltype(_impl_.target_current_hp_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.monster_id_, &from._impl_.monster_id_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.target_current_hp_) -
-    reinterpret_cast<char*>(&_impl_.monster_id_)) + sizeof(_impl_.target_current_hp_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.monster_attack_type_) -
+    reinterpret_cast<char*>(&_impl_.monster_id_)) + sizeof(_impl_.monster_attack_type_));
   // @@protoc_insertion_point(copy_constructor:Protocol.CTS_MONSTER_ATTACK)
 }
 
@@ -7870,8 +7862,6 @@ inline void CTS_MONSTER_ATTACK::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.monster_id_){uint64_t{0u}}
     , decltype(_impl_.monster_attack_type_){uint64_t{0u}}
-    , decltype(_impl_.target_id_){uint64_t{0u}}
-    , decltype(_impl_.target_current_hp_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -7900,8 +7890,8 @@ void CTS_MONSTER_ATTACK::Clear() {
   (void) cached_has_bits;
 
   ::memset(&_impl_.monster_id_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.target_current_hp_) -
-      reinterpret_cast<char*>(&_impl_.monster_id_)) + sizeof(_impl_.target_current_hp_));
+      reinterpret_cast<char*>(&_impl_.monster_attack_type_) -
+      reinterpret_cast<char*>(&_impl_.monster_id_)) + sizeof(_impl_.monster_attack_type_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -7924,22 +7914,6 @@ const char* CTS_MONSTER_ATTACK::_InternalParse(const char* ptr, ::_pbi::ParseCon
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _impl_.monster_attack_type_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // uint64 target_id = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          _impl_.target_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // float target_current_hp = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 37)) {
-          _impl_.target_current_hp_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
-          ptr += sizeof(float);
         } else
           goto handle_unusual;
         continue;
@@ -7984,22 +7958,6 @@ uint8_t* CTS_MONSTER_ATTACK::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_monster_attack_type(), target);
   }
 
-  // uint64 target_id = 3;
-  if (this->_internal_target_id() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_target_id(), target);
-  }
-
-  // float target_current_hp = 4;
-  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
-  float tmp_target_current_hp = this->_internal_target_current_hp();
-  uint32_t raw_target_current_hp;
-  memcpy(&raw_target_current_hp, &tmp_target_current_hp, sizeof(tmp_target_current_hp));
-  if (raw_target_current_hp != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteFloatToArray(4, this->_internal_target_current_hp(), target);
-  }
-
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -8026,20 +7984,6 @@ size_t CTS_MONSTER_ATTACK::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_monster_attack_type());
   }
 
-  // uint64 target_id = 3;
-  if (this->_internal_target_id() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_target_id());
-  }
-
-  // float target_current_hp = 4;
-  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
-  float tmp_target_current_hp = this->_internal_target_current_hp();
-  uint32_t raw_target_current_hp;
-  memcpy(&raw_target_current_hp, &tmp_target_current_hp, sizeof(tmp_target_current_hp));
-  if (raw_target_current_hp != 0) {
-    total_size += 1 + 4;
-  }
-
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -8064,16 +8008,6 @@ void CTS_MONSTER_ATTACK::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, con
   if (from._internal_monster_attack_type() != 0) {
     _this->_internal_set_monster_attack_type(from._internal_monster_attack_type());
   }
-  if (from._internal_target_id() != 0) {
-    _this->_internal_set_target_id(from._internal_target_id());
-  }
-  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
-  float tmp_target_current_hp = from._internal_target_current_hp();
-  uint32_t raw_target_current_hp;
-  memcpy(&raw_target_current_hp, &tmp_target_current_hp, sizeof(tmp_target_current_hp));
-  if (raw_target_current_hp != 0) {
-    _this->_internal_set_target_current_hp(from._internal_target_current_hp());
-  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -8092,8 +8026,8 @@ void CTS_MONSTER_ATTACK::InternalSwap(CTS_MONSTER_ATTACK* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CTS_MONSTER_ATTACK, _impl_.target_current_hp_)
-      + sizeof(CTS_MONSTER_ATTACK::_impl_.target_current_hp_)
+      PROTOBUF_FIELD_OFFSET(CTS_MONSTER_ATTACK, _impl_.monster_attack_type_)
+      + sizeof(CTS_MONSTER_ATTACK::_impl_.monster_attack_type_)
       - PROTOBUF_FIELD_OFFSET(CTS_MONSTER_ATTACK, _impl_.monster_id_)>(
           reinterpret_cast<char*>(&_impl_.monster_id_),
           reinterpret_cast<char*>(&other->_impl_.monster_id_));

@@ -314,7 +314,7 @@ FVector AMDCharacter::GetTargetPosition(ECollisionChannel Channel, float RayCast
 	return FVector::ZeroVector;
 }
 
-void AMDCharacter::RotateToTarget(const AMDCharacter* Target, float RotationSpeed)
+void AMDCharacter::RotateToTarget(const AMDCharacter* Target, float rotationSpeed)
 {
 	if (IsValid(Target))
 		return;
@@ -322,14 +322,14 @@ void AMDCharacter::RotateToTarget(const AMDCharacter* Target, float RotationSpee
 	FVector LookVector = GetLookVector(Target);
 	LookVector.Z = 0.f;
 
-	FRotator TargetRotation = FRotationMatrix::MakeFromX(LookVector).Rotator();
-	SetRotation(TargetRotation, RotationSpeed);
+	FRotator targetRotation = FRotationMatrix::MakeFromX(LookVector).Rotator();
+	SetRotation(targetRotation, rotationSpeed);
 }
 
-void AMDCharacter::SetRotation(FRotator Rotation, float RotationSpeed)
+void AMDCharacter::SetRotation(FRotator Rotation, float rotationSpeed)
 {
-	FRotator TargetRotation = FMath::RInterpTo(GetActorRotation(), Rotation, GetWorld()->GetDeltaSeconds(), RotationSpeed);
-	SetActorRotation(TargetRotation);
+	FRotator targetRotation = FMath::RInterpTo(GetActorRotation(), Rotation, GetWorld()->GetDeltaSeconds(), rotationSpeed);
+	SetActorRotation(targetRotation);
 }
 
 void AMDCharacter::SetMoveState(Protocol::MoveState State)
@@ -370,6 +370,42 @@ void AMDCharacter::SetDestInfo(const Protocol::PosInfo& Info)
 	// 상태만 바로 적용하자.
 	SetMoveState(Info.state());
 	TargetLocation = FVector(Info.x(), Info.y(), Info.z());
+}
+
+FRotator AMDCharacter::GetTargetRotation(FVector targetLocation)
+{
+	FVector toTarget = targetLocation - GetActorLocation();
+	toTarget.Z = 0;
+
+	FRotator targetRotation = toTarget.Rotation(); // 방향을 회전으로 변환
+	targetRotation.Pitch = 0.0f;
+
+	return targetRotation;
+}
+
+void AMDCharacter::StartSmoothRotation(FVector targetLocation, float Speed)
+{
+	//SetTargetRotation(targetLocation);
+	RotationSpeed = Speed;
+
+	// 타이머 시작
+	GetWorld()->GetTimerManager().SetTimer(SmoothRotationTimerHandle, this, &AMDCharacter::UpdateSmoothRotationWithInterp, 0.016f, true); // 16ms
+}
+
+void AMDCharacter::UpdateSmoothRotationWithInterp()
+{
+	FRotator CurrentRotation = GetActorRotation();
+
+	// 회전 보간 계산
+	FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, 0.016f, RotationSpeed);
+
+	SetActorRotation(NewRotation);
+
+	// 목표 회전에 도달하면 타이머 정지
+	if (CurrentRotation.Equals(TargetRotation, 1.0f)) // 1.0f는 허용 오차
+	{
+		GetWorld()->GetTimerManager().ClearTimer(SmoothRotationTimerHandle);
+	}
 }
 
 

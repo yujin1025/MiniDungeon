@@ -191,8 +191,6 @@ message CTS_MONSTER_ATTACK
 {
 	uint64 monster_id = 1;
 	uint64 monster_attack_type = 2;
-	uint64 target_id = 3;
-	float target_current_hp = 4;
 }
 
 message STC_MONSTER_ATTACK

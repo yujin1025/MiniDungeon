@@ -37,6 +37,19 @@ bool ANonPlayableCharacter::Attack(APlayableCharacter* Player, float hp)
 	}
 	CurrentActionCoolTimeMap[EAttackType::QSkillAttack] = CurrentDeltaTime + ActionCoolTimeMap[EAttackType::QSkillAttack];
 
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if (networkManager->isHost)
+	{
+		Protocol::CTS_MONSTER_ATTACK AttackPkt;
+
+		// 패킷을 SendBufferRef로 직렬화
+		SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(AttackPkt);
+		if (IsValid(networkManager))
+		{
+			networkManager->SendPacket(sendBuffer);
+		}
+	}
+
 	return true;
 }
 
