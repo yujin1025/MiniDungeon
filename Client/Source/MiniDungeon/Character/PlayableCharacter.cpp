@@ -203,6 +203,21 @@ void APlayableCharacter::OnShift(const FInputActionValue& Value)
 
 }
 
+void APlayableCharacter::OnEndQSkill(const FInputActionValue& Value)
+{
+	bCanUseQ = true;
+}
+
+void APlayableCharacter::OnEndESkill(const FInputActionValue& Value)
+{
+	bCanUseE = true;
+}
+
+void APlayableCharacter::OnEndShift(const FInputActionValue& Value)
+{
+	bCanUseShift = true;
+}
+
 
 void APlayableCharacter::Other_Attack(const Protocol::AttackInfo& Info)
 {

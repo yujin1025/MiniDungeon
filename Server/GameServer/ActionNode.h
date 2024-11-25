@@ -70,12 +70,19 @@ protected:
 	virtual ENodeState OnUpdate() override;
 
 public:
+	void SetAttackType(int _attackType) { attackType = _attackType; }
 	void SetDamage(float _damage) { damage = _damage; }
 	void SetHitRange(float _hitRange) { hitRange = _hitRange; }
 	void SetHitAngle(float _hitAngle) { hitAngle = _hitAngle; }
+	void SetIsRangeAttack(bool _isRangeAttack) { isRangeAttack = _isRangeAttack; }
 
 private:
+	bool isRangeAttack = false;
+	int attackType = 0;
 	float damage = 20.f;
 	float hitRange = 200.f;
 	float hitAngle = 45.f;
+
+	float duration = 2;
+	float startTime;
 };

@@ -87,19 +87,28 @@ void AMDGameMode::StartPlay()
 		{
 			if (playerInfo.Value->player_id() == networkManager->PlayerID)
 			{
-				networkManager->HandleSpawn(*(playerInfo.Value), ingameLevelScriptActor->GetPlayerStarts(), true);
+				if (IsValid(ingameLevelScriptActor))
+				{
+					networkManager->HandleSpawn(*(playerInfo.Value), ingameLevelScriptActor->GetPlayerStarts(), true);
+				}
 			}
 			else
 			{
-				networkManager->HandleSpawn(*(playerInfo.Value), ingameLevelScriptActor->GetPlayerStarts(), false);
+				if (IsValid(ingameLevelScriptActor))
+				{
+					networkManager->HandleSpawn(*(playerInfo.Value), ingameLevelScriptActor->GetPlayerStarts(), false);
+				}
 			}
 		}
 
 		for(const auto& monsterInfo : networkManager->MonsterInfos)
 		{
 			uint64 object_id = (monsterInfo.Value)->object_info().object_id();
-			FVector spawnLocation = ingameLevelScriptActor->GetEnemySpawns()[object_id % 4]->GetActorLocation();
-			networkManager->HandleSpawn((monsterInfo.Value)->object_info(), spawnLocation);
+			if (IsValid(ingameLevelScriptActor))
+			{
+				FVector spawnLocation = ingameLevelScriptActor->GetEnemySpawns()[object_id % 4]->GetActorLocation();
+				networkManager->HandleSpawn((monsterInfo.Value)->object_info(), spawnLocation);
+			}
 		}
 	}
 
@@ -113,6 +122,20 @@ void AMDGameMode::OnPostLogin(AController* NewPlayer)
 	if (IsValid(newPlayer))
 	{
 		MyPlayerState = newPlayer->GetState();
+	}
+}
+
+void AMDGameMode::SpawnBoss(const Protocol::ObjectInfo& objectInfo, FVector spawnLocation)
+{
+	auto ingameLevelScriptActor = Cast<AInGameLevelScriptActor>(CurrentLevelScriptActor);
+	if(IsValid(ingameLevelScriptActor))
+	{
+		auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+		if(networkManager)
+		{
+			FVector bossSpawnLocation = ingameLevelScriptActor->GetBossSpawn()->GetActorLocation();
+			networkManager->HandleSpawnBoss(objectInfo, bossSpawnLocation);
+		}
 	}
 }
 

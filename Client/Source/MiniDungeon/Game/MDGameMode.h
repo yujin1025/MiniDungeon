@@ -61,7 +61,8 @@ protected:
 	virtual void StartPlay() override;
 private:
 	virtual void OnPostLogin(AController* NewPlayer) override;
-
+public:
+	void SpawnBoss(const Protocol::ObjectInfo& objectInfo, FVector spawnLocation = FVector::ZeroVector);
 public:
 	UPROPERTY()
 	AMDGameState* MyGameState;

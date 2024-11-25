@@ -19,6 +19,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+	virtual void BeginDestroy() override;
+
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -26,4 +28,9 @@ public:
 	virtual void OnQSkill(const FInputActionValue& Value) override;
 	virtual void OnESkill(const FInputActionValue& Value) override;
 	virtual void OnShift(const FInputActionValue& Value) override;
+
+	virtual void OnEndQSkill(const FInputActionValue& Value) override;
+	virtual void OnEndESkill(const FInputActionValue& Value) override;
+	virtual void OnEndShift(const FInputActionValue& Value) override;
+
 };

@@ -26,5 +26,9 @@ public:
 	virtual void OnESkill(const FInputActionValue& Value) override;
 	virtual void OnShift(const FInputActionValue& Value) override;
 
+	virtual void OnEndQSkill(const FInputActionValue& Value) override;
+	virtual void OnEndESkill(const FInputActionValue& Value) override;
+	virtual void OnEndShift(const FInputActionValue& Value) override;
+
 	void Fire(float DamageAmount);
 };

@@ -5,6 +5,7 @@
 #include "Character/Aurora.h"
 #include "Character/Drongo.h"
 #include "Character/Khaimera.h"
+#include "Character/Grux.h"
 
 UMDGameInstance::UMDGameInstance()
 {
@@ -26,6 +27,11 @@ UMDGameInstance::UMDGameInstance()
 		KhaimeraClass = KhaimeraBP.Class;
 	}
 
+	ConstructorHelpers::FClassFinder<AGrux> GruxBP(TEXT("/Script/Engine.Blueprint'/Game/Assets/BluePrints/NPC/BP_Grux.BP_Grux_C'"));
+	if (GruxBP.Succeeded())
+	{
+		GruxClass = GruxBP.Class;
+	}
 }
 
 void UMDGameInstance::Init()

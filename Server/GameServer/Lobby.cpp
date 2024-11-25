@@ -282,10 +282,9 @@ void Lobby::UpdateTick()
 {
 	for (auto& room : _rooms)
 	{
-		room.second->UpdateTick();
+		RoomRef roomRef = room.second;
+		roomRef->UpdateTick();
 	}
-
-	DoTimer(200, &Lobby::UpdateTick);
 }
 
 

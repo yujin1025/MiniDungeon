@@ -20,6 +20,8 @@
 #include <Game/MDGameMode.h>
 #include "Component/HealthComponent.h"
 
+FRWLock PlayerMapLock;
+FRWLock MonsterLock;
 
 void UMDNetworkManager::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -503,6 +505,41 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, FVec
 	SendPacket(ClientPacketHandler::MakeSendBuffer(movePkt));
 }
 
+void UMDNetworkManager::HandleSpawnBoss(const Protocol::ObjectInfo& objectInfo, FVector spawnLocation)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+	{
+		return;
+	}
+
+	auto* world = GetWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	const uint64 objectId = objectInfo.object_id();
+	if (Boss.Find(objectId) != nullptr)
+	{
+		return;
+	}
+
+	ANonPlayableCharacter* monster = Cast<ANonPlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->GruxClass, &spawnLocation));
+	monster->SetObjectID(objectId);
+	Boss.Add(objectId, monster);
+
+	Protocol::CTS_MOVE movePkt;
+	Protocol::PosInfo* info = new Protocol::PosInfo();
+	info->set_object_id(objectId);
+	info->set_x(spawnLocation.X);
+	info->set_y(spawnLocation.Y);
+	info->set_z(spawnLocation.Z);
+	info->set_yaw(0);
+
+	movePkt.set_allocated_info(info);
+	SendPacket(ClientPacketHandler::MakeSendBuffer(movePkt));
+}
+
 void UMDNetworkManager::HandleDespawn(uint64 objectId)
 {
 	if(Socket == nullptr || GameServerSession == nullptr)
@@ -518,22 +555,24 @@ void UMDNetworkManager::HandleDespawn(uint64 objectId)
 
 	// TODO : DESPAWN 처리
 
-	auto findCharacter = Players.Find(objectId);
-	if(findCharacter)
-	{
-		Players.Remove(objectId);
-		world->DestroyActor(*findCharacter);
-		return;;
-	}
+	//auto findCharacter = Players.Find(objectId);
+	//if(findCharacter)
+	//{
+	//	Players.Remove(objectId);
+	//	world->DestroyActor(*findCharacter);
+	//	return;;
+	//}
 
-	auto findMonster = Monsters.Find(objectId);
-	if(findMonster)
-	{
-		MonsterInfos.Remove(objectId);
-		Monsters.Remove(objectId);
-		world->DestroyActor(*findMonster);
-		return;
-	}
+	//auto findMonster = Monsters.Find(objectId);
+	//if(findMonster)
+	//{
+	//	MonsterInfos.Remove(objectId);
+	//	Monsters.Remove(objectId);
+	//	world->DestroyActor(*findMonster);
+	//	return;
+	//}
+
+	//TODO : BOSS DESPAWN 처리
 }
 
 void UMDNetworkManager::HandleDespawn(const Protocol::STC_DESPAWN& despawnPkt)
@@ -577,11 +616,25 @@ void UMDNetworkManager::HandleMove(const Protocol::STC_MOVE& movePkt)
 			return;
 		}
 	}
-	
+
+	//TODO : BOSS MOVE 처리
+	if(Boss.Contains(objectId))
+	{
+		if (IsValid(Boss[objectId]))
+		{
+			HandleMoveMonster(*Boss.Find(objectId), movePkt.info(), movePkt.target_object_id());
+			return;
+		}
+	}
 }
 
 void UMDNetworkManager::HandleMovePlayer(APlayableCharacter* player, const Protocol::PosInfo& posInfo)
 {
+	if(player == nullptr)
+	{
+		return;
+	}
+
 	if (player->IsMyPlayer())
 	{
 		return;
@@ -642,18 +695,63 @@ void UMDNetworkManager::HandleMonsterAttack(const Protocol::STC_MONSTER_ATTACK& 
 	if (World == nullptr)
 		return;
 
-	ANonPlayableCharacter* monster = Monsters.Find(pkt.monster_id())->Get();
-	if (monster == nullptr)
-		return;
-
-	APlayableCharacter* player = Players.Find(pkt.target_id())->Get();
-
-	if(player != nullptr)
+	TWeakObjectPtr<ANonPlayableCharacter> WeakMonster;
+	TWeakObjectPtr<APlayableCharacter> WeakPlayer;
+	if (Monsters.Contains(pkt.monster_id()))
 	{
-		monster->SetActorRotation(monster->GetTargetRotation(player->GetActorLocation()));
+		WeakMonster = Monsters.Find(pkt.monster_id())->Get();
 	}
 
-	monster->Attack(player, pkt.target_current_hp());
+	if(Boss.Contains(pkt.monster_id()))
+	{
+		WeakMonster = Boss.Find(pkt.monster_id())->Get();
+	}
+	
+	if(!pkt.attacked_infos().empty())
+	{
+		if (Players.Contains(pkt.attacked_infos().begin()->attacked_object_id()))
+		{
+			WeakPlayer = Players.Find(pkt.attacked_infos().begin()->attacked_object_id())->Get();
+		}
+	}
+
+	if (WeakMonster.IsValid() && WeakPlayer.IsValid())
+	{
+		ANonPlayableCharacter* monster = WeakMonster.Get();
+		APlayableCharacter* player = WeakPlayer.Get();
+
+		if (monster && player)
+		{
+			monster->SetActorRotation(monster->GetTargetRotation(player->GetActorLocation()));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Monster or Player is invalid"));
+		}
+	}
+
+
+	for (auto attackedInfo : pkt.attacked_infos())
+	{
+		TMap<uint64, float> attackedObjectInfos;
+		if (Players.Contains(attackedInfo.attacked_object_id()))
+		{
+			APlayableCharacter* player = Players.Find(attackedInfo.attacked_object_id())->Get();
+			if(player)
+			{
+				if (player->HealthComponent)
+				{
+					player->HealthComponent->ChangeHealth(attackedInfo.attacked_object_current_hp());
+				}
+			}
+		}
+
+		if (static_cast<EAttackType>(pkt.monster_attack_type()) < EAttackType::Max)
+		{
+			if (WeakMonster.IsValid())
+				WeakMonster.Get()->Attack(static_cast<EAttackType>(pkt.monster_attack_type()));
+		}
+	}
 }
 
 void UMDNetworkManager::HandleAttacked(const Protocol::STC_ATTACKED& pkt)
@@ -666,88 +764,59 @@ void UMDNetworkManager::HandleAttacked(const Protocol::STC_ATTACKED& pkt)
 		return;
 
 	const uint64 objectId = pkt.attacking_object_id();
+	TObjectPtr<APlayableCharacter>* PlayerPtr = Players.Find(objectId);
 
-	APlayableCharacter* findActor = Players.Find(objectId)->Get();
-	if (findActor != nullptr)
+	if (PlayerPtr == nullptr || !IsValid(*PlayerPtr))
+		return;
+
+	APlayableCharacter* Player = *PlayerPtr;
+
+	TWeakObjectPtr<APlayableCharacter> WeakPlayer = Players.Find(objectId)->Get();
+	TWeakObjectPtr<ANonPlayableCharacter> WeakMonster;
+
+	for (const auto& attacked_info : pkt.attacked_infos())
 	{
-		if (static_cast<EAttackType>(pkt.attacking_skill_type()) < EAttackType::Max && objectId != PlayerInfos[PlayerID]->object_info().object_id())
-		{
-			findActor->UseSkill(PlayerInfos[PlayerID]->player_type(), static_cast<EAttackType>(pkt.attacking_skill_type()));
-		}
+		TObjectPtr<ANonPlayableCharacter>* MonsterPtr = Monsters.Find(attacked_info.attacked_object_id());
+		TObjectPtr<ANonPlayableCharacter>* BossPtr = Boss.Find(attacked_info.attacked_object_id());
 
-		for (auto& attacked_info : pkt.attacked_infos())
+		TObjectPtr<ANonPlayableCharacter> TargetMonster = (MonsterPtr != nullptr) ? *MonsterPtr : (BossPtr != nullptr) ? *BossPtr : nullptr;
+
+		if (IsValid(TargetMonster))
 		{
-			TMap<uint64, float> attacked_object_infos;
-			if (Monsters.Contains(attacked_info.attacked_object_id()))
+			if (TargetMonster->HealthComponent)
 			{
-				attacked_object_infos.Add(attacked_info.attacked_object_id(), attacked_info.attacked_object_current_hp());
-				findActor->AttackedObjectCurrentHp = attacked_object_infos;
-				/*float damage = attacked_info.attacked_object_current_hp() - Monsters[attacked_info.attacked_object_id()]->HealthComponent->GetCurrentHealth();
-				Monsters[attacked_info.attacked_object_id()]->HealthComponent->ChangeHealth(findActor, damage);*/
+				TargetMonster->HealthComponent->ChangeHealth(attacked_info.attacked_object_current_hp());
 			}
 		}
 	}
-	
+
+	if (static_cast<EAttackType>(pkt.attacking_skill_type()) < EAttackType::Max)
+	{
+		if (IsValid(Player))
+		{
+			Player->UseSkill(pkt.attacking_player_type(), static_cast<EAttackType>(pkt.attacking_skill_type()));
+		}
+	}
 }
 
-void UMDNetworkManager::HandleSpawnMonster(const Protocol::STC_MONSTERINFO& InfoPkt)
+void UMDNetworkManager::HandleSpawnBoss(const Protocol::MonsterInfo& bossInfo)
 {
-	auto* world = GetWorld();
-	if (world == nullptr)
+	if(Socket == nullptr || GameServerSession == nullptr)
 	{
 		return;
 	}
-
-	const Protocol::MonsterInfo& monsterInfo = InfoPkt.info();
-	uint64 objectId = monsterInfo.object_info().object_id();
-
-	FVector spawnLocation(1000.0f, 1000.0f, 100.0f);
-	ANonPlayableCharacter* npc = Cast<ANonPlayableCharacter>(world->SpawnActor(Cast<UMDGameInstance>(GetGameInstance())->KhaimeraClass, &spawnLocation));
-	
-	Monsters.Add(objectId, npc);
-	MD_LOG(LogMDNetwork, Log, TEXT("Spawn Character"));
-}
-
-void UMDNetworkManager::HandleMonsterInfo(const Protocol::STC_MONSTERINFO& infoPkt)
-{
-	if (Socket == nullptr || GameServerSession == nullptr)
-		return;
 
 	auto* World = GetWorld();
 	if (World == nullptr)
 		return;
 
-	Protocol::MonsterInfo Info = infoPkt.info();
-	const uint64 ObjectId = Info.object_info().object_id();
+	AddBossInfo(bossInfo.object_info().object_id(), bossInfo);
 
-	// 보스 찾기
-	TObjectPtr<ANonPlayableCharacter>* MonsterPtr = Monsters.Find(ObjectId);
-	if (MonsterPtr == nullptr)
-		return;
-
-	ANonPlayableCharacter* Monster = *MonsterPtr;
-	Monster->MaxHP = Info.monster_hp();
-	Monster->CurrentHP = Monster->MaxHP;
-	Monster->Speed = Info.speed();
-	Monster->Damage = Info.damage();
-	Monster->IsFindPlayer = Info.isfindplayer();
-
-	// 타겟 플레이어 찾기
-	TObjectPtr<APlayableCharacter>* FindPlayer = Players.Find(Info.targetplayer_id());
-	if (FindPlayer == nullptr)
-		return;
-
-	APlayableCharacter* Player = *FindPlayer;
-	Monster->TargetPlayer = Player;
-
-	if (Monster->AIControllerClass)
-	{
-		AMDAIController* AIController = Cast<AMDAIController>(Monster->AIControllerClass);
-		if (AIController)
-		{
-			//AIController->SetBlackboardValues(Monster->IsFindPlayer, Monster->TargetPlayer, Monster->TargetPlayer->GetActorLocation(), Monster->Speed, Info.calcdist());
-		}
-	}
+     auto gameMode = Cast<AMDGameMode>(World->GetAuthGameMode());
+	 if(gameMode)
+	 {
+		 gameMode->SpawnBoss(bossInfo.object_info(), FVector(1000.0f, 1000.0f, 100.0f));
+	 }
 }
 
 void UMDNetworkManager::AddPlayerInfo(uint64 player_id, const Protocol::PlayerInfo& info)

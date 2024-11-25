@@ -54,6 +54,12 @@ public:
 protected:
 	Protocol::MonsterInfo* monsterInfo;
 
+	atomic<bool> _canBTRun = false;
+
+public:
+	const bool CanBTRun() { READ_LOCK; return _canBTRun; }
+	void SetCanBTRun(bool canRun) { WRITE_LOCK; _canBTRun = canRun; }
+
 public:
 	const Protocol::MonsterInfo GetMonsterInfo() { READ_LOCK;  return *monsterInfo; }
 	void SetMonsterInfo(const Protocol::MonsterInfo& monst_info) { WRITE_LOCK; this->monsterInfo->CopyFrom(monst_info); }

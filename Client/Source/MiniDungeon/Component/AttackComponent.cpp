@@ -19,8 +19,6 @@ void UAttackComponent::PlayAttackMontage()
 	character->PlayAnimMontage(AttackMontage);
 }
 
-
-
 void UAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();

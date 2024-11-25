@@ -39,9 +39,7 @@ void UAnimNotifyAttackState::TryAttack(USkeletalMeshComponent* MeshComp)
 
 						if (DamagedHealthComponent)
 						{
-							float damage = attackedObjectCurrentHp.Value - networkManager->Monsters[attackedObjectCurrentHp.Key]->HealthComponent->GetCurrentHealth();
-							DamagedHealthComponent->ChangeHealth(myCharacter, damage);
-							CurrentAttackCount++;
+							DamagedHealthComponent->ChangeHealth(targetCharacter->HealthComponent->GetCurrentHealth());
 						}
 					}
 				}
@@ -54,15 +52,19 @@ void UAnimNotifyAttackState::TryAttack(USkeletalMeshComponent* MeshComp)
 
 						if (DamagedHealthComponent)
 						{
-							float damage = attackedObjectCurrentHp.Value - networkManager->Players[attackedObjectCurrentHp.Key]->HealthComponent->GetCurrentHealth();
-							DamagedHealthComponent->ChangeHealth(myCharacter, damage);
-							CurrentAttackCount++;
+							DamagedHealthComponent->ChangeHealth(targetCharacter->HealthComponent->GetCurrentHealth());
 						}
 					}
 				}
 			}
 		}
 	}
+
+	if (myCharacter)
+	{
+		myCharacter->AttackedObjectCurrentHp.Empty();
+	}
+	CurrentAttackCount++;
 }
 
 void UAnimNotifyAttackState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
@@ -74,17 +76,13 @@ void UAnimNotifyAttackState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 
 void UAnimNotifyAttackState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
 {
+	TryAttack(MeshComp);
 }
 
 void UAnimNotifyAttackState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	CurrentAttackCount = 0;
 	AMDCharacter* myCharacter = Cast<AMDCharacter>(MeshComp->GetOwner());
-
-	if (myCharacter)
-	{
-		myCharacter->AttackedObjectCurrentHp.Empty();
-	}
 }
 
 AMDCharacter* UAnimNotifyAttackState::GetCharacter(const FOverlapResult& OverlapResult)

@@ -146,6 +146,7 @@ bool Room::ChangeCharacter(uint64 playerIndex, const Protocol::PlayerType charac
 {
 	Protocol::STC_CHANGE_CHARACTER changeCharacterPkt;
 
+	WRITE_LOCK;
 	// 플레이어가 방에 없다면 문제가 있다.
 	if (_players.find(playerIndex) == _players.end())
 	{
@@ -234,6 +235,14 @@ void Room::HandleMonsterCleared()
 	BossRef boss = ObjectUtils::CreateBoss();
 
 	AddBoss(boss);
+
+	Protocol::STC_SPAWN_BOSS spawnBossPkt;
+	Protocol::MonsterInfo* monsterInfo = new Protocol::MonsterInfo();
+	monsterInfo->CopyFrom(boss->GetMonsterInfo());
+	spawnBossPkt.set_allocated_monsters(monsterInfo);
+
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnBossPkt);
+	Broadcast(sendBuffer);
 }
 
 void Room::HandleMove(const Protocol::PosInfo& posInfo)
@@ -277,11 +286,18 @@ void Room::HandleMoveMonster(const Protocol::PosInfo& info)
 
 	// 적용
 	MonsterRef monster = dynamic_pointer_cast<Monster>(_objects[objectId]);
-	if (!monster)
-		return;
-
-	// 최신 위치 정보로 업데이트
-	monster->SetPosInfo(info);
+	if (monster)
+	{
+		monster->SetPosInfo(info);
+		monster->SetCanBTRun(true);
+	}
+	
+	BossRef boss = dynamic_pointer_cast<Boss>(_objects[objectId]);
+	if (boss)
+	{
+		boss->SetPosInfo(info);
+		boss->SetCanBTRun(true);
+	}
 }
 
 void Room::HandleAttack(const Protocol::CTS_ATTACK& pkt)
@@ -309,32 +325,6 @@ void Room::HandleMonsterAttackFinished(uint64 monster_object_id)
 	}
 }
 
-void Room::HandleAttacked(uint64 player_object_id, const Protocol::CTS_ATTACKED& pkt)
-{
-	const uint64 objectId = pkt.object_id();
-	if (_objects.find(objectId) == _objects.end())
-		return;
-
-	if(pkt.object_current_hp() <= 0)
-	{
-		HandleDead(player_object_id, objectId);
-	}
-	else
-	{
-		dynamic_pointer_cast<Creature>(_objects[objectId])->SetHp(pkt.object_current_hp());
-
-		Protocol::STC_ATTACKED attackedPkt;
-		attackedPkt.set_attacking_object_id(0);
-		Protocol::AttackedInfo* attackedInfo = attackedPkt.add_attacked_infos();
-		attackedInfo->set_attacked_object_id(objectId);
-		//attackedInfo->set_attacked_obejct_current_hp(pkt.object_current_hp());
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(attackedPkt);
-		Broadcast(sendBuffer, player_object_id);
-	}
-}
-
-
 void Room::HandleDead(uint64 player_object_id, uint64 object_id)
 {
 	const uint64 objectId = object_id;
@@ -356,6 +346,27 @@ void Room::HandleDead(uint64 player_object_id, uint64 object_id)
 	Broadcast(ServerPacketHandler::MakeSendBuffer(despawnPkt), player_object_id);
 }
 
+void Room::HandleDead(uint64 object_id)
+{
+	const uint64 objectId = object_id;
+	if (_objects.find(objectId) == _objects.end())
+		return;
+
+	else if(dynamic_pointer_cast<Boss>(_objects[objectId]))
+	{
+		RemoveBoss(objectId);
+	}
+	else
+	{
+		RemoveMonster(objectId);
+	}
+
+	/*Protocol::STC_DESPAWN despawnPkt;
+	despawnPkt.add_object_ids(objectId);
+
+	Broadcast(ServerPacketHandler::MakeSendBuffer(despawnPkt), objectId);*/
+}
+
 void Room::SetRoomIndex(uint64 roomIndex)
 {
 	_roomIndex = roomIndex;
@@ -372,9 +383,19 @@ void Room::UpdateTick()
 
 	for(auto& monster : _monsters)
 	{
-		//monster.second->CalcDist();
-		//monster.second->CanAttack();
-		monster.second->UpdateBehaviourTree();
+		if (monster.second->CanBTRun())
+		{
+			monster.second->UpdateBehaviourTree();
+		}
+
+	}
+
+	if(_boss != nullptr)
+	{
+		if (_boss->CanBTRun())
+		{
+			_boss->UpdateBehaviourTree();
+		}
 	}
 }
 
@@ -391,6 +412,7 @@ void Room::ReleaseThisRoom()
 	_players.clear();
 	_objects.clear();
 	_monsters.clear();
+	_boss = nullptr;
 	ClearJobs();
 }
 
@@ -452,6 +474,7 @@ bool Room::AddObject(ObjectRef object)
 
 bool Room::RemoveObject(uint64 objectId)
 {
+
 	// Room에 없다면 문제가 있다.
 	if (_objects.find(objectId) == _objects.end())
 		return false;
@@ -463,6 +486,7 @@ bool Room::RemoveObject(uint64 objectId)
 
 bool Room::AddPlayer(PlayerRef player)
 {
+	WRITE_LOCK;
 	// Room에 있다면 문제가 있다.
 	if (_players.find(player->GetPlayerInfo().player_id()) != _players.end())
 	{
@@ -488,6 +512,7 @@ bool Room::AddPlayer(PlayerRef player)
 
 bool Room::RemovePlayer(PlayerRef player, bool isExitGame)
 {
+	WRITE_LOCK;
 	uint64 playerIndex = player->GetPlayerInfo().player_id();
 	// 플레이어가 Room에 없으면 문제가 있다.
 	if (_players.find(playerIndex) == _players.end())
@@ -529,6 +554,7 @@ bool Room::RemovePlayer(PlayerRef player, bool isExitGame)
 
 bool Room::AddMonster(MonsterRef monster, const Protocol::PosInfo& pos_Info)
 {
+	WRITE_LOCK;
 	if (_monsters.size() >= 4)
 	{
 		return false;
@@ -562,6 +588,7 @@ bool Room::AddMonster(MonsterRef monster, const Protocol::PosInfo& pos_Info)
 
 bool Room::AddBoss(BossRef boss, const Protocol::PosInfo& pos_Info)
 {
+	WRITE_LOCK;
 	if(_boss != nullptr)
 	{
 		return false;
@@ -579,14 +606,18 @@ bool Room::AddBoss(BossRef boss, const Protocol::PosInfo& pos_Info)
 	boss->SetObjectInfo(objectInfo);
 
 	_boss = boss;
+	_objects.insert(make_pair(boss->GetObjectInfo().object_id(), boss));
 
 	boss->room.store(GetRoomRef());
+
+	boss->Init();
 
 	return true;
 }
 
 bool Room::RemoveMonster(uint64 monsterId)
 {
+	WRITE_LOCK;
 	if(_monsters.find(monsterId) == _monsters.end())
 	{
 		return false;
@@ -595,6 +626,20 @@ bool Room::RemoveMonster(uint64 monsterId)
 	_monsters.erase(monsterId);
 	_objects.erase(monsterId);
 	
+	return true;
+}
+
+bool Room::RemoveBoss(uint64 monsterId)
+{
+	WRITE_LOCK;
+	if(_boss == nullptr)
+	{
+		return false;
+	}
+
+	_boss = nullptr;
+	_objects.erase(monsterId);
+
 	return true;
 }
 

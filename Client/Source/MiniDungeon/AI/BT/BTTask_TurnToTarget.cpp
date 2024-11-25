@@ -37,9 +37,6 @@ EBTNodeResult::Type UBTTask_TurnToTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 	auto networdManager = MyCharacter->GetGameInstance()->GetSubsystem<UMDNetworkManager>();
 	if (IsValid(networdManager))
 	{
-		Protocol::CTS_DETECT detectPkt;
-
-		detectPkt.set_detect_object_id(MyCharacter->GetObjectID());
 		//detectPkt.set_target_object_id(TargetCharacter->GetObjectID());
 		// TODO : Send RotateToTarget Info to Server
 	}

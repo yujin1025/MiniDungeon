@@ -217,25 +217,16 @@ bool AMDCharacter::UseSkill(Protocol::PlayerType playerType, EAttackType AttackT
 	if (IsDead)
 		return false;
 
-	if (IsSatisfiedAttack(AttackType) == false)
-		return false;
-
-	if (ProgressingAttackType != EAttackType::Max)
-		return false;
-
 	if (ActionComponentMap.Contains(AttackType) == false)
 		return false;
 
 	if (ActionCoolTimeMap.Contains(AttackType) == false)
 		return false;
 
+	//SendAttackPacket(playerType, AttackType);
+
 	ActionComponentMap[AttackType]->PlayAttackMontage();
-	CurrentActionCoolTimeMap[AttackType] = CurrentDeltaTime + ActionCoolTimeMap[AttackType];
 
-	SendAttackPacket(playerType, AttackType);
-
-	//OnAttackEnd.Broadcast();
-	ProgressingAttackType = AttackType;
 	return true;
 }
 
@@ -282,6 +273,13 @@ void AMDCharacter::OnDie()
 {
 	if (IsDead)
 		return;
+
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if (networkManager == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NetworkManager is nullptr in OnDie()"));
+		return;
+	}
 
 	IsDead = true;
 

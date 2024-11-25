@@ -9,7 +9,7 @@ public:
 
 public:
 	const float GetHp(){ READ_LOCK; return _hp; }
-	void SetHp(float hp) { WRITE_LOCK;  _hp = hp; }
+	void SetHp(float hp); 
 protected:
 	float _hp;
 

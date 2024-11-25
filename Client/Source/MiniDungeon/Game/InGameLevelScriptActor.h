@@ -23,9 +23,12 @@ public:
 
 	TArray<AActor*> GetPlayerStarts() const { return PlayerStarts; }
 	TArray<AActor*> GetEnemySpawns() const { return EnemySpawns; }
+	AActor* GetBossSpawn() const { return BossSpawn; }
 private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn", meta = (AllowPrivateAccess = "true"))
 	TArray<AActor*> PlayerStarts;
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn", meta = (AllowPrivateAccess = "true"))
 	TArray<AActor*> EnemySpawns;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn", meta = (AllowPrivateAccess = "true"))
+	AActor* BossSpawn;
 };

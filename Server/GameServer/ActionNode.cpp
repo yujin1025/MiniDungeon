@@ -41,7 +41,6 @@ ENodeState RandomPosition::OnUpdate()
 		return ENodeState::Failure;
 	}
 
-
 	auto ownerMonster = bt->owner.lock();
 	if (ownerMonster == nullptr)
 	{
@@ -251,6 +250,7 @@ ENodeState MoveToPlayer::OnUpdate()
 
 void AttackNode::OnStart()
 {
+	startTime = GetTickCount64() / 1000;
 	auto bt = tree.lock();
 	if (bt == nullptr)
 	{
@@ -265,47 +265,110 @@ void AttackNode::OnStart()
 		return;
 	}
 
-	auto target = ownerMonster->TargetPlayer.load();
-	if (target)
+	auto room = ownerMonster->room.load().lock();
+	if (room == nullptr)
 	{
-		auto& monsterposInfo = ownerMonster->GetPosInfo();
-		auto& targetPosInfo = target->GetPosInfo();
-		float distance = ownerMonster->DistanceTo(targetPosInfo);
+		LOG("ownerMonster room is nullptr");
+		return;
+	}
 
-		if (distance <= hitRange)
+
+	Protocol::STC_MONSTER_ATTACK pkt;
+
+	ownerMonster->SetMovementState(Protocol::MOVE_STATE_SKILL);
+	pkt.set_monster_id(ownerMonster->GetObjectInfo().object_id());
+	pkt.set_monster_attack_type(attackType);
+	if (isRangeAttack == false)
+	{
+		Protocol::AttackedInfo* attackedInfo = pkt.add_attacked_infos();
+		auto target = ownerMonster->TargetPlayer.load();
+		if (target && target->GetHp() > 0)
 		{
-			Vector3 toTarget = Vector3(targetPosInfo.x() - monsterposInfo.x(), targetPosInfo.y() - monsterposInfo.y(), 0).Normalize();
-			Vector3 forward = Vector3::CalculateForwardVector(monsterposInfo.yaw());
+			auto& monsterposInfo = ownerMonster->GetPosInfo();
+			auto& targetPosInfo = target->GetPosInfo();
+			float distance = ownerMonster->DistanceTo(targetPosInfo);
 
-			// Dot Product를 사용하여 각도를 계산
-			float dotProduct = Vector3::DotProduct(toTarget, forward);
-			float clampedDot = clamp(dotProduct, -1.0f, 1.0f);
-			float AngleDegrees = RadiansToDegrees(acos(clampedDot));
-
-			// 30도 안에 있는지 확인
-			if (AngleDegrees <= hitAngle)
+			if (distance <= hitRange)
 			{
-				target->SetHp(target->GetHp() - damage);
+				Vector3 toTarget = Vector3(targetPosInfo.x() - monsterposInfo.x(), targetPosInfo.y() - monsterposInfo.y(), 0).Normalize();
+				Vector3 forward = Vector3::CalculateForwardVector(monsterposInfo.yaw());
+
+				// Dot Product를 사용하여 각도를 계산
+				float dotProduct = Vector3::DotProduct(toTarget, forward);
+				float clampedDot = clamp(dotProduct, -1.0f, 1.0f);
+				float AngleDegrees = RadiansToDegrees(acos(clampedDot));
+
+				// 30도 안에 있는지 확인
+				if (AngleDegrees <= hitAngle)
+				{
+					target->SetHp(target->GetHp() - damage);
+					attackedInfo->set_attacked_object_id(target->GetObjectInfo().object_id());
+					attackedInfo->set_attacked_object_current_hp(target->GetHp());
+				}
+				else
+				{
+					attackedInfo->default_instance();
+				}
 			}
+
+			SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+			
+			if (room)
+			{
+				room->Broadcast(sendBuffer);
+			}
+
+			LOG("Attack Start");
+			return;
 		}
-
-		Protocol::STC_MONSTER_ATTACK pkt;
-
-		ownerMonster->SetMovementState(Protocol::MOVE_STATE_SKILL);
-		pkt.set_monster_id(ownerMonster->GetObjectInfo().object_id());
-		pkt.set_monster_attack_type(0);
-		pkt.set_target_id(target->GetObjectInfo().object_id());
-		pkt.set_target_current_hp(target->GetHp());
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
-		auto room = ownerMonster->room.load().lock();
+	}
+	else
+	{
 		if (room)
 		{
-			room->Broadcast(sendBuffer);
-		}
+			for (auto& pair : room->GetPlayers()) // room의 플레이어 리스트를 가져옴
+			{
+				Protocol::AttackedInfo* attackedInfo = pkt.add_attacked_infos();
+				auto player = pair.second; // 플레이어 객체
+				if (player && player->GetHp() > 0)
+				{
+					auto& monsterposInfo = ownerMonster->GetPosInfo();
+					auto& playerPosInfo = player->GetPosInfo();
+					float distance = ownerMonster->DistanceTo(playerPosInfo);
 
-		LOG("Attack Start");
-		return;
+					// 범위 내 플레이어인지 확인
+					if (distance <= hitRange)
+					{
+						Vector3 toTarget = Vector3(playerPosInfo.x() - monsterposInfo.x(), playerPosInfo.y() - monsterposInfo.y(), 0).Normalize();
+						Vector3 forward = Vector3::CalculateForwardVector(monsterposInfo.yaw());
+
+						// Dot Product를 사용하여 각도를 계산
+						float dotProduct = Vector3::DotProduct(toTarget, forward);
+						float clampedDot = clamp(dotProduct, -1.0f, 1.0f);
+						float AngleDegrees = RadiansToDegrees(acos(clampedDot));
+
+						// 30도 안에 있는지 확인
+						if (AngleDegrees <= hitAngle)
+						{
+							player->SetHp(player->GetHp() - damage);
+							attackedInfo->set_attacked_object_id(player->GetObjectInfo().object_id());
+							attackedInfo->set_attacked_object_current_hp(player->GetHp());
+						}
+						else
+						{
+							attackedInfo->default_instance();
+						}
+					}
+				}
+			}
+
+			SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+			if (room)
+			{
+				room->Broadcast(sendBuffer);
+			}
+			LOG("Range Attack Start");
+		}
 	}
 
 	LOG("AttackNode target is nullptr");
@@ -332,19 +395,12 @@ ENodeState AttackNode::OnUpdate()
 		return ENodeState::Failure;
 	}
 
-	if (ownerMonster->GetPosInfo().state() != Protocol::MOVE_STATE_SKILL)
+	if (GetTickCount64() / 1000 - startTime >= duration)
 	{
-		LOG("Attack Finished");
+		LOG("Wait Over");
 		return ENodeState::Success;
 	}
 
-	auto target = ownerMonster->TargetPlayer.load();
-	if (target)
-	{
-		LOG("Attacking");
-		return ENodeState::Running;
-	}
-
-	LOG("Attack Failed : target is nullptr");
-	return ENodeState::Failure;
+	LOG("Waiting");
+	return ENodeState::Running;
 }

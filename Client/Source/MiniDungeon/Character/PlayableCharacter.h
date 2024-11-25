@@ -77,6 +77,15 @@ public:
 	virtual void OnQSkill(const FInputActionValue& Value);
 	virtual void OnESkill(const FInputActionValue& Value);
 	virtual void OnShift(const FInputActionValue& Value);
+
+	virtual void OnEndQSkill(const FInputActionValue& Value);
+	virtual void OnEndESkill(const FInputActionValue& Value);
+	virtual void OnEndShift(const FInputActionValue& Value);
+
+protected:
+	bool bCanUseQ = true;
+	bool bCanUseE = true;
+	bool bCanUseShift = true;
 	//이게 필요한건지 고민중
 	//void OnShiftEnd(const FInputActionValue& Value);
 

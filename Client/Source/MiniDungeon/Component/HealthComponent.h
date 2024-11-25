@@ -26,7 +26,7 @@ private:
 	float CurrentHealth;
 
 public:
-	void ChangeHealth(AMDCharacter* Attacker, float Amount);
+	void ChangeHealth(float Amount);
 
 	UFUNCTION(BlueprintPure, Category = "Health")
 	float GetCurrentHealth() const { return CurrentHealth; }

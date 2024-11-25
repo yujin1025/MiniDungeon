@@ -40,16 +40,20 @@ void UHealthComponent::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("Character %d: MaxHealth set to %f"), Character->CharacterId, Data->MaxHp);
 }
 
-void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
+void UHealthComponent::ChangeHealth(float Amount)
 {
 	auto* GameMode = Cast<AMDGameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode == nullptr)
 		return;
 
-	if (CurrentHealth <= 0)
-		return;
+	CurrentHealth = Amount;
 
-	CurrentHealth += Amount;
+	if(CurrentHealth > MaxHealth)
+		CurrentHealth = MaxHealth;
+
+	if(CurrentHealth < 0)
+		CurrentHealth = 0;
+
 
 	auto* Character = Cast<AMDCharacter>(GetOwner());
 	if (Character == nullptr)
@@ -61,7 +65,7 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 	}
 	else
 	{
-		GameMode->MyGameState->OnChangedHealth(Character->GetObjectID(), CurrentHealth, MaxHealth);
+		//GameMode->MyGameState->OnChangedHealth(Character->GetObjectID(), CurrentHealth, MaxHealth);
 		HPBarWidget = Character->FindComponentByClass<UWidgetComponent>();
 		if (HPBarWidget)
 		{
@@ -73,16 +77,13 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 		}
 	}
 
-	if (Amount < 0)
+	if (CurrentHealth <= 0)
 	{
-		if (CurrentHealth <= 0)
-		{
-			Character->OnDie();
-		}
-		else
-		{
-			Character->OnHit();
-		}
+		Character->OnDie();
+	}
+	else
+	{
+		Character->OnHit();
 	}
 }
 

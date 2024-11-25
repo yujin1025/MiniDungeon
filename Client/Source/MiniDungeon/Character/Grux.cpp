@@ -16,12 +16,8 @@ void AGrux::BeginPlay()
 
     if (AIControllerClass)
     {
-        AMDAIController* AIController = Cast<AMDAIController>(GetController());
-        if (!AIController)
-        {
-            AIController = GetWorld()->SpawnActor<AMDAIController>(AIControllerClass);
-            AIController->Possess(this);
-            MD_LOG(LogMDNetwork, Log, TEXT("Poss"));
-        }
+        auto AIController = GetWorld()->SpawnActor<AMDAIController>(AIControllerClass);
+        AIController->Possess(this);
+        MD_LOG(LogMDNetwork, Log, TEXT("Poss"));
     }
 }

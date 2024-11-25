@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Room.h"
 #include "Monster.h"
+#include "Boss.h"
 
 Player::Player()
 {
@@ -63,7 +64,6 @@ void Player::SetPosInfo(const Protocol::PosInfo& pos_Info)
 
 void Player::Attack(const Protocol::AttackInfo& attack_info)
 {
-
 	if (attack_info.player_type() == Protocol::PLAYER_TYPE_AURORA)
 	{
 		switch (attack_info.attack_type())
@@ -90,7 +90,7 @@ void Player::Attack(const Protocol::AttackInfo& attack_info)
 			ProcessAttack(Protocol::PLAYER_TYPE_DRONGO, attack_info.attack_type(), attack_info.damage(), 1000.f, 50.f);
 			break;
 		case 2:
-			ProcessAttack(Protocol::PLAYER_TYPE_DRONGO, attack_info.attack_type(), attack_info.damage(), 1500.f, 85.f);
+			ProcessAttack(Protocol::PLAYER_TYPE_DRONGO, attack_info.attack_type(), attack_info.damage(), 1200.f, 70.f);
 			break;
 		}
 	}
@@ -106,15 +106,17 @@ void Player::ProcessAttack(Protocol::PlayerType playerType, int32 skillType, flo
 
 	Protocol::STC_ATTACKED attackedPkt;
 	attackedPkt.set_attacking_object_id(objectInfo->object_id());
+	attackedPkt.set_attacking_player_type(playerType);
 	attackedPkt.set_attacking_skill_type(skillType);
 
 	float closestDistance = FLT_MAX; // 가장 가까운 몬스터 거리
 	MonsterRef closestMonster;      // 가장 가까운 몬스터의 참조
-	for (auto& monster : currentRoom->_monsters)
+	for (auto& monster : currentRoom->GetMonsters())
 	{
-		const auto& monsterposInfo = monster.second->GetPosInfo();
+		MonsterRef attackedMon = monster.second;
+		const auto& monsterposInfo = attackedMon->GetPosInfo();
 		const auto& currentPosInfo = objectInfo->pos_info();
-		float distance = monster.second->DistanceTo(currentPosInfo);
+		float distance = attackedMon->DistanceTo(currentPosInfo);
 
 		if (distance <= maxDistance)
 		{
@@ -135,18 +137,18 @@ void Player::ProcessAttack(Protocol::PlayerType playerType, int32 skillType, flo
 					if (distance < closestDistance)
 					{
 						closestDistance = distance;
-						closestMonster = monster.second;
+						closestMonster = attackedMon;
 					}
 				}
 				else
 				{
 					// SkillType이 0 또는 1이 아닌 경우 모든 몬스터 처리
-					float currentHp = monster.second->GetHp();
-					monster.second->SetHp(currentHp - damage);
+					float currentHp = attackedMon->GetHp();
+					attackedMon->SetHp(currentHp - damage);
 
 					Protocol::AttackedInfo* attackedInfo = attackedPkt.add_attacked_infos();
-					attackedInfo->set_attacked_object_id(monster.second->GetObjectInfo().object_id());
-					attackedInfo->set_attacked_object_current_hp(monster.second->GetHp());
+					attackedInfo->set_attacked_object_id(attackedMon->GetObjectInfo().object_id());
+					attackedInfo->set_attacked_object_current_hp(attackedMon->GetHp());
 				}
 			}
 		}
@@ -160,6 +162,36 @@ void Player::ProcessAttack(Protocol::PlayerType playerType, int32 skillType, flo
 		Protocol::AttackedInfo* attackedInfo = attackedPkt.add_attacked_infos();
 		attackedInfo->set_attacked_object_id(closestMonster->GetObjectInfo().object_id());
 		attackedInfo->set_attacked_object_current_hp(closestMonster->GetHp());
+	}
+
+	if (currentRoom->GetBoss() != nullptr)
+	{
+		BossRef boss = currentRoom->GetBoss();
+		const auto& bossPosInfo = boss->GetPosInfo();
+		const auto& currentPosInfo = objectInfo->pos_info();
+		float distance = boss->DistanceTo(currentPosInfo);
+
+		if (distance <= maxDistance)
+		{
+			Vector3 toTarget = Vector3(bossPosInfo.x() - currentPosInfo.x(), bossPosInfo.y() - currentPosInfo.y(), 0).Normalize();
+			Vector3 forward = Vector3::CalculateForwardVector(currentPosInfo.yaw());
+
+			// Dot Product를 사용하여 각도를 계산
+			float dotProduct = Vector3::DotProduct(toTarget, forward);
+			float clampedDot = std::clamp(dotProduct, -1.0f, 1.0f);
+			float AngleDegrees = RadiansToDegrees(acos(clampedDot));
+
+			// 각도 조건 확인
+			if (AngleDegrees <= maxAngle)
+			{
+				float currentHp = boss->GetHp();
+				boss->SetHp(currentHp - damage);
+
+				Protocol::AttackedInfo* attackedInfo = attackedPkt.add_attacked_infos();
+				attackedInfo->set_attacked_object_id(boss->GetObjectInfo().object_id());
+				attackedInfo->set_attacked_object_current_hp(boss->GetHp());
+			}
+		}
 	}
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(attackedPkt);

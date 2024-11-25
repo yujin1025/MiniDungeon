@@ -74,6 +74,8 @@ void Monster::Init()
 
     auto moveToPositionNode = make_shared<MoveToPosition>(behaviourTree, blackboard);
     sequencer1->children.push_back(moveToPositionNode);
+
+    _canBTRun = true;
 }
 
 float Monster::DistanceTo(const Protocol::PosInfo& targetPos)

@@ -35,7 +35,7 @@ void Boss::Init()
 
     auto calcDist = make_shared<DetectionService>(behaviourTree, blackboard);
     behaviourTree->rootNode->child = calcDist;
-    calcDist->SetDetectRange(2000.f);
+    calcDist->SetDetectRange(1500.f);
 
     // 자식 노드 생성
     auto selector1 = make_shared<SelectorNode>(behaviourTree, blackboard);
@@ -49,26 +49,56 @@ void Boss::Init()
 
     auto canAttackDeco = make_shared<CanAttackDecorator>(behaviourTree, blackboard);
     selector2->children.push_back(canAttackDeco);
+    canAttackDeco->SetAttackRange(500.f);
+
+    auto selector3 = make_shared<SelectorNode>(behaviourTree, blackboard);
+    canAttackDeco->child = selector3;
 
     // TODO : 몬스터 체력에 따라 공격 선택
     auto checkFirstPhase = make_shared<CheckHealthDecorator>(behaviourTree, blackboard);
-    selector2->children.push_back(checkFirstPhase);
+    selector3->children.push_back(checkFirstPhase);
+    checkFirstPhase->SetHealthRange(250.f, 400.f);
+
+    auto firstAttackNode = make_shared<AttackNode>(behaviourTree, blackboard);
+    checkFirstPhase->child = firstAttackNode;
+    firstAttackNode->SetIsRangeAttack(true);
+    firstAttackNode->SetAttackType(0);
+    firstAttackNode->SetDamage(30.f);
+    firstAttackNode->SetHitAngle(60.f);
+    firstAttackNode->SetHitRange(300.f);
 
     auto checkSecondPhase = make_shared<CheckHealthDecorator>(behaviourTree, blackboard);
-    selector2->children.push_back(checkSecondPhase);
+    selector3->children.push_back(checkSecondPhase);
+    checkSecondPhase->SetHealthRange(100.f, 250.f);
+
+    auto secondAttackNode = make_shared<AttackNode>(behaviourTree, blackboard);
+    checkSecondPhase->child = secondAttackNode;
+    firstAttackNode->SetIsRangeAttack(true);
+    secondAttackNode->SetAttackType(1);
+    secondAttackNode->SetDamage(50.f);
+    secondAttackNode->SetHitAngle(70.f);
+    secondAttackNode->SetHitRange(400.f);
 
     auto checkThirdPhase = make_shared<CheckHealthDecorator>(behaviourTree, blackboard);
-    selector2->children.push_back(checkThirdPhase);
+    selector3->children.push_back(checkThirdPhase);
+    checkThirdPhase->SetHealthRange(0.f, 100.f);
 
-    auto attackNode = make_shared<AttackNode>(behaviourTree, blackboard);
-    canAttackDeco->child = attackNode;
+    auto thirdAttackNode = make_shared<AttackNode>(behaviourTree, blackboard);
+    checkThirdPhase->child = thirdAttackNode;
+    firstAttackNode->SetIsRangeAttack(true);
+    thirdAttackNode->SetAttackType(2);
+    thirdAttackNode->SetDamage(70.f);
+    thirdAttackNode->SetHitAngle(80.f);
+    thirdAttackNode->SetHitRange(500.f);
 
+    // 공격 못 하면 이동
     auto canNotAttackDeco = make_shared<CanNotAttackDecorator>(behaviourTree, blackboard);
     selector2->children.push_back(canNotAttackDeco);
 
     auto moveToPlayerNode = make_shared<MoveToPlayer>(behaviourTree, blackboard);
     canNotAttackDeco->child = moveToPlayerNode;
 
+    // 타겟이 없을 때
     auto noTaragetDeco = make_shared<NoTargetDecorator>(behaviourTree, blackboard);
     selector1->children.push_back(noTaragetDeco);
 
@@ -83,4 +113,6 @@ void Boss::Init()
 
     auto moveToPositionNode = make_shared<MoveToPosition>(behaviourTree, blackboard);
     sequencer1->children.push_back(moveToPositionNode);
+
+    _canBTRun = true;
 }

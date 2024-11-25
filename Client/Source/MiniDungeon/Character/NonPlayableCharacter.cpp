@@ -22,34 +22,25 @@ ANonPlayableCharacter::ANonPlayableCharacter()
 	HPBarWidget->SetupAttachment(RootComponent);
 }
 
-bool ANonPlayableCharacter::Attack(APlayableCharacter* Player, float hp)
+bool ANonPlayableCharacter::Attack(EAttackType AttackType)
 {
 	if (IsDead)
 		return false;
 
-	if (IsValid(Player))
-	{
-		AttackedObjectCurrentHp.Empty();
-		AttackedObjectCurrentHp.Add(Player->GetObjectID(), hp);
-	}
+	if(IsSatisfiedAttack(AttackType) == false)
+		return false;
+
+	if (ProgressingAttackType != EAttackType::Max)
+		return false;
+
+	if (ActionComponentMap.Contains(AttackType) == false)
+		return false;
+
+	if (ActionCoolTimeMap.Contains(AttackType) == false)
+		return false;
 
 	//TODO : 공격 타입에 따라 애니메이션 실행
-	ActionComponentMap[EAttackType::QSkillAttack]->PlayAttackMontage();
-
-	CurrentActionCoolTimeMap[EAttackType::QSkillAttack] = CurrentDeltaTime + ActionCoolTimeMap[EAttackType::QSkillAttack];
-
-	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-	if (networkManager->isHost)
-	{
-		Protocol::CTS_MONSTER_ATTACK AttackPkt;
-
-		// 패킷을 SendBufferRef로 직렬화
-		SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(AttackPkt);
-		if (IsValid(networkManager))
-		{
-			networkManager->SendPacket(sendBuffer);
-		}
-	}
+	ActionComponentMap[AttackType]->PlayAttackMontage();
 
 	return true;
 }

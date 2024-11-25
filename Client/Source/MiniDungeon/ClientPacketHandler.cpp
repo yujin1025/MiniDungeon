@@ -268,6 +268,15 @@ bool Handle_STC_LEAVE_GAME(PacketSessionRef& session, Protocol::STC_LEAVE_GAME& 
 
 	return true;
 }
+bool Handle_STC_SPAWN_BOSS(PacketSessionRef& session, Protocol::STC_SPAWN_BOSS& pkt)
+{
+	if (UMDNetworkManager* gameNetwork = GetWorldNetwork(session))
+	{
+		gameNetwork->HandleSpawnBoss(pkt.monsters());
+	}
+
+	return true;
+}
 //
 bool Handle_STC_SPAWN(PacketSessionRef& session, Protocol::STC_SPAWN& pkt)
 {
@@ -302,10 +311,6 @@ bool Handle_STC_MOVE(PacketSessionRef& session, Protocol::STC_MOVE& pkt)
 	return true;
 }
 
-bool Handle_STC_DETECT(PacketSessionRef& session, Protocol::STC_DETECT& pkt)
-{
-	return true;
-}
 
 bool Handle_STC_MONSTER_ATTACK(PacketSessionRef& session, Protocol::STC_MONSTER_ATTACK& pkt)
 {
@@ -329,14 +334,7 @@ bool Handle_STC_ATTACKED(PacketSessionRef& session, Protocol::STC_ATTACKED& pkt)
 
 	return true;
 }
-//
-bool Handle_STC_CHAT(PacketSessionRef& session, Protocol::STC_CHAT& pkt)
-{
-	auto Msg = pkt.msg();
 
-
-	return true;
-}
 
 bool Handle_STC_ATTACK(PacketSessionRef& session, Protocol::STC_ATTACK& pkt)
 {
@@ -348,24 +346,4 @@ bool Handle_STC_ATTACK(PacketSessionRef& session, Protocol::STC_ATTACK& pkt)
 	}
 
 	return true;
-}
-
-bool Handle_STC_MONSTERINFO(PacketSessionRef& session, Protocol::STC_MONSTERINFO& pkt)
-{
-	if (UMDNetworkManager* gameNetwork = GetWorldNetwork(session))
-	{
-		gameNetwork->HandleSpawnMonster(pkt);
-	}
-
-	return true;
-}
-
-bool Handle_STC_MONSTERMOVE(PacketSessionRef& session, Protocol::STC_MONSTERMOVE& pkt)
-{
-	return true;
-}
-
-bool Handle_STC_STANDARD_MONSTER(PacketSessionRef& session, Protocol::STC_STANDARD_MONSTER& pkt)
-{
-	return false;
 }

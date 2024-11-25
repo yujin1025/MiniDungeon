@@ -27,4 +27,7 @@ public:
 	TSubclassOf<class APlayableCharacter> DrongoClass;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ANonPlayableCharacter> KhaimeraClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ANonPlayableCharacter> GruxClass;
 };

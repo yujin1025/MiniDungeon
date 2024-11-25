@@ -19,6 +19,15 @@ void AAurora::BeginPlay()
 	MD_LOG(LogMDNetwork, Log, TEXT("End"));
 }
 
+void AAurora::BeginDestroy()
+{
+	MD_LOG(LogMDNetwork, Log, TEXT("Begin"));
+	Super::BeginDestroy();
+	MD_LOG(LogMDNetwork, Log, TEXT("End"));
+
+
+}
+
 void AAurora::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	if (IsMyPlayer() == true)
@@ -41,8 +50,8 @@ void AAurora::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &APlayableCharacter::OnMove);
 			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnLook);
 
-			EnhancedInputComponent->BindAction(InputActionMap[EAttackType::QSkillAttack], ETriggerEvent::Triggered, this, &AAurora::OnQSkill);
-			EnhancedInputComponent->BindAction(InputActionMap[EAttackType::ESkillAttack], ETriggerEvent::Triggered, this, &AAurora::OnESkill);
+			EnhancedInputComponent->BindAction(InputActionMap[EAttackType::QSkillAttack], ETriggerEvent::Started, this, &AAurora::OnQSkill);
+			EnhancedInputComponent->BindAction(InputActionMap[EAttackType::ESkillAttack], ETriggerEvent::Started, this, &AAurora::OnESkill);
 			EnhancedInputComponent->BindAction(InputActionMap[EAttackType::ShiftAttack], ETriggerEvent::Started, this, &AAurora::OnShift);
 			//EnhancedInputComponent->BindAction(InputActionMap[EAttackType::ShiftAttack], ETriggerEvent::Completed, this, &APlayableCharacter::OnShiftEnd);
 		}
@@ -78,19 +87,73 @@ void AAurora::OnQSkill(const FInputActionValue& Value)
 {
 	Super::OnQSkill(Value);
 
-	UseSkill(Protocol::PLAYER_TYPE_AURORA, EAttackType::QSkillAttack);
+	if(bCanUseQ == false)
+	{
+		return;
+	}
+
+	bCanUseQ = false;
+	SendAttackPacket(Protocol::PLAYER_TYPE_AURORA, EAttackType::QSkillAttack);
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() {
+		bCanUseQ = true;
+	}, ActionCoolTimeMap[EAttackType::QSkillAttack], false);
+
+	//UseSkill(Protocol::PLAYER_TYPE_AURORA, EAttackType::QSkillAttack);
 }
 
 void AAurora::OnESkill(const FInputActionValue& Value)
 {
 	Super::OnESkill(Value);
 
-	UseSkill(Protocol::PLAYER_TYPE_AURORA, EAttackType::ESkillAttack);
+	if(bCanUseE == false)
+	{
+		return;
+	}
+
+	bCanUseE = false;
+	SendAttackPacket(Protocol::PLAYER_TYPE_AURORA, EAttackType::ESkillAttack);
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() {
+		bCanUseE = true;
+		}, ActionCoolTimeMap[EAttackType::ESkillAttack], false);
+
+	//UseSkill(Protocol::PLAYER_TYPE_AURORA, EAttackType::ESkillAttack);
 }
 
 void AAurora::OnShift(const FInputActionValue& Value)
 {
 	Super::OnShift(Value);
 
-	UseSkill(Protocol::PLAYER_TYPE_AURORA, EAttackType::ShiftAttack);
+	if(bCanUseShift == false)
+	{
+		return;
+	}
+
+	bCanUseShift = false;
+	SendAttackPacket(Protocol::PLAYER_TYPE_AURORA, EAttackType::ShiftAttack);
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() {
+		bCanUseShift = true;
+		}, ActionCoolTimeMap[EAttackType::ShiftAttack], false);
+
+	//UseSkill(Protocol::PLAYER_TYPE_AURORA, EAttackType::ShiftAttack);
+}
+
+void AAurora::OnEndQSkill(const FInputActionValue& Value)
+{
+	Super::OnEndQSkill(Value);
+}
+
+void AAurora::OnEndESkill(const FInputActionValue& Value)
+{
+	Super::OnEndESkill(Value);
+}
+
+void AAurora::OnEndShift(const FInputActionValue& Value)
+{
+	Super::OnEndShift(Value);
 }

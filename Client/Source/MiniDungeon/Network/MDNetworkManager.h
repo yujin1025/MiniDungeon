@@ -53,6 +53,7 @@ public:
 	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, const Protocol::PlayerType charactertype, TArray<AActor*> spawns, bool isMine);
 	void HandleSpawn(const Protocol::PlayerInfo& playerInfo, TArray<AActor*> spawns, bool isMine);
 	void HandleSpawn(const Protocol::ObjectInfo& objectInfo, FVector spawnLocation = FVector::ZeroVector);
+	void HandleSpawnBoss(const Protocol::ObjectInfo& objectInfo, FVector spawnLocation);
 
 	void HandleDespawn(uint64 objectId);
 	void HandleDespawn(const Protocol::STC_DESPAWN& despawnPkt);
@@ -66,8 +67,7 @@ public:
 
 	void HandleAttacked(const Protocol::STC_ATTACKED& pkt);
 
-	void HandleSpawnMonster(const Protocol::STC_MONSTERINFO& InfoPkt);
-	void HandleMonsterInfo(const Protocol::STC_MONSTERINFO& infoPkt);
+	void HandleSpawnBoss(const Protocol::MonsterInfo& bossInfo);
 
 public:
 	class FSocket* Socket;
@@ -110,7 +110,16 @@ public:
 	/// </summary>
 	TMap<uint64, TObjectPtr<class ANonPlayableCharacter>> Monsters;
 
+	/// <summary>
+	/// Key : ObjectID
+	/// Value : BossInfo
+	/// </summary>
 	TMap<uint64, Protocol::MonsterInfo*> BossInfos;
+	/// <summary>
+	/// BossCharacter
+	/// </summary>
+	TMap<uint64, TObjectPtr<class ANonPlayableCharacter>> Boss;
+
 	void AddBossInfo(uint64 object_id, const Protocol::MonsterInfo& info);
 
 	bool isHost = false;

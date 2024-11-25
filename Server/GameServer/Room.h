@@ -31,11 +31,11 @@ public:
 
 	void HandleMonsterAttackFinished(uint64 monster_object_id);
 
-	void HandleAttacked(uint64 player_object_id, const Protocol::CTS_ATTACKED& pkt);
-
 	void HandleMonsterCleared();
 
 	void HandleDead(uint64 player_object_id, uint64 objectId);
+
+	void HandleDead(uint64 objectId);
 
 	uint64 GetRoomIndex() const { return _roomIndex; }
 	void SetRoomIndex(uint64 roomIndex);
@@ -65,12 +65,19 @@ private:
 	bool AddBoss(BossRef boss, const Protocol::PosInfo& pos_Info = Protocol::PosInfo::default_instance());
 
 	bool RemoveMonster(uint64 monsterId);
+
+	bool RemoveBoss(uint64 monsterId);
 public:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 
 	void BroadcastToPlayer(SendBufferRef sendBuffer, uint64 exceptId = 0);
 
 public:
+	unordered_map<uint64, PlayerRef> GetPlayers() { READ_LOCK;  return _players; }
+	unordered_map<uint64, ObjectRef> GetObjects() { READ_LOCK; return _objects; }
+	unordered_map<uint64, MonsterRef> GetMonsters() { READ_LOCK; return _monsters; }
+	BossRef GetBoss() { READ_LOCK; return _boss; }
+
 	unordered_map<uint64, PlayerRef> _players;
 	unordered_map<uint64, ObjectRef> _objects;
 	unordered_map<uint64, MonsterRef> _monsters;
@@ -87,4 +94,7 @@ public:
 	void SetRoomInfo(const Protocol::RoomInfo& info) { this->info->CopyFrom(info); }
 
 	void SetLobby(LobbyRef lobby) { this->_lobby = lobby; }
+
+private: 
+	USE_LOCK;
 };

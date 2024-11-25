@@ -42,8 +42,8 @@ void ADrongo::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &APlayableCharacter::OnMove);
 			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayableCharacter::OnLook);
 
-			EnhancedInputComponent->BindAction(InputActionMap[EAttackType::QSkillAttack], ETriggerEvent::Triggered, this, &ADrongo::OnQSkill);
-			EnhancedInputComponent->BindAction(InputActionMap[EAttackType::ESkillAttack], ETriggerEvent::Triggered, this, &ADrongo::OnESkill);
+			EnhancedInputComponent->BindAction(InputActionMap[EAttackType::QSkillAttack], ETriggerEvent::Started, this, &ADrongo::OnQSkill);
+			EnhancedInputComponent->BindAction(InputActionMap[EAttackType::ESkillAttack], ETriggerEvent::Started, this, &ADrongo::OnESkill);
 			EnhancedInputComponent->BindAction(InputActionMap[EAttackType::ShiftAttack], ETriggerEvent::Started, this, &ADrongo::OnShift);
 			//EnhancedInputComponent->BindAction(InputActionMap[EAttackType::ShiftAttack], ETriggerEvent::Completed, this, &APlayableCharacter::OnShiftEnd);
 		}
@@ -79,20 +79,74 @@ void ADrongo::OnQSkill(const FInputActionValue& Value)
 {
     Super::OnQSkill(Value);
 
-    UseSkill(Protocol::PLAYER_TYPE_DRONGO, EAttackType::QSkillAttack);
+	if(bCanUseQ == false)
+	{
+		return;
+	}
+
+	bCanUseQ = false;
+	SendAttackPacket(Protocol::PLAYER_TYPE_DRONGO, EAttackType::QSkillAttack);
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() {
+		bCanUseQ = true;
+		}, ActionCoolTimeMap[EAttackType::QSkillAttack], false);
+
+    //UseSkill(Protocol::PLAYER_TYPE_DRONGO, EAttackType::QSkillAttack);
 }
 
 void ADrongo::OnESkill(const FInputActionValue& Value)
 {
 	Super::OnESkill(Value);
+
+	if(bCanUseE == false)
+	{
+		return;
+	}
+
+	bCanUseE = false;
+	SendAttackPacket(Protocol::PLAYER_TYPE_DRONGO, EAttackType::ESkillAttack);
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() {
+		bCanUseE = true;
+		}, ActionCoolTimeMap[EAttackType::ESkillAttack], false);
     
-    UseSkill(Protocol::PLAYER_TYPE_DRONGO, EAttackType::ESkillAttack);
+    //UseSkill(Protocol::PLAYER_TYPE_DRONGO, EAttackType::ESkillAttack);
 }
 
 void ADrongo::OnShift(const FInputActionValue& Value)
 {
     Super::OnShift(Value);
 	
-    UseSkill(Protocol::PLAYER_TYPE_DRONGO, EAttackType::ShiftAttack);
+	if(bCanUseShift == false)
+	{
+		return;
+	}
+
+	bCanUseShift = false;
+	SendAttackPacket(Protocol::PLAYER_TYPE_DRONGO, EAttackType::ShiftAttack);
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]() {
+		bCanUseShift = true;
+		}, ActionCoolTimeMap[EAttackType::ShiftAttack], false);
+	
+    //UseSkill(Protocol::PLAYER_TYPE_DRONGO, EAttackType::ShiftAttack);
+}
+
+void ADrongo::OnEndQSkill(const FInputActionValue& Value)
+{
+	Super::OnEndQSkill(Value);
+}
+
+void ADrongo::OnEndESkill(const FInputActionValue& Value)
+{
+	Super::OnEndESkill(Value);
+}
+
+void ADrongo::OnEndShift(const FInputActionValue& Value)
+{
+	Super::OnEndShift(Value);
 }
 

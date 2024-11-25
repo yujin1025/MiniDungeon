@@ -7,10 +7,19 @@
 
 void UAnimNotifyDisappear::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
+	auto owner = MeshComp->GetOwner();
+	if (owner == nullptr)
+		return;
+
+	if (owner)
+	{
+		owner->Destroy();
+	}
 }
 
 void UAnimNotifyDisappear::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
 {
+
 }
 
 void UAnimNotifyDisappear::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
@@ -19,5 +28,8 @@ void UAnimNotifyDisappear::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequ
 	if (owner == nullptr)
 		return;
 
-	owner->Destroy();
+	if (owner)
+	{
+		owner->Destroy();
+	}
 }

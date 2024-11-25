@@ -9,6 +9,8 @@
 #include <Game/MDGameMode.h>
 #include "Character/NonPlayableCharacter.h"
 #include "Game/MDGameState.h"
+#include "Game/MDPlayerController.h"
+#include <Kismet/GameplayStatics.h>
 
 void UHitDeadComponent::PlayHitMontage()
 {
@@ -90,21 +92,38 @@ void UHitDeadComponent::PlayDeadMontage()
 			if (networkManager->MonsterInfos.Contains(nonPlayableCharacter->GetObjectID()))
 			{
 				networkManager->MonsterInfos.Remove(nonPlayableCharacter->GetObjectID());
+				networkManager->Monsters.Remove(nonPlayableCharacter->GetObjectID());
 
 				if (networkManager->MonsterInfos.Num() == 0)
 				{
+					Protocol::CTS_MONSTER_CLEARED monsterClearedPkt;
+					monsterClearedPkt.set_iscleared(true);
+
+					SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(monsterClearedPkt);
+					networkManager->SendPacket(sendBuffer);
 				}
 			}
 			else if (networkManager->BossInfos.Contains(nonPlayableCharacter->GetObjectID()))
 			{
 				networkManager->BossInfos.Remove(nonPlayableCharacter->GetObjectID());
+				networkManager->Boss.Remove(nonPlayableCharacter->GetObjectID());
+
+				auto pc = Cast<AMDPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+
+				if (pc)
+				{
+					pc->SetInputMode(FInputModeUIOnly());
+					pc->bShowMouseCursor = true;
+					auto gameMode = Cast<AMDGameMode>(UGameplayStatics::GetGameMode(pc));
+
+					if (gameMode)
+					{
+						gameMode->ShowVictoryWidget();
+					}
+				}
+				
 			}
-
-
 		}
-		
-		
-
 	}
 
 	Character->PlayAnimMontage(DeadMontage);

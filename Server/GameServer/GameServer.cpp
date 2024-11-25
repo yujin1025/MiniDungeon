@@ -37,14 +37,12 @@ void DoWorkerJob(ServerServiceRef& service)
 	}
 }
 
-void DoAuthManagerJob()
+void DoBT()
 {
-	LOG("DoAuthManagerJob started");
 	while (true)
 	{
-		AuthManager& auth = AuthManager::GetInstance();
-		auth.RemoveExpiredWaiters();
-		this_thread::sleep_for(1s);
+		GLobby->DoAsync(&Lobby::UpdateTick);
+		this_thread::sleep_for(0.2s);
 	}
 }
 
@@ -92,17 +90,17 @@ int main()
 			});
 	}
 
-	LOG("Launching AuthManager job thread");
 	GThreadManager->Launch([]()
 		{
-			DoAuthManagerJob();
+			DoBT();
 		});
 
-	GLobby->DoAsync(&Lobby::UpdateTick);
-
+	
 	while (true)
 	{
-
+		AuthManager& auth = AuthManager::GetInstance();
+		auth.RemoveExpiredWaiters();
+		this_thread::sleep_for(1s);
 	}
 
 	LOG("Joining all threads");

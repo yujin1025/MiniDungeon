@@ -40,7 +40,7 @@ public:
 	class UWidgetComponent* HPBarWidget;
 
 	UFUNCTION()
-	bool Attack(APlayableCharacter* Player, float hp);
+	bool Attack(EAttackType AttackType);
 
 protected:
 	virtual void BeginPlay() override;

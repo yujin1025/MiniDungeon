@@ -53,7 +53,6 @@ void DetectionService::OnUpdateService()
         return;
     }
 
-
     auto currentRoom = ownerMonster->room.load().lock();
     if (currentRoom == nullptr)
     {
@@ -61,7 +60,7 @@ void DetectionService::OnUpdateService()
         return;
     }
 
-    auto players = currentRoom->_players;
+    auto players = currentRoom->GetPlayers();
     if (players.empty())
     {
         LOG("DetectionService : No players in the room");
@@ -76,14 +75,15 @@ void DetectionService::OnUpdateService()
 
         for (auto player : players)
         {
-            if(player.second->GetHp() <= 0)
+            PlayerRef playerRef = player.second;
+            if(playerRef->GetHp() <= 0)
 				continue;
 
-            float distance = ownerMonster->DistanceTo(player.second->GetPosInfo());
+            float distance = ownerMonster->DistanceTo(playerRef->GetPosInfo());
             if (distance < detectRange && distance < minDistance)
             {
                 minDistance = distance;
-                closestPlayer = player.second;
+                closestPlayer = playerRef;
             }
         }
 
