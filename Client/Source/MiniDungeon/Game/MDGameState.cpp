@@ -23,9 +23,10 @@ void AMDGameState::OnChangedHealth(int ObjectID, float CurrentHealth)
 	OnMonsterHPChanged.Broadcast(ObjectID, CurrentHealth);
 }
 
-void AMDGameState::SetMonsterHealthMap(int objectID, float currentHealth)
+void AMDGameState::AddMonsterHealth(int objectID, float currentHealth)
 {
-	MonsterHealthMap.Add(objectID, currentHealth);
+	if(MonsterHealthMap.Contains(objectID) == false)
+		MonsterHealthMap.Add(objectID, currentHealth);
 }
 
 void AMDGameState::BeginPlay()

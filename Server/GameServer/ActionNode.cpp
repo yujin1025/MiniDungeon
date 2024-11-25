@@ -227,6 +227,13 @@ ENodeState MoveToPlayer::OnUpdate()
 		return ENodeState::Failure;
 	}
 
+	auto room = ownerMonster->room.load().lock();
+	if (room == nullptr)
+	{
+		LOG("MoveToPosition Failed : room is nullptr");
+		return ENodeState::Failure;
+	}
+
 	if (ownerMonster->GetPosInfo().state() != Protocol::MOVE_STATE_RUN)
 	{
 		return ENodeState::Success;
@@ -278,7 +285,7 @@ void AttackNode::OnStart()
 			// 30도 안에 있는지 확인
 			if (AngleDegrees <= 30.0f)
 			{
-				// 대상이 30도 이내에 있음
+				target->SetHp(target->GetHp() - damage);
 			}
 		}
 
@@ -286,7 +293,9 @@ void AttackNode::OnStart()
 
 		ownerMonster->SetMovementState(Protocol::MOVE_STATE_SKILL);
 		pkt.set_monster_id(ownerMonster->GetObjectInfo().object_id());
+		pkt.set_monster_attack_type(0);
 		pkt.set_target_id(target->GetObjectInfo().object_id());
+		pkt.set_target_current_hp(target->GetHp());
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 		auto room = ownerMonster->room.load().lock();

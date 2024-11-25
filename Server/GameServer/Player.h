@@ -24,6 +24,8 @@ public:
 	const Protocol::PosInfo& GetPosInfo() const { READ_LOCK; return objectInfo->pos_info(); }
 	void SetPosInfo(const Protocol::PosInfo& pos_Info);
 
+	void Attack(const Protocol::AttackInfo& attack_info);
+	void ProcessAttack(int32 skillType, float damage, float maxDistance, float maxAngle);
 protected:
 	Protocol::PlayerInfo* playerInfo;
 

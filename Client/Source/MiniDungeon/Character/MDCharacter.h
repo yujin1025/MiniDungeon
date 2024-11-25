@@ -128,4 +128,16 @@ public:
 
 	uint64 GetObjectID() const { return ObjectID; }
 	void SetObjectID(uint64 obj_id) { ObjectID = obj_id; }
+
+	FRotator GetTargetRotation(FVector targetLocation);
+
+	void StartSmoothRotation(FVector targetLocation, float speed);
+
+	void UpdateSmoothRotationWithInterp();
+
+	FTimerHandle SmoothRotationTimerHandle;
+
+protected:
+	float RotationSpeed = 0.f;
+	FRotator TargetRotation;
 };

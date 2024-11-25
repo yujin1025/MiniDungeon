@@ -9,6 +9,8 @@
 #include "Component/AttackComponent.h"
 #include "Components/WidgetComponent.h"
 #include "../Widget/HPBarWidget.h"
+#include "PlayableCharacter.h"
+#include "Component/HealthComponent.h"
 
 ANonPlayableCharacter::ANonPlayableCharacter()
 {
@@ -20,13 +22,33 @@ ANonPlayableCharacter::ANonPlayableCharacter()
 	HPBarWidget->SetupAttachment(RootComponent);
 }
 
-bool ANonPlayableCharacter::Attack()
+bool ANonPlayableCharacter::Attack(APlayableCharacter* Player, float hp)
 {
 	if (IsDead)
 		return false;
 
+	//TODO : 공격 타입에 따라 애니메이션 실행
 	ActionComponentMap[EAttackType::QSkillAttack]->PlayAttackMontage();
+
+	if (IsValid(Player))
+	{
+		float damage = hp - Player->HealthComponent->GetCurrentHealth();
+		Player->HealthComponent->ChangeHealth(this, damage);
+	}
 	CurrentActionCoolTimeMap[EAttackType::QSkillAttack] = CurrentDeltaTime + ActionCoolTimeMap[EAttackType::QSkillAttack];
+
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if (networkManager->isHost)
+	{
+		Protocol::CTS_MONSTER_ATTACK AttackPkt;
+
+		// 패킷을 SendBufferRef로 직렬화
+		SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(AttackPkt);
+		if (IsValid(networkManager))
+		{
+			networkManager->SendPacket(sendBuffer);
+		}
+	}
 
 	return true;
 }
@@ -60,52 +82,32 @@ void ANonPlayableCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//FVector Location = GetActorLocation();
-	//PosInfo->set_object_id(ObjectID);
-	//PosInfo->set_x(Location.X);
-	//PosInfo->set_y(Location.Y);
-	//PosInfo->set_z(Location.Z);
-	//PosInfo->set_yaw(GetControlRotation().Yaw);
+	auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
+	if (networkManager->isHost)
+	{
+		// State 정보
+		if (GetVelocity() == FVector::Zero())
+			SetMoveState(Protocol::MOVE_STATE_IDLE);
+		else
+			SetMoveState(Protocol::MOVE_STATE_RUN);
 
-	//auto networkManager = GetGameInstance()->GetSubsystem<UMDNetworkManager>();
-	//auto pc = Cast<AMDPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
-	//if (networkManager->isHost)
-	//{
-	//	// State 정보
-	//	if (GetVelocity() == FVector::Zero())
-	//		SetMoveState(Protocol::MOVE_STATE_IDLE);
-	//	else
-	//		SetMoveState(Protocol::MOVE_STATE_RUN);
+		MovePacketSendTimer -= DeltaTime;
 
-	//	MovePacketSendTimer -= DeltaTime;
+		if (MovePacketSendTimer <= 0)
+		{
+			// 이동 패킷 전송
+			Protocol::CTS_MOVE MovePkt;
+			Protocol::PosInfo* Info = new Protocol::PosInfo();
+			Info->CopyFrom(*PosInfo);
+			Info->set_state(GetMoveState());
+			MovePkt.set_allocated_info(Info);
 
-	//	if (MovePacketSendTimer <= 0)
-	//	{
-	//		// 이동 패킷 전송
-	//		Protocol::CTS_MOVE MovePkt;
-	//		Protocol::PosInfo* Info = new Protocol::PosInfo();
-	//		Info->CopyFrom(*PosInfo);
-	//		Info->set_state(GetMoveState());
-	//		MovePkt.set_allocated_info(Info);
-
-	//		// 패킷을 SendBufferRef로 직렬화
-	//		SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
-	//		if (IsValid(networkManager)) 
-	//		{
-	//			networkManager->SendPacket(sendBuffer);
-	//		}
-	//	}
-	//}
-	//else
-	//{
-	//	// Host의 게임 인스턴스가 아닌 경우 서버에서 받은 정보를 기반으로 이동
-	//	const Protocol::MoveState State = PosInfo->state();
-	//	SetMoveState(State);
-
-	//	if (State == Protocol::MOVE_STATE_RUN)
-	//	{
-	//		SetActorRotation(FRotator(0, DestInfo->yaw(), 0));
-	//		AddMovementInput(GetActorForwardVector());
-	//	}
-	//}
+			// 패킷을 SendBufferRef로 직렬화
+			SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
+			if (IsValid(networkManager)) 
+			{
+				networkManager->SendPacket(sendBuffer);
+			}
+		}
+	}
 }

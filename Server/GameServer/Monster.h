@@ -39,7 +39,7 @@ public:
 	const float BossSight = 1500.f; //보스가 플레이어를 감지할 수 있는 범위
 	const float BossLoseSight = 2000.f; //보스가 플레이어를 놓치는 거리
 	const float BossSightAngle = 360.f; //보스가 감지할 수 있는 각도
-	const float MaxHp = 600.f;
+	const float MaxHp = 100.f;
 	const float Speed = 300.f;
 
 	float CurrentHp;
@@ -53,7 +53,7 @@ public:
 	atomic<shared_ptr<Player>> TargetPlayer; //보스가 추적하는 플레이어 객체
 	atomic<bool> isAttacking = false;
 
-private:
+protected:
 	Protocol::MonsterInfo* monsterInfo;
 
 public:
@@ -68,7 +68,7 @@ public:
 
 	void SetMovementState(Protocol::MoveState state);
 
-private:
+protected:
 	shared_ptr<BehaviourTree> behaviourTree;
 	shared_ptr<MonsterBlackboard> blackboard;
 

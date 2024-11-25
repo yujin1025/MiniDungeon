@@ -190,13 +190,15 @@ message STC_DETECT
 message CTS_MONSTER_ATTACK
 {
 	uint64 monster_id = 1;
-	uint64 target_id = 2;
+	uint64 monster_attack_type = 2;
 }
 
 message STC_MONSTER_ATTACK
 {
 	uint64 monster_id = 1;
-	uint64 target_id = 2;
+	uint64 monster_attack_type = 2;
+	uint64 target_id = 3;
+	float target_current_hp = 4;
 }
 
 message CTS_ATTACKED
@@ -207,8 +209,9 @@ message CTS_ATTACKED
 
 message STC_ATTACKED
 {
-	uint64 object_id = 1;
-	float object_current_hp = 2;
+	uint64 attacking_object_id = 1;
+	uint64 attacking_skill_type = 2;
+	repeated AttackedInfo attacked_infos = 3;
 }
 
 message CTS_CHAT

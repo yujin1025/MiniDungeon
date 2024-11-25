@@ -62,7 +62,9 @@ public:
 	void HandleMoveMonster(class ANonPlayableCharacter* monster, const Protocol::PosInfo& posInfo, uint64 target_object_id = 0);
 
 	void HandleAttack(const Protocol::STC_ATTACK& AtkPkt);
-	void HandleMonsterAttack(uint64 attacking_obj_id, uint64 attacked_obj_id);
+	void HandleMonsterAttack(const Protocol::STC_MONSTER_ATTACK& pkt);
+
+	void HandleAttacked(const Protocol::STC_ATTACKED& pkt);
 
 	void HandleSpawnMonster(const Protocol::STC_MONSTERINFO& InfoPkt);
 	void HandleMonsterInfo(const Protocol::STC_MONSTERINFO& infoPkt);

@@ -27,11 +27,13 @@ public:
 
 	void HandleMoveMonster(const Protocol::PosInfo &info);
 
-	void HandleAttack(Protocol::CTS_ATTACK pkt);
+	void HandleAttack(const Protocol::CTS_ATTACK& pkt);
 
-	void HandleAttacked(const Protocol::CTS_ATTACKED& pkt);
+	void HandleMonsterAttackFinished(uint64 monster_object_id);
 
-	void HandleDead(uint64 objectId);
+	void HandleAttacked(uint64 player_object_id, const Protocol::CTS_ATTACKED& pkt);
+
+	void HandleDead(uint64 player_object_id, uint64 objectId);
 
 	uint64 GetRoomIndex() const { return _roomIndex; }
 	void SetRoomIndex(uint64 roomIndex);

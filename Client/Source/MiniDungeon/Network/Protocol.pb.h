@@ -5410,7 +5410,7 @@ class CTS_MONSTER_ATTACK final :
 
   enum : int {
     kMonsterIdFieldNumber = 1,
-    kTargetIdFieldNumber = 2,
+    kMonsterAttackTypeFieldNumber = 2,
   };
   // uint64 monster_id = 1;
   void clear_monster_id();
@@ -5421,13 +5421,13 @@ class CTS_MONSTER_ATTACK final :
   void _internal_set_monster_id(uint64_t value);
   public:
 
-  // uint64 target_id = 2;
-  void clear_target_id();
-  uint64_t target_id() const;
-  void set_target_id(uint64_t value);
+  // uint64 monster_attack_type = 2;
+  void clear_monster_attack_type();
+  uint64_t monster_attack_type() const;
+  void set_monster_attack_type(uint64_t value);
   private:
-  uint64_t _internal_target_id() const;
-  void _internal_set_target_id(uint64_t value);
+  uint64_t _internal_monster_attack_type() const;
+  void _internal_set_monster_attack_type(uint64_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.CTS_MONSTER_ATTACK)
@@ -5439,7 +5439,7 @@ class CTS_MONSTER_ATTACK final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     uint64_t monster_id_;
-    uint64_t target_id_;
+    uint64_t monster_attack_type_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -5569,7 +5569,9 @@ class STC_MONSTER_ATTACK final :
 
   enum : int {
     kMonsterIdFieldNumber = 1,
-    kTargetIdFieldNumber = 2,
+    kMonsterAttackTypeFieldNumber = 2,
+    kTargetIdFieldNumber = 3,
+    kTargetCurrentHpFieldNumber = 4,
   };
   // uint64 monster_id = 1;
   void clear_monster_id();
@@ -5580,13 +5582,31 @@ class STC_MONSTER_ATTACK final :
   void _internal_set_monster_id(uint64_t value);
   public:
 
-  // uint64 target_id = 2;
+  // uint64 monster_attack_type = 2;
+  void clear_monster_attack_type();
+  uint64_t monster_attack_type() const;
+  void set_monster_attack_type(uint64_t value);
+  private:
+  uint64_t _internal_monster_attack_type() const;
+  void _internal_set_monster_attack_type(uint64_t value);
+  public:
+
+  // uint64 target_id = 3;
   void clear_target_id();
   uint64_t target_id() const;
   void set_target_id(uint64_t value);
   private:
   uint64_t _internal_target_id() const;
   void _internal_set_target_id(uint64_t value);
+  public:
+
+  // float target_current_hp = 4;
+  void clear_target_current_hp();
+  float target_current_hp() const;
+  void set_target_current_hp(float value);
+  private:
+  float _internal_target_current_hp() const;
+  void _internal_set_target_current_hp(float value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.STC_MONSTER_ATTACK)
@@ -5598,7 +5618,9 @@ class STC_MONSTER_ATTACK final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     uint64_t monster_id_;
+    uint64_t monster_attack_type_;
     uint64_t target_id_;
+    float target_current_hp_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -5886,25 +5908,44 @@ class STC_ATTACKED final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kObjectIdFieldNumber = 1,
-    kObjectCurrentHpFieldNumber = 2,
+    kAttackedInfosFieldNumber = 3,
+    kAttackingObjectIdFieldNumber = 1,
+    kAttackingSkillTypeFieldNumber = 2,
   };
-  // uint64 object_id = 1;
-  void clear_object_id();
-  uint64_t object_id() const;
-  void set_object_id(uint64_t value);
+  // repeated .Protocol.AttackedInfo attacked_infos = 3;
+  int attacked_infos_size() const;
   private:
-  uint64_t _internal_object_id() const;
-  void _internal_set_object_id(uint64_t value);
+  int _internal_attacked_infos_size() const;
+  public:
+  void clear_attacked_infos();
+  ::Protocol::AttackedInfo* mutable_attacked_infos(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::AttackedInfo >*
+      mutable_attacked_infos();
+  private:
+  const ::Protocol::AttackedInfo& _internal_attacked_infos(int index) const;
+  ::Protocol::AttackedInfo* _internal_add_attacked_infos();
+  public:
+  const ::Protocol::AttackedInfo& attacked_infos(int index) const;
+  ::Protocol::AttackedInfo* add_attacked_infos();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::AttackedInfo >&
+      attacked_infos() const;
+
+  // uint64 attacking_object_id = 1;
+  void clear_attacking_object_id();
+  uint64_t attacking_object_id() const;
+  void set_attacking_object_id(uint64_t value);
+  private:
+  uint64_t _internal_attacking_object_id() const;
+  void _internal_set_attacking_object_id(uint64_t value);
   public:
 
-  // float object_current_hp = 2;
-  void clear_object_current_hp();
-  float object_current_hp() const;
-  void set_object_current_hp(float value);
+  // uint64 attacking_skill_type = 2;
+  void clear_attacking_skill_type();
+  uint64_t attacking_skill_type() const;
+  void set_attacking_skill_type(uint64_t value);
   private:
-  float _internal_object_current_hp() const;
-  void _internal_set_object_current_hp(float value);
+  uint64_t _internal_attacking_skill_type() const;
+  void _internal_set_attacking_skill_type(uint64_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.STC_ATTACKED)
@@ -5915,8 +5956,9 @@ class STC_ATTACKED final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    uint64_t object_id_;
-    float object_current_hp_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::AttackedInfo > attacked_infos_;
+    uint64_t attacking_object_id_;
+    uint64_t attacking_skill_type_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -10056,24 +10098,24 @@ inline void CTS_MONSTER_ATTACK::set_monster_id(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.CTS_MONSTER_ATTACK.monster_id)
 }
 
-// uint64 target_id = 2;
-inline void CTS_MONSTER_ATTACK::clear_target_id() {
-  _impl_.target_id_ = uint64_t{0u};
+// uint64 monster_attack_type = 2;
+inline void CTS_MONSTER_ATTACK::clear_monster_attack_type() {
+  _impl_.monster_attack_type_ = uint64_t{0u};
 }
-inline uint64_t CTS_MONSTER_ATTACK::_internal_target_id() const {
-  return _impl_.target_id_;
+inline uint64_t CTS_MONSTER_ATTACK::_internal_monster_attack_type() const {
+  return _impl_.monster_attack_type_;
 }
-inline uint64_t CTS_MONSTER_ATTACK::target_id() const {
-  // @@protoc_insertion_point(field_get:Protocol.CTS_MONSTER_ATTACK.target_id)
-  return _internal_target_id();
+inline uint64_t CTS_MONSTER_ATTACK::monster_attack_type() const {
+  // @@protoc_insertion_point(field_get:Protocol.CTS_MONSTER_ATTACK.monster_attack_type)
+  return _internal_monster_attack_type();
 }
-inline void CTS_MONSTER_ATTACK::_internal_set_target_id(uint64_t value) {
+inline void CTS_MONSTER_ATTACK::_internal_set_monster_attack_type(uint64_t value) {
   
-  _impl_.target_id_ = value;
+  _impl_.monster_attack_type_ = value;
 }
-inline void CTS_MONSTER_ATTACK::set_target_id(uint64_t value) {
-  _internal_set_target_id(value);
-  // @@protoc_insertion_point(field_set:Protocol.CTS_MONSTER_ATTACK.target_id)
+inline void CTS_MONSTER_ATTACK::set_monster_attack_type(uint64_t value) {
+  _internal_set_monster_attack_type(value);
+  // @@protoc_insertion_point(field_set:Protocol.CTS_MONSTER_ATTACK.monster_attack_type)
 }
 
 // -------------------------------------------------------------------
@@ -10100,7 +10142,27 @@ inline void STC_MONSTER_ATTACK::set_monster_id(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.STC_MONSTER_ATTACK.monster_id)
 }
 
-// uint64 target_id = 2;
+// uint64 monster_attack_type = 2;
+inline void STC_MONSTER_ATTACK::clear_monster_attack_type() {
+  _impl_.monster_attack_type_ = uint64_t{0u};
+}
+inline uint64_t STC_MONSTER_ATTACK::_internal_monster_attack_type() const {
+  return _impl_.monster_attack_type_;
+}
+inline uint64_t STC_MONSTER_ATTACK::monster_attack_type() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_MONSTER_ATTACK.monster_attack_type)
+  return _internal_monster_attack_type();
+}
+inline void STC_MONSTER_ATTACK::_internal_set_monster_attack_type(uint64_t value) {
+  
+  _impl_.monster_attack_type_ = value;
+}
+inline void STC_MONSTER_ATTACK::set_monster_attack_type(uint64_t value) {
+  _internal_set_monster_attack_type(value);
+  // @@protoc_insertion_point(field_set:Protocol.STC_MONSTER_ATTACK.monster_attack_type)
+}
+
+// uint64 target_id = 3;
 inline void STC_MONSTER_ATTACK::clear_target_id() {
   _impl_.target_id_ = uint64_t{0u};
 }
@@ -10118,6 +10180,26 @@ inline void STC_MONSTER_ATTACK::_internal_set_target_id(uint64_t value) {
 inline void STC_MONSTER_ATTACK::set_target_id(uint64_t value) {
   _internal_set_target_id(value);
   // @@protoc_insertion_point(field_set:Protocol.STC_MONSTER_ATTACK.target_id)
+}
+
+// float target_current_hp = 4;
+inline void STC_MONSTER_ATTACK::clear_target_current_hp() {
+  _impl_.target_current_hp_ = 0;
+}
+inline float STC_MONSTER_ATTACK::_internal_target_current_hp() const {
+  return _impl_.target_current_hp_;
+}
+inline float STC_MONSTER_ATTACK::target_current_hp() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_MONSTER_ATTACK.target_current_hp)
+  return _internal_target_current_hp();
+}
+inline void STC_MONSTER_ATTACK::_internal_set_target_current_hp(float value) {
+  
+  _impl_.target_current_hp_ = value;
+}
+inline void STC_MONSTER_ATTACK::set_target_current_hp(float value) {
+  _internal_set_target_current_hp(value);
+  // @@protoc_insertion_point(field_set:Protocol.STC_MONSTER_ATTACK.target_current_hp)
 }
 
 // -------------------------------------------------------------------
@@ -10168,44 +10250,81 @@ inline void CTS_ATTACKED::set_object_current_hp(float value) {
 
 // STC_ATTACKED
 
-// uint64 object_id = 1;
-inline void STC_ATTACKED::clear_object_id() {
-  _impl_.object_id_ = uint64_t{0u};
+// uint64 attacking_object_id = 1;
+inline void STC_ATTACKED::clear_attacking_object_id() {
+  _impl_.attacking_object_id_ = uint64_t{0u};
 }
-inline uint64_t STC_ATTACKED::_internal_object_id() const {
-  return _impl_.object_id_;
+inline uint64_t STC_ATTACKED::_internal_attacking_object_id() const {
+  return _impl_.attacking_object_id_;
 }
-inline uint64_t STC_ATTACKED::object_id() const {
-  // @@protoc_insertion_point(field_get:Protocol.STC_ATTACKED.object_id)
-  return _internal_object_id();
+inline uint64_t STC_ATTACKED::attacking_object_id() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_ATTACKED.attacking_object_id)
+  return _internal_attacking_object_id();
 }
-inline void STC_ATTACKED::_internal_set_object_id(uint64_t value) {
+inline void STC_ATTACKED::_internal_set_attacking_object_id(uint64_t value) {
   
-  _impl_.object_id_ = value;
+  _impl_.attacking_object_id_ = value;
 }
-inline void STC_ATTACKED::set_object_id(uint64_t value) {
-  _internal_set_object_id(value);
-  // @@protoc_insertion_point(field_set:Protocol.STC_ATTACKED.object_id)
+inline void STC_ATTACKED::set_attacking_object_id(uint64_t value) {
+  _internal_set_attacking_object_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.STC_ATTACKED.attacking_object_id)
 }
 
-// float object_current_hp = 2;
-inline void STC_ATTACKED::clear_object_current_hp() {
-  _impl_.object_current_hp_ = 0;
+// uint64 attacking_skill_type = 2;
+inline void STC_ATTACKED::clear_attacking_skill_type() {
+  _impl_.attacking_skill_type_ = uint64_t{0u};
 }
-inline float STC_ATTACKED::_internal_object_current_hp() const {
-  return _impl_.object_current_hp_;
+inline uint64_t STC_ATTACKED::_internal_attacking_skill_type() const {
+  return _impl_.attacking_skill_type_;
 }
-inline float STC_ATTACKED::object_current_hp() const {
-  // @@protoc_insertion_point(field_get:Protocol.STC_ATTACKED.object_current_hp)
-  return _internal_object_current_hp();
+inline uint64_t STC_ATTACKED::attacking_skill_type() const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_ATTACKED.attacking_skill_type)
+  return _internal_attacking_skill_type();
 }
-inline void STC_ATTACKED::_internal_set_object_current_hp(float value) {
+inline void STC_ATTACKED::_internal_set_attacking_skill_type(uint64_t value) {
   
-  _impl_.object_current_hp_ = value;
+  _impl_.attacking_skill_type_ = value;
 }
-inline void STC_ATTACKED::set_object_current_hp(float value) {
-  _internal_set_object_current_hp(value);
-  // @@protoc_insertion_point(field_set:Protocol.STC_ATTACKED.object_current_hp)
+inline void STC_ATTACKED::set_attacking_skill_type(uint64_t value) {
+  _internal_set_attacking_skill_type(value);
+  // @@protoc_insertion_point(field_set:Protocol.STC_ATTACKED.attacking_skill_type)
+}
+
+// repeated .Protocol.AttackedInfo attacked_infos = 3;
+inline int STC_ATTACKED::_internal_attacked_infos_size() const {
+  return _impl_.attacked_infos_.size();
+}
+inline int STC_ATTACKED::attacked_infos_size() const {
+  return _internal_attacked_infos_size();
+}
+inline ::Protocol::AttackedInfo* STC_ATTACKED::mutable_attacked_infos(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.STC_ATTACKED.attacked_infos)
+  return _impl_.attacked_infos_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::AttackedInfo >*
+STC_ATTACKED::mutable_attacked_infos() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.STC_ATTACKED.attacked_infos)
+  return &_impl_.attacked_infos_;
+}
+inline const ::Protocol::AttackedInfo& STC_ATTACKED::_internal_attacked_infos(int index) const {
+  return _impl_.attacked_infos_.Get(index);
+}
+inline const ::Protocol::AttackedInfo& STC_ATTACKED::attacked_infos(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.STC_ATTACKED.attacked_infos)
+  return _internal_attacked_infos(index);
+}
+inline ::Protocol::AttackedInfo* STC_ATTACKED::_internal_add_attacked_infos() {
+  return _impl_.attacked_infos_.Add();
+}
+inline ::Protocol::AttackedInfo* STC_ATTACKED::add_attacked_infos() {
+  ::Protocol::AttackedInfo* _add = _internal_add_attacked_infos();
+  // @@protoc_insertion_point(field_add:Protocol.STC_ATTACKED.attacked_infos)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::AttackedInfo >&
+STC_ATTACKED::attacked_infos() const {
+  // @@protoc_insertion_point(field_list:Protocol.STC_ATTACKED.attacked_infos)
+  return _impl_.attacked_infos_;
 }
 
 // -------------------------------------------------------------------

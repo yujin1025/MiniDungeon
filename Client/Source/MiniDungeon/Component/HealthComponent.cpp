@@ -49,7 +49,6 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 {
-	
 	auto* GameMode = Cast<AMDGameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode == nullptr)
 		return;
@@ -72,7 +71,6 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 	{
 		GameMode->MyGameState->OnChangedHealth(Character->CharacterId, CurrentHealth);
 		UE_LOG(LogTemp, Warning, TEXT("Non Player Number : (%d) Current Health: %f"), Character->CharacterId, CurrentHealth);
-
 		HPBarWidget = Character->FindComponentByClass<UWidgetComponent>();
 		if (HPBarWidget)
 		{
@@ -82,21 +80,6 @@ void UHealthComponent::ChangeHealth(AMDCharacter* Attacker, float Amount)
 				HPWidget->UpdateHealthBar();
 			}
 		}
-
-		/*
-		UMDNetworkManager* NetworkManager = GetWorld()->GetSubsystem<UMDNetworkManager>();
-		if (NetworkManager)
-		{
-			Protocol::CTS_MONSTERINFO MonsterInfoPkt;
-			Protocol::MonsterInfo* MonsterInfo = new Protocol::MonsterInfo;
-
-			uint64 MonsterId = Character->GetObjectID();
-			MonsterInfo->mutable_object_info()->set_object_id(MonsterId);
-			MonsterInfo->set_monster_hp(CurrentHealth);
-
-			MonsterInfoPkt.set_allocated_info(MonsterInfo);
-			NetworkManager->SendPacket(MonsterInfoPkt);
-		}*/
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Character %d: CurrentHealth is now %f"), Character->CharacterId, CurrentHealth);

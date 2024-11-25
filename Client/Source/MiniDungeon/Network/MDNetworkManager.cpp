@@ -15,9 +15,10 @@
 #include "Lobby/LobbyPlayerController.h"
 #include <Lobby/RoomListViewItemData.h>
 #include "Game/MDPlayerController.h"
-#include "../Character/Khaimera.h"
-#include "../AI/MDAIController.h"
+#include "Character/Khaimera.h"
+#include "AI/MDAIController.h"
 #include <Game/MDGameMode.h>
+#include "Component/HealthComponent.h"
 
 
 void UMDNetworkManager::Initialize(FSubsystemCollectionBase& Collection)
@@ -414,6 +415,10 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 				break;
 			}
 
+			player->SetObjectID(objectId);
+			MyPlayer = player;
+			Players.Add(objectId, player);
+
 			if (IsValid(pc))
 			{
 				pc->GetPawn()->Destroy();
@@ -429,10 +434,6 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 			{
 				gameMode->MyPlayerState = pc->GetState();
 			}
-
-			MyPlayer = player;
-			Players.Add(objectInfo.object_id(), player);
-			player->SetObjectID(objectInfo.object_id());
 		}
 	}
 	else
@@ -450,6 +451,7 @@ void UMDNetworkManager::HandleSpawn(const Protocol::ObjectInfo& objectInfo, cons
 			break;
 		}
 
+		player->SetObjectID(objectId);
 		Players.Add(objectInfo.object_id(), player);
 	}
 }
@@ -519,13 +521,18 @@ void UMDNetworkManager::HandleDespawn(uint64 objectId)
 	auto findCharacter = Players.Find(objectId);
 	if(findCharacter)
 	{
+		Players.Remove(objectId);
 		world->DestroyActor(*findCharacter);
+		return;;
 	}
 
 	auto findMonster = Monsters.Find(objectId);
 	if(findMonster)
 	{
+		MonsterInfos.Remove(objectId);
+		Monsters.Remove(objectId);
 		world->DestroyActor(*findMonster);
+		return;
 	}
 }
 
@@ -614,7 +621,7 @@ void UMDNetworkManager::HandleAttack(const Protocol::STC_ATTACK& AtkPkt)
 	if (World == nullptr)
 		return;
 
-	const uint64 ObjectId = AtkPkt.info().object_id();
+	const uint64 ObjectId = AtkPkt.info().attack_object_id();
 
 	TObjectPtr<APlayableCharacter>* findActor = Players.Find(ObjectId);
 	if (findActor == nullptr)
@@ -626,7 +633,7 @@ void UMDNetworkManager::HandleAttack(const Protocol::STC_ATTACK& AtkPkt)
 	player->Other_Attack(Info);
 }
 
-void UMDNetworkManager::HandleMonsterAttack(uint64 attacking_obj_id, uint64 attacked_obj_id)
+void UMDNetworkManager::HandleMonsterAttack(const Protocol::STC_MONSTER_ATTACK& pkt)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)
 		return;
@@ -635,18 +642,49 @@ void UMDNetworkManager::HandleMonsterAttack(uint64 attacking_obj_id, uint64 atta
 	if (World == nullptr)
 		return;
 
-	ANonPlayableCharacter* Monster = Monsters.Find(attacking_obj_id)->Get();
-	if (Monster == nullptr)
+	ANonPlayableCharacter* monster = Monsters.Find(pkt.monster_id())->Get();
+	if (monster == nullptr)
 		return;
 
-	APlayableCharacter* Player = Players.Find(attacked_obj_id)->Get();
+	APlayableCharacter* player = Players.Find(pkt.target_id())->Get();
 
-	if(Player != nullptr)
+	if(player != nullptr)
 	{
-		Monster->RotateToTarget(Player, 2.0f);
+		monster->SetActorRotation(monster->GetTargetRotation(player->GetActorLocation()));
 	}
 
-	Monster->Attack();
+	monster->Attack(player, pkt.target_current_hp());
+}
+
+void UMDNetworkManager::HandleAttacked(const Protocol::STC_ATTACKED& pkt)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	const uint64 objectId = pkt.attacking_object_id();
+
+	APlayableCharacter* findActor = Players.Find(objectId)->Get();
+	if (findActor != nullptr)
+	{
+		if (static_cast<EAttackType>(pkt.attacking_skill_type()) < EAttackType::Max && objectId != PlayerInfos[PlayerID]->object_info().object_id())
+		{
+			findActor->UseSkill(static_cast<EAttackType>(pkt.attacking_skill_type()));
+		}
+
+		for (auto& attacked_info : pkt.attacked_infos())
+		{
+			if (Monsters.Contains(attacked_info.attacked_object_id()))
+			{
+				float damage = attacked_info.attacked_object_current_hp() - Monsters[attacked_info.attacked_object_id()]->HealthComponent->GetCurrentHealth();
+				Monsters[attacked_info.attacked_object_id()]->HealthComponent->ChangeHealth(findActor, damage);
+			}
+		}
+	}
+	
 }
 
 void UMDNetworkManager::HandleSpawnMonster(const Protocol::STC_MONSTERINFO& InfoPkt)

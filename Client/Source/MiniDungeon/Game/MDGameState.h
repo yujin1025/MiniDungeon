@@ -61,7 +61,7 @@ public:
 
 	TMap<int, float> MonsterHealthMap;
 	TMap<int, float> GetMonsterHealthMap() const { return MonsterHealthMap; }
-	void SetMonsterHealthMap(int objectID, float currentHealth);
+	void AddMonsterHealth(int objectID, float currentHealth);
 
 protected:
 	virtual void BeginPlay() override;

@@ -199,7 +199,7 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 	}
 	else
 	{
-		wstring wPW = Utils::stringToWString(pw);
+		wstring wPW = Utils::stringToWString(pkt.pw());
 		dbBind.BindParam(1, wPW);
 	}
 
@@ -216,7 +216,7 @@ bool Handle_CTS_LOGIN(PacketSessionRef& session, Protocol::CTS_LOGIN& pkt)
 	bool auth = false;
 
 	while (dbBind.Fetch())
-	{
+	{	
 		// Fetch 성공 시, 결과에서 player_id를 읽어온 상태
 		if (outIndex > 0) // player_id가 유효한 경우 인증 성공
 		{
@@ -274,12 +274,24 @@ bool Handle_CTS_ENTER_LOBBY(PacketSessionRef& session, Protocol::CTS_ENTER_LOBBY
 
 bool Handle_CTS_CREATE_ROOM(PacketSessionRef& session, Protocol::CTS_CREATE_ROOM& pkt)
 {
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+
 	GLobby->DoAsync(&Lobby::HandleCreateRoom, pkt.room_info());
 	return true;
 }
 
 bool Handle_CTS_JOIN_ROOM(PacketSessionRef& session, Protocol::CTS_JOIN_ROOM& pkt)
 {
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+
 	uint64 playerIndex = pkt.player().player_id();
 	uint64 roomIndex = pkt.roomindex();
 
@@ -289,6 +301,12 @@ bool Handle_CTS_JOIN_ROOM(PacketSessionRef& session, Protocol::CTS_JOIN_ROOM& pk
 
 bool Handle_CTS_LEAVE_ROOM(PacketSessionRef& session, Protocol::CTS_LEAVE_ROOM& pkt)
 {
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+
 	// Lobby에 Room이 없다면 문제
 	if (GLobby->GetRooms().find(pkt.roomindex()) == GLobby->GetRooms().end())
 	{
@@ -301,12 +319,32 @@ bool Handle_CTS_LEAVE_ROOM(PacketSessionRef& session, Protocol::CTS_LEAVE_ROOM& 
 
 bool Handle_CTS_CHANGE_CHARACTER(PacketSessionRef& session, Protocol::CTS_CHANGE_CHARACTER& pkt)
 {
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
+
 	GLobby->GetRooms()[pkt.roomindex()]->DoAsync(&Room::HandleChangeCharacter, pkt.player_id(), pkt.character());
 	return true;
 }
 
 bool Handle_CTS_ENTER_GAME(PacketSessionRef& session, Protocol::CTS_ENTER_GAME& pkt)
 {
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
+
 	// Lobby에 Room이 없다면 문제
 	if (GLobby->GetRooms().find(pkt.room_id()) == GLobby->GetRooms().end())
 	{
@@ -320,6 +358,16 @@ bool Handle_CTS_ENTER_GAME(PacketSessionRef& session, Protocol::CTS_ENTER_GAME& 
 
 bool Handle_CTS_SPAWN(PacketSessionRef& session, Protocol::CTS_SPAWN& pkt)
 {
+	auto gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
+
 	if (GLobby->GetRooms().find(pkt.room_id()) == GLobby->GetRooms().end())
 	{
 		return false;
@@ -391,12 +439,8 @@ bool Handle_CTS_MONSTER_ATTACK(PacketSessionRef& session, Protocol::CTS_MONSTER_
 	RoomRef room = player->room.load().lock();
 	if (room == nullptr)
 		return false;
-
-	Protocol::STC_MONSTER_ATTACK monsterAttackPkt;
-	monsterAttackPkt.set_monster_id(pkt.monster_id());
-
-	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(monsterAttackPkt);
-	room->Broadcast(sendBuffer);
+	
+	room->DoAsync(&Room::HandleMonsterAttackFinished, pkt.monster_id());
 
 	return true;
 }
@@ -413,7 +457,7 @@ bool Handle_CTS_ATTACKED(PacketSessionRef& session, Protocol::CTS_ATTACKED& pkt)
 	if (room == nullptr)
 		return false;
 
-	room->DoAsync(&Room::HandleAttacked, pkt);
+	room->DoAsync(&Room::HandleAttacked, player->GetObjectInfo().object_id(), pkt);
 
 	return true;
 }
@@ -430,9 +474,7 @@ bool Handle_CTS_ATTACK(PacketSessionRef& session, Protocol::CTS_ATTACK& pkt)
 	if (room == nullptr)
 		return false;
 
-	//room->DoAsync(&Room::HandleAttack, pkt.info());
 	room->DoAsync(&Room::HandleAttack, pkt);
-	//room->HandleAttack(pkt);
 
 	return true;
 }
