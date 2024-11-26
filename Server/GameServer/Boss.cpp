@@ -66,6 +66,7 @@ void Boss::Init()
     firstAttackNode->SetDamage(30.f);
     firstAttackNode->SetHitAngle(60.f);
     firstAttackNode->SetHitRange(300.f);
+    firstAttackNode->SetDuration(2.f);
 
     auto checkSecondPhase = make_shared<CheckHealthDecorator>(behaviourTree, blackboard);
     selector3->children.push_back(checkSecondPhase);
@@ -78,6 +79,7 @@ void Boss::Init()
     secondAttackNode->SetDamage(50.f);
     secondAttackNode->SetHitAngle(70.f);
     secondAttackNode->SetHitRange(400.f);
+    secondAttackNode->SetDuration(1.5f);
 
     auto checkThirdPhase = make_shared<CheckHealthDecorator>(behaviourTree, blackboard);
     selector3->children.push_back(checkThirdPhase);
@@ -90,6 +92,7 @@ void Boss::Init()
     thirdAttackNode->SetDamage(70.f);
     thirdAttackNode->SetHitAngle(80.f);
     thirdAttackNode->SetHitRange(500.f);
+    secondAttackNode->SetDuration(1.f);
 
     // 공격 못 하면 이동
     auto canNotAttackDeco = make_shared<CanNotAttackDecorator>(behaviourTree, blackboard);

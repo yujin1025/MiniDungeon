@@ -38,7 +38,6 @@ ENodeState ServiceNode::OnUpdate()
 
 void DetectionService::OnUpdateService()
 {
-
     auto bt = tree.lock();
     if (bt == nullptr)
     {
@@ -70,17 +69,21 @@ void DetectionService::OnUpdateService()
     }
     else
     {
+        auto monsterPos = ownerMonster->GetPosInfo();
         float minDistance = FLT_MAX;
         PlayerRef closestPlayer = nullptr;
 
         for (auto player : players)
         {
-            PlayerRef playerRef = player.second;
+            PlayerRef playerRef = player.second; 
+
             if(playerRef->GetHp() <= 0)
 				continue;
 
-            float distance = ownerMonster->DistanceTo(playerRef->GetPosInfo());
-            if (distance < detectRange && distance < minDistance)
+            auto& targetPosInfo = playerRef->GetPosInfo();
+            float distance = ownerMonster->DistanceTo(targetPosInfo);
+
+            if (distance <= detectRange && distance < minDistance)
             {
                 minDistance = distance;
                 closestPlayer = playerRef;

@@ -76,6 +76,8 @@ public:
 	void SetHitAngle(float _hitAngle) { hitAngle = _hitAngle; }
 	void SetIsRangeAttack(bool _isRangeAttack) { isRangeAttack = _isRangeAttack; }
 
+	void SetDuration(float _duration) { duration = _duration; }
+
 private:
 	bool isRangeAttack = false;
 	int attackType = 0;

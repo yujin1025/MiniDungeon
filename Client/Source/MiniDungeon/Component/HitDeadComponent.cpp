@@ -36,7 +36,7 @@ void UHitDeadComponent::PlayDeadMontage()
 		{
 			for(auto nextPlayer : networkManager->Players)
 			{
-				if (nextPlayer.Value->GetObjectID() != player->GetObjectID())
+				if (nextPlayer.Key != player->GetObjectID())
 				{
 					auto playerController = player->GetController();
 					if (playerController)
@@ -52,10 +52,11 @@ void UHitDeadComponent::PlayDeadMontage()
 
 		if (bIsAllDead)
 		{
-			auto playerController = Cast<APlayerController>(player->GetController());
-			if (playerController)
+			auto pc = Cast<AMDPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+
+			if (pc)
 			{
-				playerController->ChangeState(NAME_Spectating); // Spectator 모드 전환
+				pc->ChangeState(NAME_Spectating); // Spectator 모드 전환
 
 				// SpectatorPawn 스폰
 				ASpectatorPawn* SpectatorPawn = GetWorld()->SpawnActor<ASpectatorPawn>();
@@ -67,20 +68,21 @@ void UHitDeadComponent::PlayDeadMontage()
 					SpectatorPawn->SetActorLocation(LastLocation);
 					SpectatorPawn->SetActorRotation(LastRotation);
 
-					playerController->Possess(SpectatorPawn); // SpectatorPawn을 Possess
+					pc->Possess(SpectatorPawn); // SpectatorPawn을 Possess
 				}
 
 				// UI 입력 모드 활성화
-				playerController->SetInputMode(FInputModeUIOnly());
-				playerController->bShowMouseCursor = true;
+				pc->SetInputMode(FInputModeUIOnly());
+				pc->bShowMouseCursor = true;
+			}
+
+			auto gameMode = Cast<AMDGameMode>(player->GetWorld()->GetAuthGameMode());
+			if (gameMode)
+			{
+				gameMode->ShowDefeatWidget();
 			}
 		}
 
-		auto gameMode = Cast<AMDGameMode>(player->GetWorld()->GetAuthGameMode());
-		if(gameMode)
-		{
-			gameMode->ShowDefeatWidget();
-		}
 	}
 
 	ANonPlayableCharacter* nonPlayableCharacter = Cast<ANonPlayableCharacter>(Character);

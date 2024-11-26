@@ -92,6 +92,7 @@ public:
 
 private:
 	float AttackRange = 300.0f;
+	float AttackDegree = 80.0f;
 };
 
 class CanNotAttackDecorator : public DecoratorNode
@@ -109,6 +110,7 @@ public:
 
 private:
 	float AttackRange = 300.0f;
+	float AttackDegree = 80.0f;
 };
 
 class CheckHealthDecorator : public DecoratorNode

@@ -232,8 +232,12 @@ void Room::HandleStartGame()
 
 void Room::HandleMonsterCleared()
 {
-	BossRef boss = ObjectUtils::CreateBoss();
+	if (_boss != nullptr)
+	{
+		return;
+	}
 
+	BossRef boss = ObjectUtils::CreateBoss();
 	AddBoss(boss);
 
 	Protocol::STC_SPAWN_BOSS spawnBossPkt;

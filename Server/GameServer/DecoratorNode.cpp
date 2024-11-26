@@ -199,6 +199,7 @@ ENodeState CanAttackDecorator::OnUpdate()
 
     // 공격 범위 확인
     auto targetPosInfo = target->GetPosInfo();
+    auto& monsterposInfo = ownerMonster->GetPosInfo();
     blackboard->SetData(EBlackboardKey::Target, targetPosInfo.object_id());
 
     float distance = ownerMonster->DistanceTo(targetPosInfo);
@@ -210,7 +211,19 @@ ENodeState CanAttackDecorator::OnUpdate()
             LOG("CanAttackDecorator child is nullptr");
 			return ENodeState::Failure;
         }
-        return child->Update();
+
+        Vector3 toTarget = Vector3(targetPosInfo.x() - monsterposInfo.x(), targetPosInfo.y() - monsterposInfo.y(), 0).Normalize();
+        Vector3 forward = Vector3::CalculateForwardVector(monsterposInfo.yaw());
+
+        // Dot Product를 사용하여 각도를 계산
+        float dotProduct = Vector3::DotProduct(toTarget, forward);
+        float clampedDot = clamp(dotProduct, -1.0f, 1.0f);
+        float AngleDegrees = RadiansToDegrees(acos(clampedDot));
+
+        if (AngleDegrees <= AttackDegree)
+        {
+            return child->Update();
+        }
     }
 
     LOG("Target is out of range");
@@ -252,6 +265,7 @@ ENodeState CanNotAttackDecorator::OnUpdate()
     }
 
     auto targetPosInfo = target->GetPosInfo();
+    auto& monsterposInfo = ownerMonster->GetPosInfo();
     blackboard->SetData(EBlackboardKey::Target, targetPosInfo.object_id());
     // 공격 범위 확인
     float distance = ownerMonster->DistanceTo(targetPosInfo);
@@ -271,6 +285,21 @@ ENodeState CanNotAttackDecorator::OnUpdate()
 
         // 조건 충족: 하위 노드 실행
         return child->Update();
+    }
+    else
+    {
+        Vector3 toTarget = Vector3(targetPosInfo.x() - monsterposInfo.x(), targetPosInfo.y() - monsterposInfo.y(), 0).Normalize();
+        Vector3 forward = Vector3::CalculateForwardVector(monsterposInfo.yaw());
+
+        // Dot Product를 사용하여 각도를 계산
+        float dotProduct = Vector3::DotProduct(toTarget, forward);
+        float clampedDot = clamp(dotProduct, -1.0f, 1.0f);
+        float AngleDegrees = RadiansToDegrees(acos(clampedDot));
+
+        if (AngleDegrees > AttackDegree)
+        {
+            return child->Update();
+        }
     }
 
     LOG("Target is in range");

@@ -35,4 +35,5 @@ public:
 
 private:
 	float detectRange = 1000.0f;
+	float detectionAngle = 60.0f;
 };

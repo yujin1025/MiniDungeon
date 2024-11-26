@@ -3,3 +3,7 @@ Server/Server.sln
 *.sln
 
 Build/*
+*.bin
+*.pak
+*.ucas
+*.utoc

@@ -347,7 +347,7 @@ void AttackNode::OnStart()
 						float clampedDot = clamp(dotProduct, -1.0f, 1.0f);
 						float AngleDegrees = RadiansToDegrees(acos(clampedDot));
 
-						// 30도 안에 있는지 확인
+						// hitAngle도 안에 있는지 확인
 						if (AngleDegrees <= hitAngle)
 						{
 							player->SetHp(player->GetHp() - damage);

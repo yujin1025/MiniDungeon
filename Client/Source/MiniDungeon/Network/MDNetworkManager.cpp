@@ -711,7 +711,7 @@ void UMDNetworkManager::HandleMonsterAttack(const Protocol::STC_MONSTER_ATTACK& 
 	{
 		if (Players.Contains(pkt.attacked_infos().begin()->attacked_object_id()))
 		{
-			WeakPlayer = Players.Find(pkt.attacked_infos().begin()->attacked_object_id())->Get();
+			WeakPlayer = Players[pkt.attacked_infos().begin()->attacked_object_id()];
 		}
 	}
 
